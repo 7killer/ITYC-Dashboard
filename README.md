@@ -1,5 +1,8 @@
 # ITYC-Dashboard
  <div class="row  pb-3">
+                         <p>
+                            Code is provide as it ! Fell free to re use !
+                          </p>
                           <p>
                             La navigation sur Virtual Regatta , comme dans le réel dépend de nombreux facteurs (vitesse et direction du vent, variation dans le temps, polaires du bateau...).
                           </p>
