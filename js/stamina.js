@@ -1,0 +1,34 @@
+paramStamina = {
+	"recovery":{
+		"points":1,
+		"loWind":0,
+		"hiWind":30,
+		"loTime":5,
+		"hiTime":15
+	},
+	"tiredness":[20,50],
+	"consumption":{
+		"points":{
+			"tack":10,
+			"gybe":10,
+			"sail":20
+		},
+		"winds":{
+			"0":1,
+			"10":1.2,
+			"20":1.5,
+			"30":2
+		},
+		"boats":{
+			"0":1,
+			"5":1.2,
+			"15":1.5,
+			"50":2
+		}
+	},
+	"impact":{
+		"0":2,
+		"100":0.5
+		}
+	}
+	

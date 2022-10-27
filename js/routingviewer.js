@@ -1,0 +1,813 @@
+import * as Util from './util.js';
+import * as zz from './zezoscript.js';
+import * as lMap from './map.js';
+import * as DM from './dataManagement.js';
+
+
+const routeInfosmodel =
+{
+    lat : "",
+    lon : "",
+    timestamp : "",
+    heading : "",
+    tws : "",
+    twa : "",
+    twd : "",
+    sail : "",
+    speed : ""
+}
+
+var myRoute = [];
+var nbdigits = 0;
+var markersState = true;
+var displayFilter = 0;
+var currentId = 0;
+
+var actualZezoColor = "#AA0000";
+var actualAvalon00Color ="#0000FF";
+var actualAvalon06Color ="#005500";
+var actualAvalon12Color ="#5500AA";
+var actualAvalon18Color ="#AA0055";
+var actualVRZenColor ="#499300";
+var actualgpxColor ="#009349";
+
+String.prototype.cleanSpecial = function() {
+    var rules = {
+        'a': /[àâ]/g,
+        'A': /[ÀÂ]/g,
+        'e': /[èéêë]/g,
+        'E': /[ÈÉÊË]/g,
+        'i': /[îï]/g,
+        'I': /[ÎÏ]/g,
+        'o': /[ô]/,
+        'O': /[Ô]/g,
+        'u': /[ùû]/g,
+        'U': /[ÙÛ]/g,
+        'c': /[ç]/g,
+        'C': /[Ç]/g,
+        ',' : /[;]/g,
+        '' : /(\r\n|\n|\r)/g,
+        '' : /[\/|\s|-]/g,
+        '' : / +/g
+        
+    };
+    var str = this;
+    for(var latin in rules) {
+        var nonLatin = rules[latin];
+        str = str.replace(nonLatin , latin);
+    }
+    return str;
+}
+
+function set_nbdigit(value)
+{
+   nbdigits = value;
+}
+
+function set_displayFilter(value)
+{
+    displayFilter =value;
+
+}
+function set_currentId(value)
+{
+    currentId = value;
+}
+function isDisplayEnabled (record, uid) {
+
+
+    return  (uid == currentId)
+        || (record.type2 == "followed"  && (displayFilter & 0x001))
+        || (record.type2 == "team"      && (displayFilter & 0x002))
+        || (record.type2 == "normal"    && (displayFilter & 0x004))
+        || ((record.type == "top" || record.type2 == "top")         && (displayFilter & 0x008))
+        || (record.type2 == "certified" && (displayFilter & 0x010))
+        || (record.type2 == "real"      && (displayFilter & 0x020))
+        || ((record.type == "sponsor" || record.type2 == "sponsor") && (displayFilter & 0x040))
+        || (record.choice == true       && (displayFilter & 0x080))
+        || (record.state == "racing"    && (displayFilter & 0x100))
+}
+
+function initialize(raceId)
+{
+    if(!raceId) return;
+    myRoute[raceId] = [];
+    document.getElementById("route_list_tableLmap").innerHTML = "";
+
+}
+
+function createEmptyRoute(raceId,name,skipperName,color,displayedName)
+{
+
+    if(!raceId || !name) return;
+    if(!myRoute[raceId]) myRoute[raceId] = [];
+    if(myRoute[raceId][name]) delete myRoute[raceId][name]; 
+
+    myRoute[raceId][name] = [];
+
+    var currentRoute = myRoute[raceId][name];
+    currentRoute.points = [];
+    currentRoute.Lmap = [];
+    
+    currentRoute.displayed = false;
+    currentRoute.displayedName = displayedName;
+    
+    currentRoute.loaded = false;
+    currentRoute.skipperName = skipperName;
+    currentRoute.color = color;
+
+
+}
+
+function addNewPoints(raceId,name,routeInfoData) {
+
+    if(!raceId || !name || !myRoute[raceId] || !myRoute[raceId][name] || !routeInfoData) return;  
+    myRoute[raceId][name].points.push(routeInfoData);
+
+}
+
+function getRoute(raceId,name)
+{
+    if(!raceId || !name || !myRoute[raceId] || !myRoute[raceId][name]) return;  
+    
+    return myRoute[raceId][name];
+}
+/* data  interface *******************************/
+
+var fleetInfos = [];
+var racesInfos = [];
+
+var currentRace = "";
+
+function updateFleet(race,raceFleetInfo)
+{
+    if(currentRace != race)
+    {
+        fleetInfos = [];
+        currentRace = race;
+    }
+    if(!currentRace) return;
+    var fleet = raceFleetInfo.get(currentRace.id);
+    if(!fleet)    return;
+    Object.keys(fleet.uinfo).forEach(function (key) {
+        var elem = fleet.uinfo[key];
+        var currentUinfo = fleetInfos[key];
+        if(!currentUinfo)
+        {
+            fleetInfos[key] = [];
+        }
+        fleetInfos[key].pos = elem.pos;
+        fleetInfos[key].options =  DM.getRaceOptionsPlayer(currentRace.id,key);
+
+//        fleetInfos[key].options = elem.options;
+        fleetInfos[key].displayName = elem.displayName;
+        fleetInfos[key].twa = elem.twa;
+        fleetInfos[key].uid = key;
+        fleetInfos[key].type2  = elem.type2;
+        fleetInfos[key].type  = elem.type;
+        fleetInfos[key].choice  = elem.choice;
+        fleetInfos[key].state  = elem.state;
+
+    });
+
+    if(popupStateLmap) loadskipperList("sel_rt_skipperLmap");
+}
+
+function updateRaces(races)
+{
+    racesInfos = races;
+}
+
+function routeExists(race,name) {
+
+    if(!raceId || !name) return false;
+    if(!myRoute[raceId]) return false;;
+    if(myRoute[raceId][name]) return true; 
+
+    return false;
+}
+function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
+
+    if (!race || !gpxFile || !racesInfos) return "";
+    
+    if (!gpxFile) return "" ;//File not available
+
+    let gpx = new gpxParser(); //Create gpxParser Object
+    gpx.parse(gpxFile); //parse gpx file from string data
+
+    if(!gpx || !gpx.routes || !gpx.routes[0].points)return "" ;//File not available
+
+    var routeName = routerName + " " + skipperName;
+    createEmptyRoute(race.id,routeName.cleanSpecial(),skipperName,color,routeName);
+    
+
+    gpx.routes[0].points.forEach(function (pt) {
+        
+        var lat = Number(pt.lat);
+        var lon = Number(pt.lon);
+        
+        var routeData = Object.create(routeInfosmodel);
+
+        routeData.lat = lat;
+        routeData.lon =  lon;
+        routeData.timestamp = Date.parse(pt.time);
+        routeData.heading = "-";
+        routeData.tws = "-";
+        routeData.twa = "-";
+        routeData.twd = "-";
+        routeData.sail = "-";
+        routeData.speed = "-";
+        addNewPoints(race.id,routeName.cleanSpecial(),routeData);
+
+    });
+    return routeName.cleanSpecial();
+}
+function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
+         
+    if (!race || !fileTxt || !racesInfos) return "";
+    
+
+    //Mode 0 Avalon
+    //Mode 1 VRZen
+    var poi = new Array();
+    var i = 0;
+    fileTxt = fileTxt.replace('\r','');
+    var lineAvl = fileTxt.split('\n');
+    if(lineAvl.length<= 1) //empty file or file not exits 
+    {
+        return "" ;//File not available
+    }
+    var routeName = routerName + " " + skipperName;
+    createEmptyRoute(race.id,routeName.cleanSpecial(),skipperName,color,routeName);
+
+    var currentYear = new Date();
+    currentYear = currentYear.getFullYear();
+    var previousMonth =0;
+    while (i < lineAvl.length-2) {
+        i = i + 1;
+        //if (i > 54) i = i + 5;
+        if(i > lineAvl.length-2) i = lineAvl.length-2;
+        poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
+
+
+        var isoDate, hdg,tws,twa,twd,sail,stw,lat,lon,splitDate, heure,date;
+
+        if(mode == 1)
+        {//VRZen
+            lat = Number(poi[3]);
+            lon = Number(poi[4]);
+            hdg = poi[5]+ "°";
+            tws = Util.roundTo(poi[11], 1+nbdigits)+ "kts";
+            stw = Util.roundTo(poi[9], 1+nbdigits) + "kts";
+    
+            splitDate = poi[0].split(" ");
+            heure = splitDate[1];
+
+            if(splitDate[0].includes("/")) {
+                date = splitDate[0].split("/");
+                if(date[0].length > 2)
+					isoDate = splitDate[0] + " " + heure;
+				else
+					isoDate = date[2]+"-"+date[1]+"-"+date[0] + " " + heure;
+                isoDate += " GMT";
+            } else if(splitDate[0].includes("-")) {
+                date = splitDate[0].split("-");
+				if(date[0].length > 2)
+					isoDate = splitDate[0] + " " + heure;
+				else
+					isoDate = date[2]+"-"+date[1]+"-"+date[0] + " " + heure;
+                isoDate += " GMT";
+            } else 
+                isoDate = poi[0]+" GMT";
+
+            sail =  poi[14];
+            twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
+            twd = Util.roundTo(poi[10], 1+nbdigits)+ "°";; 
+        } else
+        { //default Mode Avalon
+            lat = Number(poi[1]);
+            lon = Number(poi[2]);
+            hdg = poi[3]+ "°";
+            tws = Util.roundTo(poi[8], 1+nbdigits)+ "kts";
+            stw = Util.roundTo(poi[4], 1+nbdigits) + "kts";
+    
+            
+            splitDate = poi[0].split(" ");
+            var heure = splitDate[1]+":00";
+            var date = splitDate[0].split("/");
+
+            if(previousMonth==0) previousMonth = date[1];
+            if(previousMonth==12 && date[1] == 1) currentYear+1;
+
+            isoDate = currentYear+"-"+ date[1]+"-"+date[0]+ " " + heure;
+            if(poi[6]>180) poi[6] -=360;
+            twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
+            twd = Util.roundTo(poi[7], 1+nbdigits) + "°";
+            sail = "---"; //todo foud link between avalon number and sail    
+        }
+        
+        
+
+        var routeData = Object.create(routeInfosmodel);
+
+        routeData.lat = lat;
+        routeData.lon =  lon;
+        routeData.timestamp = Date.parse(isoDate);
+        routeData.heading = hdg;
+        routeData.tws = tws;
+        routeData.twa = twa;
+        routeData.twd = twd;
+        routeData.sail = sail;
+        routeData.speed = stw;
+        addNewPoints(race.id,routeName.cleanSpecial(),routeData);
+        
+    }
+    return routeName.cleanSpecial();
+
+}
+
+
+function getOption(name) {
+    var value = localStorage["cb_" + name];
+    if (value !== undefined) {
+        var checkBox = document.getElementById(name);
+        checkBox.checked = (value === "true");
+        var event = new Event('change');
+        checkBox.dispatchEvent(event);
+    }
+}
+/* web interface *********************************/
+
+var popupStateLmap = false;
+
+
+function initializeWebInterface()
+{
+
+    
+    popupStateLmap = false;
+    
+
+    document.getElementById("lbl_rt_openLmap").addEventListener("click", onPopupOpenLmap);
+    document.getElementById("rt_close_popupLmap").addEventListener("click", onPopupCloseLmap);
+    document.getElementById("rt_popupLmap").style.display = "none";
+    document.getElementById("sel_routeTypeLmap").addEventListener("change", onChangeRouteTypeLmap);
+    document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
+    document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
+    document.getElementById("lbl_helpLmap").addEventListener("click", help);
+    getOption("sel_showMarkersLmap");
+    markersState = document.getElementById("sel_showMarkersLmap").checked;
+    
+//    document.getElementById("sel_showMarkersLmap").checked=true;
+//    document.getElementById("sel_showTracksLmap").checked=true;
+
+    
+}
+
+function loadskipperList(elt)
+{
+    var selectobject = document.getElementById(elt);
+    var options = selectobject.getElementsByTagName('OPTION');
+
+    for (var i=0; i<options.length; i++) {
+        selectobject.removeChild(options[i]);
+        i--;
+    }
+
+
+    var fln = new Array();
+
+    Object.keys(fleetInfos).forEach(function (key) {
+        fln.push(key);
+    });
+
+    function numeric (s) {
+        var r = String(s);
+        if ( r.substr(0, 1) == "(" ) {
+            r = r.slice(1, -1);
+        }
+        if ( isNaN(r) ) {
+            r = r.toUpperCase();
+        } else {
+            r = Number(r);
+        }
+        return r;
+    }
+    fln.sort(function (uidA, uidB) {
+        // Check if we have values at all
+        if (fleetInfos[uidA] == undefined && fleetInfos[uidB] == undefined) return 0;
+        if (fleetInfos[uidB] == undefined) return -1;
+        if (fleetInfos[uidA] == undefined) return 1;
+
+        // Fetch value of sort field and convert to number.
+        var entryA = fleetInfos[uidA].displayName;
+        var entryB = fleetInfos[uidB].displayName;
+
+        // Prefer defined values over undefined values
+        if (entryA == undefined && entryB == undefined) return 0;
+        if (entryB == undefined) return -1;
+        if (entryA == undefined) return 1;
+
+        // Cast to number if possible
+        entryA = numeric(entryA);
+        entryB = numeric(entryB);
+
+        // Compare values.
+        //if (currentSortOrder == 0) {
+            if (entryA < entryB) return -1;
+            if (entryA > entryB) return 1;
+      /*  } else {
+            if (entryA > entryB) return -1;
+            if (entryA < entryB) return 1;
+        }*/
+        return 0;
+    });
+
+   
+    Object.keys(fln).forEach(function (key) {
+        if (isDisplayEnabled(fleetInfos[fln[key]], fln[key])) {
+            var option = document.createElement("option");
+
+            option.text = fleetInfos[fln[key]].displayName;
+            option.value = fln[key];
+
+            document.getElementById(elt).appendChild(option);
+        }
+    });
+
+
+
+}
+
+
+
+function onPopupOpenLmap()
+{
+    if(!popupStateLmap && currentRace!="")  
+    {
+        popupStateLmap = true;
+        document.getElementById("rt_popupLmap").style.display = "block";
+        document.getElementById("sel_rt_skipperLmap").style.display = "block";
+        document.getElementById("rt_nameSkipperLmap").style.display = "none";
+        document.getElementById("rt_extraFormatLmap").style.display = "none";
+        document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
+        document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
+        document.getElementById("route_colorLmap").value = actualZezoColor;
+        loadskipperList("sel_rt_skipperLmap");
+        
+    }
+}
+
+function onPopupCloseLmap() {
+    popupStateLmap = false;
+    document.getElementById("rt_popupLmap").style.display = "none";
+}
+function cleanAll()
+{
+    myRoute = [];
+    lMap.cleanAll();
+
+}
+
+
+
+function onCleanRoute(race) {
+
+    Object.keys(myRoute[race.id]).forEach(function (name) {
+        lMap.deleteRoute(race,name);    
+           
+        delete myRoute[race.id];
+    });
+    document.getElementById("route_list_tableLmap").innerHTML = "";
+
+}
+
+
+function onChangeRouteTypeLmap() {
+    var routeType = document.getElementById("sel_routeTypeLmap").value;
+    switch(routeType)
+    {
+
+        default :
+            return;
+        case "rt_Zezo":
+            document.getElementById("sel_rt_skipperLmap").style.display = "block";
+            document.getElementById("rt_nameSkipperLmap").style.display = "none";
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("route_colorLmap").value = actualZezoColor;
+            break;
+        case "rt_Avalon":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("route_colorLmap").value = actualAvalon06Color;
+            break;
+        case "rt_VRZen":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("route_colorLmap").value =  actualVRZenColor;
+            break;
+        case "rt_gpx":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("route_colorLmap").value =  actualgpxColor;
+            break;
+
+        
+
+            
+    }
+}
+
+async function loadExternalFile(race,type) {
+    var tf = '.gpx';
+    var routeType = 'Gpx';
+    var routeFormat = 3;
+    if(type == "rt_Avalon") {
+        tf = '.csv';
+        routeType = "Avalon ";
+        routeFormat = 0;
+    } else if(type == "rt_VRZen") {
+        tf = '.csv';
+        routeType = "VR Zen ";
+        routeFormat = 1;
+    } else if(type == "rt_gpx") {
+        tf = '.gpx';
+        routeType = "Gpx ";
+        routeFormat = 3;
+    }
+
+
+
+
+    const pickerOpts = {
+        types: [
+          {
+            description: 'Routage',
+            accept: {
+              'track/*': [tf]
+            }
+          },
+        ],
+        excludeAcceptAllOption: true,
+        multiple: false
+      };
+      let fileHandle;
+      
+      [fileHandle] = await window.showOpenFilePicker(pickerOpts);
+      const fileH = await fileHandle.getFile();
+      const fileData = await fileH.text();
+      if(type == "rt_Avalon" || type == "rt_VRZen") {
+        return importExternalRouter(
+            race,
+            fileData,
+            routeType,
+            document.getElementById("rt_nameSkipperLmap").value,
+            document.getElementById("route_colorLmap").value,
+            routeFormat);
+      } else if(type == "rt_gpx" ) {
+        return importGPXRoute(
+            race,
+            fileData,
+            "Gpx",
+            document.getElementById("rt_nameSkipperLmap").value,
+            document.getElementById("route_colorLmap").value,
+        );   
+      }
+
+    
+}
+async function onAddRouteLmap(race) {
+    var routeType = document.getElementById("sel_routeTypeLmap").value;
+
+    if(!currentRace.id) return;
+    var routeName = "";
+   
+    switch(routeType)
+    {
+        default :
+            return;
+        case "rt_Zezo":
+            var raceInfos = racesInfos.get(currentRace.id);
+            if(!raceInfos) return;
+             if (!raceInfos.url) {
+                alert("Unknown race - no routing available");
+                return;
+             }
+            var currentUinfo = fleetInfos[document.getElementById("sel_rt_skipperLmap").value];
+            if(!currentUinfo) {
+                alert("Unknown player - no routing available");
+                return;
+            }
+            if( currentUinfo.options == "-" || currentUinfo.options == "?"|| currentUinfo.options == "---")
+            {
+            alert("No player loaded - no routing available");
+            return;
+            }
+    
+            document.getElementById("bt_rt_addLmap").value = "Loading";
+            document.getElementById("bt_rt_addLmap").disabled = true;
+            
+            zz.zezoCall(currentUinfo,raceInfos,document.getElementById("route_colorLmap").value,race);    
+            //update map is done in zezo call as its async
+            actualZezoColor = '#'+Math.floor(Math.random()*16777216).toString(16).padStart(6, '0');
+            document.getElementById("route_colorLmap").value = actualZezoColor;
+            break;
+
+        case "rt_Avalon" :
+            routeName = await loadExternalFile(race,"rt_Avalon");
+            break;
+        case "rt_VRZen" :
+            routeName = await loadExternalFile(race,"rt_VRZen");
+            break; 
+        case "rt_gpx" :
+            routeName = await loadExternalFile(race,"rt_gpx");   
+            break;          
+    }
+    if(routeName != "") {
+        updateRouteListHTML();
+        displayMapTrace(race,routeName);
+    }
+
+         
+}
+
+function onRouteListClick(ev,race) {
+
+    var re_hsLmap = new RegExp("^lbl_rt_name_Lmap:(.+)"); // Hide/Show Routing Lmap
+    var re_ccLmap = new RegExp("^color_rt_name_Lmap:(.+)"); // Change Color Lmap
+//    var re_wisp = new RegExp("^wi:(.+)"); // delete
+    var ev_lbl = ev.target.id;
+
+    for (var node = ev.target; node; node = node.parentNode) {
+        var id = node.id;
+        var rt_name;
+        if (rt_name = re_hsLmap.exec(node.id)) { // Hide/Show Routing
+            if(currentRace.id && myRoute[currentRace.id][rt_name[1]])
+            {
+                if(myRoute[currentRace.id][rt_name[1]].displayed)
+                {
+                    myRoute[currentRace.id][rt_name[1]].displayed = false;
+                    //todo hide routage
+                    document.getElementById('sel_rt_name_Lmap:'+rt_name[1]).checked=false;
+                    lMap.hideRoute(race,rt_name[1]);
+                } else
+                {
+                    myRoute[currentRace.id][rt_name[1]].displayed = true;
+                    //todo show routage
+                    document.getElementById('sel_rt_name_Lmap:'+rt_name[1]).checked=true;
+                    lMap.showRoute(race,rt_name[1]);    
+
+                }
+            }
+        } else if (rt_name = re_ccLmap.exec(node.id)) {  // Change Color
+            if(currentRace.id && myRoute[currentRace.id][rt_name[1]])
+            {
+                if(myRoute[currentRace.id][rt_name[1]].color != document.getElementById(node.id).value) {
+                    myRoute[currentRace.id][rt_name[1]].color = document.getElementById(node.id).value;
+                    document.getElementById('color_rt_name_Lmap:'+rt_name[1]).value=myRoute[currentRace.id][rt_name[1]].color;
+                    lMap.importRoute(myRoute[currentRace.id][rt_name[1]],race,rt_name[1]);
+                
+                }
+            }
+        }
+    }
+}
+
+function onMarkersChange(race) {
+    if(markersState)
+        markersState = false;
+    else
+        markersState = true;
+    
+    document.getElementById('sel_showMarkersLmap').checked=markersState;
+    lMap.onMarkersChange(race,markersState);
+    return markersState;
+}
+function updateRouteListHTML()
+{
+
+    var tableBody =  '<tbody>';
+
+    var routeList = myRoute[currentRace.id];
+    if(routeList) {
+        Object.keys(routeList).forEach(function (name) {
+            tableBody += '<tr class="rt_lst_line">';
+                tableBody += '<td class="rt_lst_name noBorderElt">';
+                    tableBody += '<input type="checkbox" id="';
+                    tableBody += 'sel_rt_name:'+name;
+                    tableBody += '" name="checkbox3" class="content hidden"';
+                    if(routeList[name].displayed) tableBody += 'checked';
+                    tableBody += '>';
+
+                    tableBody += '<label for:"'+'sel_rt_name:'+name + '" id="'+'lbl_rt_name:'+name +'">'; 
+                    tableBody += routeList[name].displayedName +'</label>';
+                tableBody += '</td>'    
+            tableBody += '<td class="rt_lst_color noBorderElt">';
+                tableBody += '<input  type="color" id="color_rt_name:'+name +'" value="';
+                tableBody += routeList[name].color +'">';
+            tableBody += '</td>'
+            tableBody += '</tr>'
+
+        });
+    }
+ 
+    tableBody +=  '</tbody>';
+    document.getElementById("route_list_tableLmap").innerHTML = tableBody;
+
+    tableBody =  '<tbody>';
+
+    var routeList = myRoute[currentRace.id];
+    if(routeList) {
+        Object.keys(routeList).forEach(function (name) {
+            tableBody += '<tr class="rt_lst_line">';
+                tableBody += '<td class="rt_lst_name noBorderElt">';
+                    tableBody += '<input type="checkbox" id="';
+                    tableBody += 'sel_rt_name_Lmap:'+name;
+                    tableBody += '" name="checkbox3" class="content hidden"';
+                    if(routeList[name].displayed) tableBody += 'checked';
+                    tableBody += '>';
+
+                    tableBody += '<label for:"'+'sel_rt_name_Lmap:'+name + '" id="'+'lbl_rt_name_Lmap:'+name +'">'; 
+                    tableBody += routeList[name].displayedName +'</label>';
+                tableBody += '</td>'    
+            tableBody += '<td class="rt_lst_color noBorderElt">';
+                tableBody += '<input  type="color" id="color_rt_name_Lmap:'+name +'" value="';
+                tableBody += routeList[name].color +'">';
+            tableBody += '</td>'
+            tableBody += '</tr>'
+
+        });
+    }
+ 
+    tableBody +=  '</tbody>';
+    document.getElementById("route_list_tableLmap").innerHTML = tableBody;
+
+
+}
+
+function buildMarkerTitle(point)
+{
+
+    var position = Util.formatPosition(point.lat, point.lon);
+    const currentDate = new Date();
+    const currentTs = currentDate.getTime();
+
+    var newDate =   currentDate;  
+    if(point.timestamp!="-")
+        var newDate = Util.formatShortDate(point.timestamp,undefined,document.getElementById("local_time").checked);
+
+
+    var ttw = point.timestamp-currentTs;
+
+    var title = "Position : " + position + "\n" +
+        "Date : " + newDate + " (" + Util.formatDHMS(ttw) + ")\n" +
+        "TWA : " + point.twa.replace(/&deg;/g, "°") + "  |  HDG : " + point.heading.replace(/&deg;/g, "°") + "\n" +
+        "TWD : " + point.twd.replace(/&deg;/g, "°") + "  |  TWS : " + point.tws + "\n" +
+        "Sail : " + point.sail + "  |  Speed : " + point.speed ;
+
+    return title;
+
+}
+
+function displayMapTrace(race,routeName)
+{
+    var route = getRoute(race.id,routeName);
+    if(!route) return;
+    lMap.importRoute(route,race,routeName);
+    route.displayed = true;
+    document.getElementById('sel_rt_name_Lmap:'+routeName).checked=true;
+}
+
+// Help for import
+function help(){
+    var msg = "Affichage des trait de cotes :\n" +
+        "- zoomer sur la zone de la carte où vous souhaitez afficher les traits de cotes\n" +
+        "- Appuyer sur le bouton Cotes ( il devient gris ) et attendez quelques instants \n" +
+        "- Les traits de cotes apparaissent en bleu\n" + 
+        " - Si vous souhaitez afficher une zone différente\n" +
+        " - Désactiver l affichage des traits de cotes en appuyant sur le bouton Cotes ( il devient blanc) et reprendre l opération au début\n\n" +
+        "Import Zezo :\n" +
+        "- Importe la route en cours sur votre onglet zezo.\n" +
+        "- Si vous modifiez le paramétrage de votre route zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne RT avant d'importer.\n\n" +
+        "Import Avalon :\n" +
+        "- Depuis votre logiciel Avalon, exportez votre route au format CSV et importez le.\n\n" +
+        "Import VRZen :\n" +
+        "- Depuis le routeur VRZen, exportez votre route au format CSV et importez le.\n\n" +
+        "Import GPX :\n" +
+        "- Importez le!\n\n";
+        
+    alert(msg);
+}
+
+export {
+    initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
+    myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
+    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId
+
+};
