@@ -597,7 +597,7 @@ var controller = function () {
             zUrl = prepareZezoUrl(r.id, currentUserId, beta, false, false);
             pUrl = preparePolarUrl(r.id);
             if(r.url) rzUrl = "http://zezo.org/"+ r.url+"/chart.pl?";
-            rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId ;    
+            rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId ;    
  
             iUrl = getITYCBase(raceId);
             riUrl =  getITYCFull(raceId);
@@ -2970,7 +2970,7 @@ var controller = function () {
     }
 
     function preparePolarUrl(raceId) {
-        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
+        var baseURL = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var race = races.get(raceId);
 
         var twa = Math.abs(Util.roundTo(race.curr.twa || 20, 0));
@@ -2992,7 +2992,7 @@ var controller = function () {
     }
 
     function callPolars(raceId) {
-        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
+        var baseURL = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var url = preparePolarUrl(raceId)
         window.open(url, cbReuseTab.checked ? baseURL : "_blank");
     }
