@@ -502,7 +502,28 @@ tr.us_line>td {
     background: transparent;
     font-size: medium;
 }
-
+tr.us_line3>td {
+    border: none;
+    padding-bottom: 2em;
+    background: transparent;
+    font-size: medium;
+}
+tr.us_line3t>td {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: 2em;
+    background: transparent;
+    font-size: medium;
+}
+tr.us_line3b>td {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding-bottom: 2em;
+    background: transparent;
+    font-size: medium;
+}
 tr.us_line2>td {
     border: none;
     padding-bottom: 1em;
@@ -510,10 +531,10 @@ tr.us_line2>td {
     font-size: medium;
 }
 
-tr.us_line>td.us_title, tr.us_line2>td.us_title {
+tr.us_line>td.us_title, tr.us_line2>td.us_title , tr.us_line3>td.us_title, tr.us_line3t>td.us_title, tr.us_line3b>td.us_title{
     font-size: 1.2em;
 }
-tr.us_line>td>label, tr.us_line2>td>label, #bt_exportPolar {
+tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label #bt_exportPolar {
     font-size: 1em;
 }
 
@@ -1046,3 +1067,7 @@ tr.us_line>td>label, tr.us_line2>td>label , tr.us_line>td>input[type="checkbox"]
     background-color: var(--bg_body_color);
 }
 
+tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
+
+    background-color: var(--bg_body_color);
+}

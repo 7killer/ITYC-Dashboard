@@ -156,6 +156,10 @@ function drawTWSChart(ts,tws,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " nds" ;
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(tws[context.dataIndex]-tws[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
                   label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
@@ -294,6 +298,10 @@ function drawTWAChart(ts,twa,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " °";
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(twa[context.dataIndex]-twa[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
                   label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
@@ -436,6 +444,10 @@ function drawTWDChart(ts,twd,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " °";
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(twd[context.dataIndex]-twd[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
                   label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
@@ -572,6 +584,10 @@ function drawHDGChart(ts,hdg,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " °";
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(hdg[context.dataIndex]-hdg[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
                   label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
@@ -709,6 +725,10 @@ function drawBoatSpeedChart(ts,bs,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " nds";
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(bs[context.dataIndex]-bs[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
                   label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
@@ -841,7 +861,11 @@ function drawStaminaChart(ts,stamina,sail) {
                 }
                 if (context.parsed.y !== null) {
                   label += parseFloat(Number(context.parsed.y).toFixed(3)) + " %"
-                  label += " (" + sailNames[sail.id[context.dataIndex]] +")";;
+                  if(context.dataIndex>1){
+                    let d = parseFloat(Number(stamina[context.dataIndex]-stamina[context.dataIndex-1]).toFixed(3));
+                    label += " " + (d>0?("+"+d):d); 
+                  } 
+                  label += " (" + sailNames[sail.id[context.dataIndex]] +")";
                 }
                 return label;
               },

@@ -9,6 +9,7 @@ import * as lMap from './map.js';
 import * as rt from './routingviewer.js';
 import * as tr from './tracker.js';
 import * as gr from './graph.js';
+import * as exp from './exportTool.js';
 
 var controller = function () {
 
@@ -24,7 +25,7 @@ var controller = function () {
     var races = new Map();
     var raceFleetMap = new Map();
 
-    let comPort;
+    let welcomePage = false;
     var currentSortField = "none";
     var originClick;
     var drawTheme = "dark";
@@ -165,6 +166,7 @@ var controller = function () {
     var cb2digits;
     var nbdigits = 0;
     
+    var lang = "fr";
 
     Notification.requestPermission(function (status) {
         if (Notification.permission !== status) {
@@ -327,7 +329,13 @@ var controller = function () {
         {
             var currentTWA = Util.roundTo(Math.abs(r.curr.twa), 1);
             if((currentTWA == bestTwa.twaUp) || (currentTWA == bestTwa.twaDown))
-             twaBG =  ' background-color:lightgreen;';
+                twaBG =  ' background-color:lightgreen;';
+            else if((currentTWA < bestTwa.twaUp && currentTWA >= bestTwa.twaUp-2) 
+             || (currentTWA > bestTwa.twaDown && currentTWA <= bestTwa.twaDown+2))
+                twaBG =  ' background-color:DarkOrange;';
+            else if((currentTWA < bestTwa.twaUp-2) 
+            || (currentTWA > bestTwa.twaDown+2))
+                twaBG =  ' background-color:DarkRed;';
         }
         
         var hdgFG = isTWAMode ? "black" : "blue";
@@ -379,11 +387,10 @@ var controller = function () {
         if(uinfo.xoption_sailOverlayer != "0%" && uinfo.xplained) {
             let x = uinfo.xoption_sailOverlayer.replace('%','');
             x = Number(x);
-            if(x > 1.2)
+            if(x > 1.2 || (x<0 && Math.abs(x)<98))
                 res.xfactorStyle = 'style="color:red;"';
             else if(x > 0)
                 res.xfactorStyle = 'style="color:orange ;"';
-        
         }
 
 
@@ -518,7 +525,7 @@ var controller = function () {
         }
 
         var raceStatusHeader = '<tr>'
-        + '<th title="Call Router">' + "RT" + '</th>'
+        + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
         + '<th title="Call Polars">' + "PL" + '</th>'
         + '<th title="Call ITYC">' + "ITYC" + '</th>'
         + '<th>' + "Time" + '</th>'
@@ -534,10 +541,19 @@ var controller = function () {
         + '<th title="Stamina">' + "Stamina" + '</th>'
         + '<th title=""Speed factor over no-options boat">' + "Factor" + '</th>'       
         + '<th title="Boat assumed to have Foils. Unknown if no foiling conditions">' + "Foils" + '</th>'
-        + '<th title="Position">' + "Position" + '</th>'
-        + '<th title="Temps restant changement de voile">' + "Voile" + '</th>'
-        + '<th title="Temps restant empannage">' + "Empannage" + '</th>'
-        + '<th title="Temps restant virement">' + "Virement" + '</th>';       
+        + '<th title="Position">' + "Position" + '</th>';
+
+
+        if(lang ==  "fr") {
+            raceStatusHeader += '<th title="Temps restant changement de voile">' + "Voile" + '</th>'
+            + '<th title="Temps restant empannage">' + "Empannage" + '</th>'
+            + '<th title="Temps restant virement">' + "Virement" + '</th>';       
+        } else
+        {
+            raceStatusHeader += '<th title="Time remaining sail change">' + "Sail" + '</th>'
+            + '<th title="Time remaining tack">' + "Tack" + '</th>'
+            + '<th title="Time remaining gybe">' + "Gybe" + '</th>';       
+        }
 
         raceStatusHeader += '</tr>';
 
@@ -547,20 +563,29 @@ var controller = function () {
         let zUrl = "";
         let pUrl = "";
         let iUrl = "";
+        let vUrl = "";
             
         let rzUrl = "";
         let rpUrl = "";
         let riUrl = ""; 
+        let rvUrl = ""; 
         if(!currentUserId ) {
-            raceLine ="<tr><td>Joueur non détecté</td></tr>";
-        } else if(r == undefined || r.curr == undefined) {
-            raceLine ="<tr><td>Pas de course chargée</td></tr>";
+            if(lang ==  "fr") {
+                raceLine ="<tr><td>Joueur non détecté</td></tr>";
+            } else {
+                raceLine ="<tr><td>Player not detected</td></tr>";    
+            }
+        } else if(r == undefined || r.curr == undefined ||((welcomePage))) {
+            if(lang ==  "fr") {
+                raceLine ='<tr><td colspan="10">Joueur détecté: '+ currentUserName +'</td><td colspan="8"> Pas de course chargée</td></tr>';
+            } else
+            {
+                raceLine ='<tr><td colspan="10">Player detected: '+ currentUserName +'</td><td colspan="8"> No race loaded</td></tr>';            
+            }
         } else  {
             let p=  raceFleetMap.get(r.id).uinfo[currentUserId];
 
             raceId = r.id;
-
-
             var bestTwa = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options);
             var bestVMGString = bestTwa.twaUp + " | " + bestTwa.twaDown;
             var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + "kts";
@@ -584,9 +609,15 @@ var controller = function () {
             {
                 var currentTWA = Util.roundTo(Math.abs(r.curr.twa), 1);
                 if((currentTWA == bestTwa.twaUp) || (currentTWA == bestTwa.twaDown))
-                twaBG =  ' background-color:lightgreen;';
+                    twaBG =  ' background-color:lightgreen;';
+                else if((currentTWA < bestTwa.twaUp && currentTWA >= bestTwa.twaUp-2) 
+                     || (currentTWA > bestTwa.twaDown && currentTWA <= bestTwa.twaDown+2))
+                     twaBG =  ' background-color:DarkOrange;';
+                else if((currentTWA < bestTwa.twaUp-2) 
+                    || (currentTWA > bestTwa.twaDown+2))
+                    twaBG =  ' background-color:DarkRed;';
+                
             }
-            
             var hdgFG = isTWAMode ? "black" : "blue";
             var hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
             if(drawTheme =='dark')
@@ -597,10 +628,14 @@ var controller = function () {
             zUrl = prepareZezoUrl(r.id, currentUserId, beta, false, false);
             pUrl = preparePolarUrl(r.id);
             if(r.url) rzUrl = "http://zezo.org/"+ r.url+"/chart.pl?";
-            rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId ;    
+            rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId ; 
+//            rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId ; 
+            
+            rvUrl  = prepareVrzUrl(r.id);   
  
-            iUrl = getITYCBase(raceId);
-            riUrl =  getITYCFull(raceId);
+            riUrl  = getITYCBase(raceId);
+            iUrl =  getITYCFull(raceId);
+            vUrl =  prepareVrzFullUrl(raceId,currentUserId);
 
             if(drawTheme =='dark')
             	var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
@@ -622,6 +657,8 @@ var controller = function () {
 
             raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
             raceLine += (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
+            raceLine += '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
+            
             raceLine += '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
             raceLine += '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'         
                 + '<td class="time" ' + lastCalcStyle + '>' + formatTimeNotif(r.curr.lastCalcDate) + '</td>'
@@ -676,20 +713,10 @@ var controller = function () {
             else
                 raceLine += '<td class="tack"> - </td>';
 
-            
-                /* + '<td class="agrd" style="background-color:' + agroundBG + ';">' + (r.curr.aground ? "AGROUND" : "No") + '</td>'
-                    + '<td class="man">' + (manoeuvering ? "Yes" : "No") + '</td>';
-                */
-                    
             raceLine += '</tr>';
 
-            
-    
-
-
-            
         }
-        "";
+
         var manifest = chrome.runtime.getManifest();
         let outputTable =  '<table id="raceStatusTable">'
             + '<thead>'
@@ -709,8 +736,8 @@ var controller = function () {
         content:outputTable,
         newTab:cbReuseTab.checked,
         rid:raceId,
-        zurl:zUrl,purl:pUrl,iurl:iUrl,
-        rzurl:rzUrl,rpurl:rpUrl,riurl:riUrl,
+        zurl:zUrl,purl:pUrl,iurl:iUrl,vurl:vUrl,
+        rzurl:rzUrl,rpurl:rpUrl,riurl:riUrl,rvurl:rvUrl,
         mode:mode,theme:drawTheme}
 	}
     function computeEnergyPenalitiesFactor(stamina) {
@@ -729,27 +756,30 @@ var controller = function () {
                 if(!polars)
                     return  best;
                 var iS = fractionStep(tws, polars.tws);
-                for (var twaIndex=0; twaIndex < polars.twa.length; twaIndex++) {
+            
+                for (var twaIndex=25; twaIndex < 180; twaIndex++) {
+                    
+                    var iA	= fractionStep(twaIndex, polars.twa);
                     for (const sail of polars.sail) {
-                        var f = foilingFactor(options, tws, polars.twa[twaIndex], polars.foil);
+                        var f = foilingFactor(options, tws, polars.twa[iA.index], polars.foil);
                         var h = options.includes("hull") ? polars.hull.speedRatio : 1.0;
-                        var rspeed = bilinear(0, iS.fraction,
-                                              sail.speed[twaIndex][iS.index - 1],
-                                              sail.speed[twaIndex][iS.index - 1],
-                                              sail.speed[twaIndex][iS.index],
-                                              sail.speed[twaIndex][iS.index]);
+                        var rspeed = bilinear(iA.fraction, iS.fraction,
+                                              sail.speed[iA.index-1][iS.index - 1],
+                                              sail.speed[iA.index][iS.index - 1],
+                                              sail.speed[iA.index-1][iS.index],
+                                              sail.speed[iA.index][iS.index]);
                         var speed = rspeed  * f * h;
-                        var vmg = speed * Math.cos(polars.twa[twaIndex] / 180 * Math.PI);
+                        var vmg = speed * Math.cos(twaIndex / 180 * Math.PI);
                         if (vmg > best.vmgUp) {
-                            best.twaUp = polars.twa[twaIndex];
+                            best.twaUp = twaIndex;
                             best.vmgUp = vmg;
                         } else if (vmg < best.vmgDown) {
-                            best.twaDown = polars.twa[twaIndex];
+                            best.twaDown = twaIndex;
                             best.vmgDown = vmg;
                         }
                         if(speed>best.bspeed) {
                             best.bspeed = speed;
-                            best.btwa = polars.twa[twaIndex];
+                            best.btwa = twaIndex;
                         }
                     }
                 }
@@ -836,6 +866,7 @@ var controller = function () {
 
                 var returnVal = '<tr class="' + trstyle + '" id="rs:' + r.id + '">'
                     + (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
+                    +  '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
                     + '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
                     + '<td class="tdc"><span id="wi:' + r.id + '"><img class="icon" src="./img/wind.svg"/></span></td>'
                     + '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'
@@ -985,7 +1016,7 @@ var controller = function () {
             };
         }
         var raceStatusHeader = '<tr>'
-            + '<th title="Call Router">' + "RT" + '</th>'
+            + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
             + '<th title="Call Polars">' + "PL" + '</th>'
             + '<th title="Call WindInfo">' + "WI" + '</th>'
             + '<th title="Call ITYC">' + "ITYC" + '</th>'
@@ -997,11 +1028,18 @@ var controller = function () {
             + '<th title="Boat VMG">' + "VMG" + '</th>'
             + '<th>' + "Best VMG" + '</th>'
             + '<th>' + "Best speed" + '</th>'
-            + '<th title="Stamina">' + "Stamina" + '</th>'
-            + '<th title="Approximated manoeuvring loose">' + "Empannage" + '</th>'
-            + '<th title="Approximated manoeuvring loose">' + "Virement" + '</th>'
-            + '<th title="Approximated manoeuvring loose">' + "Voile" + '</th>'
-            + '<th title="Boat is aground">' + "Agnd" + '</th>'
+            + '<th title="Stamina">' + "Stamina" + '</th>';
+        if(lang ==  "fr") {
+            raceStatusHeader += '<th title="Temps de manoeuvre théorique">' + "Empannage" + '</th>'
+                            + '<th title="Temps de manoeuvre théorique">' + "Virement" + '</th>'
+                            + '<th title="Temps de manoeuvre théorique">' + "Voile" + '</th>';
+        } else
+        {
+            raceStatusHeader += '<th title="Approximated manoeuvring loose">' + "Tack" + '</th>'
+                            + '<th title="Approximated manoeuvring loose">' + "Gybe" + '</th>'
+                            + '<th title="Approximated manoeuvring loose">' + "Sail" + '</th>';
+        }
+        raceStatusHeader += '<th title="Boat is aground">' + "Agnd" + '</th>'
             + '<th title="Boat is maneuvering, half speed">' + "Mnvr" + '</th>';
         if(cbWithLastCmd.checked)  
             raceStatusHeader += '<th >' + "Last Command" + '</th>';
@@ -1030,13 +1068,14 @@ var controller = function () {
                     return "";
                 }
             }
-            
+            var race = races.get(selRace.value);
             return '<tr>'
                 + Util.genth("th_rt", "RT", "Call Router", Util.sortField == "none", undefined)
                 + Util.genth("th_lu", "Date" + dateUTC(), undefined)
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
                 + Util.genth("th_rank", "Rank", undefined, Util.sortField == "rank", Util.currentSortOrder)
+                + ((race.type !== "record")?Util.genth("th_racetime", "RaceTime", undefined, Util.sortField == "raceTime", Util.currentSortOrder):"")
                 + Util.genth("th_dtu", "DTU", "Distance to Us", Util.sortField == "distanceToUs", Util.currentSortOrder)
                 + Util.genth("th_dtf", "DTF", "Distance to Finish", Util.sortField == "dtf", Util.currentSortOrder)
                 + Util.genth("th_twd", "TWD", "True Wind Direction", Util.sortField == "twd", Util.currentSortOrder)
@@ -1132,7 +1171,7 @@ var controller = function () {
                 var bi = boatinfo(uid, r);
     
                 r.dtf = r.distanceToEnd;
-                r.dtfC = Util.gcDistance(r.pos, race.legdata.end);
+                r.dtfC = (race.legdata?Util.gcDistance(r.pos, race.legdata.end):"-");
                 if (!r.dtf || r.dtf == "null") {
                     r.dtf = r.dtfC;
                 }
@@ -1223,8 +1262,6 @@ var controller = function () {
                 }
 
 
-                if(!r.isVIP) r.isVIP="?";
-
                 var xfactorTxt = Util.roundTo(r.xfactor, 4);
                 if(r.xoption_sailOverlayer != "0%" && r.xplained) {
                     xfactorTxt += " " + r.xoption_sailOverlayer;
@@ -1263,12 +1300,26 @@ var controller = function () {
                         staminaTxt = Util.roundTo(r.stamina , 2) + "%";
                         staminaTxt += " (x" + Util.roundTo(computeEnergyPenalitiesFactor(r.stamina) , 2)+")" ;
                     }
+
+                    r.raceTime = "";
+                    var legS = 0;
+                    if (r.legStartDate != undefined && r.legStartDate > 0) legS = r.legStartDate;
+                    if (race.legdata && race.legdata.start != undefined && race.legdata.start.date != undefined) legS = race.legdata.start.date;;
+                    if (legS > 0) r.raceTime = r.lastCalcDate-legS;
+
+                    var routerCell = '<td>&nbsp;</td>';
+                    if(document.getElementById("sel_router").value=="zezo") {
+                        if(race.url) routerCell = '<td class="tdc"><span id="rt:' + uid + '">&#x2388;</span></td>';
+                    } else
+                        routerCell = '<td class="tdc"><span id="vrz:' + uid + '">&#x262F;</span></td>';
+
                     return '<tr class="hovred" id="ui:' + uid + '">'
-                        + (race.url ? ('<td class="tdc"><span id="rt:' + uid + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
+                        + routerCell
                         + '<td class="time">' + formatTime(r.lastCalcDate) + '</td>'
                         + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
+                        + ((race.type !== "record")?Util.gentd("RaceTime","",null, (r.raceTime ? Util.formatDHMS(r.raceTime) : "-")):"")
                         + Util.gentd("DTU","",null, (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits) : '-') )
                         + Util.gentd("DTF","",null, ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) )
                         + Util.gentd("TWD","",null, Util.roundTo(r.twd, 2+nbdigits) )
@@ -1550,34 +1601,15 @@ var controller = function () {
             var storedStartDate = DM.getStartRaceTimePlayer(rid,uid);
             if(storedInfo.state == "racing")
             {
-                
-                if(!storedInfo.startDate || storedInfo.startDate=="-") {
-                    if(storedStartDate  && storedStartDate != DM.raceOptionPlayerModel.startRaceTime) {
+
+                if(!storedInfo.startDate || storedInfo.startDate==DM.raceOptionPlayerModel.startRaceTime) {
+                    if(storedStartDate != DM.raceOptionPlayerModel.startRaceTime) {
                         storedInfo.startDate = storedStartDate;
-                    }
-                } else
-                {
-                    if(storedStartDate != storedInfo.startDate)
-                    {
-                        var storedPlayerOption = DM.getRacePlayerInfos(rid,uid);
-                        if(storedPlayerOption && storedPlayerOption.playerId != DM.raceOptionPlayerModel.playerId) {
-                            storedPlayerOption.startRaceTime = storedInfo.startDate;
-                            DM.addRaceOptionsList(rid,storedPlayerOption);
-                            DM.saveRaceOptionsList();
-                        }
-    
                     }
                 }
             } else {
-                var storedPlayerOption = DM.getRacePlayerInfos(rid,uid);
-                if(storedPlayerOption && storedPlayerOption.playerId != DM.raceOptionPlayerModel.playerId) {
-                    storedPlayerOption.startRaceTime = "-";
-                    DM.addRaceOptionsList(rid,storedPlayerOption);
-                    DM.saveRaceOptionsList();
-                }
+                storedInfo.startDate = DM.raceOptionPlayerModel.startRaceTime;
             }
-            
-            
         }
 
         explainPlayerOptions(storedInfo);
@@ -1586,15 +1618,24 @@ var controller = function () {
             var storedPlayerOption = DM.getRaceOptionsPlayer(rid,uid);
             if(storedPlayerOption)
             {
-                storedInfo.xoption_options = storedPlayerOption;
+    			var optionsList = [];
+                if(storedPlayerOption == "Full Pack" || storedPlayerOption =="All Options") {
+                    optionsList = ["foil","winch","radio","skin","hull","reach","heavy","light"];
+                } else
+                {
+                    var optionsType = storedPlayerOption.split(" ");
+                    for(var j = 0; j < optionsType.length;j++)
+                    {
+                        var options0List =  optionsType[j].replace("[","").replace("]","");
+                        options0List = options0List.split(",")
+                        for ( var i = 0; i < options0List.length; i++) {
+                            optionsList.push(options0List[i]);
+                        }
+                    }
+                }
+                storedInfo.xoption_options = storedPlayerOption;   
+				storedInfo.options = optionsList;
             }
-     }
-
-        if(storedInfo.isVIP ==  "?")
-        {
-            var playerData = DM.getPlayerInfos(uid);
-            if(playerData && playerData.isVIP)
-                storedInfo.isVIP =  playerData.isVIP;  
         }
 
         if (boatPolars) {
@@ -1648,7 +1689,7 @@ var controller = function () {
             storedInfo.type2 = storedInfo.type;  
         }
 
-        if(document.getElementById("ITYC_record").checked) tr.addInfo(uid,storedInfo,race.type);
+        if(document.getElementById("ITYC_record").checked) tr.addInfoFleet(uid,storedInfo,race.type);
     }
 
     function fixMessageData (message, userId) {
@@ -1678,46 +1719,56 @@ var controller = function () {
 
     function determineRankingCategory(savedOptions)
     {
-        if(savedOptions == "Full Pack" || savedOptions == "All Options")
+        if(savedOptions == "Full Pack" || savedOptions == "All Options"
+        || savedOptions == "FP" || savedOptions == "AO")
             return "Full Pack";
         else if(savedOptions == "-" || savedOptions == "?"|| savedOptions == "---")
         {
             return "-";
         } else {
+            if(!Array.isArray(savedOptions)) {
+                var optionsType = savedOptions.split(" ");
+                var optionsList = [];
 
-            var optionsType = savedOptions.split(" ");
-            var optionsList = [];
-
-            for(var j = 0; j < optionsType.length;j++)
-            {
-                var options0List =  optionsType[j].replace("[","").replace("]","");
-                options0List = options0List.split(",")
-                for ( var i = 0; i < options0List.length; i++) {
-                    optionsList.push(options0List[i]);
+                for(var j = 0; j < optionsType.length;j++)
+                {
+                    var options0List =  optionsType[j].replace("[","").replace("]","");
+                    options0List = options0List.split(",")
+                    for ( var i = 0; i < options0List.length; i++) {
+                        optionsList.push(options0List[i]);
+                    }
                 }
+            } else{
+                optionsList = savedOptions;
             }
             var categoryIndicator = 0;
             for (const opt of optionsList) {
                 switch(opt)
                 {
                     case "reach":
+                        case "R":
                         categoryIndicator += 204819277;
                         break;
                     case "light":
+                    case "L":
                         categoryIndicator += 180722892;
                         break;          
 
                     case "heavy":
+                    case "H":
                         categoryIndicator += 144578313;
                         break;           
 
                     case "winch":
+                    case "W":
                         categoryIndicator += 120481928;
                         break;
                     case "foil":
+                    case "F":
                         categoryIndicator += 265060241;
                         break;        
                     case "hull":
+                    case "h":
                         categoryIndicator += 84337349;
                         break;
                     default :
@@ -1741,15 +1792,7 @@ var controller = function () {
         info.xoption_sailOverlayer = "0%";
         info.xoption_options = "?";
         info.savedOption = "---";
-        info.isVIP =  "?";
         
-        if(info.preferredMapPreset)
-        {
-            info.isVIP =  "No";
-            if (info.preferredMapPreset != "default") {
-                info.isVIP =  "Yes";
-            }
-        }
         if (info.fullOptions === true) {
             info.xoption_options = "Full Pack";
             info.savedOption = "Full Pack";
@@ -1827,19 +1870,16 @@ var controller = function () {
                 info.xoption_sailOverlayer = "0%";
                 info.xoption_foils = Util.roundTo(foils, 0) + "%";
             } else {
+                info.xplained = true;
+                info.xoption_foils = Util.roundTo(foils, 0) + "%";
                 //here check for overspeed due to sail
                 //spd = speedT *ff* hf *sf
                 //sf = spd /  speedT *ff* hf
                 var sf = info.speed / (speedT * foilFactor * hullFactor);
                 if(sf >1.0 && sf <= 1.14) {
-                    info.xplained = true;
                     info.xoption_sailOverlayer = "+"+Util.roundTo((sf-1.0)*100, 2) + "%";
-                    info.xoption_foils = Util.roundTo(foils, 0) + "%";
-
                 } else if(sf < 1.0) {
-                    info.xplained = true;
                     info.xoption_sailOverlayer = "-"+Util.roundTo((1.0-sf)*100, 2) + "%";
-                    info.xoption_foils = Util.roundTo(foils, 0) + "%";
                 }
             }
         }
@@ -1854,8 +1894,12 @@ var controller = function () {
         if(document.getElementById("ITYC_record").checked) { //si choix utilisateur
             var raceData = DM.getRaceInfos(rid);
             var name ="-";
-            if(raceData) name = raceData.legName;
-            tr.initMessage("fleet",rid,name,currentUserId);
+            var type = "-";
+            if(raceData) {
+                name = raceData.legName;
+                type= raceData.raceType;
+            }
+            tr.initMessage("fleet",rid,name,currentUserId,type);
         }  
         
         data.forEach(function (message) {
@@ -1912,12 +1956,22 @@ var controller = function () {
     // Ajout - Notifications
     function setNotif() {        
         if (lbRaceNotif.value == "---") {
-            alert ("Enregistrememnt impossible, sélectionnez une course !");
+            if(lang ==  "fr") {
+                alert ("Enregistrememnt impossible, sélectionnez une course !");
+            } else
+            {
+                alert ("Record impossible, select a race !"); 
+            }
             return;
         }
 
         if (lbMinNotif.value) {    
-            var nText = "<p><b>" + lbRaceNotif.value + " :</b> rappel vers " + formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (heure locale).</p>";
+            if(lang ==  "fr") {
+                var nText = "<p><b>" + lbRaceNotif.value + " :</b> rappel vers " + formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (heure locale).</p>";
+            } else
+            {
+                var nText = "<p><b>" + lbRaceNotif.value + " :</b>  recall at " + formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (local time).</p>";
+            }
             notifications.push({race: lbRaceNotif.value,
                                 time: Date.now() + lbMinNotif.value * 60000,
                                 repet: 0,
@@ -1927,9 +1981,15 @@ var controller = function () {
 
         if (lbType1Notif.value != "---" && lbType2Notif.value != "---" && lbValNotif.value) {
             var nTime;
-            var nText = "<p><b>" + lbRaceNotif.value + " :</b> notification si le "
-                    + lbType1Notif.value + " est " + lbType2Notif.value + " à " + lbValNotif.value + ".</p>";
-                if(lbType1Notif.value == "TWA") {
+            
+            if(lang ==  "fr") {
+                var nText = "<p><b>" + lbRaceNotif.value + " :</b> notification si le "
+                        + lbType1Notif.value + " est " + lbType2Notif.value + " à " + lbValNotif.value + ".</p>";
+            } else {
+                var nText = "<p><b>" + lbRaceNotif.value + " :</b> notification if "
+                + lbType1Notif.value + " is " + lbType2Notif.value + " at " + lbValNotif.value + ".</p>";
+            }
+            if(lbType1Notif.value == "TWA") {
                 var nTWA = Util.roundTo(lbValNotif.value,1);
             } else if (lbType1Notif.value == "HDG") {
                 var nHDG = Util.roundTo(lbValNotif.value,1);          
@@ -1948,7 +2008,11 @@ var controller = function () {
                                 text: nText
                                });
         } else if (!lbMinNotif.value) {
-            alert ("Enregistrememnt impossible, vérifiez les données !");
+            if(lang ==  "fr") {
+                alert ("Enregistrememnt impossible, vérifiez les données !");
+            } else {
+                alert ("Record impossible, verify datas !");    
+            }
             return;
         }
         lbRaceNotif.value = "---";
@@ -1979,13 +2043,23 @@ var controller = function () {
         var icon = 2;
         // Notification Echouement
         if (r.curr.aground == true) {
-            TextNotif =  r.curr.displayName + " : vous êtes échoué !";
+            
+            if(lang ==  "fr") {
+                TextNotif =  r.curr.displayName + " : vous êtes échoué !";
+            } else
+            {
+                TextNotif =  r.curr.displayName + " : you are aground !";    
+            }
             GoNotif(TitreNotif, TextNotif, icon);
         }
 
         // Notification Mauvaise voile
         if (r.curr.badSail == true && r.curr.distanceToEnd > 1) {
-            TextNotif = r.curr.displayName + " : vous naviguez sous mauvaise voile !";
+            if(lang ==  "fr") {
+                TextNotif = r.curr.displayName + " : vous naviguez sous mauvaise voile !";
+            } else {
+                TextNotif = r.curr.displayName + " : you use bad sail !";    
+            }
             GoNotif(TitreNotif, TextNotif, icon);
         }
 
@@ -1996,17 +2070,31 @@ var controller = function () {
                 // 300000 millisecondes = 5 minutes
                 if (Date.now() > notifications[i].time - 300000 && Date.now() < notifications[i].time + 600000) {
                     var icon = 3;
-                    TextNotif =  r.curr.displayName + " : rappel programmé à " + formatTimeNotif(notifications[i].time) + " !";
+                    if(lang ==  "fr") { 
+                        TextNotif =  r.curr.displayName + " : rappel programmé à " + formatTimeNotif(notifications[i].time) + " !";
+                    } else
+                    {
+                        TextNotif =  r.curr.displayName + " : recall programmed at " + formatTimeNotif(notifications[i].time) + " !";
+                    }
                     show(i);
                 }
                 
                 // Notification type TWA
                 if (notifications[i].twa) {
                     if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.twa), 1) <= notifications[i].twa) {
-                        TextNotif =  r.curr.displayName + " : votre TWA est inférieur à " + notifications[i].twa + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : votre TWA est inférieur à " + notifications[i].twa + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : your TWA is inferior to " + notifications[i].twa + ".";
+                        }
                         show(i);
                     } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.twa), 1) >= notifications[i].twa) {
-                        TextNotif =  r.curr.displayName + " : votre TWA est supérieur à " + notifications[i].twa + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : votre TWA est supérieur à " + notifications[i].twa + ".";
+                        } else
+                        {
+                            TextNotif =  r.curr.displayName + " : your TWA is superior to " + notifications[i].twa + ".";
+                        }
                         show(i);
                     }    
                 }
@@ -2014,10 +2102,18 @@ var controller = function () {
                 // Notification type HDG
                 if (notifications[i].hdg) {
                     if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.heading), 1) <= notifications[i].hdg) {
-                        TextNotif =  r.curr.displayName + " : votre cap est inférieur à " + notifications[i].hdg + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : votre cap est inférieur à " + notifications[i].hdg + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : your heading is inferior to " + notifications[i].hdg + ".";
+                        }
                         show(i);
                     } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.heading), 1) >= notifications[i].hdg) {
-                        TextNotif =  r.curr.displayName + " : votre cap est supérieur à " + notifications[i].hdg + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : votre cap est supérieur à " + notifications[i].hdg + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : your heading is superior to " + notifications[i].hdg + ".";
+                        }
                         show(i);
                     }    
                 }            
@@ -2025,10 +2121,19 @@ var controller = function () {
                 // Notification type TWS
                 if (notifications[i].tws) {
                     if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.tws), 1) <= notifications[i].tws) {
-                        TextNotif =  r.curr.displayName + " : la force du vent est inférieure à " + notifications[i].tws + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : la force du vent est inférieure à " + notifications[i].tws + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : the wind speed is inferior to " + notifications[i].tws + ".";
+
+                        }
                         show(i);
                     } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.tws), 1) >= notifications[i].tws) {
-                        TextNotif =  r.curr.displayName + " : la force du vent est supérieure à " + notifications[i].tws + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : la force du vent est supérieure à " + notifications[i].tws + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : the wind speed is superior to  " + notifications[i].tws + ".";    
+                        }
                         show(i);
                     }    
                 }            
@@ -2036,10 +2141,18 @@ var controller = function () {
                 // Notification type TWD
                 if (notifications[i].twd) {
                     if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.twd), 1) <= notifications[i].twd) {
-                        TextNotif =  r.curr.displayName + " : la direction du vent est inférieure à " + notifications[i].twd + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : la direction du vent est inférieure à " + notifications[i].twd + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : the wind direction is inferior to " + notifications[i].twd + ".";              
+                        }
                         show(i);
                     } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.twd), 1) >= notifications[i].twd) {
-                        TextNotif =  r.curr.displayName + " : la direction du vent est supérieure à " + notifications[i].twd + ".";
+                        if(lang ==  "fr") {
+                            TextNotif =  r.curr.displayName + " : la direction du vent est supérieure à " + notifications[i].twd + ".";
+                        } else {
+                            TextNotif =  r.curr.displayName + " : the wind direction is superior to " + notifications[i].twd + ".";       
+                        }
                         show(i);
                     }    
                 }            
@@ -2089,7 +2202,68 @@ var controller = function () {
         window.URL.revokeObjectURL(urlFile);
         a.remove();
     }
+    function exportFleet() {
+        function makeLineFleet(uid) {
+            var r = fleet.uinfo[uid];
+            
+            var bi = boatinfo(uid, r);
+                
+            var pState = "";
+            if (r.state == "racing" && bi.speed == 0 && bi.twa != 0) pState = "AGROUND !";
+            else if (r.state == "racing" && bi.speed != 0) pState = "Racing";
+            else if (r.state == "arrived") pState = "Arrived";
+            else if (r.state == "waiting") pState = "Waiting";
+            else if (r.state == "staying") pState = "Staying";
+                
+            let line = ";"; //first cell is RT, useless
 
+            line += bi.name + ";";
+            line += formatTime(r.lastCalcDate)  + ";";
+            line += (r.rank ? r.rank : "-") + ";";
+            line += ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + ";";
+            line += (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ ";";
+            line += "-" + ";";
+            line += bi.sSail + ";";
+            line += pState + ";";
+            line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + ";";
+            line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + ";";
+            line += Util.roundTo(bi.heading, 2+nbdigits) + ";";
+            line += Util.roundTo(bi.twa, 2+nbdigits)  + ";";
+            line += Util.roundTo(bi.tws, 2+nbdigits)  + ";";
+            line += Util.roundTo(bi.speed, 2+nbdigits) + ";";
+            line += Util.roundTo(r.xfactor, 4) + ";";
+            line += (r.xoption_foils || "?") + ";";
+            line +=  (r.xoption_options || "?") + ";";
+
+            return line;
+
+        }
+        var race = races.get(selRace.value);
+        if(!race) return; //todo alert
+        var fleet = raceFleetMap.get(race.id);
+        if(!fleet) return; //todo alert
+        
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        
+        var  date = mm + '_' + dd + '_' + yyyy+ '_' + today.getHours()+today.getMinutes();        
+        var tabletitle = " ";
+            
+        tabletitle +=  'Name;' + race.legdata.name +";"+ race.id+"\n";
+        tabletitle +=  'VSR' + race.legdata.vsrLevel + "\n";
+        tabletitle += 'Export Date;'+date+ "\n\n";
+        var fileContent = tabletitle;
+        fileContent += "RT;Skipper;Last Update;Rank;DTF;DTU;BRG;Sail;State;RaceTime;Position;HDG;TWA;TWS;Speed;Factor;Foils;Options\n";
+        
+        fileContent += Array.from(fleet.table || []).map(makeLineFleet).join("\n");
+                 
+        let blobData = new Blob([fileContent], {type: "text/plain"});
+        let url = window.URL.createObjectURL(blobData);
+        saveFile(race.legdata.name+'_'+race.id + '_Fleet_'+date+'.csv',url);
+
+    }
     function exportStamina()
     {
 
@@ -2120,13 +2294,6 @@ var controller = function () {
             if(sec!=0) pDate += ':' + sec ;
             return pDate;
         }
-        function makeDataLine(id) {
-
-            
-            return stringToCopy;
-
-        }
-
 
         var fileContent = "Race data\n";
         fileContent += "Date;"+printDate(Date.now()) +" \n";
@@ -2337,7 +2504,7 @@ var controller = function () {
         if (typeof raceId === "object") { // select event
             raceId = this.value;
         } else{
-            selRace.value = raceId
+            selRace.value = raceId;
         }
         var race = races.get(raceId);
         if(currentRaceId==0) //first Race Selection
@@ -2352,7 +2519,8 @@ var controller = function () {
             
         
         }
-        
+
+        if(race && race.curr ) welcomePage = false; 
         await DM.getRaceOptionsList(raceId);
         currentRaceId = raceId;
         makeRaceStatusHTML();
@@ -2397,6 +2565,7 @@ var controller = function () {
         var call_wi = false;
         var call_pl = false;
         var call_ityc = false;
+        var call_vrzen = false;
         var friend = false;
         var tabsel = false;
         var cbox = false;
@@ -2406,6 +2575,7 @@ var controller = function () {
         var re_polr = new RegExp("^pl:(.+)"); // Call-Polars
         var re_wisp = new RegExp("^wi:(.+)"); // Weather-Info
         var re_ityc = new RegExp("^ityc:(.+)"); // ITYC
+        var re_vrzen = new RegExp("^vrz:(.+)"); // Call-Vrzen
         var re_rsel = new RegExp("^rs:(.+)"); // Race-Selection
         var re_usel = new RegExp("^ui:(.+)"); // User-Selection
         var re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
@@ -2498,19 +2668,6 @@ var controller = function () {
             case "th_flag":
                 Util.set_sortField("country");
                 break;                
-
-
- /*           case "th_flag2":
-                Util.set_sortField("country";
-                break;
-
-            case "th_role":
-                Util.set_sortField("role";
-                break;*/
-
-
-           
-
             case "th_options":
                 Util.set_sortField("xoption_options");
                 break;
@@ -2549,7 +2706,9 @@ var controller = function () {
                 call_wi = true;
             } else if (re_ityc.exec(id)) {
                 call_ityc = true;
-            }  else if (match = re_rsel.exec(id)) {
+            } else if (re_vrzen.exec(id)) {
+                call_vrzen = true;  
+            } else if (match = re_rsel.exec(id)) {
                 rmatch = match[1];
             } else if (match = re_usel.exec(id)) {
                 rmatch = match[1];
@@ -2598,7 +2757,8 @@ var controller = function () {
                 } 
             } else if (friend) {
                 // Friend-Routing
-                if (call_rt) callRouter(selRace.value, rmatch, false);
+                if (call_rt) callRouter(selRace.value, rmatch, false,"zezo");
+                else if (call_vrzen) callRouter(selRace.value, rmatch, false,"vrzen");
             } else if (cbox) {
                 // Skippers-Choice
                 changeState(ev_lbl);
@@ -2608,9 +2768,11 @@ var controller = function () {
                     lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
                 }
             } else if (call_wi) callWindy(rmatch, 0); // weather
-            else if (call_rt) callRouter(rmatch, currentUserId, false);
+            else if (call_rt) callRouter(rmatch, currentUserId, false,"zezo");
             else if (call_pl) callPolars(rmatch);
             else if (call_ityc) callITYC(rmatch);
+            else if (call_vrzen) callRouter(rmatch, currentUserId, false,"vrzen");
+    
             else
             {
                 // Race-Switching
@@ -2727,8 +2889,8 @@ var controller = function () {
             if (r.curr.speedT) {
                 r.curr.deltaD_T = r.curr.deltaD / r.curr.speedC * r.curr.speedT.speed;
             }
-            saveMessage(r);
         }
+        saveMessage(r);
         if (message.gateGroupCounters) {
             r.gatecnt = message.gateGroupCounters;
             lMap.updateMapCheckpoints(r);
@@ -2889,16 +3051,15 @@ var controller = function () {
         var uinfo;
         var uname = lbBoatname.innerHTML;
         var type = "me";
-        if (userId != currentUserId) {
-            uinfo = raceFleetMap.get(raceId).uinfo[userId];
-            if (!uinfo) {
-                alert("Can't find record for user id " + userId);
-                return;
-            }
-            type = "friend";
-        } else {
+
+        uinfo = raceFleetMap.get(raceId).uinfo[userId];
+        if (!uinfo && userId == currentUserId) 
             uinfo = race.curr;
+        if (!uinfo) {
+            alert("Can't find record for user id " + userId);
+            return;
         }
+        
 
         if (uinfo.lastCalcDate && withConfirm) {
             var now = new Date();
@@ -2943,9 +3104,50 @@ var controller = function () {
 
 
     }
+    /////////////////////////
+// Call VRZEN
+    function prepareVrzUrl(raceId) {
+        var baseURL = "https://routage.vrzen.org/Course";   
+        var race_id = Number(raceId.split('.')[0]);
+        return baseURL + "/" + race_id;
+    }
 
+    function prepareVrzFullUrl(raceId,pid) {
+        var baseURL = prepareVrzUrl(raceId);
+        var race = races.get(raceId);
+        // Get boat position and options (self or opponent)
+        var uinfo = raceFleetMap.get(raceId).uinfo[pid];
+        if (!uinfo)
+        {
+            if(pid==currentUserId) uinfo = race.curr; else return baseURL ;
+        } 
+            
+        var pos = uinfo.pos;
+        var hdg = uinfo.heading;
+        var voile = uinfo.sail % 10;
+        var sta = uinfo.stamina;
+        var lat = Util.roundTo(pos.lat, 6)
+        var lon = Util.roundTo(pos.lon, 6)
+        
+        return (baseURL 
+            + "/" + lat.replace(".",",")
+            + "/" + lon.replace(".",",")
+            + "/" + Util.roundTo(hdg, 0)
+            + "/" + voile
+            + "/" + Util.roundTo(sta, 0));
+
+    }
+    
+    function callRouterVRZ(raceId,pid) {
+        // https://routage.vrzen.org/Course/CourseParDefaut/LatitudeParDefaut/LongitudeParDefaut
+        // https://routage.vrzen.org/Course/CourseParDefaut/LatitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut
+        // https://routage.vrzen.org/Course/CourseParDefaut/atitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut/EnergieParDefaut   
+        var baseURL = prepareVrzUrl(raceId);
+        var url = prepareVrzFullUrl(raceId,pid); 
+        window.open(url, cbReuseTab.checked ? baseURL : "_blank");
+    }
     function callRouterZezo(raceId, userId, beta, auto = false) {
-        var urlBeta = races.get(raceId).url + (beta ? "b" : "");
+        var urlBeta =  "http://zezo.org/"+ races.get(raceId).url+ (beta ? "b" : "")+"/chart.pl?";
         var url = prepareZezoUrl(raceId, userId, beta, auto);
         window.open(url, cbReuseTab.checked ? urlBeta : "_blank");
     }
@@ -2971,6 +3173,8 @@ var controller = function () {
 
     function preparePolarUrl(raceId) {
         var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
+        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
+       
         var race = races.get(raceId);
 
         var twa = Math.abs(Util.roundTo(race.curr.twa || 20, 0));
@@ -2992,7 +3196,8 @@ var controller = function () {
     }
 
     function callPolars(raceId) {
-        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
+        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;      
+        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var url = preparePolarUrl(raceId)
         window.open(url, cbReuseTab.checked ? baseURL : "_blank");
     }
@@ -3181,6 +3386,21 @@ function buildlogBookHTML(race) {
         bookLine += '</tr>';
         return bookLine;
     }
+    function highlightOptionsAlreadyTaken(opt) {
+        if (race.curr.options.includes(opt)) return 'style="color:limegreen"';
+    }
+    function totalCreditsForOptionsAlreadyTaken() {
+        let total = 0;
+        if (race.curr.options.includes('foil')) total += race.legdata.optionPrices.foil;
+        if (race.curr.options.includes('winch')) total += race.legdata.optionPrices.winch;
+        if (race.curr.options.includes('hull')) total += race.legdata.optionPrices.hull;
+        if (race.curr.options.includes('light')) total += race.legdata.optionPrices.light;
+        if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
+        if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
+        if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
+        if (race.curr.options.includes('skin')) total += race.legdata.optionPrices.skin;
+        return total;
+    }
 
     if(!race || !race.legdata) {
         var raceIdentification = '<table id="raceidTable">'
@@ -3194,32 +3414,37 @@ function buildlogBookHTML(race) {
         document.getElementById("raceBook").innerHTML = raceIdentification;
         return;
     }
+    var fleet = raceFleetMap.get(race.id);
+    if(!fleet) 
+    fleet.uinfo[userId].savedOption;
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+'</th>'
+        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+' ' + determineRankingCategory(race.curr.options) + '</th>'
         + '</tr>' 
         + '</thead>'
         + '</table>'
         + '<table id="raceidTable2">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan = 8>Credits</th>'
+        + '<th colspan="9">Credits <span style="color:limegreen">(Option équipée)</span></th>'
         + '</tr>' 
         + '<tr>'
         + '<th>Free Credits</th>'
-        + '<th>Winch</th>'
-        + '<th>Hull</th>'
-        + '<th>Light</th>'
-        + '<th>Reach</th>'
-        + '<th>Heavy</th>'
-        + '<th>Radio</th>'
-        + '<th>Skin</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
+        + '<th ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
         + '</tr>' 
         + '</thead>'
         + '<tbody>'
         + '<tr>'
-        + '<td>'+ race.legdata.freeCredits + '</td>'
+        + '<td>'+ race.legdata.freeCredits +'</td>'
+        + '<td>'+ race.legdata.optionPrices.foil + '</td>'
         + '<td>'+ race.legdata.optionPrices.winch + '</td>'
         + '<td>'+ race.legdata.optionPrices.hull + '</td>'
         + '<td>'+ race.legdata.optionPrices.light + '</td>'
@@ -3303,7 +3528,7 @@ async function initializeMap(race) {
         lMap.updateMapWaypoints(race); 
     }
 
-    function updateUserConfig(e)
+    async function updateUserConfig(e)
     {
         var value = (cbFriends.checked?1:0) 
         + (cbTeam.checked?2:0)
@@ -3325,103 +3550,159 @@ async function initializeMap(race) {
         rt.set_displayFilter(value);
 
         //save user filter ( we have  to do it here due to label format)
-        localStorage["cb_sel_friends"] = (cbFriends.checked===true);
-        localStorage["cb_sel_team"] = (cbTeam.checked===true);
-        localStorage["cb_sel_opponents"] = (cbOpponents.checked===true);
-        localStorage["cb_sel_top"] = (cbTop.checked===true);
-        localStorage["cb_sel_certified"] = (cbCertified.checked===true);
-        localStorage["cb_sel_reals"] = (cbReals.checked===true);
-        localStorage["cb_sel_sponsors"] = (cbSponsors.checked===true);
-        localStorage["cb_sel_selected"] = (cbSelect.checked===true);
-        localStorage["cb_sel_inrace"] = (cbInRace.checked===true);
+        await saveLocal('cb_sel_friends',cbFriends.checked===true);
+        await saveLocal('cb_sel_team',cbTeam.checked===true);
+        await saveLocal('cb_sel_opponents',cbOpponents.checked===true);
+        await saveLocal('cb_sel_top',cbTop.checked===true);
+        await saveLocal('cb_sel_certified',cbCertified.checked===true);
+        await saveLocal('cb_sel_reals',cbReals.checked===true);
+        await saveLocal('cb_sel_sponsors',cbSponsors.checked===true);
+        await saveLocal('cb_sel_selected',cbSelect.checked===true);
+        await saveLocal('cb_sel_inrace',cbInRace.checked===true);
         
+         
         
         
     }
 
-    function saveOption(e) {
-        localStorage["cb_" + this.id] = this.checked;
+    const toPromise = (callback) => {
+        const promise = new Promise((resolve, reject) => {
+            try {
+                callback(resolve, reject);
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
+        return promise;
     }
-    function saveOptionN(e) {
-        localStorage["cb_" + this.id] = this.value;
+    const saveLocal = (k,v) => {
+        const key = k;
+        const value = { val: v };
+    
+        return toPromise((resolve, reject) => {
+            chrome.storage.local.set({ [key]: value }, () => {
+                if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
+    
+                resolve(value);
+            });
+        });
     }
-    function getOption(name) {
-        var value = localStorage["cb_" + name];
-        if (value !== undefined) {
+
+    const getLocal = (k) => {
+        const key = k;
+
+        return toPromise((resolve, reject) => {
+            chrome.storage.local.get([key], (result) => {
+                if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
+
+                const researches = result[key]?((result[key].val!==undefined)?result[key].val:undefined):undefined ;
+                resolve(researches);
+            });
+        });
+    }
+
+    async function saveOption(e) {
+        await saveLocal("cb_" + this.id,this.checked);
+    }
+    async function saveOptionN(e) {
+        await saveLocal("cb_" + this.id,this.value);
+    }
+    async function getOption(name,def) {
+        
+        var z = await getLocal("cb_" + name,def);
+        if (z === undefined && def !== undefined) {
+            z = def;
+            await saveLocal("cb_" + name,def);
+        }
+        if(z !== undefined) {
             var checkBox = document.getElementById(name);
             if(checkBox) 
             {
-                checkBox.checked = (value === "true");
+                checkBox.checked = (z === true);
                 var event = new Event('change');
                 checkBox.dispatchEvent(event);
             }
-
         }
+        
     }
-    function getOptionN(name) {
-        var value = localStorage["cb_" + name];
-        if (value !== undefined) {
+    async function getOptionN(name,def) {
+        var z = await getLocal("cb_" + name,def);
+        if (z === undefined && def !== undefined) {
+            z = def;
+            await saveLocal("cb_" + name,def);
+        }
+        if(z !== undefined) {
             var inputBox = document.getElementById(name);
-            if(inputBox) 
-            {
-                inputBox.value = value;
-                var event = new Event('change');
-                inputBox.dispatchEvent(event);
-            }
-            
+                if(inputBox) 
+                {
+                    inputBox.value = z;
+                    var event = new Event('change');
+                    inputBox.dispatchEvent(event);
+                }
         }
     }
     async function readOptions() {
-        getOption("auto_router");
+//    await chrome.storage.local.clear();
+        await getOption("auto_router",true);
+        await getOptionN("sel_router","zezo");
+        
     //    getOption("markers");
-        getOption("reuse_tab");
-        getOption("local_time");
-        getOption("nmea_output");
-        getOption("2digits");
-        getOption("color_theme");
-        getOption("track_infos");
-        getOption("with_LastCommand");
-        getOption("vrzenPositionFormat");
-        getOption("showBVMGSpeed");
-        getOption("abbreviatedOption");
-        getOption("fleet_team");
-        getOption("fleet_rank");
-        getOption("fleet_dtu" );
-        getOption("fleet_dtf" );
-        getOption("fleet_twd" );
-        getOption("fleet_tws" );
-        getOption("fleet_twa" );
-        getOption("fleet_hdg" );
-        getOption("fleet_vmg" );
-        getOption("fleet_sail" );
-        getOption("fleet_factor" );
-        getOption("fleet_foils" );
-        getOption("fleet_position" );
-        getOption("fleet_options" );
-        getOption("fleet_state" );
-        getOption("ITYC_record");
-        getOption("auto_clean");
-        getOptionN("auto_cleanInterval");
+    await getOption("reuse_tab",true);
+    await getOption("local_time",true);
+    await getOption("nmea_output",false);
+    await getOption("2digits",true);
+    await getOption("color_theme",true);
+        await getOption("track_infos",false);
+        await getOption("with_LastCommand",false);
+        await getOption("vrzenPositionFormat",false);
+        await getOption("showBVMGSpeed",false);
+        await getOption("abbreviatedOption",true);
+        await getOption("fleet_team",true);
+        await getOption("fleet_rank",true);
+        await getOption("fleet_racetime",true);
+        await getOption("fleet_dtu" ,true);
+        await getOption("fleet_dtf" ,true);
+        await getOption("fleet_twd" ,true);
+        await getOption("fleet_tws" ,true);
+        await getOption("fleet_twa" ,true);
+        await getOption("fleet_hdg" ,true);
+        await getOption("fleet_vmg" ,true);
+        await getOption("fleet_sail",true );
+        await getOption("fleet_factor",true );
+        await getOption("fleet_foils" ,true);
+        await getOption("fleet_position",true);
+        await getOption("fleet_options",true );
+        await getOption("fleet_state",true );
+        await getOption("fleet_stamina",true );
+        await getOption("ITYC_record",true);
+        await getOption("auto_clean",true);
+        await getOptionN("auto_cleanInterval",5);
         
 
-        getOption("sel_friends");
-        getOption("sel_team");
-        getOption("sel_opponents");
-        getOption("sel_top");
-        getOption("sel_certified");
-        getOption("sel_reals");
-        getOption("sel_sponsors");
-        getOption("sel_selected");
-        getOption("sel_inrace");
+        await getOption("sel_friends",true);
+        await getOption("sel_team",true);
+        await getOption("sel_opponents",true);
+        await getOption("sel_top",true);
+        await getOption("sel_certified");
+        await getOption("sel_reals",false);
+        await getOption("sel_sponsors");
+        await getOption("sel_selected",true);
+        await getOption("sel_inrace",true);
+        await getOption("sel_showMarkersLmap",false);
+    
 
         
-        tracksState = getOption("sel_showTracksLmap");
+        tracksState = await getOption("sel_showTracksLmap",true);
         
         switchTheme();
 
         await DM.getTeamList();
         await DM.getPlayerList();
         await DM.getRaceList();
+        await DM.getItycPolarHash();
         
         updateUserConfig();
     }
@@ -3430,6 +3711,7 @@ async function initializeMap(race) {
  
 
         document.getElementById("auto_router").addEventListener("change", saveOption);
+        document.getElementById("sel_router").addEventListener("change", saveOptionN);
         document.getElementById("reuse_tab").addEventListener("change", saveOption);
         document.getElementById("local_time").addEventListener("change", saveOption);
         document.getElementById("nmea_output").addEventListener("change", saveOption);
@@ -3468,6 +3750,7 @@ async function initializeMap(race) {
         document.getElementById("fleet_position" ).addEventListener("change", saveOption);
         document.getElementById("fleet_options" ).addEventListener("change", saveOption);
         document.getElementById("fleet_state" ).addEventListener("change", saveOption);
+        document.getElementById("fleet_stamina" ).addEventListener("change", saveOption);
         document.getElementById("ITYC_record" ).addEventListener("change", saveOption);
         document.getElementById("auto_clean" ).addEventListener("change", saveOption);
         document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);
@@ -3508,7 +3791,7 @@ async function initializeMap(race) {
 
   
     
-    var initialize = function () {
+    var initialize = async function () {
         var manifest = chrome.runtime.getManifest();
         document.getElementById("lb_version").innerHTML = manifest.version;
 
@@ -3554,21 +3837,28 @@ async function initializeMap(race) {
         
 
         initRaces();
-
-        var loadData = localStorage["polars"];
-        if (loadData !== undefined) {
-            var polarTable = loadData.split("/**/");
+        var z = await getLocal('polars');
+        if (z !== undefined) {
+            var polarTable =  z.split("/**/");
             polarTable.shift();
             polarTable.forEach(function (polar) {
                 var polarData = JSON.parse(polar);
                 polars[polarData._id] = polarData;
             });
         }
-
-        loadData = localStorage["stamina"];
-        if (loadData !== undefined) {
-            paramStamina = JSON.parse(loadData);
+        
+        z = await getLocal('stamina');
+        if (z !== undefined) {
+            if (z !== undefined) {
+                paramStamina = JSON.parse(z);
+            }
         }
+          chrome.storage.local.get(['stamina'], function(result) {
+            if (result.key !== undefined) {
+                paramStamina = JSON.parse(result.key.v);
+            }
+          });
+
 
         selNmeaport.addEventListener("change", function (e) {
             console.log("Setting proxyPort = " +  selNmeaport.value); 
@@ -3592,7 +3882,7 @@ async function initializeMap(race) {
         switchAddOnMode();
     }
 
-    var callRouter = function (raceId, userId = currentUserId, auto = false) {
+    var callRouter = function (raceId, userId = currentUserId, auto = false,rtType="zezo") {
         var beta = false;
 
         if (selRace.selectedIndex == -1) {
@@ -3609,15 +3899,23 @@ async function initializeMap(race) {
                 beta = race.betaflag;
             }
         }
-
+        var now = new Date();
+        var currRace = races.get(raceId).curr;
         if (!races.get(raceId)) {
             alert("Unsupported race #" + raceId);
-        } else if (races.get(raceId).curr === undefined) {
+        } else if (currRace === undefined) {
             alert("No position received yet. Please retry later.");
-        } else if (races.get(raceId).url === undefined) {
-            alert("Unsupported race, no router support yet.");
-        } else {
-            callRouterZezo(raceId, userId, beta, auto);
+        } else if((now - currRace.lastCalcDate) > 750000) {
+                console.log("position too old for auto routing?");    
+        } else
+        {
+            if(rtType=="zezo") {
+                if (races.get(raceId).url === undefined) 
+                    alert("Unsupported race, no router support yet.");
+                else
+                    callRouterZezo(raceId, userId, beta, auto);
+            } else 
+                callRouterVRZ(raceId,userId);
         }
     }
 
@@ -3649,7 +3947,7 @@ async function initializeMap(race) {
     }
 
 
-    function handleBoatInfo (message)  {
+    async function handleBoatInfo (message)  {
         if (message) {
             if (cbRawLog.checked) {
                 divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
@@ -3670,16 +3968,37 @@ async function initializeMap(race) {
                     handleLegInfo(message.leg);
                 }
                 if (message.bs) {
-                    if (!currentUserId) {
-                        alert("Logged-on user is unknown, please exit and re-enter VR Offshore!");
-                        return;
+                    var raceId = getRaceLegId(message.bs._id);
+                    var race = races.get(raceId);
+                    if (!currentUserId && message.bs.last_seen_rank) {
+                        //dashboard has been start with race openned, do full init
+                        currentUserId = message.bs._id.user_id;
+                        currentUserName = message.bs.displayName;
+                        lbBoatname.innerHTML = message.bs.displayName;
+                        //todo save vsr rank                
+                        lMap.set_currentId(currentUserId);
+                        rt.set_currentId(currentUserId);
+                        await DM.getTeamList();
+                        await DM.getPlayerList();
+                        await DM.getRaceList(); 
+                        await DM.getItycPolarHash();
+                        await DM.getRaceOptionsList(raceId);
+                        if(!message.leg && race) {
+                            var legdata = await DM.getLegInfo(raceId);
+                            if(legdata) {
+                                message.leg = legdata; //to fake isFirstBoatInfo
+                                race.legdata = legdata; 
+                            } 
+                        }
                     }
+                            
                     if (currentUserId ==  message.bs._id.user_id) {
                         var isFirstBoatInfo =  (message.leg != undefined);
                         handleOwnBoatInfo(message.bs, isFirstBoatInfo);
                     } else {
                         handleFleetBoatInfo(message.bs);
                     }
+                    if(race && race.curr) welcomePage = false;
                 }
                 if (message.track) {
                     if (message.track._id.user_id == currentUserId) {
@@ -3732,6 +4051,62 @@ async function initializeMap(race) {
         }
     }
 
+    function handleLegRank (requestData, message) {        
+        if (message) {
+            if (cbRawLog.checked) {
+                divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
+            }
+            try {
+                var raceId = getRaceLegId(requestData);
+                //var message = JSON.parse(response.body).res;                
+                var race = races.get(raceId);
+                var raceData = DM.getRaceInfos(race.id);
+                if(!raceData)
+                {
+                    raceData = Object.create(DM.raceInfosModel);
+                    raceData.legId =race.id;
+                    raceData.legName = race.legName;
+                    raceData.name = race.name;
+                    DM.addRaceInfo(raceData) ;
+                    DM.makeRaceTable();  
+                    DM.saveRaceList();
+                }
+
+
+                if(0==requestData.partition) 
+                {
+                    var lastCalcDate="-";
+                    if(race.curr) lastCalcDate = race.curr.lastCalcDate;
+                    var fleet = raceFleetMap.get(race.id);
+
+                    if(document.getElementById("ITYC_record").checked) 
+                        tr.initMessage("rank",race.id,race.legName,currentUserId,raceData.raceType);   
+                
+                    var idx = message.rank.length;
+                    for (var i = 0; i< idx; i++) {
+                        var id = message.rank[i]._id;
+                        if(document.getElementById("ITYC_record").checked) 
+                        {
+                            var playerData = Object.create(tr.rankInfosModel);
+                            playerData.playerId = id;
+                            playerData.displayName  = message.rank[i].displayName;
+                            playerData.rank  = message.rank[i].rank;
+                            playerData.distance  = message.rank[i].distance;
+                            playerData.lastCalcDate  = lastCalcDate;
+
+                            playerData.xOptions   = DM.getRaceOptionsPlayer(race.id,id);
+                            tr.addInfoRanking(id,playerData);
+                        }
+                        if(fleet && fleet.uinfo && fleet.uinfo[id])fleet.uinfo[id].rank =  message.rank[i].rank;
+                    }
+                    if(document.getElementById("ITYC_record").checked)
+                        tr.sendInfo("rank"); 
+                }
+            } catch (e) {
+                console.log(e + " at " + e.stack);;
+            }
+        }
+    }            
 
     function handleOwnBoatInfo (message, isFirstBoatInfo) {
         var raceId = getRaceLegId(message._id);
@@ -3739,7 +4114,7 @@ async function initializeMap(race) {
         updatePosition(message, race);
         //message._id.user_id message.displayName
         if (isFirstBoatInfo && cbRouter.checked) {
-            callRouter(raceId, currentUserId, true);
+            callRouter(raceId, currentUserId, true,document.getElementById("sel_router").value);
         }
         // Add own info on Fleet tab
         mergeBoatInfo(raceId, "usercard", message._id.user_id, message);
@@ -3755,7 +4130,6 @@ async function initializeMap(race) {
             playerData.playerId = userId;
             playerData.displayName = message.displayName;
             playerData.country = message.personal.country;
-            if(fleet.uinfo[userId].isVIP && fleet.uinfo[userId].isVIP!="?") playerData.isVIP =  fleet.uinfo[userId].isVIP;
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
             DM.savePlayerList();
@@ -3769,7 +4143,7 @@ async function initializeMap(race) {
                     playerOptionsData.playerId = userId;
                     playerOptionsData.time = fleet.uinfo[userId].lastCalcDate;
                     playerOptionsData.options = fleet.uinfo[userId].savedOption;
-                    if (race.type === "record" && fleet.uinfo[userId].startDate) {
+                    if (race.type && race.type === "record" && fleet.uinfo[userId].startDate) {
                         playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
                     }
                     DM.addRaceOptionsList(raceId,playerOptionsData);
@@ -3810,7 +4184,6 @@ async function initializeMap(race) {
             playerData.playerId = userId;
             playerData.displayName = message.displayName;
             playerData.country = message.personal.country;
-            if(fleet.uinfo[userId].isVIP && fleet.uinfo[userId].isVIP!="?") playerData.isVIP =  fleet.uinfo[userId].isVIP;
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
             DM.savePlayerList();
@@ -3844,7 +4217,7 @@ async function initializeMap(race) {
         document.dispatchEvent(new Event('change'))
     }
     
-    function handleLegInfo (message) {
+    async function handleLegInfo (message) {
         // ToDo - refactor updateFriendsUinfo message
         var raceId = getRaceLegId(message._id);
         var race = races.get(raceId);
@@ -3859,8 +4232,7 @@ async function initializeMap(race) {
         }
         race.legdata = message;
         changeRace(raceId) ;
-    //    initializeMap(race);
-    //    initializeMapWindy(race);
+        await DM.saveLegInfo(races);
 
     }
 
@@ -3903,13 +4275,11 @@ async function initializeMap(race) {
             raceData.priceLevel = legInfo.priceLevel;
             raceData.vsrRank = legInfo.vsrRank;
             raceData.raceType = legInfo.raceType;
-            raceData.end = legInfo.end.date;
+            raceData.endDate = legInfo.end.date;
             raceData.startDate = legInfo.start.date;
+            raceData.polar_id = legInfo.boat.polar_id;
+            
             DM.addRaceInfo(raceData) ;
-        });
-        //reinitialise race curr as no race open
-        races.forEach(function (race) {
-            race.curr = undefined;
         });
         DM.makeRaceTable();  
         DM.saveRaceList();
@@ -3921,6 +4291,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
         if (race != undefined) {
+            if(race.curr) welcomePage = false;
             race.lastCommand = {
                 request: request,
                 rc: response.scriptData.rc
@@ -3968,16 +4339,28 @@ async function initializeMap(race) {
         lMap.updateMapWaypoints(race);
     }
 
-    function handleMetaGetPolar (response) {
+    async function itycPolarSync(polarId) {
+        let polString = DM.serialize(polars[polarId]);
+        const hashBuffer = DM.cyrb53(polString,polarId);
+        if(!DM.isHashOK(polarId,hashBuffer)) {
+            DM.sendPolar2ITYC(polarId,hashBuffer,polString);
+        }
+    
+    }
+
+    async function handleMetaGetPolar (response) {
+        
         // Always overwrite cached data...
         polars[response.scriptData.polar._id] = response.scriptData.polar;
+        await itycPolarSync(response.scriptData.polar._id);
         var savedData = "";    
         Object.keys(polars).forEach(function (race) {
             savedData += "/**/"+JSON.stringify(polars[race]);
     
         });
-        localStorage["polars"] = savedData;
-
+        
+        await  saveLocal('polars',savedData);
+    
         console.info("Stored polars " + response.scriptData.polar.label);
     }
 
@@ -4048,13 +4431,13 @@ async function initializeMap(race) {
         }
     }
 
-    function handleGameGetSettings (response) {
+    async function handleGameGetSettings (response) {
         if(!response) return;
         if(response.scriptData.settings && response.scriptData.settings.stamina) {
             paramStamina = response.scriptData.settings.stamina;
             ;
-
-            localStorage["stamina"] = JSON.stringify(paramStamina);    
+            await saveLocal('stamina',JSON.stringify(paramStamina));
+    
         }
     }
 
@@ -4149,7 +4532,7 @@ async function initializeMap(race) {
             DM.addPlayerInfo(playerData) ;
         }
         DM.makePlayerTable();  
-       DM.savePlayerList(); 
+        DM.savePlayerList(); 
         DM.makeTeamTable();
         DM.saveTeamList();
     }
@@ -4158,6 +4541,7 @@ async function initializeMap(race) {
         currentUserId = response.userId;
         lMap.set_currentId(currentUserId);
         rt.set_currentId(currentUserId);
+        welcomePage = true;
         lbBoatname.innerHTML = response.displayName;
         currentUserName = response.displayName;
         if(response.scriptData)
@@ -4168,16 +4552,17 @@ async function initializeMap(race) {
             if(response.location.city)   playerData.city = response.location.city;
             if(response.location.country) playerData.country = response.location.country;
 
-
-            playerData.isVIP = response.scriptData.isVIP; 
-            if(playerData.isVIP ==true) {
+            if(response.scriptData.isVIP!==undefined && response.scriptData.isVIP && response.scriptData.userSettings.noAds === true) {
                 var vipTag = document.getElementById("lb_boatvip");
                 vipTag.innerHTML = "&nbsp;VIP&nbsp"; 
                 vipTag.style.backgroundColor = ' #f7da03';   
                 vipTag.style.color = 'black';  
+            } else
+            {
+                var vipTag = document.getElementById("lb_boatvip");
+                vipTag.innerHTML = ""; 
+                vipTag.style.backgroundColor = document.body.style.backgroundColor;
             }
-  
-
 
             DM.createEmptyTeam();
 
@@ -4240,6 +4625,7 @@ async function initializeMap(race) {
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             var msg = request;
+            if(msg.req.Accept) return;  //json ranking request not supported
             var postData = JSON.parse(msg.req);
             var eventClass = postData['@class'];
             var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
@@ -4284,7 +4670,7 @@ async function initializeMap(race) {
                 } else if (event == 'getfleet') {
                     handleFleet(postData, body.res);
                 } else if (event == 'getlegranks') {
-    //                handleLegRank(postData, body.res);
+                    handleLegRank(postData, body.res);
                 } else{
                   if(postData == "" && body == "") {
                       var cycleString = msg.url.substring(45, 56);
@@ -4293,7 +4679,7 @@ async function initializeMap(race) {
                       var cycle = d * 100 + c;
                       if (cycle > currentCycle) {
                           currentCycle = cycle;
-                          lbCycle.innerHTML = cycleString;
+                          lbCycle.innerHTML = "(Cycle : "+cycleString+")";
                       }
                   } else
                       if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
@@ -4330,17 +4716,17 @@ async function initializeMap(race) {
         rt.onCleanRoute(race);
 
     }
-    function onMarkersChange() {
+    async function onMarkersChange() {
         var race = races.get(selRace.value);
         if (!race)  return;
         var markerState = rt.onMarkersChange(race);
-        localStorage["cb_sel_showMarkers"] = markerState;
-        localStorage["cb_sel_showMarkersLmap"] = markerState;
-
+        
+        await saveLocal("cb_sel_showMarkersLmap",markerState);
+    
     }
 
     let tracksState = true;
-    function onTracksChange() {
+    async function onTracksChange() {
         var race = races.get(selRace.value);
         if (!race)  return;
 
@@ -4350,8 +4736,8 @@ async function initializeMap(race) {
             tracksState = true;
     
         document.getElementById('sel_showTracksLmap').checked=tracksState;
-        localStorage["cb_sel_showTracksLmap"] = tracksState;
-
+        await saveLocal("cb_sel_showTracksLmap",tracksState);
+    
         lMap.hideShowTracks(race);
     }
 
@@ -4363,8 +4749,199 @@ async function initializeMap(race) {
     }
 
 
+    function selectLgFR () {
+        lang = "fr";
+        translateDash();
+    }
+    function selectLgEN () {
+        lang = "EN";
+        translateDash();
+    }
+    function selectLgES () {
+        lang = "es";
+        translateDash();
+    }
     
-    
+    function translateDash () {
+
+        if(lang == "fr") {
+            document.getElementById("t_boat").innerHTML = "Bateau : ";	
+            document.getElementById("t_team").innerHTML = "Equipe: ";	
+            document.getElementById("t_race").innerHTML = "Course";	
+            document.getElementById("t_NMEA").innerHTML = "Sortie NMEA";
+            document.getElementById("t_help").innerHTML = "Aide";
+            
+            document.getElementById("t_raceLog").innerHTML = "Journal";
+            document.getElementById("t_fleet").innerHTML = "Flotte";
+            document.getElementById("t_map").innerHTML = "Carte";
+            document.getElementById("t_resume").innerHTML = "Résumé";
+            document.getElementById("t_graph").innerHTML = "Graph";
+            document.getElementById("t_notif").innerHTML = "Notifications";
+            document.getElementById("t_config").innerHTML = "Config";
+            document.getElementById("t_rawLog").innerHTML = "Raw Log";
+            
+            document.getElementById("t_filter").innerHTML = "Filtres";
+            document.getElementById("lbl_team").innerHTML = '<span style="color:Red;">&#x2B24;</span>&nbsp;Equipe';
+            document.getElementById("lbl_friends").innerHTML = '<span style="color:LimeGreen;">&#x2B24;</span>&nbsp;Amis';
+            document.getElementById("lbl_top").innerHTML = '<span style="color:GoldenRod;">&#x2B24;</span>&nbsp;Top VSR';
+            document.getElementById("lbl_sponsors").innerHTML = '<span style="color:DarkSlateBlue;">&#x2B24;</span>&nbsp;Sponsors';
+            document.getElementById("lbl_certified").innerHTML = '<span style="color:DodgerBlue;">&#x2B24;</span>&nbsp;Certifié';
+            document.getElementById("lbl_opponents").innerHTML = '<span style="color:lightgray;">&#x2B24;</span>&nbsp;Adversaires';
+            document.getElementById("lbl_reals").innerHTML = '<span style="color:Chocolate;">&#x2B24;</span>&nbsp;Réels';
+            document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Sélectionné';
+            document.getElementById("lbl_inrace").innerHTML = 'En course';
+            
+            document.getElementById("lbl_extraLmap").innerHTML = "Cotes";
+            document.getElementById("lbl_helpLmap").innerHTML = "Aide";
+            document.getElementById("lbl_showMarkersLmap").innerHTML = "Marqueurs";
+            document.getElementById("lbl_showTracksLmap").innerHTML = "Traces";
+            document.getElementById("lbl_rt_openLmap").innerHTML = "Ajouter";	
+            document.getElementById("lbl_rt_cleanLmap").innerHTML = "Effacer";
+            document.getElementById("t_rtTitle").innerHTML = "Import Routage";
+            document.getElementById("t_format").innerHTML = "Format";
+            document.getElementById("bt_rt_addLmap").innerHTML = "Import";
+            
+            document.getElementById("bt_cleanGraph").innerHTML = "Effacer graphiques";
+            document.getElementById("bt_exportGraphData").innerHTML = "Export data";
+            
+            document.getElementById("t_notif2").innerHTML = "Notifications et rappels";
+            document.getElementById("t_notif21").innerHTML = 'Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif22").innerHTML = "Créer une notification :";
+            document.getElementById("t_notif_opt1").innerHTML = "inférieur ou égal";
+            document.getElementById("t_notif_opt2").innerHTML = "supérieur ou égal";
+            document.getElementById("t_notif23").innerHTML = "à";
+            document.getElementById("t_notif24").innerHTML = "ou un rappel :";
+            document.getElementById("t_notif25").innerHTML = "M'envoyer un rappel dans";
+            document.getElementById("bt_notif").innerHTML = "Créer";
+            
+            document.getElementById("t_config_g").innerHTML = "General";
+            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
+            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_reuse_tab").innerHTML = "Re-utilisation onglet";
+            document.getElementById("t_local_time").innerHTML = "Local times";
+            document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
+            
+            document.getElementById("t_config_rs").innerHTML = "Race Status";
+            document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
+            document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
+            
+            document.getElementById("t_config_m").innerHTML = "Carte";
+            document.getElementById("t_track_infos").innerHTML = "charger infos traces  (redémarrage dashboard requis)"		;
+                
+            document.getElementById("t_config_f").innerHTML = "Flotte";
+            document.getElementById("t_abbreviatedOption").innerHTML = "Options abrégées";
+            document.getElementById("t_auto_clean").innerHTML = "Nettoyage infos obsolètes";
+            
+            document.getElementById("t_config_c").innerHTML = "Colonnes";
+            document.getElementById("t_fleet_team").innerHTML = "Team";
+            document.getElementById("t_fleet_rank").innerHTML = "Rank";
+            document.getElementById("t_fleet_racetime").innerHTML = "Race Time";
+            document.getElementById("t_fleet_speed").innerHTML = "Speed";
+            document.getElementById("t_fleet_sail").innerHTML = "Sail";
+            document.getElementById("t_fleet_factor").innerHTML = "Factor";
+            document.getElementById("t_fleet_position").innerHTML = "Position";
+            document.getElementById("t_fleet_options").innerHTML = "Options";
+            document.getElementById("t_fleet_state").innerHTML = "State";
+            
+            document.getElementById("bt_exportPolar").innerHTML = "Export polars";
+            document.getElementById("bt_exportStamina").innerHTML = "Export stamina";
+            document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
+            
+            document.getElementById("t_credit_all").innerHTML = "Tous les contributeurs inconnus !";
+            document.getElementById("t_credit_me").innerHTML = "Votre serviteur !";
+        } else {
+            document.getElementById("t_boat").innerHTML = "Boat : ";	
+            document.getElementById("t_team").innerHTML = "Team: ";	
+            document.getElementById("t_race").innerHTML = "Race";	
+            document.getElementById("t_NMEA").innerHTML = "NMEA output";
+            document.getElementById("t_help").innerHTML = "Help";
+            
+            document.getElementById("t_raceLog").innerHTML = "RaceLog";
+            document.getElementById("t_fleet").innerHTML = "Fleet";
+            document.getElementById("t_map").innerHTML = "Map";
+            document.getElementById("t_resume").innerHTML = "RaceBook";
+            document.getElementById("t_graph").innerHTML = "Graph";
+            document.getElementById("t_notif").innerHTML = "Notifications";
+            document.getElementById("t_config").innerHTML = "Config";
+            document.getElementById("t_rawLog").innerHTML = "Raw Log";
+            
+            document.getElementById("t_filter").innerHTML = "Filters";
+            document.getElementById("lbl_team").innerHTML = '<span style="color:Red;">&#x2B24;</span>&nbsp;Team';
+            document.getElementById("lbl_friends").innerHTML = '<span style="color:LimeGreen;">&#x2B24;</span>&nbsp;Friends';
+            document.getElementById("lbl_top").innerHTML = '<span style="color:GoldenRod;">&#x2B24;</span>&nbsp;Top VSR';
+            document.getElementById("lbl_sponsors").innerHTML = '<span style="color:DarkSlateBlue;">&#x2B24;</span>&nbsp;Sponsors';
+            document.getElementById("lbl_certified").innerHTML = '<span style="color:DodgerBlue;">&#x2B24;</span>&nbsp;Certified';
+            document.getElementById("lbl_opponents").innerHTML = '<span style="color:lightgray;">&#x2B24;</span>&nbsp;Opponnents';
+            document.getElementById("lbl_reals").innerHTML = '<span style="color:Chocolate;">&#x2B24;</span>&nbsp;Reals';
+            document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Selected';
+            document.getElementById("lbl_inrace").innerHTML = 'Racing';
+            
+            document.getElementById("lbl_extraLmap").innerHTML = "Borders";
+            document.getElementById("lbl_helpLmap").innerHTML = "Helps";
+            document.getElementById("lbl_showMarkersLmap").innerHTML = "Marks";
+            document.getElementById("lbl_showTracksLmap").innerHTML = "Tracks";
+            document.getElementById("lbl_rt_openLmap").innerHTML = "Add";	
+            document.getElementById("lbl_rt_cleanLmap").innerHTML = "Clean";
+            document.getElementById("t_rtTitle").innerHTML = "Routes Import";
+            document.getElementById("t_format").innerHTML = "Format";
+            document.getElementById("bt_rt_addLmap").innerHTML = "Import";
+            
+            document.getElementById("bt_cleanGraph").innerHTML = "Clear graphics";
+            document.getElementById("bt_exportGraphData").innerHTML = "Export data";
+            
+            document.getElementById("t_notif2").innerHTML = "Notifications and recall";
+            document.getElementById("t_notif21").innerHTML = 'Select a race : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif22").innerHTML = "Create a notification :";
+            document.getElementById("t_notif_opt1").innerHTML = "inferior or equal";
+            document.getElementById("t_notif_opt2").innerHTML = "superior or equal";
+            document.getElementById("t_notif23").innerHTML = "to";
+            document.getElementById("t_notif24").innerHTML = "or a recall :";
+            document.getElementById("t_notif25").innerHTML = "Send me a recall in";
+            document.getElementById("bt_notif").innerHTML = "Create";
+            
+            document.getElementById("t_config_g").innerHTML = "General";
+            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
+            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_reuse_tab").innerHTML = "tab re-use";
+            document.getElementById("t_local_time").innerHTML = "Local times";
+            document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
+            
+            document.getElementById("t_config_rs").innerHTML = "Race Status";
+            document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";
+            document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
+            
+            document.getElementById("t_config_m").innerHTML = "Map";
+            document.getElementById("t_track_infos").innerHTML = "Load track infos  (dashboard restart needed)"		;
+                
+            document.getElementById("t_config_f").innerHTML = "Fleet";
+            document.getElementById("t_abbreviatedOption").innerHTML = "shorted options";
+            document.getElementById("t_auto_clean").innerHTML = "old data cleaner";
+            
+            document.getElementById("t_config_c").innerHTML = "Columns";
+            document.getElementById("t_fleet_team").innerHTML = "Team";
+            document.getElementById("t_fleet_rank").innerHTML = "Rank";
+            document.getElementById("t_fleet_racetime").innerHTML = "Race Time";
+            document.getElementById("t_fleet_speed").innerHTML = "Speed";
+            document.getElementById("t_fleet_sail").innerHTML = "Sail";
+            document.getElementById("t_fleet_factor").innerHTML = "Factor";
+            document.getElementById("t_fleet_position").innerHTML = "Position";
+            document.getElementById("t_fleet_options").innerHTML = "Options";
+            document.getElementById("t_fleet_state").innerHTML = "State";
+            
+            document.getElementById("bt_exportPolar").innerHTML = "Export polars";
+            document.getElementById("bt_exportStamina").innerHTML = "Export stamina";
+            document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
+            
+            document.getElementById("t_credit_all").innerHTML = "All unknows contributors !";
+            document.getElementById("t_credit_me").innerHTML = "Myself !";
+            
+        }
+
+
+
+        makeRaceStatusHTML();
+
+    }
     
 
     return {    
@@ -4392,8 +4969,14 @@ async function initializeMap(race) {
         onTracksChange:onTracksChange,
         exportPolar:exportPolar,
         exportStamina:exportStamina,
+        exportFleet:exportFleet,
         exportGraphData:exportGraphData,
-        graphCleanData:graphCleanData
+        graphCleanData:graphCleanData,
+
+        selectLgFR:selectLgFR,
+        selectLgEN:selectLgEN,
+        selectLgES:selectLgES,
+
         // Fin ajout -----------------
     }
 }();
@@ -4404,9 +4987,13 @@ var expanded = false;
 var tabId = parseInt(window.location.search.substring(1));
 
 
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
 
-    controller.initialize();
+    
+    
+    
+    
+    await controller.initialize();
 
     document.getElementById("bt_router").addEventListener("click", controller.callRouter);
     document.getElementById("sel_race").addEventListener("change", controller.changeRace);
@@ -4425,7 +5012,8 @@ window.addEventListener("load", function () {
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
-
+    document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
+    
     
     document.getElementById("bt_cleanGraph").addEventListener("click", controller.graphCleanData);
     document.getElementById("bt_exportGraphData").addEventListener("click", controller.exportGraphData);
@@ -4440,10 +5028,10 @@ window.addEventListener("load", function () {
     
     
     // Fin ajout -------------------------------------------------------------------------
-    controller.readOptions();
+    await controller.readOptions();
     controller.addConfigListeners();
 
-    rt.initializeWebInterface();
+    rt.initializeWebInterface(document.getElementById("sel_showMarkersLmap").checked);
     document.getElementById("route_list_tableLmap").addEventListener("click", controller.onRouteListClick);
     document.getElementById("route_list_tableLmap").addEventListener("input", controller.onRouteListClick);    
     document.getElementById("bt_rt_addLmap").addEventListener("click", controller.onAddRouteLmap);
@@ -4455,6 +5043,9 @@ window.addEventListener("load", function () {
     document.getElementById("lbl_showTracksLmap").addEventListener("click", controller.onTracksChange);
     
 
+    document.getElementById("lg_fr").addEventListener("click", controller.selectLgFR);
+    document.getElementById("lg_en").addEventListener("click", controller.selectLgEN);
+    document.getElementById("lg_es").addEventListener("click", controller.selectLgES);
 
     
     

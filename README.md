@@ -20,7 +20,7 @@
                             L'extension ITYC est compatible avec les navigateurs Chrome, Edge et Opera. Elle ne fonctionne pas sous Firefox!
                           </p>
                           <p class="row font-weight-bold">
-                            L'extension ITYC ne fonctionne que sur la page du jeu virtual regatta offshore ( toutes langues supportées) et leur iframe associées!
+                            L'extension ITYC ne fonctionne que sur la page du jeu virtual regatta offshore ( toutes langues supportées) et leurs iframes associées!
                           </p>
                           Consultez <a href="https://www.ityc.fr/aide_dash.html">l'aide en ligne</a> pour plus de détais
                         </div>

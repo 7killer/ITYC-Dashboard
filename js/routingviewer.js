@@ -328,20 +328,25 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
 
 function getOption(name) {
-    var value = localStorage["cb_" + name];
-    if (value !== undefined) {
-        var checkBox = document.getElementById(name);
-        checkBox.checked = (value === "true");
-        var event = new Event('change');
-        checkBox.dispatchEvent(event);
-    }
+    var z = "cb_" + name;
+    chrome.storage.local.get([z], function(result) {
+        if (result.key !== undefined) {
+            var checkBox = document.getElementById(name);
+            if(checkBox) 
+            {
+                checkBox.checked = (result.key.v === "true");
+                var event = new Event('change');
+                checkBox.dispatchEvent(event);
+            }
+        }
+      });
 }
 /* web interface *********************************/
 
 var popupStateLmap = false;
 
 
-function initializeWebInterface()
+function initializeWebInterface(mkState)
 {
 
     
@@ -355,11 +360,8 @@ function initializeWebInterface()
     document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
     document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
     document.getElementById("lbl_helpLmap").addEventListener("click", help);
-    getOption("sel_showMarkersLmap");
-    markersState = document.getElementById("sel_showMarkersLmap").checked;
+    markersState = mkState;
     
-//    document.getElementById("sel_showMarkersLmap").checked=true;
-//    document.getElementById("sel_showTracksLmap").checked=true;
 
     
 }

@@ -1,13 +1,14 @@
 
 let drawTheme = "dark";
-if(localStorage["addOnTheme"])
-    drawTheme = localStorage["addOnTheme"];
-
 let mode="pirate";
-if(localStorage["addOnMode"])
-  mode = localStorage["addOnMode"];
-if(mode=="incognito")
-  drawTheme = "light";
+
+let readVal = window.localStorage.getItem('addOnTheme');
+if(readVal) drawTheme = readVal;
+
+readVal = window.localStorage.getItem('addOnMode');
+if(readVal) mode = readVal;
+if(mode=="incognito") drawTheme = "light";
+
 
 window.addEventListener("load", function () {
     document.documentElement.style.height = '100%';
@@ -20,23 +21,29 @@ window.addEventListener("load", function () {
 
 
 function callRouterZezo() { 
-  if(zezoUrl!= "") window.open(zezoUrlRace, openNewTab ? zezoUrl :"_blank");
+  if(zezoUrl!= "") window.open(zezoUrl, openNewTab ? zezoUrlRace  :"_blank");
 }
 
 function callRouterToxxct() { 
-  if(toxxctUrl!= "")  window.open(toxxctUrlRace , openNewTab ?toxxctUrl :"_blank" );
+  if(toxxctUrl!= "")  window.open(toxxctUrl  , openNewTab ? toxxctUrlRace:"_blank" );
 }
 
 function callItyc() { 
-  if(itycUrl!= "")  window.open(itycUrlRace , openNewTab ?itycUrl:"_blank" );
+  if(itycUrl!= "")  window.open( itycUrl, openNewTab ?itycUrlRace :"_blank" );
+}
+function callRouterVrZen() { 
+    if(vrZenUrl!= "") window.open(vrZenUrl, openNewTab ? vrZenUrlRace  :"_blank");
 }
 let openNewTab = false;
 let zezoUrl = "";
+let vrZenUrl = "";
 let toxxctUrl = "";
 let itycUrl = "";
 let zezoUrlRace = "";
 let toxxctUrlRace = "";
 let itycUrlRace = "";
+let vrZenUrlRace = "";
+
 
 
 (function(xhr) {
@@ -154,10 +161,12 @@ function fillContainer(msg) {
     if(!msg) return;
     openNewTab = msg.newTab;
     zezoUrl = msg.zurl;
+    vrZenUrl = msg.vurl;
     toxxctUrl = msg.purl;
     itycUrl  = msg.iurl;
 
     zezoUrlRace = msg.rzurl;
+    vrZenUrlRace = msg.rvurl;
     toxxctUrlRace = msg.rpurl;
     itycUrlRace = msg.riurl;
 
@@ -170,11 +179,12 @@ function fillContainer(msg) {
     ourDiv.innerHTML = msg.content;
     
     drawTheme = msg.theme;
-    localStorage["addOnTheme"] = msg.theme;
+    window.localStorage.setItem('addOnTheme', msg.theme);
     document.documentElement.setAttribute("data-theme", drawTheme);
 
     if(msg.rid !="") {
         document.getElementById('rt:' + msg.rid).addEventListener("click", callRouterZezo);
+        document.getElementById('vrz:' + msg.rid).addEventListener("click", callRouterVrZen);
         document.getElementById('pl:' + msg.rid).addEventListener("click", callRouterToxxct);
         document.getElementById('ityc:' + msg.rid).addEventListener("click", callItyc);
     }
@@ -186,7 +196,7 @@ function drawDashBoardInstalled()
     + '<tr><th>ITYC Dashboard</th></tr>'
     + '</thead>'
     + '<tbody>'
-    + '<tr><td>Pas de dashboard activée</td></tr>'
+    + '<tr><td>Pas de dashboard activé</td></tr>'
     + '</tbody>'
     + '</table>';
     let ourDiv = document.getElementById('dashInteg');

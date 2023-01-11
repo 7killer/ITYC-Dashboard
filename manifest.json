@@ -1,8 +1,8 @@
 {
-    "name": "VR Dashboard I.T.Y.C. Beta",
-    "short_name": "VR Dashboard I.T.Y.C. Beta",
+    "name": "VR Dashboard I.T.Y.C.",
+    "short_name": "VR Dashboard I.T.Y.C.",
     "description": "Monitor boat position & call virtual sailor weather router",
-    "version": "1.0.0",
+    "version": "1.1.0",
   "permissions": [
     "tabs",
     "storage",
@@ -29,18 +29,16 @@
   },
   "action": {
       "default_icon": {"128": "icon_grey.png"},
-      "default_title": "I.T.Y.C. Dashboard Beta"
+      "default_title": "I.T.Y.C. Dashboard"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"
-    ],
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"],
       "js": ["./js/addResume2.js"],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"
-    ],
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"],
       "run_at": "document_end",
       "css":["./css/content.css"]
     }

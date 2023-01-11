@@ -121,7 +121,6 @@ const playerModel = {
     country : "-",
     city : "-",
     teamId : teamModel.teamId,
-    isVIP : "?",
     isFollowed : false
 }
 
@@ -150,7 +149,7 @@ async function getPlayerList() {
                             var playerData = Object.create(playerModel);
                             playerData.playerId = player.uid;
                             playerData.displayName = player.name;
-                            playerData.displayName = player.name;
+                            if(player.tid != "-") playerData.teamId = player.tid;
                             playerList.uinfo[playerData.playerId] = playerData;
                         }   
                     });
@@ -189,10 +188,7 @@ function addPlayerInfo(playerData)
         if(playerData.country != playerModel.country) playerList.uinfo[id].country = playerData.country;      
         if(playerData.teamId != playerModel.teamId) playerList.uinfo[id].teamId = playerData.teamId;     
         if(playerData.city != playerModel.city) playerList.uinfo[id].city = playerData.city;    
-        if(playerData.isVIP != playerModel.isVIP) playerList.uinfo[id].isVIP = playerData.isVIP;
 		if(playerData.isFollowed != playerModel.isFollowed) playerList.uinfo[id].isFollowed = playerData.isFollowed;     
-        
-           
     } else
     {
         playerList.uinfo[id] =  playerData;
@@ -225,7 +221,7 @@ const raceInfosModel = {
     raceType : "",
     endDate : "",
     startDate : "",
-    type : ""
+    polar_id : 255
 }
 
 var raceList = [];
@@ -247,13 +243,14 @@ async function getRaceList() {
                         let itycRaceList = JSON.parse(xhr.responseText);
                         itycRaceList.forEach(function (race) {
                             if(raceList.uinfo[race.rid]) { 
-                                if(race.rid != "-")         raceList.uinfo[race.rid].teamId =   race.rid;
+                                if(race.rid != "-")         raceList.uinfo[race.rid].legId =   race.rid;
                                 if(race.legName != "-")     raceList.uinfo[race.rid].legName =  race.legName;
                                 if(race.name != "-")        raceList.uinfo[race.rid].name =     race.name;
-                                if(race.vsrRank != "")     raceList.uinfo[race.rid].vsrRank =  race.vsrRank;
-                                if(race.endDate != "")     raceList.uinfo[race.rid].endDate =  race.endDate;
-                                if(race.startDate != "")   raceList.uinfo[race.rid].startDate = race.startDate;
-                                if(race.type != "")         raceList.uinfo[race.rid].type = race.type;
+                                if(race.vsrRank != "")      raceList.uinfo[race.rid].vsrRank =  race.vsrRank;
+                                if(race.endDate != "")      raceList.uinfo[race.rid].endDate =  race.endDate;
+                                if(race.startDate != "")    raceList.uinfo[race.rid].startDate = race.startDate;
+                                if(race.type != "")         raceList.uinfo[race.rid].raceType = race.type;
+                                if(race.polar_id != "")     raceList.uinfo[race.rid].polar_id = race.polar_id;
                                 
                             } else
                             { 
@@ -264,7 +261,8 @@ async function getRaceList() {
                                 raceData.vsrRank = race.vsr;
                                 raceData.endDate = race.end;
                                 raceData.startDate = race.start;  
-                                raceData.type = race.type;  
+                                raceData.raceType = race.type;  
+                                raceData.polar_id = race.polar_id;  
                                 raceList.uinfo[raceData.legId] = [];
                                 raceList.uinfo[raceData.legId] = raceData;
                             }   
@@ -297,7 +295,7 @@ function saveRaceList() {
         let dat = JSON.stringify(webdata);
     
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2UucGhw")); 
+        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2UyLnBocA==")); 
         xhr.setRequestHeader("Accept", "application/json");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(dat);
@@ -308,7 +306,7 @@ function saveRaceList() {
 }
 function addRaceInfo(raceData) 
 {
-    var id = raceData.legId;
+    var id = raceData.legId.replace(".","_");
     if (id==raceInfosModel.legId) return;
     if(raceList.uinfo && raceList.uinfo[id])
     { //Team already in list, update
@@ -319,8 +317,9 @@ function addRaceInfo(raceData)
         if(raceData.vsrRank != raceInfosModel.vsrRank) raceList.uinfo[id].vsrRank = raceData.vsrRank;     
         if(raceData.raceType != raceInfosModel.raceType) raceList.uinfo[id].raceType = raceData.raceType;
         if(raceData.endDate != raceInfosModel.endDate) raceList.uinfo[id].endDate = raceData.endDate;   
-        if(raceData.startDate != raceInfosModel.startDate) raceList.uinfo[id].endDate = raceData.startDate;             
-        if(raceData.type != raceInfosModel.type) raceList.uinfo[id].type = raceData.type;             
+        if(raceData.startDate != raceInfosModel.startDate) raceList.uinfo[id].startDate = raceData.startDate; 
+        if(raceData.polar_id != raceInfosModel.polar_id) raceList.uinfo[id].polar_id = raceData.polar_id; 
+        
     } else
     {
         raceList.uinfo[id] =  raceData;
@@ -335,6 +334,203 @@ function getRaceInfos(raceID)
 {
     return raceList.uinfo[raceID];
 }
+
+/* temporary full local race saving in order to manage correctly indirect reconnecxion without first bot message */
+const toPromise = (callback) => {
+    const promise = new Promise((resolve, reject) => {
+        try {
+            callback(resolve, reject);
+        }
+        catch (err) {
+            reject(err);
+        }
+    });
+    return promise;
+}
+const saveLocal = (k,v) => {
+    const key = k;
+    const value = { val: v };
+
+    return toPromise((resolve, reject) => {
+        chrome.storage.local.set({ [key]: value }, () => {
+            if (chrome.runtime.lastError)
+                reject(chrome.runtime.lastError);
+
+            resolve(value);
+        });
+    });
+}
+
+const getLocal = (k) => {
+    const key = k;
+
+    return toPromise((resolve, reject) => {
+        chrome.storage.local.get([key], (result) => {
+            if (chrome.runtime.lastError)
+                reject(chrome.runtime.lastError);
+
+            const researches = result[key]?((result[key].val!==undefined)?result[key].val:undefined):undefined ;
+            resolve(researches);
+        });
+    });
+}
+const clearLocal = (k) => {
+    const key = k;
+
+    return toPromise((resolve, reject) => {
+        chrome.storage.local.remove([key], (result) => {
+            if (chrome.runtime.lastError)
+                reject(chrome.runtime.lastError);
+            resolve(true);
+        });
+    });
+}
+var activeRacelist = [];
+async function saveLegInfo(races) {
+    
+    var rList = await getLocal("activeRacelist");
+    if (rList === undefined) {
+        rList = [];
+    }
+    races.forEach(async function(race) {
+        if(race.legdata) {
+            if(rList.indexOf(race.id)<0) {
+                rList.push(race.id)
+            }
+            //save datas
+            await saveLocal("race_"+race.id,race.legdata);
+            await saveLocal("race_"+race.id+"ts",Date.now());    
+        }
+    }); 
+
+    /*clear data after 24h*/
+    rList.forEach(async function(rid) {
+        var saveTs = await getLocal("race_"+rid+"ts",Date.now());
+        if(saveTs + (24*3600000) < Date.now()) {
+            await clearLocal("race_"+rid);
+            await clearLocal("race_"+rid+"ts");
+            rList.find((value, index) => {
+                if (value === rid) {
+                  delete rList[index];
+                }
+            });
+        }
+    });
+    await saveLocal("activeRacelist",rList);
+
+}
+
+async function getLegInfo(race) {
+    return await getLocal("race_"+race.id);
+}
+
+
+var itycPolarHash = [];
+
+var getPolarHashInProgress = false;
+
+async function getItycPolarHash() {
+    if(getPolarHashInProgress) return playerList;
+    new Promise((resolve, reject) => {
+        var getUrl = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFBvbGFyc0hhc2gucGhw");
+        
+        const xhr = new XMLHttpRequest();
+        
+        xhr.addEventListener('loadend', () => {
+            getPolarHashInProgress = false;
+            try {itycPolarHash
+                if (xhr.status === 200 || xhr.status == 0) {
+                        let itycpolarHashList = JSON.parse(xhr.responseText);
+                        itycpolarHashList.forEach(function (polar) {
+                            if(itycPolarHash[polar.polar_id]) { 
+                                if(polar.hash != "") itycPolarHash[polar.polar_id].hash = polar.hash;
+                            } else
+                            { 
+                                itycPolarHash[polar.polar_id] = [];
+                                itycPolarHash[polar.polar_id].polar_id = polar.polar_id;
+                                itycPolarHash[polar.polar_id].hash = polar.hash;
+                            }   
+                        });
+                    resolve(true);
+                } else {    
+                    resolve(false);
+                }
+            } catch {
+                resolve(false);                
+            }
+        });
+        getPolarHashInProgress = true;
+        xhr.open("GET", getUrl);
+        xhr.send();
+    });
+    return itycPolarHash;
+}
+function isHashOK(polar_id,hash) 
+{
+    let ret = false;
+    itycPolarHash.forEach(function (pol) {
+        if(pol.polar_id == polar_id) 
+        {
+            if(pol.hash == hash) {
+                ret = true;
+            }
+        }
+    });
+    return ret;
+    
+}
+function sendPolar2ITYC(polar_id,hash,polarDatas) {
+
+        var webdata = "";
+        webdata += JSON.stringify(polar_id)+'|/|';
+        webdata += JSON.stringify(hash)+'|/|';
+        webdata += JSON.stringify(polarDatas);
+
+        let dat = JSON.stringify(webdata);
+    
+        let xhr = new XMLHttpRequest();
+      
+        xhr.open("POST",  " https://vr.ityc.fr/dinPolar.php"/*atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblBvbGFyLnBocA==")*/); 
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              console.log(xhr.status);
+              console.log(xhr.responseText);
+            }};
+        xhr.send(dat);
+        
+}
+
+function serialize (obj) {
+    if (Array.isArray(obj)) {
+      return JSON.stringify(obj.map(i => serialize(i)))
+    } else if (typeof obj === 'object' && obj !== null) {
+      return Object.keys(obj)
+        .sort()
+        .map(k => `${k}:${serialize(obj[k])}`)
+        .join('|')
+    }
+  
+    return obj
+  }
+  const cyrb53 = (str, seed = 0) => {
+    let h1 = 0xdeadbeef ^ seed,
+      h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  };
+  
+
+
 
 
 /*************************************** Race payer Option ***************************************/
@@ -375,9 +571,21 @@ async function getRaceOptionsList(rid) {
                         var playerOption = Object.create(raceOptionPlayerModel);
                         playerOption.playerId = raceOptPlayer.uid;
                         playerOption.time = raceOptPlayer.update;
+                        if(raceOptPlayer.opt=="FP") raceOptPlayer.opt = "Full Pack";
+                        else if(raceOptPlayer.opt=="AO") raceOptPlayer.opt = "All Options";
+                        else {
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("h","hull");
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("H","heavy");
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("L","light");
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("R","reach");
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("W","winch");
+                            raceOptPlayer.opt = raceOptPlayer.opt.replace("F","foil");
+                        }
                         playerOption.options = raceOptPlayer.opt;
-                        playerOption.startRaceTime = raceOptPlayer.stTs;
-                        if(playerOption.startRaceTime == 0 || playerOption.startRaceTime =="0") playerOption.startRaceTime = "-";
+                        if(raceOptPlayer.stTs == 0 || raceOptPlayer.stTs =="0" ||  raceOptPlayer.stTs =="-") playerOption.startRaceTime = "-";
+                        else {
+                            playerOption.startRaceTime = Number(raceOptPlayer.stTs);                            
+                        }
                         raceOptionsList.race[rid].uinfo[playerOption.playerId] = playerOption;
                     });
                     //savePlayerList();
@@ -485,7 +693,9 @@ function getRacePlayerInfos(raceId, playerId)
         getRaceInfos,
         raceOptionPlayerModel,raceOptionsList,
         getRaceOptionsList,saveRaceOptionsList,addRaceOptionsList,
-        getRaceOptions,getRaceOptionsPlayer,getStartRaceTimePlayer,getRacePlayerInfos
+        getRaceOptions,getRaceOptionsPlayer,getStartRaceTimePlayer,getRacePlayerInfos,
+        saveLegInfo,getLegInfo,
+        serialize,cyrb53,getItycPolarHash,isHashOK,sendPolar2ITYC
 
 
 

@@ -9,22 +9,26 @@ const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
 var lastSendDate = 0;//timestamp ite du dernier envoi
 var lastCalcDate = 0;   //time stamp pour detection info la plus a jour
 var recordEnable = false; //pour ne record que le fleet info depuis le mergeboatinfo
-
+var racetype = "-";
 
 var mesData = [];
-function initMessage(rid,name,myId) {
-    mesData = [];
-    mesData["raceId"] = rid;
-    mesData["raceName"] = name;
-    mesData["myId"] = myId;
+function initMessage(type,rid,name,myId,rtype) {
 
-        lastCalcDate = 0;   //init timestamp derni�re ite
+    mesData[type] = [];
+    mesData[type]["raceId"] = rid;
+    mesData[type]["raceName"] = name;
+    mesData[type]["myId"] = myId;
+    racetype = rtype;
+    if(type=="fleet") {
+        lastCalcDate = 0;   //init timestamp dernière ite
         recordEnable = true;
+    }
+    
 }
 
-function addInfo(uid,uinfo,type) {
+function addInfoFleet(uid,uinfo) {
 
-    if(!uinfo || !uid || !mesData || !recordEnable) return;
+    if(!uinfo || !uid || !mesData["fleet"] || !recordEnable) return;
 
     if(uinfo.lastCalcDate < lastSendDate) return; //not uptodate
 
@@ -53,7 +57,7 @@ function addInfo(uid,uinfo,type) {
         }
     }
     var startRaceTime = "-";
-    if (type === "record" && uinfo.startDate) {
+    if (racetype === "record" && uinfo.startDate) {
         startRaceTime = uinfo.startDate;
     }
 
@@ -86,39 +90,130 @@ function addInfo(uid,uinfo,type) {
 
 //foils
 
-    mesData[uid] = webinfo;
+    mesData["fleet"][uid] = webinfo;
 }
 
+const rankInfosModel = { 
+    displayName : "-",
+    rank : "-",
+    distance : 0,
+    lastCalcDate : "-",
+    xOptions : "?",
+    teamId : "",
+    teamName : "-"
+};
 
-function sendInfo() {
+function addInfoRanking(uid,uinfo) {
+
+    if(!uinfo || !uid|| !mesData["rank"]) return;
+
+    //if(uinfo.lastCalcDate < mostIteDate) return; //not uptodate
+    
+
+    var xOptionsTxt = "-";
+    if(uinfo.xoption_options) {
+        xOptionsTxt = uinfo.xoption_options;
+        xOptionsTxt = xOptionsTxt.replace("All Options","AO");
+        xOptionsTxt = xOptionsTxt.replace("Full Pack","FP");
+        xOptionsTxt = xOptionsTxt.replace("reach","R");
+        xOptionsTxt = xOptionsTxt.replace("light","L");
+        xOptionsTxt = xOptionsTxt.replace("heavy","H");
+        xOptionsTxt = xOptionsTxt.replace("winch","W");
+        xOptionsTxt = xOptionsTxt.replace("foil","F");
+        xOptionsTxt = xOptionsTxt.replace("hull","h");
+        
+    }
+
+    var playerData = DM.getPlayerInfos(uid);
+    if(playerData)
+    {
+        var teamName = DM.getTeamName(playerData.teamId);
+        if(teamName != undefined || teamName != teamModel.teamName) {
+            uinfo.teamname = teamName;
+            uinfo.teamId = playerData.teamId;    
+        }
+    }
+
+    var webinfo = {
+
+        date : uinfo.lastCalcDate,
+        uid:uid,
+        name: uinfo.displayName,
+        teamId : (uinfo.teamId?uinfo.teamId:"-"),
+        teamName : (uinfo.teamName?uinfo.teamName:"-"),
+        rank : (uinfo.rank ?  uinfo.rank : "-"),
+        opt : xOptionsTxt,
+        dist : uinfo.distance
+    };
+
+    mesData["rank"][uid] = webinfo;
+}
+
+function sendInfo(type) {
     var timeP = Math.floor(Math.random() * 300);
     return new Promise((resolve) => {
-        setTimeout(() => resolve(sendInfoR()), timeP*10);
+        setTimeout(() => resolve(sendInfoR(type)), timeP*10);
       });
 }
 
-function sendInfoR() {
+function sendInfoR(type) {
     
-    var webdata = "";
-    Object.keys(mesData).forEach(function (key) {
-        webdata += "/**/"+JSON.stringify(mesData[key]);
+/*
+ $loadData = file_get_contents("php://input");
+    $jsonIterator = new RecursiveIteratorIterator(
+      new RecursiveArrayIterator(json_decode($loadData, TRUE)),
+      RecursiveIteratorIterator::SELF_FIRST);
+
+    foreach ($jsonIterator as $key => $val) {
+      if (is_array($val)) {
+        // echo "$key:\n" >> /tmp/test.log;
+        log_access($user_id, $version, "API", "Put $key");
+      } else {
+        // echo "$key => $val\n" >> /tmp/test.log;
+        log_access($user_id, $version, "API", "Put $key => $val");
+      }
+    } 
+    
+        var webdata = "{ "race_id": "" + tr_raceId + "", "race_name": "" + tr_raceName + "", "submit_by": "" + tr_myId + "", "player": [";
+    Object.keys(mesDataNew).forEach(function (key) {
+        webdata += "" + JSON.stringify(mesDataNew[key]) + ",";
     });
-    let dat = JSON.stringify(webdata);
+    webdata = webdata.substring(0, webdata.length - 1);
+    webdata += " ] }";
+    // let dat = JSON.stringify(webdata);
+    let dat = webdata;
+    console.log("" + dat);
 
     lastSendDate = lastCalcDate;
     recordEnable = false;
+    mesData[type]["raceId"] = rid;
+    mesData[type]["raceName"] = name;
+    mesData[type]["myId"] = myId;
+    
+    */
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbi5waHA="));
+
+    var webdata = "";
+    Object.keys(mesData[type]).forEach(function (key) {
+        webdata += "/**/"+JSON.stringify(mesData[type][key]);
+    });
+    let dat = JSON.stringify(webdata);
+
+    if(type=="fleet") {
+        lastSendDate = lastCalcDate;
+        recordEnable = false;
+    }
+    let xhr = new XMLHttpRequest();    
+    if(type=="fleet")
+        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbi5waHA="));
+    else
+        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpbnIucGhw"));
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(dat);
     
 }
 
-
-
-
 export {
-    sendInfo,initMessage,addInfo
+    sendInfo,initMessage,addInfoFleet,addInfoRanking,rankInfosModel
 }

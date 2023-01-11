@@ -107,7 +107,7 @@ function zezoCall(uinfo,raceInfos,color,race) {
     var url = baseURL + "/" + urlBeta + "/chart.pl"
         + "?lat=" + uinfo.pos.lat
         + "&lon=" + uinfo.pos.lon
-        + "&ts=" + (raceInfos.curr.lastCalcDate / 1000)
+        + (raceInfos.curr?("&ts=" + (raceInfos.curr.lastCalcDate / 1000)):"")
         + "&o=" + options
         + "&twa=" + uinfo.twa
         + "&userid=" + uinfo.uid
