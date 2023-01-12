@@ -335,6 +335,10 @@ function getRaceInfos(raceID)
     return raceList.uinfo[raceID];
 }
 
+function getRaceListItyc()
+{
+    return raceList;
+}
 /* temporary full local race saving in order to manage correctly indirect reconnecxion without first bot message */
 const toPromise = (callback) => {
     const promise = new Promise((resolve, reject) => {
@@ -490,14 +494,9 @@ function sendPolar2ITYC(polar_id,hash,polarDatas) {
     
         let xhr = new XMLHttpRequest();
       
-        xhr.open("POST",  " https://vr.ityc.fr/dinPolar.php"/*atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblBvbGFyLnBocA==")*/); 
+        xhr.open("POST",  atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblBvbGFyLnBocA==")); 
         xhr.setRequestHeader("Accept", "application/json");
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-              console.log(xhr.status);
-              console.log(xhr.responseText);
-            }};
         xhr.send(dat);
         
 }
@@ -689,7 +688,7 @@ function getRacePlayerInfos(raceId, playerId)
         getPlayerList,savePlayerList,addPlayerInfo,makePlayerTable,
         getPlayerInfos,
         raceInfosModel,raceList,
-        getRaceList,saveRaceList,addRaceInfo,makeRaceTable,
+        getRaceList,saveRaceList,addRaceInfo,makeRaceTable,getRaceListItyc,
         getRaceInfos,
         raceOptionPlayerModel,raceOptionsList,
         getRaceOptionsList,saveRaceOptionsList,addRaceOptionsList,

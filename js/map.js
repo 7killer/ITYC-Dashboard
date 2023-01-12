@@ -225,7 +225,8 @@ function buildBoatIcon(fillColor,borderColor,opacity)
 
 function buildCircle(latlng,trackcolor,size,opacity,title)
 {
-    var circleMark = L.circle(latlng,size, {
+    var circleMark = L.circleMarker(latlng,
+        {radius : size,
         color: trackcolor,
         fillColor: trackcolor,
         fillOpacity: opacity

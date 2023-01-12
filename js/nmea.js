@@ -5,7 +5,7 @@ import * as Util from './util.js';
 
 var settings = {
     "proxyPort": "8081",
-    "nmeaInterval": 1000,
+    "nmeaInterval": 2000,
     "aisInterval": 60000
 }
 
@@ -314,7 +314,7 @@ function bitArray2ASCII (bitArray) {
             }
         }
     }
-
+    
     // * Convert
     // Pad the bitArray to a round length of 6 bits
     bitArray += longToBitArray(0, 6 - (bitArray.length % 6));

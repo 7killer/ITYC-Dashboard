@@ -17,6 +17,7 @@ window.addEventListener("load", function () {
     document.body.style.width = '100%';
     document.documentElement.setAttribute("data-theme", drawTheme);
     drawDashBoardInstalled();
+    sendAlive();
 });
 
 
@@ -82,7 +83,7 @@ let vrZenUrlRace = "";
                             var idC = document.getElementById('itycDashId');
                             if(idC)
                             {
-                                chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url,req :this._requestHeaders,resp:string },function(response) {fillContainer(response)});
+                                chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url,req :this._requestHeaders,resp:string ,type:"data"},function(response) {manageAnswer(response)});
                             }   
                         }
                     } catch(err) {
@@ -107,7 +108,7 @@ let vrZenUrlRace = "";
                     var idC = document.getElementById('itycDashId');
                     if(idC)
                     {
-                        chrome.runtime.sendMessage(id, {url: this._url ,req :"wndCycle",resp:"wndVal" },function(response) {fillContainer(response)});
+                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"data"},function(response) {manageAnswer(response)});
                     }   
                     
                 }   
@@ -156,9 +157,31 @@ function createContainer() {
     return ourDiv2;
   
 }
+var comTimer ;
+
+function sendAlive() {
+    if(comTimer) clearTimeout(comTimer);
+    var idC = document.getElementById('itycDashId');
+    if(idC)
+    {
+        chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},function(response) {manageAnswer(response)});
+    }
+    comTimer = setTimeout(sendAlive, 5000);
+} 
+                    
+function manageAnswer(msg) {
+    if(!msg) return;      
+    if(comTimer) {
+        clearTimeout(comTimer);
+    }
+    comTimer = setTimeout(sendAlive, 5000);
+    if(msg.type=="data") fillContainer(msg);
+}
 
 function fillContainer(msg) {
+
     if(!msg) return;
+    
     openNewTab = msg.newTab;
     zezoUrl = msg.zurl;
     vrZenUrl = msg.vurl;
@@ -196,7 +219,7 @@ function drawDashBoardInstalled()
     + '<tr><th>ITYC Dashboard</th></tr>'
     + '</thead>'
     + '<tbody>'
-    + '<tr><td>Pas de dashboard activé</td></tr>'
+    + '<tr><td>Pas de dashboard détectée / No dashboard detected </td></tr>'
     + '</tbody>'
     + '</table>';
     let ourDiv = document.getElementById('dashInteg');
