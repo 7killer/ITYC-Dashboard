@@ -246,6 +246,17 @@ function buildCircle(latlng,trackcolor,size,opacity,title)
     return circleMark;
 }
 
+function buildCircleEndRace(latlng, trackcolor, size)
+{
+    var circleMark = L.circle(latlng, {
+        color: trackcolor,
+        weight: 2,
+        fill: false,
+        radius: size,
+    });
+    return circleMark;
+}
+
 function buildTrace (tpath, color,weight,opacity,dashArray,dashOffset) {
 
     var trackLine = L.geodesic(tpath,
@@ -511,7 +522,7 @@ async function initialize(race,raceFleetMap)
             race.lMap.refPoints.push(latlng);
             
 
-            buildCircle(latlng,'red',race.legdata.end.radius * 1852.0,0).addTo(race.lMap.refLayer);
+            buildCircleEndRace(latlng, 'red', race.legdata.end.radius * 1852.0).addTo(race.lMap.refLayer);
 
                 
                 
