@@ -1364,7 +1364,7 @@ var controller = function () {
                         + recordRaceFields(race, r)
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
-                        + Util.gentd("State",null, 'title="' + txtTitle + '"', iconState )
+                        + Util.gentd("State", "", txtTitle, iconState)
                         + '</tr>';
                 }
             }
