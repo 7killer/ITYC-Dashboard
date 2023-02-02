@@ -1359,7 +1359,7 @@ var controller = function () {
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
                         + Util.gentd("Sail","",null,  bi.aSail )
                         + Util.gentd("Factor", bi.xfactorStyle,null, xfactorTxt )
-                        + Util.gentd("Foils", null,null, (r.xoption_foils || "?") )
+                        + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
                         + Util.gentd("Stamina",bi.staminaStyle,null,staminaTxt)  
                         + recordRaceFields(race, r)
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )

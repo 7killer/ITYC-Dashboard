@@ -170,7 +170,7 @@ function genth(id, content, title, sortfield, sortmark) {
         if (sortfield && sortmark != undefined) {
             content = content + " " + (sortmark ? "&#x25b2;" : "&#x25bc;");
         }
-        var cspan;
+        var cspan = '';
         if (id=="th_twa" || id=="th_sail") {
             cspan = "colspan = 2";
         }
