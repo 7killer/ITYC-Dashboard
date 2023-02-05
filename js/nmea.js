@@ -51,10 +51,12 @@ function sendNMEA (races) {
                 var mwv = formatIIMWV(r.curr);
                 var vwr = formatIIVWR(r.curr);
                 var hdt = formatIIHDT(r.curr);
+                var rpm = formatRPM(r.curr);
                 sendSentence(r.id, "$" + rmc + "*" + nmeaChecksum(rmc));
                 sendSentence(r.id, "$" + mwv + "*" + nmeaChecksum(mwv));
                 sendSentence(r.id, "$" + vwr + "*" + nmeaChecksum(vwr));
                 sendSentence(r.id, "$" + hdt + "*" + nmeaChecksum(hdt));
+                sendSentence(r.id, "$" + rpm + "*" + nmeaChecksum(rpm));
             }
         });
     } catch (e) {
@@ -163,6 +165,19 @@ function formatIIHDT (m) {
     
     var s = "IIHDT";
     s += "," + m.heading.toFixed(5) + ",T";
+    return s;
+}
+
+function formatRPM (m) {
+    // $IIRPM Revolutions used to send stamina
+    var s = "IIRPM";
+    var stamina = m.stamina || 0;
+// Shaft number for sailset
+    var sailid = m.sail % 10; 
+    s += ",E,";
+    s += sailid;
+    s += "," + stamina.toFixed() + ",0";
+    s += ",A"
     return s;
 }
 
