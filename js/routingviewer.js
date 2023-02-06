@@ -211,12 +211,12 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.lat = lat;
         routeData.lon =  lon;
         routeData.timestamp = Date.parse(pt.time);
-        routeData.heading = "-";
-        routeData.tws = "-";
-        routeData.twa = "-";
-        routeData.twd = "-";
-        routeData.sail = "-";
-        routeData.speed = "-";
+        routeData.heading = "";
+        routeData.tws = "";
+        routeData.twa = "";
+        routeData.twd = "";
+        routeData.sail = "";
+        routeData.speed = "";
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
 
     });
@@ -257,8 +257,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             lat = Number(poi[3]);
             lon = Number(poi[4]);
             hdg = poi[5]+ "°";
-            tws = Util.roundTo(poi[11], 1+nbdigits)+ "kts";
-            stw = Util.roundTo(poi[9], 1+nbdigits) + "kts";
+            tws = Util.roundTo(poi[11], 1+nbdigits)+ " kts";
+            stw = Util.roundTo(poi[9], 1+nbdigits) + " kts";
     
             splitDate = poi[0].split(" ");
             heure = splitDate[1];
@@ -288,8 +288,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             lat = Number(poi[1]);
             lon = Number(poi[2]);
             hdg = poi[3]+ "°";
-            tws = Util.roundTo(poi[8], 1+nbdigits)+ "kts";
-            stw = Util.roundTo(poi[4], 1+nbdigits) + "kts";
+            tws = Util.roundTo(poi[8], 1+nbdigits)+ " kts";
+            stw = Util.roundTo(poi[4], 1+nbdigits) + " kts";
     
             
             splitDate = poi[0].split(" ");
@@ -303,7 +303,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             if(poi[6]>180) poi[6] -=360;
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
             twd = Util.roundTo(poi[7], 1+nbdigits) + "°";
-            sail = "---"; //todo foud link between avalon number and sail    
+            sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
         }
         
         
@@ -767,11 +767,22 @@ function buildMarkerTitle(point)
 
     var ttw = point.timestamp-currentTs;
 
-    var title = "Position : " + position + "\n" +
-        "Date : " + newDate + " (" + Util.formatDHMS(ttw) + ")\n" +
-        "TWA : " + point.twa.replace(/&deg;/g, "°") + "  |  HDG : " + point.heading.replace(/&deg;/g, "°") + "\n" +
-        "TWD : " + point.twd.replace(/&deg;/g, "°") + "  |  TWS : " + point.tws + "\n" +
-        "Sail : " + point.sail + "  |  Speed : " + point.speed ;
+    var textTWA = point.twa ? "TWA: <b>" + point.twa.replace(/&deg;/g, "°") + "</b>" : "";
+    var textHDG = point.heading ? "HDG: <b>" + point.heading.replace(/&deg;/g, "°") + "</b><br>" : "";
+    var textTWD = point.twd ? "TWD: " + point.twd.replace(/&deg;/g, "°") : "";
+    var textTWS = point.tws ? "TWS: " + point.tws + "<br>" : "";
+    var textSail = point.sail ? "Sail: " + point.sail : "";
+    var textSpeed = point.speed ? "Speed: " + point.speed : "";
+    // Data visual separator
+    textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
+    textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
+    textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+
+    var title = "<b>" + newDate + "</b> (" + Util.formatDHMS(ttw) + ")<br>"
+        + position + "<br>"
+        + textTWA + textHDG
+        + textTWD + textTWS
+        + textSail + textSpeed;
 
     return title;
 
