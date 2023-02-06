@@ -419,10 +419,12 @@ var controller = function () {
                 res.xfactorStyle = 'style="color:orange ;"';
         }
 
+        res.nameClass = "";
 
         if (uid == currentUserId) {
             res.nameStyle = "color: #b86dff; font-weight: bold; ";
             res.bcolor = '#b86dff';
+            res.nameClass = ' highlightMe';
             if (!uinfo.displayName) {
                 res.name = 'Me';
             }        
@@ -1339,7 +1341,7 @@ var controller = function () {
                     } else
                         routerCell = '<td class="tdc"><span id="vrz:' + uid + '">&#x262F;</span></td>';
 
-                    return '<tr class="hovred" id="ui:' + uid + '">'
+                    return '<tr class="hovred' + bi.nameClass + '" id="ui:' + uid + '">'
                         + routerCell
                         + '<td class="time">' + formatTime(r.lastCalcDate) + '</td>'
                         + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 

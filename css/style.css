@@ -1071,3 +1071,7 @@ tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
 
     background-color: var(--bg_body_color);
 }
+
+tr.highlightMe {
+    border: 0.16em solid #b86dff;    
+}
