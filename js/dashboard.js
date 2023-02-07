@@ -3691,6 +3691,7 @@ async function initializeMap(race) {
         await getOption("fleet_team",true);
         await getOption("fleet_rank",true);
         await getOption("fleet_racetime",true);
+        await getOption("fleet_speed", true);
         await getOption("fleet_dtu" ,true);
         await getOption("fleet_dtf" ,true);
         await getOption("fleet_twd" ,true);
@@ -3765,6 +3766,8 @@ async function initializeMap(race) {
         document.getElementById("abbreviatedOption").addEventListener("change", saveOption);
         document.getElementById("fleet_team").addEventListener("change", saveOption);
         document.getElementById("fleet_rank").addEventListener("change", saveOption);
+        document.getElementById("fleet_racetime").addEventListener("change", saveOption);
+        document.getElementById("fleet_speed").addEventListener("change", saveOption);
         document.getElementById("fleet_dtu" ).addEventListener("change", saveOption);
         document.getElementById("fleet_dtf" ).addEventListener("change", saveOption);
         document.getElementById("fleet_twd" ).addEventListener("change", saveOption);
