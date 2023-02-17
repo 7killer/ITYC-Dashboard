@@ -415,3 +415,7 @@ td.position>p {
 #colName {
     text-align:left;
 }
+
+.cursorHelp {
+    cursor: help !important;
+}

@@ -313,7 +313,7 @@ var controller = function () {
             (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0);
         var autoSailTime = r.curr.hasPermanentAutoSails ? '∞' : Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
         if (isAutoSail) {
-            sailInfo = sailInfo + " (A " + autoSailTime + ")";
+            sailInfo = sailInfo + " <span title='Auto Sails' class='cursorHelp'>&#x24B6;</span> " + autoSailTime;
         } else {
             sailInfo = sailInfo + " (Man)";
         }
@@ -391,7 +391,7 @@ var controller = function () {
             twaStyle: 'style="color: ' + ((uinfo.twa < 0) ? "red" : "green") + ';"',
             sail: sailNames[uinfo.sail] || "-",
             sSail : sailNames[uinfo.sail%10],
-            aSail : (uinfo.sail>10?"&#x24B6;":""),
+            aSail : (uinfo.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : ""),
             xfactorStyle: 'style="color:' + ((uinfo.xplained) ? ((drawTheme =='dark')?"#a5A5A5" :"black") : "red") + ';"',
             nameStyle: uinfo.nameStyle,
             bcolor: uinfo.bcolor,
@@ -419,10 +419,12 @@ var controller = function () {
                 res.xfactorStyle = 'style="color:orange ;"';
         }
 
+        res.nameClass = "";
 
         if (uid == currentUserId) {
             res.nameStyle = "color: #b86dff; font-weight: bold; ";
             res.bcolor = '#b86dff';
+            res.nameClass = ' highlightMe';
             if (!uinfo.displayName) {
                 res.name = 'Me';
             }        
@@ -1269,10 +1271,10 @@ var controller = function () {
                 }
                 if (r.isRegulated == true) {
                     // var lock = "&#128272;";
-                    var lock = "<b>&#x24B6;</b>";
+                    var lock = "<b title='TWA Locked' class='cursorHelp'>&#x24B6;</b>";
                 }
                 if (r.isRegulated == false) {
-                    var lock = "&#x25EF;";
+                    var lock = "<span title='TWA Unlocked' class='cursorHelp'>&#x25EF;</span>";
                 }
                 
                 var teamName = DM.teamModel.teamName;
@@ -1339,7 +1341,7 @@ var controller = function () {
                     } else
                         routerCell = '<td class="tdc"><span id="vrz:' + uid + '">&#x262F;</span></td>';
 
-                    return '<tr class="hovred" id="ui:' + uid + '">'
+                    return '<tr class="hovred' + bi.nameClass + '" id="ui:' + uid + '">'
                         + routerCell
                         + '<td class="time">' + formatTime(r.lastCalcDate) + '</td>'
                         + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
@@ -1351,13 +1353,13 @@ var controller = function () {
                         + Util.gentd("TWD","",null, Util.roundTo(r.twd, 2+nbdigits) )
                         + Util.gentd("TWS","",null, Util.roundTo(bi.tws, 2+nbdigits) )
                         + Util.gentd("TWA", bi.twaStyle,null, Util.roundTo(bi.twa, 2+nbdigits) )
-                        + Util.gentd("TWA", 'style="color: grey; align:center;"',null, lock )
+                        + Util.gentd("TWA", 'style="color:grey; align:center; text-align:center;"', null, lock)
                         + Util.gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold ,null, Util.roundTo(bi.heading, 2+nbdigits) )
                         + Util.gentd("Speed","",null, Util.roundTo(bi.speed, 2+nbdigits) )
                         + Util.gentd("VMG","",null, Util.roundTo(r.vmg, 2+nbdigits))
 //                        + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sail )
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
-                        + Util.gentd("Sail","",null,  bi.aSail )
+                        + Util.gentd("Sail", 'style="text-align:center;"', null, bi.aSail)
                         + Util.gentd("Factor", bi.xfactorStyle,null, xfactorTxt )
                         + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
                         + Util.gentd("Stamina",bi.staminaStyle,null,staminaTxt)  
@@ -3689,6 +3691,7 @@ async function initializeMap(race) {
         await getOption("fleet_team",true);
         await getOption("fleet_rank",true);
         await getOption("fleet_racetime",true);
+        await getOption("fleet_speed", true);
         await getOption("fleet_dtu" ,true);
         await getOption("fleet_dtf" ,true);
         await getOption("fleet_twd" ,true);
@@ -3763,6 +3766,8 @@ async function initializeMap(race) {
         document.getElementById("abbreviatedOption").addEventListener("change", saveOption);
         document.getElementById("fleet_team").addEventListener("change", saveOption);
         document.getElementById("fleet_rank").addEventListener("change", saveOption);
+        document.getElementById("fleet_racetime").addEventListener("change", saveOption);
+        document.getElementById("fleet_speed").addEventListener("change", saveOption);
         document.getElementById("fleet_dtu" ).addEventListener("change", saveOption);
         document.getElementById("fleet_dtf" ).addEventListener("change", saveOption);
         document.getElementById("fleet_twd" ).addEventListener("change", saveOption);

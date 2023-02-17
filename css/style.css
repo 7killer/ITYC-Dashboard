@@ -366,6 +366,10 @@ td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td
     
 }
 
+td.options, td.state {
+    cursor: help;
+}
+
 td.gender, td.flag, td.userid, td.level, td.role, td.type, td.members {
     text-align: center;
     padding-left: 10px;
@@ -1070,4 +1074,12 @@ tr.us_line>td>label, tr.us_line2>td>label , tr.us_line>td>input[type="checkbox"]
 tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
 
     background-color: var(--bg_body_color);
+}
+
+tr.highlightMe {
+    border: 0.16em solid #b86dff;    
+}
+
+.cursorHelp {
+    cursor: help;
 }

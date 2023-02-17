@@ -158,10 +158,10 @@ function zezoCall(uinfo,raceInfos,color,race) {
                     routeData.lat = getLatitude(top, scale[1]);
                     routeData.lon =  getLongitude(left, scale[1]);;
                     routeData.timestamp = Date.parse(isoDate);
-                    routeData.heading = btw;
-                    routeData.tws = tws;
-                    routeData.twa = twa;
-                    routeData.twd = twd;
+                    routeData.heading = btw + "°";
+                    routeData.tws = tws + "s";
+                    routeData.twa = twa + "°";
+                    routeData.twd = twd + "°";
                     routeData.sail = sail;
                     routeData.speed = stw;
                     rt.addNewPoints(raceInfos.id,routeNameClean,routeData);
