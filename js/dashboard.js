@@ -2243,25 +2243,26 @@ var controller = function () {
             else if (r.state == "waiting") pState = "Waiting";
             else if (r.state == "staying") pState = "Staying";
                 
-            let line = ";"; //first cell is RT, useless
+            let cSep = '\t';
+            let line = cSep; //first cell is RT, useless
 
-            line += bi.name + ";";
-            line += formatTime(r.lastCalcDate)  + ";";
-            line += (r.rank ? r.rank : "-") + ";";
-            line += ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + ";";
-            line += (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ ";";
-            line += "-" + ";";
-            line += bi.sSail + ";";
-            line += pState + ";";
-            line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + ";";
-            line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + ";";
-            line += Util.roundTo(bi.heading, 2+nbdigits) + ";";
-            line += Util.roundTo(bi.twa, 2+nbdigits)  + ";";
-            line += Util.roundTo(bi.tws, 2+nbdigits)  + ";";
-            line += Util.roundTo(bi.speed, 2+nbdigits) + ";";
-            line += Util.roundTo(r.xfactor, 4) + ";";
-            line += (r.xoption_foils || "?") + ";";
-            line +=  (r.xoption_options || "?") + ";";
+            line += bi.name + cSep;
+            line += formatTime(r.lastCalcDate)  + cSep;
+            line += (r.rank ? r.rank : "-") + cSep;
+            line += ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + cSep;
+            line += (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ cSep;
+            line += "-" + cSep;
+            line += bi.sSail + cSep;
+            line += pState + cSep;
+            line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + cSep;
+            line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + cSep;
+            line += Util.roundTo(bi.heading, 2+nbdigits) + cSep;
+            line += Util.roundTo(bi.twa, 2+nbdigits)  + cSep;
+            line += Util.roundTo(bi.tws, 2+nbdigits)  + cSep;
+            line += Util.roundTo(bi.speed, 2+nbdigits) + cSep;
+            line += Util.roundTo(r.xfactor, 4) + cSep;
+            line += (r.xoption_foils || "?") + cSep;
+            line +=  (r.xoption_options || "?") + cSep;
 
             return line;
 
