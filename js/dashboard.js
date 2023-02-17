@@ -253,7 +253,7 @@ var controller = function () {
         if(zezoRaceListAnswer) return;
         
         if(raceListTimeOut) clearTimeout(raceListTimeOut);
-        var raceListItyc = DM.getRaceListItyc();
+        var raceListItyc = DM.getRaceListInfos();
         Object.keys(raceListItyc.uinfo).forEach(function (key) {
             var raceInfo =raceListItyc.uinfo[key];
             if(raceInfo.vsr != 0) { 
@@ -1361,12 +1361,12 @@ var controller = function () {
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
                         + Util.gentd("Sail", 'style="text-align:center;"', null, bi.aSail)
                         + Util.gentd("Factor", bi.xfactorStyle,null, xfactorTxt )
-                        + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
+                        + Util.gentd("Foils", null,null, (r.xoption_foils || "?") )
                         + Util.gentd("Stamina",bi.staminaStyle,null,staminaTxt)  
                         + recordRaceFields(race, r)
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
-                        + Util.gentd("State", "", txtTitle, iconState)
+                        + Util.gentd("State",null, 'title="' + txtTitle + '"', iconState )
                         + '</tr>';
                 }
             }
@@ -1825,7 +1825,7 @@ var controller = function () {
             info.xoption_options = "Full Pack";
             info.savedOption = "Full Pack";
             info.rankingCategory  = "Full Pack";
-        } else if (info.options) {
+        } else if (info.options && info.options!="-") {
             if (info.options.length == 8) {
                 info.xoption_options = "All Options";
                 info.savedOption = "All Options";
@@ -3442,13 +3442,14 @@ function buildlogBookHTML(race) {
         document.getElementById("raceBook").innerHTML = raceIdentification;
         return;
     }
-    var fleet = raceFleetMap.get(race.id);
-    if(!fleet) 
-    fleet.uinfo[userId].savedOption;
+
+    let playerOption = "-";
+    if(race.curr && race.curr.options) playerOption = race.curr.options;
+
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+' ' + determineRankingCategory(race.curr.options) + '</th>'
+        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+' ' + determineRankingCategory(playerOption) + '</th>'
         + '</tr>' 
         + '</thead>'
         + '</table>'
@@ -3996,7 +3997,7 @@ async function initializeMap(race) {
                         rt.set_currentId(currentUserId);
                     
                     }
-                    handleLegInfo(message.leg);
+                    await handleLegInfo(message.leg);
                 }
                 if (message.bs) {
                     var raceId = getRaceLegId(message.bs._id);
@@ -4032,7 +4033,7 @@ async function initializeMap(race) {
                         var isFirstBoatInfo =  (message.leg != undefined);
                         handleOwnBoatInfo(message.bs, isFirstBoatInfo);
                     } else {
-                        handleFleetBoatInfo(message.bs);
+                        await handleFleetBoatInfo(message.bs);
                     }
                     if(race && race.curr) welcomePage = false;
                 }
@@ -4054,7 +4055,7 @@ async function initializeMap(race) {
         }
     }
 
-    function handleFleet (requestData, message) {
+    async function handleFleet (requestData, message) {
         if (message) {
             if (cbRawLog.checked) {
                 divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
@@ -4074,7 +4075,7 @@ async function initializeMap(race) {
                     DM.addPlayerInfo(playerData) ;
                 }
                 DM.makePlayerTable();  
-                DM.savePlayerList();
+                await DM.savePlayerList();
 
                 updateFleetHTML(raceFleetMap.get(selRace.value));
                 lMap.updateMapFleet(race,raceFleetMap);
@@ -4087,7 +4088,7 @@ async function initializeMap(race) {
         }
     }
 
-    function handleLegRank (requestData, message) {        
+    async function handleLegRank (requestData, message) {        
         if (message) {
             if (cbRawLog.checked) {
                 divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
@@ -4105,7 +4106,7 @@ async function initializeMap(race) {
                     raceData.name = race.name;
                     DM.addRaceInfo(raceData) ;
                     DM.makeRaceTable();  
-                    DM.saveRaceList();
+                    await DM.saveRaceList();
                 }
 
 
@@ -4144,7 +4145,7 @@ async function initializeMap(race) {
         }
     }            
 
-    function handleOwnBoatInfo (message, isFirstBoatInfo) {
+    async function handleOwnBoatInfo (message, isFirstBoatInfo) {
         var raceId = getRaceLegId(message._id);
         var race = races.get(raceId);
         if(!race) addRace(message);
@@ -4169,7 +4170,7 @@ async function initializeMap(race) {
             playerData.country = message.personal.country;
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
-            DM.savePlayerList();
+            await DM.savePlayerList();
             
 
             if(fleet.uinfo[userId].savedOption)
@@ -4183,8 +4184,8 @@ async function initializeMap(race) {
                     if (race.type && race.type === "record" && fleet.uinfo[userId].startDate) {
                         playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
                     }
-                    DM.addRaceOptionsList(raceId,playerOptionsData);
-                    DM.saveRaceOptionsList();
+                    await DM.addRaceOptionsList(raceId,playerOptionsData);
+                    await DM.saveRaceOptionsList(raceId);
                 }     
             }
         }
@@ -4200,7 +4201,7 @@ async function initializeMap(race) {
         return (message._id)?message._id.user_id:message.userId;
     }
 
-    function handleFleetBoatInfo(message) {
+    async function handleFleetBoatInfo(message) {
         var raceId = getRaceLegId(message._id);
         var race = races.get(raceId);
         var userId = getUserId(message);
@@ -4223,7 +4224,7 @@ async function initializeMap(race) {
             playerData.country = message.personal.country;
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
-            DM.savePlayerList();
+            await DM.savePlayerList();
             
             if(fleet.uinfo[userId].savedOption)
             {
@@ -4236,8 +4237,8 @@ async function initializeMap(race) {
                     if (race.type === "record" && fleet.uinfo[userId].startDate) {
                         playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
                     }
-                    DM.addRaceOptionsList(raceId,playerOptionsData);
-                    DM.saveRaceOptionsList();
+                    await DM.addRaceOptionsList(raceId,playerOptionsData);
+                    await DM.saveRaceOptionsList(raceId);
                 }
             }
         }
@@ -4274,7 +4275,7 @@ async function initializeMap(race) {
     }
 
 
-    function handleLegGetListResponse (response)  
+    async function handleLegGetListResponse (response)  
     {
                 // Contains destination coords, ice limits
         // ToDo: contains Bad Sail warnings. Show in race status table?
@@ -4319,7 +4320,7 @@ async function initializeMap(race) {
             DM.addRaceInfo(raceData) ;
         });
         DM.makeRaceTable();  
-        DM.saveRaceList();
+        await DM.saveRaceList();
         makeRaceStatusHTML();
     }
 
@@ -4418,7 +4419,7 @@ async function initializeMap(race) {
     }
 
     
-    function handleUserGetCard (request, response) {
+    async function handleUserGetCard (request, response) {
         var raceId = getRaceLegId(request);
         var uid = request.user_id;
 
@@ -4444,9 +4445,9 @@ async function initializeMap(race) {
             
             DM.addPlayerInfo(playerData);
             DM.makePlayerTable();  
-            DM.savePlayerList();
-           DM.makeTeamTable();
-            DM.saveTeamList();
+            await DM.savePlayerList();
+            DM.makeTeamTable();
+            await DM.saveTeamList();
             
             
             if (response.scriptData.legInfos
@@ -4478,7 +4479,7 @@ async function initializeMap(race) {
         }
     }
 
-    function handleTeamGet (response) {
+    async function handleTeamGet (response) {
         if(!response) return;
         var teamData = Object.create(DM.teamModel);
         teamData.teamId = response.scriptData.res.id;
@@ -4488,7 +4489,7 @@ async function initializeMap(race) {
         if( response.scriptData.res.def.desc != undefined ) teamData.desc = response.scriptData.res.def.desc;
         DM.addTeamInfo(teamData);
         DM.makeTeamTable();
-        DM.saveTeamList();
+        await DM.saveTeamList();
 
         var idx = response.scriptData.res.def.members.length;
         for (var i = 0; i< idx; i++) {
@@ -4502,10 +4503,10 @@ async function initializeMap(race) {
             DM.addPlayerInfo(playerData) ; //empty team fix
         }
         DM.makePlayerTable();  
-        DM.savePlayerList();    
+        await DM.savePlayerList();    
     }
 
-    function handleTeamGetList (response) {
+    async function handleTeamGetList (response) {
         
         if(!response) return;
         var idx = response.scriptData.res.length;
@@ -4519,7 +4520,7 @@ async function initializeMap(race) {
             DM.addTeamInfo(teamData);
         }
         DM.makeTeamTable();
-        DM.saveTeamList();
+        await DM.saveTeamList();
     }
 
     function handleGameGetFollowedBoats (request, response) {
@@ -4546,7 +4547,7 @@ async function initializeMap(race) {
         }
     }
     
-    function handleSocialGetPlayers (response) {
+    async function handleSocialGetPlayers (response) {
         var idx = response.scriptData.res.length;           
         DM.createEmptyTeam();
         for (var i = 0; i< idx; i++) {
@@ -4569,11 +4570,11 @@ async function initializeMap(race) {
             DM.addPlayerInfo(playerData) ;
         }
         DM.makePlayerTable();  
-        DM.savePlayerList(); 
+        await DM.savePlayerList(); 
         DM.makeTeamTable();
-        DM.saveTeamList();
+        await DM.saveTeamList();
     }
-    function handleAccountDetailsResponse (response) {
+    async function handleAccountDetailsResponse (response) {
         reInitUI(response.userId);
         currentUserId = response.userId;
         lMap.set_currentId(currentUserId);
@@ -4621,9 +4622,9 @@ async function initializeMap(race) {
 
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
-            DM.savePlayerList();
+            await DM.savePlayerList();
             DM.makeTeamTable();
-            DM.saveTeamList();       
+            await DM.saveTeamList();       
         }
     }
 
