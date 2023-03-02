@@ -264,6 +264,7 @@ function buildTrace (tpath, color,weight,opacity,dashArray,dashOffset) {
             color: color,
             opacity: opacity,
             weight: weight,
+            wrap: false
         });
     if(dashArray) trackLine.options.dashArray = dashArray;
     if(dashOffset) trackLine.options.dashOffset = dashOffset;
@@ -380,6 +381,18 @@ function cleanMap(race) {
     }
 }
 
+function buildPt(lat,lon)
+{
+    var ptCorr = lon;
+    var lPt = L.latLng(lat,ptCorr);
+    if(ptCorr<0) 
+    {
+        ptCorr = ptCorr+360;     
+        lPt = L.latLng(lat,ptCorr,true);       
+    }
+    return lPt;
+}
+
 async function initialize(race,raceFleetMap)
 {
     function set_userCustomZoom(e)
@@ -422,11 +435,6 @@ async function initialize(race,raceFleetMap)
             divMap.setAttribute('id', 'lMap'+race.id);
 
             document.getElementById("tab-content3").appendChild(divMap);
-            
-
-
-
-
 
             var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, ' +
@@ -509,7 +517,8 @@ async function initialize(race,raceFleetMap)
 
             var title1 = "Start: " + race.legdata.start.name 
                         + "\nPosition: " + Util.formatPosition(race.legdata.start.lat, race.legdata.start.lon);
-            var latlng = L.latLng(race.legdata.start.lat,race.legdata.start.lon);
+          
+            var latlng = buildPt(race.legdata.start.lat,race.legdata.start.lon);
             buildMarker(latlng,buildTextIcon('','blue','red',"S"),title1,0).addTo(race.lMap.refLayer);
 
             
@@ -517,7 +526,7 @@ async function initialize(race,raceFleetMap)
             
             title1 =  "<span>Finish: " + race.legdata.end.name 
                 + "\nPosition: " + Util.formatPosition(race.legdata.end.lat, race.legdata.end.lon) +"</span>";
-            latlng = L.latLng(race.legdata.end.lat,race.legdata.end.lon);
+            latlng = buildPt(race.legdata.end.lat,race.legdata.end.lon);
             buildMarker(latlng,buildTextIcon('','yellow','red',"F"),title1,0).addTo(race.lMap.refLayer);
             race.lMap.refPoints.push(latlng);
             
@@ -529,7 +538,7 @@ async function initialize(race,raceFleetMap)
             // course
             var cpath = [];
             for (var i = 0; i < race.legdata.course.length; i++) {
-                latlng = L.latLng(race.legdata.course[i].lat, race.legdata.course[i].lon);
+                latlng = buildPt(race.legdata.course[i].lat, race.legdata.course[i].lon);
                 race.lMap.refPoints.push(latlng);
                 cpath.push(latlng);
             }
@@ -539,7 +548,8 @@ async function initialize(race,raceFleetMap)
                             {
                                 color: "white",
                                 opacity: 0.5,
-                                weight: 1
+                                weight: 1,
+                                wrap: false
                             }).addTo(race.lMap.refLayer);
             
             var raceLinePatterns = L.polylineDecorator(raceLine, {
@@ -564,7 +574,7 @@ async function initialize(race,raceFleetMap)
                 {
                 
                     for (var i = 0; i < iceData.length; i++) {
-                        latlng = L.latLng(iceData[i].lat, iceData[i].lon);
+                        latlng = buildPt(iceData[i].lat, iceData[i].lon);
                         race.lMap.refPoints.push(latlng);
                         iceLimit.push(latlng);
                     }
@@ -640,8 +650,8 @@ function updateMapCheckpoints(race) {
         var cp_name = "invisible";
         if (cp.display != "none") cp_name = cp.display;
 
-        var position_s = L.latLng(cp.start.lat, cp.start.lon);
-        var position_e = L.latLng(cp.end.lat, cp.end.lon);
+        var position_s = buildPt(cp.start.lat, cp.start.lon);
+        var position_e = buildPt(cp.end.lat, cp.end.lon);
     
         var c_sb = "green";
         var c_bb = "red";
@@ -771,30 +781,30 @@ function updateMapWaypoints(race) {
         var action = race.waypoints;
         if (action.pos) {
             // Waypoint lines
-            tpath.push(L.latLng(race.curr.pos.lat, race.curr.pos.lon)); // boat
+            tpath.push(buildPt(race.curr.pos.lat, race.curr.pos.lon)); // boat
             for (var i = 0; i < action.pos.length; i++) {
-                tpath.push(L.latLng(action.pos[i].lat, action.pos[i].lon));
+                tpath.push(buildPt(action.pos[i].lat, action.pos[i].lon));
             }
             buildTrace(tpath,"#FF00FF",1.5,0.7).addTo(race.lMap.wayPointLayer);
 
             // Waypoint markers
             for (var i = 0; i < action.pos.length; i++) {
-                var pos = L.latLng(action.pos[i].lat, action.pos[i].lon);
+                var pos = buildPt(action.pos[i].lat, action.pos[i].lon);
                 var title = Util.formatPosition(action.pos[i].lat, action.pos[i].lon);
                 buildCircle(pos,"#FF00FF", 2,1, title).addTo(race.lMap.wayPointLayer);
                 race.lMap.refPoints.push(pos);
              }
         } else if (action.length) {
             // Waypoint lines
-            tpath.push(L.latLng(race.curr.pos.lat, race.curr.pos.lon)); // boat
+            tpath.push(buildPt(race.curr.pos.lat, race.curr.pos.lon)); // boat
             for (var i = 0; i < action.length; i++) {
-                tpath.push(L.latLng(action[i].lat, action[i].lon));
+                tpath.push(buildPt(action[i].lat, action[i].lon));
             }
             buildTrace(tpath,"#FF00FF",1.5,0.7).addTo(race.lMap.wayPointLayer);
 
             // Waypoint markers
             for (var i = 0; i < action.length; i++) {
-                var pos = L.latLng(action[i].lat, action[i].lon);
+                var pos = buildPt(action[i].lat, action[i].lon);
                 var title = Util.formatPosition(action[i].lat, action[i].lon);
                 buildCircle(pos,"#FF00FF", 2,1, title).addTo(race.lMap.wayPointLayer);
                 race.lMap.refPoints.push(pos);
@@ -829,7 +839,7 @@ function updateMapMe(race, track) {
 
         for (var i = 0; i < track.length; i++) {
             var segment = track[i];
-            var pos = L.latLng(segment.lat, segment.lon);
+            var pos = buildPt(segment.lat, segment.lon);
             tpath.push(pos);
             if(displayFilter & 0x200) {
                 if (i > 0) {
@@ -845,7 +855,7 @@ function updateMapMe(race, track) {
             }
         }
         if (race.curr && race.curr.pos) {
-            var pos = L.latLng(race.curr.pos.lat, race.curr.pos.lon);
+            var pos = buildPt(race.curr.pos.lat, race.curr.pos.lon);
             tpath.push(pos);
         }
     
@@ -855,7 +865,7 @@ function updateMapMe(race, track) {
     // boat
     if (race.curr && race.curr.pos) {
         var nbdigits = (document.getElementById("2digits").checked?1:0);
-        var pos = L.latLng(race.curr.pos.lat, race.curr.pos.lon);
+        var pos = buildPt(race.curr.pos.lat, race.curr.pos.lon);
 
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
@@ -913,7 +923,7 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
     var ghostPosTS = ghostStartTS + offset;
     var ghostPos;
     for (var i = 0; i < ghostTrack.length; i++) {
-        pos = L.latLng(ghostTrack[i].lat, ghostTrack[i].lon);
+        pos = buildPt(ghostTrack[i].lat, ghostTrack[i].lon);
         tpath.push(pos);
         race.lMap.refPoints.push(pos);
                 
@@ -934,7 +944,7 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
         var d = (ghostPosTS - ghostTrack[ghostPos - 1].ts ) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts)
         var lat = lat0 + (lat1-lat0) * d;
         var lon = lon0 + (lon1-lon0) * d;
-        var pos = L.latLng(lat, lon);
+        var pos = buildPt(lat, lon);
         buildMarker(pos, buildBoatIcon(color,color,0.6), title,  20, 0.4,heading).addTo(layer);
     }
 
@@ -962,7 +972,7 @@ function computeNextPos(pos,hdg,speed,time) {
         lng5 = lng5 + 360;
     }
 
-    return L.latLng(lat5, lng5);
+    return buildPt(lat5, lng5);
 
 }
 
@@ -1015,7 +1025,7 @@ function updateMapFleet(race,raceFleetMap) {
         var bi = boatinfo(key, elem);
 
         if (isDisplayEnabled(elem, key)) {
-            var pos = L.latLng(elem.pos.lat, elem.pos.lon);
+            var pos = buildPt(elem.pos.lat, elem.pos.lon);
             // Boat
             // Organisation z-index
             var zi;
@@ -1053,7 +1063,7 @@ function updateMapFleet(race,raceFleetMap) {
             if (elem.track) {
                 for (var i = 0; i < elem.track.length; i++) {
                     var segment = elem.track[i];
-                    var pos2 = L.latLng(segment.lat, segment.lon);
+                    var pos2 = buildPt(segment.lat, segment.lon);
                     tpath.push(pos2);
                     race.lMap.refPoints.push(pos2);
                     if(displayFilter & 0x200) {
@@ -1115,7 +1125,7 @@ function importRoute(route,race,name) {
     var tpath = [];
 
     for (var i = 0 ; i < route.points.length ; i++) {
-        var pos = L.latLng(route.points[i].lat, route.points[i].lon);
+        var pos = buildPt(route.points[i].lat, route.points[i].lon);
         tpath.push(pos);
         race.lMap.refPoints.push(pos);
         
