@@ -1,11 +1,7 @@
 
 import * as Util from './util.js';
 
-var currentId="",currentName="";
-var previousRequiredId = 0;
-var displayFlag;
-var nocheck = false; 
-var guideShown = false;
+
 var dashVersion ="1.0.6";
 var wpGuideLayer = undefined;
 String.prototype.remAcc = function() {
@@ -32,42 +28,100 @@ String.prototype.remAcc = function() {
     return str;
 }
 
-
-function initialize()
+async function initialize()
 {
-    previousRequiredId = 0;
     document.getElementById("mapfilterLmap").style.visibility = "hidden";
     document.getElementById("extraLmap").style.visibility = "hidden";
+    await initCachedTilesList();
 }
 
-
-function extraMap(race)
+async function loadBorder(race,lat,lon)
 {
-    if(currentId=="" ||currentName == "" || race && race.id && race.lMap && race.lMap.map && race.curr && race.curr.pos) return -1;
+    if(!race || !race.lMap || !race.lMap.map) return;
+    var refLat = Math.floor(Math.round(Number(lat/3))*3);
+    var refLon = Math.floor(Math.round(Number(lon/3))*3);
+    var aroundTable = [
+        { lo:-6 , la: 6 },    { lo:-3 , la:6 },    { lo:0 , la:6 },    { lo:3 , la: 6 },   { lo:6 , la: 3 },
+        { lo:-6 , la: 3 },    { lo:-3 , la:3 },    { lo:0 , la:3 },    { lo:3 , la: 3 },   { lo:6 , la: 3 },
+        { lo:-6 , la: 0 },    { lo:-3 , la:0 },    { lo:0 , la:0 },    { lo:3 , la: 0 },   { lo:6 , la: 0 },
+        { lo:-6 , la:-3 },    { lo:-3 , la:-3},    { lo:0 , la:-3},    { lo:3 , la:-3 },   { lo:6 , la:-3 },
+        { lo:-6 , la:-6 },    { lo:-3 , la:-6},    { lo:0 , la:-6},    { lo:3 , la:-6 },   { lo:6 , la:-6 },
+    ];  
+    if(wpGuideLayer != undefined) race.lMap.map.removeLayer(wpGuideLayer);
+    wpGuideLayer = undefined;
+    new Promise((resolve, reject) => {
+        aroundTable.forEach(async function(t)  {
+            let key = atob("IHBvdXIgbGUgRGFzaGJvYXJkIFRhdmVybmUgcGFyIEt1cnVuNTY=");
+            let dDalleIdx = 'dDalle_' + (refLon+t.lo)+'_'+(refLat+t.la);
+            let hash = md5(dDalleIdx + key).toUpperCase();
+            let fileName =  dDalleIdx+'_'+hash+'.KurunFile';
+            if(cachedTileList.includes(fileName)) {
+                if(wpGuideLayer == undefined)  wpGuideLayer = L.layerGroup();
+                loadLocalFile(race,'./cachedTiles/'+fileName,{style: styleLines});
+            }
+        });
+        resolve(true);
+    }).then( t=> {
+        wpGuideLayer.addTo(race.lMap.map); 
+    });
 
-    guideShown = false; //force refresh
-    return onGuideChange(race);
 
-    
 }
 
-function loadFile(url) {
-    return new Promise((resolve, reject) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.responseType = "text";
-        xhr.onload = () => {
-            if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 0)) {
-                resolve(xhr.response || xhr.responseText);
-            } else {
-                resolve('');
-            }
-        };
-        xhr.onerror = () => reject("Error " + xhr.status + " while fetching remote file: " + url);
-        xhr.send();
+
+async function loadLocalFile(race,fileName,styles) {
+    await fetch(fileName) 
+    .then(function (response) {
+        if (response.status === 200 || response.status === 0) {
+            return Promise.resolve(response.blob());
+        } else {
+            return Promise.reject(new Error(response.statusText));
+        }
+    }).then(JSZip.loadAsync).then(function (zip) {
+        Object.keys(zip.files).forEach(function (filename) {
+            zip.files[filename].async('string').then(function (fileData) {  
+                L.geoJSON(JSON.parse(fileData),styles).addTo(wpGuideLayer);
+            })
+        })
+    })
+}
+
+
+  
+
+
+
+
+
+
+var cachedTileList = [];
+
+async function initCachedTilesList()
+{
+    cachedTileList = [];
+    await chrome.runtime.getPackageDirectoryEntry(dir => {
+        dir.getDirectory('cachedTiles', {}, function(cachedTilesDir) {
+            new Promise(resolve => {
+                let dirReader = cachedTilesDir.createReader();
+            
+                let getEntries = () => {
+                    dirReader.readEntries((entries) => {
+                            if (entries.length) {
+                                for (var i = 0; i < entries.length; ++i) {
+                                    cachedTileList.push(entries[i].name);
+                                }
+                                getEntries();
+                            }
+                        }
+                    );
+                };
+                getEntries();
+            })
+        })
     });
 }
+
+
 
 
 function styleLines(feature) {
@@ -77,73 +131,6 @@ function styleLines(feature) {
                 opacity: .7
             };
 }
-var borderRequest = false;
-function onGuideChange(race) {
-
-
-    var map = race.lMap.map;
-    if(guideShown)
-    {
-        guideShown = false;
-        if(wpGuideLayer != undefined) map.removeLayer(wpGuideLayer);
-        wpGuideLayer = undefined;
-    } else
-    {
-        if(borderRequest) return;
-        var lat = race.curr.pos.lat;
-        var lon = race.curr.pos.lon;
-        var mapcenter = map.getCenter();
-        lat = mapcenter.lat;
-        lon = mapcenter.lng; 
-
-        if(lon > 180 ) lon = lon - 360;
-        if( lon < -180) lon = lon + 360;
-
-        var stampdate = new Date(); /// timestamp pb de cache
-        guideShown = true;
-    
-        new Promise((resolve, reject) => {
-            var getUrl =atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldEJvcmRlclJlZi5waHA=");
-            getUrl += "?lat="+lat+"&long="+lon+"&uid=ityc&race="+(race.id.split(".")[0])+stampdate.getTime();
-            getUrl += "&vers="+chrome.runtime.getManifest().version;
-            
-            const xhr = new XMLHttpRequest();
-            xhr.race = race;
-            xhr.getUrl = getUrl;
-    
-            xhr.addEventListener('loadend', () => {
-                if (xhr.status === 200 || xhr.status == 0) {
-                    let rep = JSON.parse(xhr.responseText); 
-
-                    if((rep['dDalle'].length !=0)) {
-                        wpGuideLayer = L.layerGroup();
-                        rep['dDalle'].forEach(dDalle => {
-                            dDalle = atob("aHR0cHM6Ly92ci5pdHljLmZyLw==")+dDalle;
-                            loadFile(dDalle).then((data) =>  L.geoJSON(JSON.parse(data),{style: styleLines}).addTo(wpGuideLayer));
-                        });
-                        wpGuideLayer.addTo(map); 
-                    }
-                }else {
-                        
-                    resolve(false);
-                }
-                borderRequest = false;
-            });
-            
-            borderRequest = true;
-            xhr.open("GET", getUrl);
-            xhr.send();
-    
-        });
-    }
-            
-
-
-    document.getElementById('sel_extraLmap').checked=guideShown;
-    return guideShown;
-
-}
-
 
 
 //
@@ -159,17 +146,9 @@ function extraRoute(state) {
 
 
 
-function setDisplayFlag(state) {
-
-    displayFlag  = state;
-}
-function getDisplayFlag() {
-    return displayFlag;
-
-}
 
 export {
-    extraMap,extraRoute,initialize,setDisplayFlag,getDisplayFlag,
-    onGuideChange
+    extraRoute,initialize,
+    loadBorder
 
 };

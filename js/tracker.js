@@ -157,42 +157,7 @@ function sendInfo(type) {
 }
 
 function sendInfoR(type) {
-    
-/*
- $loadData = file_get_contents("php://input");
-    $jsonIterator = new RecursiveIteratorIterator(
-      new RecursiveArrayIterator(json_decode($loadData, TRUE)),
-      RecursiveIteratorIterator::SELF_FIRST);
-
-    foreach ($jsonIterator as $key => $val) {
-      if (is_array($val)) {
-        // echo "$key:\n" >> /tmp/test.log;
-        log_access($user_id, $version, "API", "Put $key");
-      } else {
-        // echo "$key => $val\n" >> /tmp/test.log;
-        log_access($user_id, $version, "API", "Put $key => $val");
-      }
-    } 
-    
-        var webdata = "{ "race_id": "" + tr_raceId + "", "race_name": "" + tr_raceName + "", "submit_by": "" + tr_myId + "", "player": [";
-    Object.keys(mesDataNew).forEach(function (key) {
-        webdata += "" + JSON.stringify(mesDataNew[key]) + ",";
-    });
-    webdata = webdata.substring(0, webdata.length - 1);
-    webdata += " ] }";
-    // let dat = JSON.stringify(webdata);
-    let dat = webdata;
-    console.log("" + dat);
-
-    lastSendDate = lastCalcDate;
-    recordEnable = false;
-    mesData[type]["raceId"] = rid;
-    mesData[type]["raceName"] = name;
-    mesData[type]["myId"] = myId;
-    
-    */
-
-
+ 
     var webdata = "";
     Object.keys(mesData[type]).forEach(function (key) {
         webdata += "/**/"+JSON.stringify(mesData[type][key]);

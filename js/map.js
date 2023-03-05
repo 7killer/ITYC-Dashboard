@@ -1,5 +1,6 @@
 import * as Util from './util.js';
 import * as rt from './routingviewer.js';
+import * as EX from './extra.js';
 
 const options = {
     key: 'notValid', // REPLACE WITH YOUR KEY !!!
@@ -400,6 +401,15 @@ async function initialize(race,raceFleetMap)
         if(race.lMap.resetUserZoom > 0)
             race.lMap.userZoom = true;
         else    race.lMap.resetUserZoom += 1;
+        
+        if(e && e.target) if(e.target._zoom > 5 ) 
+        {
+            var mapcenter = map.getCenter();
+            var lon = mapcenter.lng; 
+            if(lon > 180 ) lon = lon - 360;
+            if( lon < -180) lon = lon + 360;
+            EX.loadBorder(race,mapcenter.lat,lon);
+        }
     }
     if(!race ) return;
 

@@ -9,6 +9,7 @@ import * as lMap from './map.js';
 import * as rt from './routingviewer.js';
 import * as tr from './tracker.js';
 import * as gr from './graph.js';
+import * as nf from './notif.js'
 
 var controller = function () {
 
@@ -135,7 +136,7 @@ var controller = function () {
         {_id:4      ,name: "Imoca",                stamina: "1.2"},
         {_id:5      ,name: "Mini 6.50",            stamina: "1"},
         {_id:6      ,name: "Ultim (Solo)",         stamina: "1.5"},
-        {_id:7      ,name: "Volvo 65",               stamina: "1.2"},
+        {_id:7      ,name: "Volvo 65",              stamina: "1.2"},
         {_id:8      ,name: "unknow",               stamina: "1"},
         {_id:9      ,name: "Ultim (Crew)",         stamina: "1.5"},
         {_id:10     ,name: "Olympus",              stamina: "1.5"},
@@ -147,11 +148,13 @@ var controller = function () {
         {_id:16     ,name: "Tara",                 stamina: "2"},
         {_id:17     ,name: "unknow",               stamina: "1"},
         {_id:18     ,name: "OffShore Racer",       stamina: "1"},
+        {_id:19     ,name: "Mod70",       		   stamina: "1"},
+        {_id:20     ,name: "Cruiser Racer",        stamina: "1"},
       ];
 
 
 
-    var notifications = [];     // Notifications
+
 
 // ---------------------------------------------------------------------------
 
@@ -161,35 +164,12 @@ var controller = function () {
 
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
-    var selRaceNotif, divNotif,  lbRaceNotif, lbType1Notif, lbType2Notif, lbValNotif, lbMinNotif,  TextNotif;
     var cb2digits;
     var nbdigits = 0;
     
     var lang = "fr";
 
-    Notification.requestPermission(function (status) {
-        if (Notification.permission !== status) {
-            Notification.permission = status;
-        }
-        console.log("Notifications status" + status);
-    });
-
-
-    function GoNotif(TitreNotif, TextNotif, icon, i) {
-        var options = {
-            "lang": "FR",
-            "icon": "./img/"+icon + ".png",
-            "image": "./img/bandeau.jpg",
-            "body": TextNotif
-        };
-        var notif = new Notification(TitreNotif, options);
-        notif.onclick = function(x) {
-            notifications[i].repet = 4;
-            console.log(formatTimeNotif(Date.now()) + " Repet : " + i + " / " + notifications[i].repet);
-            window.focus();
-            this.close();
-        };
-    } 
+    
     // ---------------------------------------------------------------------------    
 
 
@@ -201,11 +181,8 @@ var controller = function () {
         option.disabled = disabled;
         selRace.appendChild(option);
 
-        // Ajout - Notifications -------------------
-        var optionNotif = document.createElement("option");
-        optionNotif.text = race.name;
-        selRaceNotif.appendChild(optionNotif);
-        // Fin ajout -------------------------------
+        nf.addRace(race.id,race.name);
+
     }
 
     function initRace(race, disabled) {
@@ -689,7 +666,7 @@ var controller = function () {
             
             raceLine += '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
             raceLine += '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'         
-                + '<td class="time" ' + lastCalcStyle + '>' + formatTimeNotif(r.curr.lastCalcDate) + '</td>'
+                + '<td class="time" ' + lastCalcStyle + '>' + Util.formatTimeNotif(r.curr.lastCalcDate) + '</td>'
                 + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
                 + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
                 + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
@@ -899,7 +876,7 @@ var controller = function () {
                     + '<td class="tdc"><span id="wi:' + r.id + '"><img class="icon" src="./img/wind.svg"/></span></td>'
                     + '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'
                     + '<td class="name">' + r.name + '</td>'
-                    +'<td class="time" ' + lastCalcStyle + '>' + formatTimeNotif(r.curr.lastCalcDate) + '</td>'
+                    +'<td class="time" ' + lastCalcStyle + '>' + Util.formatTimeNotif(r.curr.lastCalcDate) + '</td>'
                     + commonTableLines(r,best)
                     + infoSail(r,false)
                     + '<td class="speed1">' + Util.roundTo(r.curr.speed, 2+nbdigits) + '</td>'
@@ -1982,211 +1959,12 @@ var controller = function () {
     
 
     // Ajout - Notifications
-    function setNotif() {        
-        if (lbRaceNotif.value == "---") {
-            if(lang ==  "fr") {
-                alert ("Enregistrememnt impossible, sélectionnez une course !");
-            } else
-            {
-                alert ("Record impossible, select a race !"); 
-            }
-            return;
-        }
-
-        if (lbMinNotif.value) {    
-            if(lang ==  "fr") {
-                var nText = "<p><b>" + lbRaceNotif.value + " :</b> rappel vers " + formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (heure locale).</p>";
-            } else
-            {
-                var nText = "<p><b>" + lbRaceNotif.value + " :</b>  recall at " + formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (local time).</p>";
-            }
-            notifications.push({race: lbRaceNotif.value,
-                                time: Date.now() + lbMinNotif.value * 60000,
-                                repet: 0,
-                                text: nText
-                               }); 
-        }
-
-        if (lbType1Notif.value != "---" && lbType2Notif.value != "---" && lbValNotif.value) {
-            var nTime;
-            
-            if(lang ==  "fr") {
-                var nText = "<p><b>" + lbRaceNotif.value + " :</b> notification si le "
-                        + lbType1Notif.value + " est " + lbType2Notif.value + " à " + lbValNotif.value + ".</p>";
-            } else {
-                var nText = "<p><b>" + lbRaceNotif.value + " :</b> notification if "
-                + lbType1Notif.value + " is " + lbType2Notif.value + " at " + lbValNotif.value + ".</p>";
-            }
-            if(lbType1Notif.value == "TWA") {
-                var nTWA = Util.roundTo(lbValNotif.value,1);
-            } else if (lbType1Notif.value == "HDG") {
-                var nHDG = Util.roundTo(lbValNotif.value,1);          
-            } else if (lbType1Notif.value == "TWS") {
-                var nTWS = Util.roundTo(lbValNotif.value,1);          
-            } else if (lbType1Notif.value == "TWD") {
-                var nTWD = Util.roundTo(lbValNotif.value,1);          
-            }            
-            notifications.push({race: lbRaceNotif.value,
-                                twa: nTWA,
-                                hdg: nHDG,
-                                tws: nTWS,
-                                twd: nTWD,
-                                limite: lbType2Notif.value.substring(0,3),
-                                repet: 0,
-                                text: nText
-                               });
-        } else if (!lbMinNotif.value) {
-            if(lang ==  "fr") {
-                alert ("Enregistrememnt impossible, vérifiez les données !");
-            } else {
-                alert ("Record impossible, verify datas !");    
-            }
-            return;
-        }
-        lbRaceNotif.value = "---";
-        lbType1Notif.value = "---";
-        lbType2Notif.value = "---";
-        lbValNotif.value = "";
-        lbMinNotif.value = "";
-        afficheNotif();
-            
-    }
+    //function setNotif() {//replace by createnotif       
     
-    function afficheNotif() {
-        divNotif.innerHTML = "";
-        for (var i = 0; i < notifications.length; i++) {
-            if(notifications[i].repet < 3) {divNotif.innerHTML += notifications[i].text;}            
-        }        
-    }
+    
 
-    function showNotif(r) {
 
-        function show(i) {     
-            var repeat = notifications[i].repet;
-            notifications[i].repet = repeat + 1;
-            GoNotif(TitreNotif, TextNotif, icon, i);                            
-        }
-        
-        var TitreNotif = r.name;
-        var icon = 2;
-        // Notification Echouement
-        if (r.curr.aground == true) {
-            
-            if(lang ==  "fr") {
-                TextNotif =  r.curr.displayName + " : vous êtes échoué !";
-            } else
-            {
-                TextNotif =  r.curr.displayName + " : you are aground !";    
-            }
-            GoNotif(TitreNotif, TextNotif, icon);
-        }
-
-        // Notification Mauvaise voile
-        if (r.curr.badSail == true && r.curr.distanceToEnd > 1) {
-            if(lang ==  "fr") {
-                TextNotif = r.curr.displayName + " : vous naviguez sous mauvaise voile !";
-            } else {
-                TextNotif = r.curr.displayName + " : you use bad sail !";    
-            }
-            GoNotif(TitreNotif, TextNotif, icon);
-        }
-
-        for (var i = 0; i < notifications.length; i++) {
-            var icon = 1;
-            if(notifications[i].race == r.name && notifications[i].repet < 3){
-                // Notification type rappel horaire
-                // 300000 millisecondes = 5 minutes
-                if (Date.now() > notifications[i].time - 300000 && Date.now() < notifications[i].time + 600000) {
-                    var icon = 3;
-                    if(lang ==  "fr") { 
-                        TextNotif =  r.curr.displayName + " : rappel programmé à " + formatTimeNotif(notifications[i].time) + " !";
-                    } else
-                    {
-                        TextNotif =  r.curr.displayName + " : recall programmed at " + formatTimeNotif(notifications[i].time) + " !";
-                    }
-                    show(i);
-                }
-                
-                // Notification type TWA
-                if (notifications[i].twa) {
-                    if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.twa), 1) <= notifications[i].twa) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : votre TWA est inférieur à " + notifications[i].twa + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : your TWA is inferior to " + notifications[i].twa + ".";
-                        }
-                        show(i);
-                    } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.twa), 1) >= notifications[i].twa) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : votre TWA est supérieur à " + notifications[i].twa + ".";
-                        } else
-                        {
-                            TextNotif =  r.curr.displayName + " : your TWA is superior to " + notifications[i].twa + ".";
-                        }
-                        show(i);
-                    }    
-                }
-
-                // Notification type HDG
-                if (notifications[i].hdg) {
-                    if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.heading), 1) <= notifications[i].hdg) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : votre cap est inférieur à " + notifications[i].hdg + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : your heading is inferior to " + notifications[i].hdg + ".";
-                        }
-                        show(i);
-                    } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.heading), 1) >= notifications[i].hdg) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : votre cap est supérieur à " + notifications[i].hdg + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : your heading is superior to " + notifications[i].hdg + ".";
-                        }
-                        show(i);
-                    }    
-                }            
-
-                // Notification type TWS
-                if (notifications[i].tws) {
-                    if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.tws), 1) <= notifications[i].tws) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : la force du vent est inférieure à " + notifications[i].tws + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : the wind speed is inferior to " + notifications[i].tws + ".";
-
-                        }
-                        show(i);
-                    } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.tws), 1) >= notifications[i].tws) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : la force du vent est supérieure à " + notifications[i].tws + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : the wind speed is superior to  " + notifications[i].tws + ".";    
-                        }
-                        show(i);
-                    }    
-                }            
-
-                // Notification type TWD
-                if (notifications[i].twd) {
-                    if (notifications[i].limite == "inf" && Util.roundTo(Math.abs(r.curr.twd), 1) <= notifications[i].twd) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : la direction du vent est inférieure à " + notifications[i].twd + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : the wind direction is inferior to " + notifications[i].twd + ".";              
-                        }
-                        show(i);
-                    } else if (notifications[i].limite == "sup" && Util.roundTo(Math.abs(r.curr.twd), 1) >= notifications[i].twd) {
-                        if(lang ==  "fr") {
-                            TextNotif =  r.curr.displayName + " : la direction du vent est supérieure à " + notifications[i].twd + ".";
-                        } else {
-                            TextNotif =  r.curr.displayName + " : the wind direction is superior to " + notifications[i].twd + ".";       
-                        }
-                        show(i);
-                    }    
-                }            
-            }
-        }
-    }
+    
     // Fin ajout - Notifications
     
     function exportPolar()
@@ -2418,15 +2196,7 @@ var controller = function () {
         return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
     }
 
-    function formatTimeNotif(ts) {
-        var tsOptions = {
-            hour: "numeric",
-            minute: "numeric",
-            hour12: false
-        };
-        var d = (ts) ? (new Date(ts)) : (new Date());
-        return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
-    }
+
 
     function addTableCommandLine(r) {
         r.tableLines.unshift('<tr>'
@@ -2441,7 +2211,7 @@ var controller = function () {
     }
 
     function makeTableLine(r) {
-        showNotif(r);       // Modification - Notifications
+        nf.manage(r);       // Modification - Notifications
         if(document.getElementById("auto_clean").checked) fleetInfosCleaner();
         function isDifferingSpeed(speed) {
             return Math.abs(1 - r.curr.speed / speed) > 0.01;
@@ -2554,15 +2324,15 @@ var controller = function () {
         currentRaceId = raceId;
         makeRaceStatusHTML();
         divRecordLog.innerHTML = makeTableHTML(race);
-        if(race.recordedData) {
+        if(race && race.recordedData) {
             gr.upDateGraph(race.recordedData);
         }
         updateFleetHTML(raceFleetMap.get(raceId));
         buildlogBookHTML(race);
         rt.updateFleet(raceId,raceFleetMap);
         switchMap(race);
-
-        NMEA.setActiveRace(raceId);
+        if (cbNMEAOutput.checked) 
+            NMEA.setActiveRace(raceId);
     }
 
     function getRaceLegId(id) {
@@ -2609,6 +2379,7 @@ var controller = function () {
         var re_usel = new RegExp("^ui:(.+)"); // User-Selection
         var re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
         var re_cbox = new RegExp("^sel_(.+)"); // Checkbox-Selection
+        var re_ntdel = new RegExp("^notif_delete_(.+)"); // Notif delete button
 
         var ev_lbl = ev.target.id;
         switch (ev_lbl) {
@@ -2748,7 +2519,10 @@ var controller = function () {
             } else if (match = re_cbox.exec(id)) {
                 rmatch = match[1];
                 cbox = true;
+            } else if (match = re_ntdel.exec(id)) {
+                nf.deleteNotif(id);
             }
+
         }
         if (rmatch) {
             if (tabsel) {
@@ -2779,8 +2553,7 @@ var controller = function () {
                         gr.upDateGraph(race.recordedData);
                     }
                 } else if (rmatch == 6) {
-                    divNotif.innerHTML = "";
-                    afficheNotif();
+                    nf.showList();
                 } else if (rmatch == 8) {
    //                 updateUserConfigHTML();
                 } 
@@ -2804,6 +2577,7 @@ var controller = function () {
     
             else
             {
+
                 // Race-Switching
                 enableRace(rmatch, true);
                 changeRace(rmatch);
@@ -2923,10 +2697,6 @@ var controller = function () {
         if (message.gateGroupCounters) {
             r.gatecnt = message.gateGroupCounters;
             lMap.updateMapCheckpoints(r);
-        }
-        if(r.lMap && !EX.getDisplayFlag())
-        {
-            EX.extraMap(r);
         }
         makeRaceStatusHTML();
 
@@ -3809,11 +3579,14 @@ async function initializeMap(race) {
         {
             document.documentElement.setAttribute("data-theme", "dark");
             document.getElementById("rt_close_popupLmap").src = "./img/closedark.png";
+            document.getElementsByClassName("popupCloseBt").src = "./img/closedark.png";
+            
 
         }else
         {
             document.documentElement.setAttribute("data-theme", "light");
             document.getElementById("rt_close_popupLmap").src = "./img/close.png";
+            document.getElementsByClassName("popupCloseBt").src = "./img/close.png";
         }
         drawTheme = document.documentElement.getAttribute("data-theme");
         if(currentRaceId !=0)
@@ -3856,17 +3629,10 @@ async function initializeMap(race) {
         divRecordLog.innerHTML = makeTableHTML();
         cbRawLog = document.getElementById("cb_rawlog");
         divRawLog = document.getElementById("rawlog");
-        // Ajout ---------------------------------------------
         cb2digits = document.getElementById("2digits");
-        selRaceNotif = document.getElementById("sel_raceNotif");
         
-        lbRaceNotif = document.getElementById("sel_raceNotif");
-        lbType1Notif = document.getElementById("sel_type1Notif");
-        lbType2Notif = document.getElementById("sel_type2Notif");
-        lbValNotif = document.getElementById("sel_valNotif");
-        lbMinNotif = document.getElementById("sel_minuteNotif");
-        divNotif = document.getElementById("notif");
-        // Fin ajout ------------------------------------------
+        nf.initialize(lang);
+
         
 
         initRaces();
@@ -3908,7 +3674,7 @@ async function initializeMap(race) {
                 NMEA.stop();
             }
         });
-        EX.initialize();
+        await EX.initialize();
         
 
         drawTheme = document.documentElement.getAttribute("data-theme");
@@ -4008,14 +3774,6 @@ async function initializeMap(race) {
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
-                        //todo save vsr rank                
-                        lMap.set_currentId(currentUserId);
-                        rt.set_currentId(currentUserId);
-                        await DM.getTeamList();
-                        await DM.getPlayerList();
-                        await DM.getRaceList(); 
-                        await DM.getItycPolarHash();
-                        await DM.getRaceOptionsList(raceId);
                         if(!message.leg && race) {
                             var legdata = await DM.getLegInfo(raceId);
                             if(legdata) {
@@ -4023,6 +3781,20 @@ async function initializeMap(race) {
                                 race.legdata = legdata; 
                             } 
                         }
+                        //cleaning map infos to ensure correct redraw at race switch
+                        var previousRace = races.get(currentRaceId);
+                        lMap.cleanMap(previousRace);
+                        if(previousRace.gDiv) delete previousRace.gdiv;
+                        initializeMap(race);
+                                       
+                        lMap.set_currentId(currentUserId);
+                        rt.set_currentId(currentUserId);
+                        await DM.getTeamList();
+                        await DM.getPlayerList();
+                        await DM.getRaceList(); 
+                        await DM.getItycPolarHash();
+                        await DM.getRaceOptionsList(raceId);
+                        
                         if (cbNMEAOutput.checked) {
                             NMEA.setActiveRace(selRace.value);
                             NMEA.stop();
@@ -4784,12 +4556,7 @@ async function initializeMap(race) {
         lMap.hideShowTracks(race);
     }
 
-    function onGuideChange() {
-        var race = races.get(selRace.value);
-        if (!race)  return;
-        EX.onGuideChange(race);
 
-    }
 
 
     function selectLgFR () {
@@ -4834,7 +4601,6 @@ async function initializeMap(race) {
             document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Sélectionné';
             document.getElementById("lbl_inrace").innerHTML = 'En course';
             
-            document.getElementById("lbl_extraLmap").innerHTML = "Cotes";
             document.getElementById("lbl_helpLmap").innerHTML = "Aide";
             document.getElementById("lbl_showMarkersLmap").innerHTML = "Marqueurs";
             document.getElementById("lbl_showTracksLmap").innerHTML = "Traces";
@@ -4849,13 +4615,21 @@ async function initializeMap(race) {
             
             document.getElementById("t_notif2").innerHTML = "Notifications et rappels";
             document.getElementById("t_notif21").innerHTML = 'Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
-            document.getElementById("t_notif22").innerHTML = "Créer une notification :";
-            document.getElementById("t_notif_opt1").innerHTML = "inférieur ou égal";
-            document.getElementById("t_notif_opt2").innerHTML = "supérieur ou égal";
+            document.getElementById("t_notif22").innerHTML = "Paramètres :";
+            document.getElementById("t_notif_opt1").innerHTML = "inférieur";
+            document.getElementById("t_notif_opt2").innerHTML = "inférieur ou égal";
+            document.getElementById("t_notif_opt3").innerHTML = "égal";
+            document.getElementById("t_notif_opt4").innerHTML = "supérieur ou égal";
+            document.getElementById("t_notif_opt5").innerHTML = "supérieur";
             document.getElementById("t_notif23").innerHTML = "à";
-            document.getElementById("t_notif24").innerHTML = "ou un rappel :";
-            document.getElementById("t_notif25").innerHTML = "M'envoyer un rappel dans";
+            document.getElementById("t_notif25").innerHTML = "M'envoyer un rappel dans ";
+            
             document.getElementById("bt_notif").innerHTML = "Créer";
+            document.getElementById("bt_notif2").innerHTML = "Créer";
+            document.getElementById("t_notif_repeat").innerHTML = "Répétition (x3)";
+            document.getElementById("t_notif_repeat2").innerHTML = "Répétition (x3)";
+            
+            
             
             document.getElementById("t_config_g").innerHTML = "General";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
@@ -4919,7 +4693,6 @@ async function initializeMap(race) {
             document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Selected';
             document.getElementById("lbl_inrace").innerHTML = 'Racing';
             
-            document.getElementById("lbl_extraLmap").innerHTML = "Borders";
             document.getElementById("lbl_helpLmap").innerHTML = "Helps";
             document.getElementById("lbl_showMarkersLmap").innerHTML = "Marks";
             document.getElementById("lbl_showTracksLmap").innerHTML = "Tracks";
@@ -4934,13 +4707,21 @@ async function initializeMap(race) {
             
             document.getElementById("t_notif2").innerHTML = "Notifications and recall";
             document.getElementById("t_notif21").innerHTML = 'Select a race : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
-            document.getElementById("t_notif22").innerHTML = "Create a notification :";
-            document.getElementById("t_notif_opt1").innerHTML = "inferior or equal";
-            document.getElementById("t_notif_opt2").innerHTML = "superior or equal";
+            document.getElementById("t_notif22").innerHTML = "Paramètres :";
+            
+            document.getElementById("t_notif_opt1").innerHTML = "inferior";
+            document.getElementById("t_notif_opt2").innerHTML = "inferior or equal";
+            document.getElementById("t_notif_opt3").innerHTML = "equal";
+            document.getElementById("t_notif_opt4").innerHTML = "superior or equal";
+            document.getElementById("t_notif_opt5").innerHTML = "superior";
             document.getElementById("t_notif23").innerHTML = "to";
-            document.getElementById("t_notif24").innerHTML = "or a recall :";
-            document.getElementById("t_notif25").innerHTML = "Send me a recall in";
+            document.getElementById("t_notif25").innerHTML = "Send me a recall in ";
             document.getElementById("bt_notif").innerHTML = "Create";
+            document.getElementById("bt_notif2").innerHTML = "Create";
+            document.getElementById("t_notif_repeat").innerHTML = "Repeat (x3)&nbsp;&nbsp;&nbsp;";
+            document.getElementById("t_notif_repeat2").innerHTML = "Repeat (x3)&nbsp;&nbsp;&nbsp;";
+
+            
             
             document.getElementById("t_config_g").innerHTML = "General";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
@@ -5002,13 +4783,12 @@ async function initializeMap(race) {
         readOptions: readOptions,
         addConfigListeners: addConfigListeners,
         // Ajout ---------------------
-        setNotif: setNotif,
+   //     setNotif: setNotif,
         onRouteListClick :onRouteListClick,
         onAddRoute:onAddRoute,
         onAddRouteLmap:onAddRouteLmap,
         onCleanRoute:onCleanRoute,
         onMarkersChange:onMarkersChange,
-        onGuideChange:onGuideChange,
         onTracksChange:onTracksChange,
         exportPolar:exportPolar,
         exportStamina:exportStamina,
@@ -5062,9 +4842,9 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_exportGraphData").addEventListener("click", controller.exportGraphData);
     
     // Ajout ----------------------------------------------------------------------------
-    document.getElementById("sel_raceNotif").addEventListener("change", controller.changeRace);
+    //document.getElementById("sel_raceNotif").addEventListener("change", controller.changeRace);
    
-    document.getElementById("bt_notif").addEventListener("click", controller.setNotif);
+
     document.addEventListener("click", controller.tableClick);
     document.addEventListener("resize", controller.resize);
 
@@ -5080,7 +4860,6 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_rt_addLmap").addEventListener("click", controller.onAddRouteLmap);
     document.getElementById("lbl_rt_cleanLmap").addEventListener("click", controller.onCleanRoute);
     document.getElementById("lbl_showMarkersLmap").addEventListener("click", controller.onMarkersChange);
-    document.getElementById("lbl_extraLmap").addEventListener("click", controller.onGuideChange);
 
     
     document.getElementById("lbl_showTracksLmap").addEventListener("click", controller.onTracksChange);

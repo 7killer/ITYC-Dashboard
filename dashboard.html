@@ -14,12 +14,13 @@
         <link rel="stylesheet" href="./lib/awesomeMarkers/leaflet.awesome-markers.css">
 
 		        <script src="./lib/leaflet180/leaflet.js"></script>
-                <script src="./lib/jszip/jszip.min.js"></script>
+                <script src="./lib/jszip/jszip.js"></script>
         <script src="./lib/awesomeMarkers/leaflet.awesome-markers.js"></script>
         <script src="./lib/polylineDecorator/leaflet.polylineDecorator.js"></script>
         <script src="./lib/rotatedMarkers/leaflet.rotatedMarker.js"></script>
         <script src="./lib/geodesicLine/leaflet.geodesic.umd.min.js"></script>
         <script src="./lib/gpxParser/GPXParser.min.js"></script>
+        <script src="./lib/md5/md5.min.js"></script>
         <script src="./js/stamina.js"></script>
       <script src="./lib/chartjs/chart380.js"></script>
         <script type="module" src="./js/dashboard.js"></script>
@@ -180,8 +181,6 @@
     <div id="tab-content3" class="content hidden">
         <div id="mapfilterLmap">
             <div id="extraLmap" class="mapBtDiv">
-                <input type="checkbox" id="sel_extraLmap" name="button52" class="content hidden">
-                <label for:"sel_extraLmap" id="lbl_extraLmap">Cotes</label>  
                 <input type="button" id="sel_helpLmap" name="button4" checked class="content hidden">
                 <label for:"sel_helpLmap" id="lbl_helpLmap">Aide</label>
             </div>
@@ -301,33 +300,52 @@
         </table>    
     </div>
     <div id="tab-content6" class="content hidden">
-        <div class="shadowbox" style="margin-top:50px">
-            <H3 id="t_notif2">Notifications et rappels</H3>
+        <div class="shadowbox" style="margin-top:40px">
+            <H3 id="t_notif2" style="margin-top:0px">Notifications</H3>
             <P id="t_notif21">Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif">
                 <option>---</option>                
                 </select></P>
-            <p id="t_notif22">Créer une notification :</p>
+            <p id="t_notif22">Paramètres :</p>
             <select id="sel_type1Notif" name="twa" class="notif">
-                <option>---</option>
-                <option>TWA</option>
-                <option>HDG</option>
-                <option>TWS</option>
-                <option>TWD</option>
+                <option value="0">---</option>
+                <option value="1">TWA</option>
+                <option value="2">HDG</option>
+                <option value="3">TWS</option>
+                <option value="4">TWD</option>
+                <option value="5">STAMINA</opton>
             </select>
             <select id="sel_type2Notif" name="type" class="notif">
                 <option>---</option>
-                <option id="t_notif_opt1">inférieur ou égal</option>
-                <option id="t_notif_opt2">supérieur ou égal</option>
+                <option value ="inf"     id="t_notif_opt1">inférieur</option>
+                <option value ="infegal" id="t_notif_opt2">inférieur ou égal</option>
+                <option value ="egal"    id="t_notif_opt3">égal</option>
+                <option value ="supegal" id="t_notif_opt4">supérieur ou égal</option>
+                <option value ="sup"     id="t_notif_opt5">supérieur</option>
             </select>
             <label class="notif" id="t_notif23">à</label>
             <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif" style="width:50px">
             (1 digit).<br>
-            <P  id="t_notif24">ou un rappel :</P>
-            <p id="t_notif25">M'envoyer un rappel dans</P>
-            <input type="number" id="sel_minuteNotif" name="minute" min="10" max="900" step="5" class="notif" style="width:50px"> minutes.
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p class="notifBorderBottom ">
+                <input type="checkbox" id="notif_repeat" checked>
+            <label id="t_notif_repeat" class="notif">Répétition (x3)</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button id="bt_notif" style="font-size:14px">Créer</button>
+        </p>
+
             
+            <H3 id="t_notif2" style="margin-top:0px">Rappels</H3>
+
+            <p class="notif"><label  id="t_notif25" >M'envoyer un rappel dans</label>
+            <input type="number" id="sel_minuteNotif" name="minute" min="10" max="900" step="5" class="notif" style="width:50px"><label  id="t_notif25b" > minutes.</label>
+            </p>
+            <input type="checkbox" id="notif_repeat2" checked>
+            <label id="t_notif_repeat2" class="notif">Répétition (x3)</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="bt_notif2" style="font-size:14px">Créer</button>
+
+        </P>
             
             
         </div>

@@ -1,5 +1,3 @@
-
-
 /*************************************** TEAM LIST MANAGEMENT ***************************************/
     const teamModel = {
         teamId : "",
@@ -481,8 +479,6 @@ async function saveLegInfo(races) {
         }
     }); 
 
-
-
     /*clear data after 24h*/
     rList.forEach(async function(rid) {
         var saveTs = await getLocal("race_"+rid+"ts",Date.now());
@@ -521,7 +517,6 @@ async function saveLegInfo(races) {
         }
     });
 }
-
 
 async function getLegInfo(race) {
     return await getLocal("race_"+race.id);

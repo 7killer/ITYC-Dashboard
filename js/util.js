@@ -82,6 +82,18 @@ function formatHMS (seconds) {
     return pad0(hours) + "h" + pad0(minutes) + "m"; // + seconds + "s";
 }
 
+
+function formatTimeNotif(ts) {
+    var tsOptions = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: false
+    };
+    var d = (ts) ? (new Date(ts)) : (new Date());
+    return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
+}
+
+
 function formatPosition(lat, lon) {
     var latDMS = toDMS(lat);
     var lonDMS = toDMS(lon);
@@ -484,7 +496,7 @@ export { angle,
          toDMS,
          toRad,
          genth,gentd,formatDateTable,
-         sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,
+         sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
          formatShortDate,readTextFile,cpy2Clipbord,sailId2Color
        };
 

@@ -783,19 +783,23 @@ thead.sticky th {
     margin:auto; /* Pour centrer lat�ralement global dans body */
     font-size: 12px;
     font-weight: bold;
-    width: 390px;
-    height: 190px;
+    width: 30em;
+    height: 21em;
     border: 1px solid #333;
     border-radius:10px;
     box-shadow: 8px 8px 5px #444;
     padding: 8px 12px;
     background-image: var(--popup_bg_img);
 }
+.notifBorderBottom {
+    border-bottom: var(--th_border);
+    padding-bottom: 0.4em;
+}
 
 .box2 {
     margin:auto; /* Pour centrer lat�ralement global dans body */
     font-size: 15px;
-    width: 580px;
+    width: 680px;
     height: auto;
     border: 1px solid #333;
     padding: 8px 12px;
@@ -993,9 +997,16 @@ thead.sticky th {
     background-image: var(--popup_bg_img);
     position: absolute;
 }
+
+.popupCloseBt{
+    width : 3%;
+    height: 3%;
+    float : right;
+    /*padding-left : 50%;*/
+}
+
 #rt_close_popup, #rt_close_popupLmap{
     width : 5%;
-    width: 5%;
     height: 5%;
     padding-left: 70%;
 

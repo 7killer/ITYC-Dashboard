@@ -167,7 +167,6 @@ function formatIIHDT (m) {
     s += "," + m.heading.toFixed(5) + ",T";
     return s;
 }
-
 function formatRPM (m) {
     // $IIRPM Revolutions used to send stamina
     var s = "IIRPM";
@@ -180,7 +179,6 @@ function formatRPM (m) {
     s += ",A"
     return s;
 }
-
 function formatNMEALatLon (l, len) {
     var deg = Math.trunc(l);
     var min = Util.pad0(((l - deg) * 60).toFixed(6), 9);
@@ -329,7 +327,7 @@ function bitArray2ASCII (bitArray) {
             }
         }
     }
-    
+
     // * Convert
     // Pad the bitArray to a round length of 6 bits
     bitArray += longToBitArray(0, 6 - (bitArray.length % 6));
