@@ -3499,6 +3499,12 @@ async function initializeMap(race) {
         tracksState = await getOption("sel_showTracksLmap",true);
         
         switchTheme();
+        lang = await getLocal('dash_lang');
+        if (lang == undefined) {
+            lang = "fr";
+            saveLocal("dash_lang",lang);
+        }
+        translateDash();
 
         await DM.getTeamList();
         await DM.getPlayerList();
@@ -4559,16 +4565,19 @@ async function initializeMap(race) {
 
 
 
-    function selectLgFR () {
+    async function selectLgFR () {
         lang = "fr";
+        saveLocal("dash_lang",lang);
         translateDash();
     }
     function selectLgEN () {
         lang = "EN";
+        saveLocal("dash_lang",lang);
         translateDash();
     }
     function selectLgES () {
         lang = "es";
+        saveLocal("dash_lang",lang);
         translateDash();
     }
     
