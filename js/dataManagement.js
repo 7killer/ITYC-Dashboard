@@ -498,23 +498,27 @@ async function saveLegInfo(races) {
     raceOptionsList.knowRaceOpt.forEach(async function(idx) {
         let raceExist = false;
         let rid = raceOptionsList.knowRaceOpt[idx];
-        rList.find((value, index) => {
-            if (value === rid) {
-              raceExist = true;
-            }    
-        });
-        if(raceExist == false) {
-            delete raceOptionsList.race[rid];
-            raceOptionsList.knowRaceOpt.find((value, index) => {
+        if(rid)
+        {
+            rList.find((value, index) => {
                 if (value === rid) {
-                  delete raceOptionsList.knowRaceOpt[index];
-                }
+                  raceExist = true;
+                }    
             });
-
-            await clearLocal("RPO_"+rid);
-            await clearLocal("RPO_"+rid+"ts"); 
-            await saveLocal("RPOList",raceOptionsList.knowRaceOpt);    
+            if(raceExist == false) {
+                delete raceOptionsList.race[rid];
+                raceOptionsList.knowRaceOpt.find((value, index) => {
+                    if (value === rid) {
+                      delete raceOptionsList.knowRaceOpt[index];
+                    }
+                });
+    
+                await clearLocal("RPO_"+rid);
+                await clearLocal("RPO_"+rid+"ts"); 
+                await saveLocal("RPOList",raceOptionsList.knowRaceOpt);    
+            }
         }
+        
     });
 }
 

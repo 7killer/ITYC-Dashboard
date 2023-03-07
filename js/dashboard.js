@@ -3752,7 +3752,7 @@ async function initializeMap(race) {
     }
 
 
-    async function handleBoatInfo (message)  {
+    async function handleBoatInfo (requestData, message)  {
         if (message) {
             if (cbRawLog.checked) {
                 divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
@@ -3775,13 +3775,13 @@ async function initializeMap(race) {
                 if (message.bs) {
                     var raceId = getRaceLegId(message.bs._id);
                     var race = races.get(raceId);
-                    if (!currentUserId && message.bs.last_seen_rank) {
+                    if (!currentUserId &&  requestData.user_id == message.bs._id.user_id) { // it s the connected player!
                         //dashboard has been start with race openned, do full init
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
                         if(!message.leg && race) {
-                            var legdata = await DM.getLegInfo(raceId);
+                            var legdata = await DM.getLegInfo(race);
                             if(legdata) {
                                 message.leg = legdata; //to fake isFirstBoatInfo
                                 race.legdata = legdata; 
@@ -3789,8 +3789,11 @@ async function initializeMap(race) {
                         }
                         //cleaning map infos to ensure correct redraw at race switch
                         var previousRace = races.get(currentRaceId);
-                        lMap.cleanMap(previousRace);
-                        if(previousRace.gDiv) delete previousRace.gdiv;
+                        if(previousRace)
+                        {
+                            lMap.cleanMap(previousRace);
+                            if(previousRace.gDiv) delete previousRace.gdiv;    
+                        }
                         initializeMap(race);
                                        
                         lMap.set_currentId(currentUserId);
@@ -4484,7 +4487,7 @@ async function initializeMap(race) {
                 else {
                     var event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
                     if (event == 'getboatinfos') {
-                        handleBoatInfo(body.res);
+                        handleBoatInfo(postData, body.res);
                     } else if (event == 'getfleet') {
                         handleFleet(postData, body.res);
                     } else if (event == 'getlegranks') {
