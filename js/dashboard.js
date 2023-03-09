@@ -1097,6 +1097,7 @@ var controller = function () {
                 + Util.genth("th_psn", "Position", undefined)
                 + Util.genth("th_options", "Options", "Options according to Usercard",  Util.sortField == "xoption_options", Util.currentSortOrder)
                 + Util.genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", Util.sortField == "state", Util.currentSortOrder)
+                + Util.genth("th_remove", "", "Remove selected boats from the fleet list", undefined)
                 + '</tr>';
         }
         function makeFriendListLine(uid) {
@@ -1344,6 +1345,7 @@ var controller = function () {
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
                         + Util.gentd("State", "", txtTitle, iconState)
+                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""), false)
                         + '</tr>';
                 }
             }
@@ -1362,6 +1364,8 @@ var controller = function () {
                 + '</tbody>'
                 + '</table>';
             divFriendList.innerHTML = fleetHTML;
+
+            addEventListenersToRemoveSelectedBoatButtons();
         }
     }
 
@@ -3512,6 +3516,22 @@ async function initializeMap(race) {
         await DM.getItycPolarHash();
         
         updateUserConfig();
+    }
+
+    function addEventListenersToRemoveSelectedBoatButtons() {
+        document.querySelectorAll('.removeSelectedBoat').forEach(function(e) {
+          e.addEventListener('click', function() {
+            const boatId = this.getAttribute('data-id');
+            removeSelectedBoatFromFleet(boatId);
+          });
+        });
+    }
+    function removeSelectedBoatFromFleet(boatId) {
+        //const targetedBoat = Object.values(raceFleetMap.uinfo).find(uinfo => uinfo === boatId);
+        var race = races.get(selRace.value);
+        var fleet = raceFleetMap.get(race.id);
+        fleet.uinfo[boatId].choice = false;
+        updateFleetHTML(raceFleetMap.get(selRace.value));
     }
 
     function addConfigListeners() {

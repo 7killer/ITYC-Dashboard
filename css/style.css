@@ -264,6 +264,18 @@ td.tdc {
     cursor: pointer;
 }
 
+#th_remove {
+    width: 25px;
+    padding: 0px;
+}
+td.remove {
+    padding: 0px;
+    text-align: center;
+}
+td.remove span {    
+    cursor: pointer;
+}
+
 td.xfactor, td.rank, td.foils, td.deltaD, td.deltaT {
     text-align: right;
 }

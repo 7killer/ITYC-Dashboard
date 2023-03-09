@@ -195,10 +195,12 @@ function genth(id, content, title, sortfield, sortmark) {
     }
 }
 
-function gentd(name, style,title, value) {
-    var checkboxId = "fleet_" + name.toLowerCase();
-    var checkBox = document.getElementById(checkboxId);
-    if (checkBox.checked ) {
+function gentd(name, style,title, value, noCheckBox = true) {
+    if (noCheckBox) {
+        var checkboxId = "fleet_" + name.toLowerCase();
+        var checkBox = document.getElementById(checkboxId);
+    }
+    if (!noCheckBox || checkBox.checked ) {
         return '<td class="' + name + '" ' 
                             + style 
                             + (title ? (' title="' + title + '"') : "")
