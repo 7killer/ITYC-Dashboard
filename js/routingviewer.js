@@ -693,36 +693,7 @@ function onMarkersChange(race) {
 }
 function updateRouteListHTML()
 {
-
     var tableBody =  '<tbody>';
-
-    var routeList = myRoute[currentRace.id];
-    if(routeList) {
-        Object.keys(routeList).forEach(function (name) {
-            tableBody += '<tr class="rt_lst_line">';
-                tableBody += '<td class="rt_lst_name noBorderElt">';
-                    tableBody += '<input type="checkbox" id="';
-                    tableBody += 'sel_rt_name:'+name;
-                    tableBody += '" name="checkbox3" class="content hidden"';
-                    if(routeList[name].displayed) tableBody += 'checked';
-                    tableBody += '>';
-
-                    tableBody += '<label for:"'+'sel_rt_name:'+name + '" id="'+'lbl_rt_name:'+name +'">'; 
-                    tableBody += routeList[name].displayedName +'</label>';
-                tableBody += '</td>'    
-            tableBody += '<td class="rt_lst_color noBorderElt">';
-                tableBody += '<input  type="color" id="color_rt_name:'+name +'" value="';
-                tableBody += routeList[name].color +'">';
-            tableBody += '</td>'
-            tableBody += '</tr>'
-
-        });
-    }
- 
-    tableBody +=  '</tbody>';
-    document.getElementById("route_list_tableLmap").innerHTML = tableBody;
-
-    tableBody =  '<tbody>';
 
     var routeList = myRoute[currentRace.id];
     if(routeList) {
