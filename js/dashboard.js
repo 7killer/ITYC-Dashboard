@@ -576,16 +576,16 @@ var controller = function () {
         let rvUrl = ""; 
         if(!currentUserId ) {
             if(lang ==  "fr") {
-                raceLine ="<tr><td>Joueur non détecté</td></tr>";
+                raceLine ="<tr><td colspan='22'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com'>Relancer</a>)</td></tr>";
             } else {
-                raceLine ="<tr><td>Player not detected</td></tr>";    
+                raceLine ="<tr><td colspan='22'>❌ Player not detected (<a href='https://www.virtualregatta.com'>Reload</a>)</td></tr>";    
             }
         } else if(r == undefined || r.curr == undefined ||((welcomePage))) {
             if(lang ==  "fr") {
-                raceLine ='<tr><td colspan="10">Joueur détecté: '+ currentUserName +'</td><td colspan="8"> Pas de course chargée</td></tr>';
+                raceLine ='<tr><td colspan="22">❌ Aucune course chargée (Joueur détecté: '+ currentUserName +')</td></tr>';
             } else
             {
-                raceLine ='<tr><td colspan="10">Player detected: '+ currentUserName +'</td><td colspan="8"> No race loaded</td></tr>';            
+                raceLine ='<tr><td colspan="22">❌ No race loaded (Player detected: '+ currentUserName +')</td></tr>';            
             }
         } else  {
             let p=  raceFleetMap.get(r.id).uinfo[currentUserId];

@@ -935,6 +935,9 @@ thead.sticky th {
     margin-right: 2%;
 }
 
+#lbl_helpLmap {
+    width: 100%
+}
 
 .rt_lst_name>label  {
     display: block;

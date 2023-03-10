@@ -219,7 +219,7 @@ function drawDashBoardInstalled()
     + '<tr><th>ITYC Dashboard</th></tr>'
     + '</thead>'
     + '<tbody>'
-    + '<tr><td>Pas de dashboard détectée / No dashboard detected </td></tr>'
+    + '<tr><td>❌ Pas de dashboard détectée / No dashboard detected</td></tr>'
     + '</tbody>'
     + '</table>';
     let ourDiv = document.getElementById('dashInteg');
