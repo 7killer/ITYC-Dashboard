@@ -168,30 +168,37 @@ function isDisplayEnabled (record, uid) {
 }
 
 
-function buildMarker( latlng, icond,title, zi, op,heading)
+function buildMarker( pos, layer, icond,title, zi, op,heading)
 { 
-    if(!heading) heading=0;
-    if(heading == 180) heading = 179.9; //or boat icon are drawn at 0° when 180° :s
-    var marker1 = L.marker(latlng,{icon:icond,rotationAngle: heading/2});
-    if(op) marker1.opacity = op;
-    if(zi)  marker1.zIndexOffset = zi;
-    if(title)
+    var ret = [];
+    for(var i=0;i<pos.length;i++)
     {
-
-        marker1.bindPopup(title);    
-        marker1.on('mouseover', function(e){
-            e.target.bindPopup(title).openPopup();
+    /*    if(pos.lng > -270 && pos.lng < 270)*/
+        {
+            if(!heading) heading=0;
+            if(heading == 180) heading = 179.9; //or boat icon are drawn at 0° when 180° :s
+            var marker1 = L.marker(pos[i],{icon:icond,rotationAngle: heading/2});
+            if(op) marker1.opacity = op;
+            if(zi)  marker1.zIndexOffset = zi;
+            if(title)
+            {
         
-            });        
+                marker1.bindPopup(title);    
+                marker1.on('mouseover', function(e){
+                    e.target.bindPopup(title).openPopup();
+                
+                    });        
+                marker1.on('mouseout', function(e){  
+                    e.target.closePopup();
+                
+                });
+            }
+            marker1.addTo(layer);
+            ret.push(marker1);
+        }
         
-        marker1.on('mouseout', function(e){  
-            e.target.closePopup();
-        
-        });
-    }
-   // marker1._icon.setAttribute('data-heading', heading);
-                        
-    return marker1;
+    }                   
+    return ret;
 }
 
 function buildTextIcon(icon,iconColor,markerColor,text)
@@ -224,62 +231,105 @@ function buildBoatIcon(fillColor,borderColor,opacity)
     });
 }
 
-function buildCircle(latlng,trackcolor,size,opacity,title)
+function buildCircle( pos, layer,trackcolor,size,opacity,title)
 {
-    var circleMark = L.circleMarker(latlng,
-        {radius : size,
-        color: trackcolor,
-        fillColor: trackcolor,
-        fillOpacity: opacity
-    });
-    if(title && title != '')
+    var ret = [];
+    for(var i=0;i<pos.length;i++)
     {
-        circleMark.bindPopup(title);    
-        circleMark.on('mouseover', function(e){
-            e.target.bindPopup(title).openPopup();
-            });        
-        
-        circleMark.on('mouseout', function(e){  
-            e.target.closePopup();
-        
-        });
-    }
-    return circleMark;
-}
-
-function buildCircleEndRace(latlng, trackcolor, size)
-{
-    var circleMark = L.circle(latlng, {
-        color: trackcolor,
-        weight: 2,
-        fill: false,
-        radius: size,
-    });
-    return circleMark;
-}
-
-function buildTrace (tpath, color,weight,opacity,dashArray,dashOffset) {
-
-    var trackLine = L.geodesic(tpath,
+    /*    if(pos.lng > -270 && pos.lng < 270)*/
         {
-            color: color,
-            opacity: opacity,
-            weight: weight,
-            wrap: false
-        });
-    if(dashArray) trackLine.options.dashArray = dashArray;
-    if(dashOffset) trackLine.options.dashOffset = dashOffset;
-    trackLine.on('mouseover', function() {
-        trackLine.setStyle({
-            weight: opacity*2,
-        });
-    });
+            var circleMark = L.circleMarker(pos[i],
+                {radius : size,
+                color: trackcolor,
+                fillColor: trackcolor,
+                fillOpacity: opacity
+            });
+            if(title && title != '')
+            {
+                circleMark.bindPopup(title);    
+                circleMark.on('mouseover', function(e){
+                    e.target.bindPopup(title).openPopup();
+                    });        
+                
+                circleMark.on('mouseout', function(e){  
+                    e.target.closePopup();
+                
+                });
+            }
+            circleMark.addTo(layer);
+            ret.push(circleMark);
+        }       
+    }            
+    return ret;
+}
 
-    trackLine.on('mouseout', function() {
-        trackLine.setStyle({
-            weight: opacity,
-        });
-    });
+function buildCircleEndRace(pos, layer, trackcolor, size)
+{
+    var ret = [];
+    for(var i=0;i<pos.length;i++)
+    {
+    /*    if(pos.lng > -270 && pos.lng < 270)*/
+        {
+            var circleMark = L.circle(pos[i], {
+                color: trackcolor,
+                weight: 2,
+                fill: false,
+                radius: size,
+            });        
+            circleMark.addTo(layer);
+            ret.push(circleMark);
+        }
+
+    }            
+    return ret;
+}
+
+function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset) {
+
+    for(var i=0;i<tpath.length;i++)
+    {
+        var path = [];
+        path[0] = [];
+        path[1] = [];
+        path[2] = [];
+        var trackLine = [];
+        var nbTrackLine = 0;
+        
+        for(var j=0;j<tpath[i].length;j++)
+        {
+            var pos = buildPt2(tpath[i][j].lat,tpath[i][j].lng);
+            /*if(pos.lng > -270) */path[0].push(pos[0]);
+            path[1].push(pos[1]);
+           /* if(pos.lng < 270)*/ path[2].push(pos[2]);
+            race.lMap.refPoints.push(pos[1]);
+        }
+        for(var k=0;k<path.length;k++)
+        {
+            var trackLineP = L.geodesic(path[k],
+            {
+                color: color,
+                opacity: opacity,
+                weight: weight,
+                wrap:false
+            });
+            if(dashArray) trackLineP.options.dashArray = dashArray;
+            if(dashOffset) trackLineP.options.dashOffset = dashOffset;
+            trackLineP.on('mouseover', function() {
+                trackLineP.setStyle({
+                    weight: opacity*2,
+                });
+            });
+        
+            trackLineP.on('mouseout', function() {
+                trackLineP.setStyle({
+                    weight: opacity,
+                });
+            });
+            trackLine[nbTrackLine] = trackLineP;
+            trackLine[nbTrackLine].addTo(layer);
+            nbTrackLine++;
+        }
+    }
     return trackLine;
 
 }
@@ -384,14 +434,67 @@ function cleanMap(race) {
 
 function buildPt(lat,lon)
 {
-    var ptCorr = lon;
+    /*var ptCorr = lon;
     var lPt = L.latLng(lat,ptCorr);
     if(ptCorr<0) 
     {
         ptCorr = ptCorr+360;     
         lPt = L.latLng(lat,ptCorr,true);       
+    }*/
+    return L.latLng(lat,lon);
+}
+
+
+function buildPt2(lat,lon)
+{
+    /*var ptCorr = lon;
+    var lPt = L.latLng(lat,ptCorr);
+    if(ptCorr<0) 
+    {
+        ptCorr = ptCorr+360;     
+        lPt = L.latLng(lat,ptCorr,true);       
+    }*/
+    var ret = [];
+    ret[0] =  L.latLng(lat,lon-360,true);
+    ret[1] =  L.latLng(lat,lon);
+    ret[2] =  L.latLng(lat,lon+360,true);
+    return ret;
+}
+
+function buildPath(path,initLat,initLng,finishLat,finshLng)
+{
+
+    var cpath = [];
+    var cpathNum = 0;
+    cpath[cpathNum] = [];
+    var pos;
+    if(initLat && initLng)
+    {
+        pos= buildPt(initLat, initLng);
+        cpath[cpathNum].push(pos);   
     }
-    return lPt;
+    pos= buildPt(path[0].lat, path[0].lon);
+    cpath[cpathNum].push(pos);
+
+    if(path.length >1)
+        for (var i = 1; i < path.length; i++) {
+
+            if((path[i-1].lon > 0 && path[i].lon < 0)
+            || (path[i].lon > 0 && path[i-1].lon < 0))
+            {//antimeridian crossing
+                cpathNum++;
+                cpath[cpathNum] = [];
+                continue; //best is build the 2 parts path to track gap
+            }
+            pos = buildPt(path[i].lat, path[i].lon);
+            cpath[cpathNum].push(pos);
+        }
+    if(finishLat && finshLng)
+    {
+        pos= buildPt(finishLat, finshLng);
+        cpath[cpathNum].push(pos);   
+    }    
+    return cpath;
 }
 
 async function initialize(race,raceFleetMap)
@@ -406,8 +509,6 @@ async function initialize(race,raceFleetMap)
         {
             var mapcenter = map.getCenter();
             var lon = mapcenter.lng; 
-            if(lon > 180 ) lon = lon - 360;
-            if( lon < -180) lon = lon + 360;
             EX.loadBorder(race,mapcenter.lat,lon);
         }
     }
@@ -528,53 +629,42 @@ async function initialize(race,raceFleetMap)
             var title1 = "Start: " + race.legdata.start.name 
                         + "\nPosition: " + Util.formatPosition(race.legdata.start.lat, race.legdata.start.lon);
           
-            var latlng = buildPt(race.legdata.start.lat,race.legdata.start.lon);
-            buildMarker(latlng,buildTextIcon('','blue','red',"S"),title1,0).addTo(race.lMap.refLayer);
-
-            
-            race.lMap.refPoints.push(latlng);
+            var latlng = buildPt2(race.legdata.start.lat,race.legdata.start.lon);
+            buildMarker(latlng,race.lMap.refLayer,buildTextIcon('','blue','red',"S"),title1,0);
+            race.lMap.refPoints.push(latlng[1]);
             
             title1 =  "<span>Finish: " + race.legdata.end.name 
                 + "\nPosition: " + Util.formatPosition(race.legdata.end.lat, race.legdata.end.lon) +"</span>";
-            latlng = buildPt(race.legdata.end.lat,race.legdata.end.lon);
-            buildMarker(latlng,buildTextIcon('','yellow','red',"F"),title1,0).addTo(race.lMap.refLayer);
-            race.lMap.refPoints.push(latlng);
+            latlng = buildPt2(race.legdata.end.lat,race.legdata.end.lon);
+            buildMarker(latlng,race.lMap.refLayer,buildTextIcon('','yellow','red',"F"),title1,0);
+            race.lMap.refPoints.push(latlng[1]);
             
 
-            buildCircleEndRace(latlng, 'red', race.legdata.end.radius * 1852.0).addTo(race.lMap.refLayer);
+            buildCircleEndRace(latlng,race.lMap.refLayer, 'red', race.legdata.end.radius * 1852.0);
 
                 
                 
             // course
-            var cpath = [];
-            for (var i = 0; i < race.legdata.course.length; i++) {
-                latlng = buildPt(race.legdata.course[i].lat, race.legdata.course[i].lon);
-                race.lMap.refPoints.push(latlng);
-                cpath.push(latlng);
-            }
-            //turf.bezierSpline( turf.lineString(cpath));
-            
-            var raceLine = L.geodesic(cpath,
-                            {
-                                color: "white",
-                                opacity: 0.5,
-                                weight: 1,
-                                wrap: false
-                            }).addTo(race.lMap.refLayer);
-            
-            var raceLinePatterns = L.polylineDecorator(raceLine, {
+
+
+            var cpath = buildPath(race.legdata.course);
+            var raceLine = buildTrace(cpath,race.lMap.refLayer,race,"white",1,0.5);
+            for(var i=0;i<raceLine.length;i++) 
+            {
+                L.polylineDecorator(raceLine[i], {
                     patterns: [
                         {offset: '5%', repeat: '10%', symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {fillOpacity: 0.5, weight: 1, color :'white'}})}
                     ]
                 }).addTo(race.lMap.refLayer);
-                
-                
-
-
+            }
+    
             //  Ice limits
 
             if (race.legdata.ice_limits) {
                 var iceLimit = [];
+                iceLimit[0] = []
+                iceLimit[1] = []
+                iceLimit[2] = []
                 var iceData = race.legdata.ice_limits.south;
                 if(!(iceData.length == 5 
                     && iceData[0].lat == -90 && iceData[0].lon == -180
@@ -582,17 +672,12 @@ async function initialize(race,raceFleetMap)
                     && iceData[4].lat == -90 && iceData[4].lon == 180
                     )) //is not a dummy ice limits ;)
                 {
-                
-                    for (var i = 0; i < iceData.length; i++) {
-                        latlng = buildPt(iceData[i].lat, iceData[i].lon);
-                        race.lMap.refPoints.push(latlng);
-                        iceLimit.push(latlng);
-                    }
-                    buildTrace(iceLimit, "#FF0000",4,0.5).addTo(race.lMap.refLayer);
+                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",4,0.5);
                 }
             }
 
             race.lMap.refLayer.addTo(map);
+
 
             updateBounds(race);
             updateMapCheckpoints(race);
@@ -618,7 +703,16 @@ async function initialize(race,raceFleetMap)
             set_userCustomZoom(false);
             map.on('zoomend',set_userCustomZoom);
 
-            
+
+           var bounds =
+            [
+                [-89.98155760646617, -270],
+                [89.99346179538875, 270]
+            ];
+            map.setMaxBounds(bounds);
+            map.on('drag', function() {
+                map.panInsideBounds(bounds, { animate: false });
+            });
             
             lMapInfos = race.lMap;
         }
@@ -660,8 +754,8 @@ function updateMapCheckpoints(race) {
         var cp_name = "invisible";
         if (cp.display != "none") cp_name = cp.display;
 
-        var position_s = buildPt(cp.start.lat, cp.start.lon);
-        var position_e = buildPt(cp.end.lat, cp.end.lon);
+        var position_s = buildPt2(cp.start.lat, cp.start.lon);
+        var position_e = buildPt2(cp.end.lat, cp.end.lon);
     
         var c_sb = "green";
         var c_bb = "red";
@@ -689,80 +783,75 @@ function updateMapCheckpoints(race) {
             if (cp.side == "stbd") {
        
                 if(!g_passed) {
-                    buildMarker(position_s, greenRRIcon, label_s, 8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, redRLIcon, label_e, 8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, greenRRIcon, label_s, 8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIcon, label_e, 8, op,0);
                 } else
                 {
-                    buildMarker(position_s, greenRRIconP, label_s, 8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, redRLIconP, label_e, 8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, greenRRIconP, label_s, 8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIconP, label_e, 8, op,0);
                 
                 }
             } else {
                 if(!g_passed) {
-                    buildMarker(position_s, redRLIcon, label_s, 8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, greenRRIcon,  label_e, 8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, redRLIcon, label_s, 8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIcon,  label_e, 8, op,0);
                 } else
                 {
-                    buildMarker(position_s, redRLIconP, label_s, 8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, greenRRIconP,  label_e, 8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, redRLIconP, label_s, 8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIconP,  label_e, 8, op,0);
 
                 }
             }
         } else if (cp.display == "gate") {
             if (cp.side == "stbd") {
                 if(!g_passed) {
-                    buildMarker(position_s, greenRRIcon, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, redRLIcon, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, greenRRIcon, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIcon, label_s,  8, op,0);
                 } else
                 {
-                    buildMarker(position_s, greenRRIconP, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, redRLIconP, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, greenRRIconP, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIconP, label_s,  8, op,0);
 
                 }
             } else {
                 if(!g_passed) {
-                    buildMarker(position_s, redRLIcon, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, greenRRIcon, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, redRLIcon, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIcon, label_s,  8, op,0);
                 } else
                 {
-                    buildMarker(position_s, redRLIconP, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
-                    buildMarker(position_e, greenRRIconP, label_s,  8, op,0).addTo(race.lMap.checkPointLayer);
-
+                    buildMarker(position_s, race.lMap.checkPointLayer, redRLIconP, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIconP, label_s,  8, op,0);
                 }
                 
             }
         } else {
             if (cp.side == "stbd") {
                 if(!g_passed) {
-                    buildMarker(position_s, yellowRRIcon, label_s, zi, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRRIcon, label_s, zi, op,0);
                 } else
                 {
-                    buildMarker(position_s, yellowRRIconP, label_s, zi, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRRIconP, label_s, zi, op,0);
 
                 }
             } else {
                 if(!g_passed) {
-                    buildMarker(position_s, yellowRLIcon, label_s, zi, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRLIcon, label_s, zi, op,0);
                 } else
                 {
-                    buildMarker(position_s, yellowRLIconP, label_s, zi, op,0).addTo(race.lMap.checkPointLayer);
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRLIconP, label_s, zi, op,0);
 
                 }
             }
         }
         
-        race.lMap.refPoints.push(position_e);
-        race.lMap.refPoints.push(position_s);
+        race.lMap.refPoints.push(position_e[1]);
+        race.lMap.refPoints.push(position_s[1]);
 
-        var path = [];
-        path.push(position_e);
-        path.push(position_s);
+        
         var pathColor = "yellow";
         if(g_passed) pathColor = "green";
-        buildTrace(path, pathColor,1,op,'20, 20','10').addTo(race.lMap.checkPointLayer);
-
-
-            
+        
+        buildTrace([position_e[1],position_s[1]],race.lMap.checkPointLayer,race,pathColor,1,op,'20, 20','10');   
     }
     race.lMap.checkPointLayer.addTo(map); 
     if(!race.lMap.userZoom) updateBounds(race);
@@ -787,37 +876,35 @@ function updateMapWaypoints(race) {
     
     // track wp
     var tpath = [];
+    tpath[0] = [];
+    tpath[1] = [];
+    tpath[2] = [];
+
     if (race.waypoints && race.waypoints.type == "wp") {
         var action = race.waypoints;
         if (action.pos) {
             // Waypoint lines
-            tpath.push(buildPt(race.curr.pos.lat, race.curr.pos.lon)); // boat
-            for (var i = 0; i < action.pos.length; i++) {
-                tpath.push(buildPt(action.pos[i].lat, action.pos[i].lon));
-            }
-            buildTrace(tpath,"#FF00FF",1.5,0.7).addTo(race.lMap.wayPointLayer);
+            var cpath = buildPath(action.pos,race.curr.pos.lat, race.curr.pos.lon);
+            buildTrace(cpath,race.lMap.wayPointLayer,race,"#FF00FF",1.5,0.7);
 
             // Waypoint markers
             for (var i = 0; i < action.pos.length; i++) {
-                var pos = buildPt(action.pos[i].lat, action.pos[i].lon);
+                var pos = buildPt2(action.pos[i].lat, action.pos[i].lon);
                 var title = Util.formatPosition(action.pos[i].lat, action.pos[i].lon);
-                buildCircle(pos,"#FF00FF", 2,1, title).addTo(race.lMap.wayPointLayer);
-                race.lMap.refPoints.push(pos);
+                buildCircle(pos,race.lMap.wayPointLayer,"#FF00FF", 2,1, title)
+                race.lMap.refPoints.push(pos[1]);
              }
         } else if (action.length) {
             // Waypoint lines
-            tpath.push(buildPt(race.curr.pos.lat, race.curr.pos.lon)); // boat
-            for (var i = 0; i < action.length; i++) {
-                tpath.push(buildPt(action[i].lat, action[i].lon));
-            }
-            buildTrace(tpath,"#FF00FF",1.5,0.7).addTo(race.lMap.wayPointLayer);
 
+            var cpath = buildPath(action,race.curr.pos.lat, race.curr.pos.lon);
+            buildTrace(cpath,race.lMap.wayPointLayer,race,"#FF00FF",1.5,0.7);
             // Waypoint markers
             for (var i = 0; i < action.length; i++) {
-                var pos = buildPt(action[i].lat, action[i].lon);
+                var pos = buildPt2(action[i].lat, action[i].lon);
                 var title = Util.formatPosition(action[i].lat, action[i].lon);
-                buildCircle(pos,"#FF00FF", 2,1, title).addTo(race.lMap.wayPointLayer);
-                race.lMap.refPoints.push(pos);
+                buildCircle(pos, race.lMap.wayPointLayer,"#FF00FF", 2,1, title);
+                race.lMap.refPoints.push(pos[1]);
             }
         } else {
             console.error("Unexpected waypoint format: " + JSON.stringify(action));
@@ -838,7 +925,6 @@ function updateMapMe(race, track) {
     if(!race.lMap.meLayerMarkers) race.lMap.meLayerMarkers  = L.layerGroup();
 
     // track
-    var tpath = [];
 
     if (track) {
 
@@ -849,8 +935,7 @@ function updateMapMe(race, track) {
 
         for (var i = 0; i < track.length; i++) {
             var segment = track[i];
-            var pos = buildPt(segment.lat, segment.lon);
-            tpath.push(pos);
+            var pos = buildPt2(segment.lat, segment.lon);
             if(displayFilter & 0x200) {
                 if (i > 0) {
                     var deltaT = (segment.ts -  track[i-1].ts) / 1000;
@@ -859,23 +944,27 @@ function updateMapMe(race, track) {
                     var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
                     var title =  "Me " + " : " + timeStamp + " | " + speed + "kn" + " | " + (segment.tag || "-");
                     var trackcolor = "#b86dff";
-                    buildCircle(pos,trackcolor, 1.5 ,1, title).addTo(race.lMap.meLayerMarkers);
-                    race.lMap.refPoints.push(pos);
+                    buildCircle(pos, race.lMap.meLayerMarkers,trackcolor, 1.5 ,1, title);
+                    race.lMap.refPoints.push(pos[1]);
                 }
             }
         }
+        var cpath;
+
         if (race.curr && race.curr.pos) {
-            var pos = buildPt(race.curr.pos.lat, race.curr.pos.lon);
-            tpath.push(pos);
+            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);
+        } else
+        {
+            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);    
         }
     
-        buildTrace(tpath, "#b86dff",1.5,1).addTo(race.lMap.meLayer);
+        buildTrace(cpath,race.lMap.meLayer,race,"#b86dff",1.5,1);
     }        
     
     // boat
     if (race.curr && race.curr.pos) {
         var nbdigits = (document.getElementById("2digits").checked?1:0);
-        var pos = buildPt(race.curr.pos.lat, race.curr.pos.lon);
+        var pos = buildPt2(race.curr.pos.lat, race.curr.pos.lon);
 
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
@@ -884,7 +973,7 @@ function updateMapMe(race, track) {
                     + " | TWA : " + Util.roundTo(race.curr.twa, 2 + nbdigits) 
                     + " | SPD : " + Util.roundTo(race.curr.speed, 2+nbdigits);
 
-        buildMarker(pos, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading).addTo(race.lMap.meBoatLayer);
+        buildMarker(pos, race.lMap.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading);
      }
 
     
@@ -927,15 +1016,13 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
     if (!race || !race.lMap|| !race.lMap.map || !race.lMap.gdiv) return;
     
     var map = race.lMap.map;
-    
-    var tpath = [];
+
     var ghostStartTS = ghostTrack[0].ts;
     var ghostPosTS = ghostStartTS + offset;
     var ghostPos;
     for (var i = 0; i < ghostTrack.length; i++) {
-        pos = buildPt(ghostTrack[i].lat, ghostTrack[i].lon);
-        tpath.push(pos);
-        race.lMap.refPoints.push(pos);
+        pos = buildPt2(ghostTrack[i].lat, ghostTrack[i].lon);
+        race.lMap.refPoints.push(pos[1]);
                 
         if (!ghostPos) {
             if (ghostTrack[i].ts >= ghostPosTS) {
@@ -943,7 +1030,10 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
             }
         }
     }
-    buildTrace(tpath, color,1,0.6,'10, 10','5').addTo(layer);
+    
+    var cpath = buildPath(ghostTrack);    
+    buildTrace(cpath,layer,race, color,1,0.6,'10, 10','5');
+
 
     if (ghostPos) {
         var lat1 = ghostTrack[ghostPos].lat;
@@ -954,8 +1044,8 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
         var d = (ghostPosTS - ghostTrack[ghostPos - 1].ts ) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts)
         var lat = lat0 + (lat1-lat0) * d;
         var lon = lon0 + (lon1-lon0) * d;
-        var pos = buildPt(lat, lon);
-        buildMarker(pos, buildBoatIcon(color,color,0.6), title,  20, 0.4,heading).addTo(layer);
+        var pos = buildPt2(lat, lon);
+        buildMarker(pos,layer, buildBoatIcon(color,color,0.6), title,  20, 0.4,heading);
     }
 
     layer.addTo(map); 
@@ -982,7 +1072,7 @@ function computeNextPos(pos,hdg,speed,time) {
         lng5 = lng5 + 360;
     }
 
-    return buildPt(lat5, lng5);
+    return buildPt2(lat5, lng5);
 
 }
 
@@ -995,17 +1085,17 @@ function drawProjectionLine(race,pos,hdg,speed) {
     race.lMap.me_PlLayer  = L.layerGroup();
 
     var tpath = [];
-    tpath.push(pos);
+
+    tpath.push(pos[1]);
 
     for(var i=0;i<5;i++)
     {
-        pos = computeNextPos(pos,hdg,speed,2*60);        
-        tpath.push(pos);    
+        pos = computeNextPos(pos[1],hdg,speed,2*60);
+        tpath.push(pos[1]);
         var title = 2*(i+1)+"min";
-        buildCircle(pos,"#b86dff", 1.5,1,title).addTo(race.lMap.me_PlLayer); 
-    }
-
-    buildTrace(tpath, "#b86dff",1,0.4,'10, 10','5').addTo(race.lMap.me_PlLayer);
+        buildCircle(pos,race.lMap.me_PlLayer,"#b86dff", 1.5,1,title); 
+    }  
+    buildTrace(tpath,race.lMap.me_PlLayer, race,"#b86dff",1,0.4,'10, 10','5');
 
     race.lMap.me_PlLayer.addTo(map); 
 
@@ -1035,7 +1125,7 @@ function updateMapFleet(race,raceFleetMap) {
         var bi = boatinfo(key, elem);
 
         if (isDisplayEnabled(elem, key)) {
-            var pos = buildPt(elem.pos.lat, elem.pos.lon);
+            var pos = buildPt2(elem.pos.lat, elem.pos.lon);
             // Boat
             // Organisation z-index
             var zi;
@@ -1059,23 +1149,17 @@ function updateMapFleet(race,raceFleetMap) {
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
             }
-            
-
-
-
-            
-            buildMarker(pos, buildBoatIcon(bi.bcolor,bi.bbcolor,0.8), info,  zi, 0.8,elem.heading).addTo(race.lMap.fleetLayer);
+              
+            buildMarker(pos, race.lMap.fleetLayer,buildBoatIcon(bi.bcolor,bi.bbcolor,0.8), info,  zi, 0.8,elem.heading);
                 
-
-            
             // track
-            var tpath = [];
-            if (elem.track) {
+            if (elem.track && elem.track.length != 0) {
+
                 for (var i = 0; i < elem.track.length; i++) {
                     var segment = elem.track[i];
-                    var pos2 = buildPt(segment.lat, segment.lon);
-                    tpath.push(pos2);
-                    race.lMap.refPoints.push(pos2);
+                    var pos2 = buildPt2(segment.lat, segment.lon);
+
+                    race.lMap.refPoints.push(pos2[1]);
                     if(displayFilter & 0x200) {
                         if ((i > 0) && ((key = currentId)
                                                 || elem.isFollowed
@@ -1087,12 +1171,14 @@ function updateMapFleet(race,raceFleetMap) {
                                 var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
                                 var title =  elem.displayName + " : " + timeStamp + " | " + speed + "kn" + " | " + (segment.tag || "-");
 
-                                buildCircle(pos2,bi.bcolor, 1.5,1,title).addTo(race.lMap.fleetLayerMarkers);
+                                buildCircle(pos2,race.lMap.fleetLayerMarkers,bi.bcolor, 1.5,1,title);
                         }
                     }
                 }
-                tpath.push(pos);
-                buildTrace (tpath, bi.bcolor,1,1).addTo(race.lMap.fleetLayerTracks); 
+
+                var cpath = buildPath(elem.track,undefined,undefined,elem.pos.lat, elem.pos.lon);    
+                buildTrace(cpath,race.lMap.fleetLayerTracks,race, bi.bcolor,1,1);    
+
             }
         }
     });
@@ -1132,19 +1218,20 @@ function importRoute(route,race,name) {
     lmapRoute.displayedName = route.displayedName;
 
     lmapRoute.projectionData = [];
-    var tpath = [];
-
     for (var i = 0 ; i < route.points.length ; i++) {
-        var pos = buildPt(route.points[i].lat, route.points[i].lon);
-        tpath.push(pos);
-        race.lMap.refPoints.push(pos);
+        var pos = buildPt2(route.points[i].lat, route.points[i].lon);
+
+        race.lMap.refPoints.push(pos[1]);
         
         lmapRoute.projectionData.push(createProjectionPoint(route.points[i].timestamp,route.points[i].lat, route.points[i].lon)); 
 
-        buildCircle(pos,lmapRoute.color, 2,1,rt.buildMarkerTitle(route.points[i])).addTo(lmapRoute.markersLayer);
+        buildCircle(pos, lmapRoute.markersLayer,lmapRoute.color, 2,1,rt.buildMarkerTitle(route.points[i]));
 
+        
     }
-    buildTrace (tpath, lmapRoute.color,1,1.5).addTo(lmapRoute.traceLayer); 
+    
+    var cpath = buildPath(route.points);    
+    buildTrace(cpath,lmapRoute.traceLayer,race, lmapRoute.color,1,1.5);
     lmapRoute.traceLayer.addTo(map); 
     
     if(document.getElementById('sel_showMarkersLmap').checked) lmapRoute.markersLayer.addTo(map);

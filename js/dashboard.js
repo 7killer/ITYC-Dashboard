@@ -148,7 +148,7 @@ var controller = function () {
         {_id:16     ,name: "Tara",                 stamina: "2"},
         {_id:17     ,name: "unknow",               stamina: "1"},
         {_id:18     ,name: "OffShore Racer",       stamina: "1"},
-        {_id:19     ,name: "Mod70",       		   stamina: "1"},
+        {_id:19     ,name: "Mod70",       		   stamina: "1.2"},
         {_id:20     ,name: "Cruiser Racer",        stamina: "1"},
       ];
 
@@ -186,7 +186,6 @@ var controller = function () {
     }
 
     function initRace(race, disabled) {
-        race.tableLines = [];
         races.set(race.id, race);
         var fleetData = new Map();
         fleetData.table = new Array();
@@ -279,6 +278,7 @@ var controller = function () {
     }
 
 
+
     function infoSail(r,s) {
 
         var sailInfo;
@@ -301,7 +301,7 @@ var controller = function () {
 
         // Remember when this message was received ...
         if (! r.curr.receivedTS) {
-            r.curr.receivedTS = new Date();
+            r.curr.receivedTS = Date.now();
         }
          // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
          var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
@@ -832,6 +832,7 @@ var controller = function () {
                 if (r.id === selRace.value) trstyle += " sel";
                 
                 var best = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options);
+                r.curr.bestVmg = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options);
                 var bestVMGString = best.twaUp + " | " + best.twaDown;
                 var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + "kts";
                 var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + "kts | " + best.btwa;
@@ -1375,6 +1376,8 @@ var controller = function () {
        e.play();
     }
 
+
+
     function makeTableHTML(r) {
 
         function tableHeader() {
@@ -1394,7 +1397,163 @@ var controller = function () {
                 + '<th title="Tacking time remaining">' + "Tack" + '</th>'
                 + '</tr>';
         }
-        // Modif - display: none pour date locale / UTC
+
+        function makeRaceLineLogCmd(cinfo) {
+            if(!cinfo.action) return"";
+            return '<tr>'
+           + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>'           // Modif
+           + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>'                             // Modif
+           + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+           + '</tr>';
+       }
+        function makeRaceLineLog(rinfo)
+        {
+            function isDifferingSpeed(realSpeed, calculatedSpeed) {
+                return Math.abs(1 - realSpeed / calculatedSpeed) > 0.01;
+            }
+    
+            function isCurrent(timestamp) {
+                return (timestamp && (timestamp > rinfo.plastCalcDate));
+            }
+    
+            function getBG(timestamp) {
+                return isCurrent(timestamp) ? ('style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"') : "";
+            }
+    
+            function isPenalty() {
+                return isCurrent(rinfo.sailTime)
+                    || isCurrent(rinfo.gybeTime)
+                    || isCurrent(rinfo.tackTime);
+            }
+    
+            function infoSailRl(rinfo,s) {
+    
+                var sailInfo;
+                if(s) {
+                    sailInfo = sailNames[rinfo.sail % 10];
+                } else
+                    sailInfo =  '<span ' + 'style="color:' + sailColors[rinfo.sail] + '" padding: 0px 0px 0px 2px;"' + '>&#x25e2&#x25e3  </span>'+ sailNames[rinfo.sail % 10];
+    
+                if (rinfo.isAutoSail) {
+                    sailInfo = sailInfo + " <span title='Auto Sails' class='cursorHelp'>&#x24B6;</span> " + rinfo.autoSailTime;
+                } else {
+                    sailInfo = sailInfo + " (Man)";
+                }
+                
+                var sailNameBG = rinfo.badSail ? LightRed : "lightgreen";
+                if(drawTheme =='dark')
+                    sailNameBG = rinfo.badSail ? "darkred" : "darkgreen";
+        
+                 // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
+                if(rinfo.lastCalcDelta > 900000)   sailNameBG = 'red' ;
+        
+                return  '<td class="asail" style="background-color:' + sailNameBG + ';">' + sailInfo + "</td>";
+        
+            }
+        
+            function commonTableLinesRl(rinfo,bestTwa) {
+                // No need to infer TWA mode, except that we might want to factor in the last command
+                if(!rinfo)
+                {
+                    return '<td class="rank"></td>'
+                    + '<td class="dtl"></td>'
+                    + '<td class="dtf"></td>'
+                    + '<td class="twd"></td>'
+                    + '<td class="tws"></td>'
+                    + '<td class="twa" ></td>'
+                    + '<td  class="hdg" ></td>'
+                }
+                var isTWAMode = rinfo.isRegulated;
+                
+                var twaFG = (rinfo.twa < 0) ? "red" : "green";
+                var twaBold = isTWAMode ? "font-weight: bold;" : "";
+                var twaBG = " ";
+                if(bestTwa)
+                {
+                    var currentTWA = Util.roundTo(Math.abs(rinfo.twa), 1);
+                    if((currentTWA == bestTwa.twaUp) || (currentTWA == bestTwa.twaDown))
+                        twaBG =  ' background-color:lightgreen;';
+                    else if((currentTWA < bestTwa.twaUp && currentTWA >= bestTwa.twaUp-2) 
+                     || (currentTWA > bestTwa.twaDown && currentTWA <= bestTwa.twaDown+2))
+                        twaBG =  ' background-color:DarkOrange;';
+                    else if((currentTWA < bestTwa.twaUp-2) 
+                    || (currentTWA > bestTwa.twaDown+2))
+                        twaBG =  ' background-color:DarkRed;';
+                }
+                
+                var hdgFG = isTWAMode ? "black" : "blue";
+                var hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
+                if(drawTheme =='dark')
+                    hdgFG = isTWAMode ? "white" : "darkcyan"; 
+                
+                return '<td class="rank">' + (rinfo.rank ? rinfo.rank : "-") + '</td>'
+                    + '<td class="dtl">' + Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits) + '</td>'
+                    + '<td class="dtf">' + Util.roundTo(rinfo.distanceToEnd, 2+nbdigits) + '</td>'
+                    + '<td class="twd">' + Util.roundTo(rinfo.twd, 2+nbdigits) + '</td>'
+                    + '<td class="tws">' + Util.roundTo(rinfo.tws, 2+nbdigits) + '</td>'
+                    + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(rinfo.twa), 2+nbdigits) + '</td>'
+                    + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(rinfo.heading, 2+nbdigits) + '</td>'
+            }
+            if(!rinfo.tws) return"";
+    
+            nbdigits=(cb2digits.checked?1:0);
+            rt.set_nbdigit(nbdigits);
+            var speedCStyle = "";
+            var speedTStyle = "";
+            var deltaDist = Util.roundTo(rinfo.deltaD, 2+nbdigits);
+    
+            if (isPenalty()) {
+                speedCStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
+            } else if (isDifferingSpeed(rinfo.speed,rinfo.speedC)) {
+                speedCStyle = 'style="background-color: yellow;';
+                speedCStyle += (drawTheme =='dark')?' color:black;"':'"';
+    
+            } else if (rinfo.speedT && isDifferingSpeed(rinfo.speedT.speed)) {
+                // Speed differs but not due to penalty - assume "Bad Sail" and display theoretical delta
+                speedTStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
+                deltaDist = deltaDist + " (" + Util.roundTo(rinfo.deltaD_T, 2+nbdigits) + ")";
+            }
+    
+            var sailChange = formatSeconds(rinfo.sailTime - rinfo.lastCalcDate);
+            var gybing = formatSeconds(rinfo.gybeTime - rinfo.lastCalcDate);
+            var tacking = formatSeconds(rinfo.tackTime - rinfo.lastCalcDate);
+    
+            var staminaStyle = "";
+            if(rinfo.stamina)
+            {
+                if (rinfo.stamina < paramStamina.tiredness[0]) 
+                    staminaStyle = 'style="color:red"';
+                else if (rinfo.stamina < paramStamina.tiredness[1]) 
+                    staminaStyle = 'style="color:orange"';
+                else 
+                    staminaStyle = 'style="color:green"';   
+            }
+            return '<tr>'
+                + '<td class="time">' + formatDateUTC(rinfo.lastCalcDate) + '</td>'    // Modif
+                + commonTableLinesRl(rinfo,rinfo.bestVmg)
+                + infoSailRl(rinfo,false)
+                + '<td class="speed1">' + Util.roundTo(rinfo.speed, 2+nbdigits) + '</td>'
+                + '<td class="speed2" ' + speedCStyle + '>' + Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")" + '</td>'
+                + '<td class="foils">' + (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-") + '</td>'
+                + '<td class="stamina" ' +staminaStyle+'>' + (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-")  + '</td>'
+                + '<td class="deltaD" ' + speedTStyle + '>' + deltaDist + '</td>'
+                + '<td class="deltaT">' + Util.roundTo(rinfo.deltaT, 0) + '</td>'
+                + '<td class="position">' + Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon) + '</td>'
+                + '<td class="sail" ' + getBG(rinfo.sailTime) + '>' + sailChange + '</td>'
+                + '<td class="gybe" ' + getBG(rinfo.gybeTime) + '>' + gybing + '</td>'
+                + '<td class="tack" ' + getBG(rinfo.tackTime) + '>' + tacking + '</td>'
+                + '</tr>';
+    
+    
+        }
+
+        function makeRaceLine(rinfo)
+        {
+            if(!rinfo  ) return"";
+            if(rinfo.rlType =="log") return makeRaceLineLog(rinfo);
+            else return makeRaceLineLogCmd(rinfo);
+        }
+        
         if (cbLocalTime.checked) {
             var timeHidden = "display: none;";
             var timeLocalHidden = "";
@@ -1402,7 +1561,9 @@ var controller = function () {
             var timeHidden = "";
             var timeLocalHidden = "display: none;";
         }
-        // Fin Modif
+
+        var rli = [];
+        if(r && r.id) rli = DM.getRaceLogInfos(r.id);
 
         return '<style>'                    // Modif
             + '#UTC {' + timeHidden + '}'
@@ -1413,10 +1574,11 @@ var controller = function () {
             + tableHeader ()
             + '</thead>'
             + '<tbody>'
-            + (r === undefined ? "" : r.tableLines.join(" "))
+            + Array.from(rli || []).map(makeRaceLine).join(" ")
             + '</tbody>'
             + '</table>';
     }
+
 
     function clearRecordedData(rid) {
         var race = races.get(rid);
@@ -1714,7 +1876,7 @@ var controller = function () {
     }
 
     function initFoils (boatData) {
-        if (boatData.options) {
+        if (boatData.options && boatData.options!="-") {
             for (const feature of boatData.options) {
                 if (feature == "foil") {
                     return "0%";
@@ -2045,7 +2207,7 @@ var controller = function () {
             line += Util.roundTo(r.xfactor, 4) + cSep;
             line += (r.xoption_foils || "?") + cSep;
             line +=  (r.xoption_options || "?") + cSep;
-
+            line +=  (r.teamname ? r.teamname : "-") + cSep;
             return line;
 
         }
@@ -2066,7 +2228,7 @@ var controller = function () {
         tabletitle +=  'VSR' + race.legdata.vsrLevel + "\n";
         tabletitle += 'Export Date;'+date+ "\n\n";
         var fileContent = tabletitle;
-        fileContent += "RT;Skipper;Last Update;Rank;DTF;DTU;BRG;Sail;State;RaceTime;Position;HDG;TWA;TWS;Speed;Factor;Foils;Options\n";
+        fileContent += "RT;Skipper;Last Update;Rank;DTF;DTU;BRG;Sail;State;RaceTime;Position;HDG;TWA;TWS;Speed;Factor;Foils;Options;team\n";
         
         fileContent += Array.from(fleet.table || []).map(makeLineFleet).join("\n");
                  
@@ -2201,99 +2363,95 @@ var controller = function () {
     }
 
 
+    async function addTableCommandLine(r) {
+        var rliLine =  saveRaceLogLineCmd(r);
+        await DM.addRaceLogInfosLine(r.id,rliLine);
+        await DM.saveRaceLogInfos(r.id);
 
-    function addTableCommandLine(r) {
-        r.tableLines.unshift('<tr>'
-            + '<td class="time">' + formatDateUTC(r.lastCommand.request.ts) + '</td>'           // Modif
-            + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>'                             // Modif
-            + '<td colspan="16">Actions:' + printLastCommand(r.lastCommand.request.actions) + '</td>'
-            + '</tr>');
         if (r.id == selRace.value) {
-            divRecordLog.innerHTML = makeTableHTML(r);
+            divRecordLog.innerHTML = makeTableHTML(r);  
         }
         // updateMapWaypoints(r);
     }
 
-    function makeTableLine(r) {
-        nf.manage(r);       // Modification - Notifications
-        if(document.getElementById("auto_clean").checked) fleetInfosCleaner();
-        function isDifferingSpeed(speed) {
-            return Math.abs(1 - r.curr.speed / speed) > 0.01;
+    function saveRaceLogLineCmd(r) {
+        var cinfo = {
+            action : r.lastCommand.request.actions,
+            ts : r.lastCommand.request.ts,
+            rlType : "cmd"     
         }
-
-        function isCurrent(timestamp) {
-            return (timestamp && (timestamp > r.prev.lastCalcDate));
-        }
-
-        function getBG(timestamp) {
-            return isCurrent(timestamp) ? ('style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"') : "";
-        }
-
-        function isPenalty() {
-            return isCurrent(r.curr.tsEndOfSailChange)
-                || isCurrent(r.curr.tsEndOfGybe)
-                || isCurrent(r.curr.tsEndOfTack);
-        }
-
-        nbdigits=(cb2digits.checked?1:0);
-        rt.set_nbdigit(nbdigits);
-        var speedCStyle = "";
-        var speedTStyle = "";
-        var deltaDist = Util.roundTo(r.curr.deltaD, 2+nbdigits);
-
-
-        if (isPenalty()) {
-            speedCStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
-        } else if (isDifferingSpeed(r.curr.speedC)) {
-            speedCStyle = 'style="background-color: yellow;';
-            speedCStyle += (drawTheme =='dark')?' color:black;"':'"';
-
-        } else if (r.curr.speedT && isDifferingSpeed(r.curr.speedT.speed)) {
-            // Speed differs but not due to penalty - assume "Bad Sail" and display theoretical delta
-            speedTStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
-            deltaDist = deltaDist + " (" + Util.roundTo(r.curr.deltaD_T, 2+nbdigits) + ")";
-        }
-
-        var sailChange = formatSeconds(r.curr.tsEndOfSailChange - r.curr.lastCalcDate);
-        var gybing = formatSeconds(r.curr.tsEndOfGybe - r.curr.lastCalcDate);
-        var tacking = formatSeconds(r.curr.tsEndOfTack - r.curr.lastCalcDate);
-
-        var staminaStyle = "";
-        if(r.curr.stamina)
-        {
-            if (r.curr.stamina < paramStamina.tiredness[0]) 
-                staminaStyle = 'style="color:red"';
-            else if (r.curr.stamina < paramStamina.tiredness[1]) 
-                staminaStyle = 'style="color:orange"';
-            else 
-                staminaStyle = 'style="color:green"';   
-        }
-        return '<tr>'
-            + '<td class="time">' + formatDateUTC(r.curr.lastCalcDate) + '</td>'    // Modif
-            + commonTableLines(r)
-            + infoSail(r,false)
-            + '<td class="speed1">' + Util.roundTo(r.curr.speed, 2+nbdigits) + '</td>'
-            + '<td class="speed2" ' + speedCStyle + '>' + Util.roundTo(r.curr.speedC, 2+nbdigits) + " (" + sailNames[(r.curr.sail % 10)] + ")" + '</td>'
-            + '<td class="foils">' + (r.curr.speedT ? (Util.roundTo(r.curr.speedT.foiling, 0) + "%") : "-") + '</td>'
-            + '<td class="stamina" ' +staminaStyle+'>' + (r.curr.stamina ? Util.roundTo(r.curr.stamina , 2) + "%": "-")  + '</td>'
-            + '<td class="deltaD" ' + speedTStyle + '>' + deltaDist + '</td>'
-            + '<td class="deltaT">' + Util.roundTo(r.curr.deltaT, 0) + '</td>'
-            + '<td class="position">' + Util.formatPosition(r.curr.pos.lat, r.curr.pos.lon) + '</td>'
-            + '<td class="sail" ' + getBG(r.curr.tsEndOfSailChange) + '>' + sailChange + '</td>'
-            + '<td class="gybe" ' + getBG(r.curr.tsEndOfGybe) + '>' + gybing + '</td>'
-            + '<td class="tack" ' + getBG(r.curr.tsEndOfTack) + '>' + tacking + '</td>'
-            + '</tr>';
+        return cinfo;
     }
 
-    function saveMessage(r) {
-        var newRow = makeTableLine(r);
+
+
+    function saveRaceLogLine(r) {
+
+        var p=0;
+        if(r.prev) p = r.prev.lastCalcDate;
+        // Remember when this message was received ...
+        var t = new Date();
+        if (r.curr.receivedTS) {
+            t = r.curr.receivedTS;
+        } 
+        var rinfo = {
+        /* racelog info*/
+            lastCalcDate : r.curr.lastCalcDate,
+            gybeTime : r.curr.tsEndOfGybe,
+            tackTime : r.curr.tsEndOfTack,
+            sailTime : r.curr.tsEndOfSailChange,
+            speed : r.curr.speed,
+            speedT : r.curr.speedT,
+            speedC : r.curr.speedC,
+            deltaD_T : r.curr.deltaD_T,
+            deltaD : r.curr.deltaD,
+            deltaT : r.curr.deltaT,
+            plastCalcDate : p,
+            stamina : r.curr.stamina,
+            pos : r.curr.pos,
+
+            /* commonlines */
+            isRegulated : r.curr.isRegulated,
+            twa : r.curr.twa,
+            bestVmg : r.curr.bestVmg,
+            rank : r.rank,
+            distanceToEnd : r.curr.distanceToEnd,
+            bestDTF : r.bestDTF,
+            twd : r.curr.twd,
+            tws : r.curr.tws,
+            heading : r.curr.heading,
+
+            /*infoSail*/
+            sail : r.curr.sail,
+            isAutoSail : ( r.curr.hasPermanentAutoSails ||
+                (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0)),
+            autoSailTime :( r.curr.hasPermanentAutoSails ? '∞' : Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate)),
+            badSail : r.curr.badSail,
+            
+            lastCalcDelta : t - r.curr.lastCalcDate,   
+            rlType : "log" ,
+            ts : r.curr.receivedTS
+        }    
+        return rinfo;
+    }
+    
+
+    async function saveMessage(r) {
+
+        nf.manage(r);       //Notifications
+        if(document.getElementById("auto_clean").checked) fleetInfosCleaner();
+
         if(r.curr && r.curr.deltaT != 0)
-        {   r.tableLines.unshift(newRow);
+        {  
+            var rliLine =  saveRaceLogLine(r);
+            await DM.addRaceLogInfosLine(r.id,rliLine);
+            await DM.saveRaceLogInfos(r.id);
             if (r.id == selRace.value) {
                 divRecordLog.innerHTML = makeTableHTML(r);
             }
         }
     }
+
 
     function updateFleetFilter(race) {
         nbdigits=(cb2digits.checked?1:0);
@@ -2327,6 +2485,7 @@ var controller = function () {
         await DM.getRaceOptionsList(raceId);
         currentRaceId = raceId;
         makeRaceStatusHTML();
+        //await DM.initRaceLogInfos(raceId);
         divRecordLog.innerHTML = makeTableHTML(race);
         if(race && race.recordedData) {
             gr.upDateGraph(race.recordedData);
@@ -2532,7 +2691,7 @@ var controller = function () {
             if (tabsel) {
                 // Tab-Selection
                 originClick= rmatch ;
-                EX.extraRoute("hidden");
+             //   EX.extraRoute("hidden");
                 display_selbox("hidden");
                 for (var t = 1; t <= 8; t++) {
                     if(t==3)
@@ -2654,7 +2813,7 @@ var controller = function () {
         return race;
     }
 
-    function updatePosition(message, r) {
+    async function updatePosition(message, r) {
         if (r === undefined) {      // race not lsited
             r = addRace(message);
         }
@@ -2697,12 +2856,13 @@ var controller = function () {
                 r.curr.deltaD_T = r.curr.deltaD / r.curr.speedC * r.curr.speedT.speed;
             }
         }
-        saveMessage(r);
+
+        makeRaceStatusHTML();
+        await saveMessage(r);
         if (message.gateGroupCounters) {
             r.gatecnt = message.gateGroupCounters;
             lMap.updateMapCheckpoints(r);
         }
-        makeRaceStatusHTML();
 
         if(r.recordedData) {
             gr.upDateGraph(r.recordedData);
@@ -2718,7 +2878,6 @@ var controller = function () {
             return undefined;
         } else {
             var tws = message.tws;
-            var twd = message.twd;
             var twa = message.twa;
             var options = message.options;
             var foil = foilingFactor(options, tws, twa, boatPolars.foil);
@@ -2865,7 +3024,7 @@ var controller = function () {
         
 
         if (uinfo.lastCalcDate && withConfirm) {
-            var now = new Date();
+            var now = Date.now();
             if ((now - uinfo.lastCalcDate) > 750000) {
                 console.log("Confirm routing for stale position?");
                 // If the Dashboard tab is not active, confirm does NOT raise a popup
@@ -3705,7 +3864,10 @@ async function initializeMap(race) {
 
         drawTheme = document.documentElement.getAttribute("data-theme");
         switchAddOnMode();
-    }
+
+        //var t = await chrome.storage.local.get();
+        //console.log(t);
+   }
 
     var callRouter = function (raceId, userId = currentUserId, auto = false,rtType="zezo") {
         var beta = false;
@@ -3749,7 +3911,6 @@ async function initializeMap(race) {
             // Re-initialize statistics
             disableRaces();
             races.forEach(function (race) {
-                race.tableLines = [];
                 race.curr = undefined;
                 race.prev = undefined;
                 race.lastCommand = undefined;
@@ -3795,7 +3956,7 @@ async function initializeMap(race) {
                 if (message.bs) {
                     var raceId = getRaceLegId(message.bs._id);
                     var race = races.get(raceId);
-                    if (!currentUserId &&  requestData.user_id == message.bs._id.user_id) { // it s the connected player!
+                    if (!currentUserId &&  message.bs.credits) { // it s the connected player! //credits value is only available for the current user
                         //dashboard has been start with race openned, do full init
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
@@ -3823,7 +3984,8 @@ async function initializeMap(race) {
                         await DM.getRaceList(); 
                         await DM.getItycPolarHash();
                         await DM.getRaceOptionsList(raceId);
-                        
+                        await DM.initRaceLogInfos(raceId);
+                        race.recordedData =  DM.rebuildRecordedData(raceId);
                         if (cbNMEAOutput.checked) {
                             NMEA.setActiveRace(selRace.value);
                             NMEA.stop();
@@ -3951,7 +4113,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(message._id);
         var race = races.get(raceId);
         if(!race) addRace(message);
-        updatePosition(message, race);
+        await updatePosition(message, race);
         //message._id.user_id message.displayName
         if (isFirstBoatInfo && cbRouter.checked) {
             callRouter(raceId, currentUserId, true,document.getElementById("sel_router").value);
@@ -4126,7 +4288,7 @@ async function initializeMap(race) {
         makeRaceStatusHTML();
     }
 
-    function handleGameAddBoatAction (request, response) {
+    async function handleGameAddBoatAction (request, response) {
         // First boat state message, only sent for the race the UI is displaying
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
@@ -4136,7 +4298,7 @@ async function initializeMap(race) {
                 request: request,
                 rc: response.scriptData.rc
             };
-            addTableCommandLine(race);
+            await addTableCommandLine(race);
             //merge incomming cmd in global race table
             if(race.curr && response.scriptData.boatActions) {
                 response.scriptData.boatActions.forEach(boatAction => {

@@ -8,7 +8,8 @@
     "storage",
     "activeTab",
     "scripting",
-    "declarativeContent"
+    "declarativeContent",
+    "unlimitedStorage"
 	],
 	"host_permissions" : [
 	"*://*.virtualregatta.com/*",

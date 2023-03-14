@@ -1,3 +1,5 @@
+
+import * as Util from './util.js';
 /*************************************** TEAM LIST MANAGEMENT ***************************************/
     const teamModel = {
         teamId : "",
@@ -16,7 +18,16 @@
     {
         var teamListLocal =  await getLocal("TeamList");
         if (teamListLocal === undefined ) teamListLocal = [];
-        TeamList.uinfo = teamListLocal;
+        teamListLocal.forEach(function (team_L) {
+            try {
+                if(team_L)
+                {
+                    var team_Line = JSON.parse(team_L);
+                    TeamList.uinfo[teamId] = team_Line;
+                } 
+            } catch (e){}
+        });
+        makeTeamTable();
     }
 
     async function createTeamList() {
@@ -35,15 +46,16 @@
         if((TeamList.ts < (Date.now()- 33*60*1000)) || TeamList.uinfo.length==0)
         {
             getTeamListITYC();
-            await saveLocal("TeamList",TeamList.uinfo);
-            await saveLocal("TeamList_ts",TeamList.ts); 
         }
-        makeTeamTable();
     }
     
   
     async function saveTeamList() {
-        await saveLocal("TeamList",TeamList.uinfo); 
+        var t = [];
+        Object.keys(TeamList.uinfo).forEach(function (key) {
+            t.push(JSON.stringify(TeamList.uinfo[key]));
+        });
+        await saveLocal("TeamList",t);
     }
 
     var getTeamInProgress = false;
@@ -54,7 +66,7 @@
             
             const xhr = new XMLHttpRequest();
             
-            xhr.addEventListener('loadend', () => {
+            xhr.addEventListener('loadend', async () => {
                 
                 getTeamInProgress = false;
                 try {
@@ -72,6 +84,10 @@
                                 TeamList.uinfo[teamData.teamId] = teamData;
                             }   
                         });
+                        makeTeamTable();
+                        TeamList.ts = new Date.now();
+                        await saveTeamList();
+                        await saveLocal("TeamList_ts",TeamList.ts); 
                         resolve(true);
                     } else {    
                         resolve(false);
@@ -95,12 +111,13 @@
     function createEmptyTeam()
     {
         if(!TeamList.uinfo["None"]) {
-            TeamList.uinfo["None"] = [];
-            TeamList.uinfo["None"].teamId = "None";
-            TeamList.uinfo["None"].teamName = "Aucune";
-            TeamList.uinfo["None"].teamsize = teamModel.teamsize;
-            TeamList.uinfo["None"].type = teamModel.type;
-            TeamList.uinfo["None"].desc = teamModel.desc; 
+            TeamList.uinfo["None"] = {
+                teamId : "None",
+                teamName : "Aucune",
+                teamsize : teamModel.teamsize,
+                type : teamModel.type,
+                desc : teamModel.desc
+            };
         }
     }
 
@@ -153,7 +170,17 @@ const playerModel = {
 async function getPlayerListLocal() {
     var playerListLocal =  await getLocal("PlayerList");
     if (playerListLocal === undefined ) playerListLocal = [];
-    playerList.uinfo = playerListLocal;
+
+    playerListLocal.forEach(function (player_L) {
+        try {
+            if(player_L)
+            {
+                var player_Line = JSON.parse(player_L);
+                playerList.uinfo[playerId] = player_Line;
+            } 
+        } catch (e){}
+    });
+    makePlayerTable();
 }
 async function createPlayerList() {
     if(!playerList)
@@ -170,10 +197,7 @@ async function getPlayerList() {
     if((playerList.ts < (Date.now()- 35*60*1000)) || (playerList.uinfo.length==0))
     {
         getPlayerListITYC();
-        await saveLocal("PlayerList",playerList.uinfo);
-        await saveLocal("PlayerList_ts",playerList.ts); 
     }
-    makePlayerTable();
 }
 
 var getPlayerInProgress = false;
@@ -184,7 +208,7 @@ async function getPlayerListITYC() {
         
         const xhr = new XMLHttpRequest();
         
-        xhr.addEventListener('loadend', () => {
+        xhr.addEventListener('loadend', async () => {
             getPlayerInProgress = false;
             try {
                 if (xhr.status === 200 || xhr.status == 0) {
@@ -202,6 +226,10 @@ async function getPlayerListITYC() {
                             playerList.uinfo[playerData.playerId] = playerData;
                         }   
                     });
+                    makePlayerTable();
+                    playerList.ts = Date.now();
+                    await saveLocal("PlayerList",playerList.uinfo);
+                    await saveLocal("PlayerList_ts",playerList.ts); 
                     resolve(true);
                 } else {    
                     resolve(false);
@@ -219,7 +247,11 @@ async function getPlayerListITYC() {
 }
 
 async function savePlayerList() {
-    await saveLocal("PlayerList",playerList.uinfo);
+    var t = [];
+    Object.keys(playerList.uinfo).forEach(function (key) {
+        t.push(JSON.stringify(playerList.uinfo[key]));
+    });
+    await saveLocal("PlayerList",t);
 }
 
 function addPlayerInfo(playerData) 
@@ -278,7 +310,17 @@ raceList.ts = 0;
 async function getRaceListLocal() {
     var raceListLocal =  await getLocal("RaceList");
     if (raceListLocal === undefined ) raceListLocal = [];
-    raceList.uinfo = raceListLocal;
+
+    raceListLocal.forEach(function (race_L) {
+        try {
+            if(race_L)
+            {
+                var race_Line = JSON.parse(race_L);
+                raceList.uinfo[legId] = race_Line;
+            } 
+        } catch (e){}
+    });
+    makeRaceTable();
 }
 
 
@@ -297,10 +339,7 @@ async function getRaceList() {
     if((raceList.ts < (Date.now()- 37*60*1000)) || (raceList.uinfo.length==0))
     {
         getRaceListITYC();
-        await saveLocal("RaceList",raceList.uinfo);
-        await saveLocal("RaceList_ts",raceList.ts); 
     }
-    makeRaceTable();
 }
 
 var getRaceListInProgress = false;
@@ -309,37 +348,41 @@ async function getRaceListITYC() {
     new Promise((resolve, reject) => {
         var getUrl = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFJhY2VMaXN0LnBocA==");        
         const xhr = new XMLHttpRequest();        
-        xhr.addEventListener('loadend', () => {
+        xhr.addEventListener('loadend',async () => {
             getRaceListInProgress = false;
             try {
                 if (xhr.status === 200 || xhr.status == 0) {
-                        let itycRaceList = JSON.parse(xhr.responseText);
-                        itycRaceList.forEach(function (race) {
-                            if(raceList.uinfo[race.rid]) { 
-                                if(race.rid != "-")         raceList.uinfo[race.rid].legId =   race.rid;
-                                if(race.legName != "-")     raceList.uinfo[race.rid].legName =  race.legName;
-                                if(race.name != "-")        raceList.uinfo[race.rid].name =     race.name;
-                                if(race.vsrRank != "")      raceList.uinfo[race.rid].vsrRank =  race.vsrRank;
-                                if(race.endDate != "")      raceList.uinfo[race.rid].endDate =  race.endDate;
-                                if(race.startDate != "")    raceList.uinfo[race.rid].startDate = race.startDate;
-                                if(race.type != "")         raceList.uinfo[race.rid].raceType = race.type;
-                                if(race.polar_id != "")     raceList.uinfo[race.rid].polar_id = race.polar_id;
-                                
-                            } else
-                            { 
-                                var raceData = Object.create(raceInfosModel);
-                                raceData.legId = race.rid;
-                                raceData.legName = race.legName;
-                                raceData.name = race.name;
-                                raceData.vsrRank = race.vsr;
-                                raceData.endDate = race.end;
-                                raceData.startDate = race.start;  
-                                raceData.raceType = race.type;  
-                                raceData.polar_id = race.polar_id;  
-                                raceList.uinfo[raceData.legId] = [];
-                                raceList.uinfo[raceData.legId] = raceData;
-                            }   
-                        });
+                    let itycRaceList = JSON.parse(xhr.responseText);
+                    itycRaceList.forEach(function (race) {
+                        if(raceList.uinfo[race.rid]) { 
+                            if(race.rid != "-")         raceList.uinfo[race.rid].legId =   race.rid;
+                            if(race.legName != "-")     raceList.uinfo[race.rid].legName =  race.legName;
+                            if(race.name != "-")        raceList.uinfo[race.rid].name =     race.name;
+                            if(race.vsrRank != "")      raceList.uinfo[race.rid].vsrRank =  race.vsrRank;
+                            if(race.endDate != "")      raceList.uinfo[race.rid].endDate =  race.endDate;
+                            if(race.startDate != "")    raceList.uinfo[race.rid].startDate = race.startDate;
+                            if(race.type != "")         raceList.uinfo[race.rid].raceType = race.type;
+                            if(race.polar_id != "")     raceList.uinfo[race.rid].polar_id = race.polar_id;
+                            
+                        } else
+                        { 
+                            var raceData = Object.create(raceInfosModel);
+                            raceData.legId = race.rid;
+                            raceData.legName = race.legName;
+                            raceData.name = race.name;
+                            raceData.vsrRank = race.vsr;
+                            raceData.endDate = race.end;
+                            raceData.startDate = race.start;  
+                            raceData.raceType = race.type;  
+                            raceData.polar_id = race.polar_id;  
+                            raceList.uinfo[raceData.legId] = [];
+                            raceList.uinfo[raceData.legId] = raceData;
+                        }   
+                    });
+                    raceList.ts = Date.now();;
+                    await saveLocal("RaceList",raceList.uinfo);
+                    await saveLocal("RaceList_ts",raceList.ts); 
+                    makeRaceTable();
                     resolve(true);
                 } else {    
                     resolve(false);
@@ -371,7 +414,11 @@ async function saveRaceList() {
         xhr.send(dat);
         
     }
-    await saveLocal("RaceList",raceList.uinfo);
+    var t = [];
+    Object.keys(raceList.uinfo).forEach(function (key) {
+        t.push(JSON.stringify(raceList.uinfo[key]));
+    });
+    await saveLocal("RaceList",t);
 
     sendInfoRace(raceList.uinfo);
 
@@ -519,6 +566,29 @@ async function saveLegInfo(races) {
             }
         }
         
+    }); 
+    raceLogInfos.raceKnow.forEach(async function(idx) {
+        let raceExist = false;
+        let rid = raceLogInfos.raceKnow[idx];
+        if(rid)
+        {
+            rList.find((value, index) => {
+                if (value === rid) {
+                  raceExist = true;
+                }    
+            });
+            if(raceExist == false) {
+                delete raceOptionsList.race[rid];
+                raceLogInfos.raceKnow.find((value, index) => {
+                    if (value === rid) {
+                      delete raceLogInfos.raceKnow[index];
+                    }
+                });
+                await clearLocal("RLI_"+rid); 
+                await saveLocal("PLIList",raceLogInfos.raceKnow);    
+            }
+        }
+        
     });
 }
 
@@ -637,6 +707,142 @@ function serialize (obj) {
   
 
 
+/*************************************** raceLog infos ***************************************/
+var raceLogInfos = [];
+raceLogInfos.loaded = false;
+raceLogInfos.raceKnow = [];
+raceLogInfos.logInfos = [];
+
+async function loadRaceLogList()
+{
+    if(!raceLogInfos.loaded) {
+        raceLogInfos.raceKnow =  await getLocal("PLIList");  
+        if(!raceLogInfos.raceKnow) raceLogInfos.raceKnow  = [];
+        raceLogInfos.loaded = true;
+    }
+}
+async function createRaceLogPartition(rid)
+{
+    await loadRaceLogList();
+    if (raceLogInfos.logInfos === undefined ) raceLogInfos.logInfos = [];
+
+
+    if(!raceLogInfos.logInfos[rid]) {
+        raceLogInfos.logInfos[rid] = [];
+        raceLogInfos.logInfos[rid].legId = rid;
+        raceLogInfos.logInfos[rid].logInfos = [];
+        await getRaceLogInfosLocal(rid);
+        await saveLocal("PLIList",raceLogInfos.raceKnow);
+    } 
+}
+
+
+
+
+function rebuildRecordedData(rid)
+{
+    var recordedData = [];
+    recordedData.tws = [];
+    recordedData.hdg = [];
+    recordedData.twa = [];
+    recordedData.twd = [];
+    recordedData.bs = [];
+    recordedData.sail = [];
+    recordedData.sail.id = [];
+    recordedData.sail.color = [];
+    recordedData.stamina = [];
+    recordedData.ts = [];
+
+    var limitDelta = Date.now();
+    if(raceLogInfos.logInfos[rid])
+    {
+        for(var i=(raceLogInfos.logInfos[rid].logInfos.length-1); i !=0 ;i-- )
+        {
+            var rline = raceLogInfos.logInfos[rid].logInfos[i];
+            if(rline.rlType =="log")
+            {
+                if(rline.lastCalcDate>=(limitDelta-10*60*1000))
+                {
+                    limitDelta = rline.lastCalcDate;
+    
+                    recordedData.tws.push(rline.tws);
+                    recordedData.hdg.push(rline.heading);
+                    recordedData.twa.push(rline.twa);
+                    if(!rline.twd) recordedData.twd.push(recordedData.twd.slice(-1));
+                    else recordedData.twd.push(rline.twd);
+                    recordedData.bs.push(rline.speed);
+                    recordedData.sail.id.push(rline.sail);
+                    recordedData.sail.color.push( Util.sailId2Color(rline.sail));
+                    if(!rline.stamina) recordedData.stamina.push(recordedData.stamina.slice(-1));
+                    else recordedData.stamina.push(rline.stamina);
+                    recordedData.ts.push(rline.lastCalcDate);
+                    recordedData.lastts = rline.lastCalcDate
+    
+                }
+            } 
+        }
+    }
+    return recordedData;
+}                
+
+async function getRaceLogInfosLocal(rid)
+{
+    if(!rid) return;
+    var RLILocal =  await getLocal("RLI_"+rid);
+    if(RLILocal) {
+        RLILocal.forEach(function (RLI_l) {
+            try {
+                if(RLI_l)
+                {
+                    var RLI_line = JSON.parse(RLI_l);
+                    raceLogInfos.logInfos[rid].logInfos.unshift(RLI_line);
+                } 
+            } catch (e){}
+
+        });
+    }
+}
+async function initRaceLogInfos(rid) {
+    if(!rid) return;
+    await createRaceLogPartition(rid);
+    await getRaceLogInfosLocal(rid);
+}
+
+async function saveRaceLogInfos(rid) {
+    if(!rid) return;
+    var rli_sav = [];
+    for(var i=0; i < raceLogInfos.logInfos[rid].logInfos.length && i<200;i++ )
+    {
+        // races.set(race.id, race);
+        var rline = raceLogInfos.logInfos[rid].logInfos[i];
+       var t = JSON.stringify(rline);
+        rli_sav.unshift(t);
+    }
+    await saveLocal("RLI_"+rid,rli_sav); 
+
+    var knowRace = false;
+    raceLogInfos.raceKnow.find((value, index) => {
+        if (value === rid) {
+            knowRace = true;
+        }
+    });
+    if(!knowRace) raceLogInfos.raceKnow.push(rid);
+    
+    await saveLocal("PLIList",raceLogInfos.raceKnow);
+}
+
+async function addRaceLogInfosLine(rid,rli)
+{
+    if (!rid || rid=="") return;
+    await createRaceLogPartition(rid);
+    raceLogInfos.logInfos[rid].logInfos.unshift(rli);
+}
+
+function getRaceLogInfos(rid)
+{
+    if(!rid || !raceLogInfos.logInfos[rid]) return [];
+    return raceLogInfos.logInfos[rid].logInfos;
+}
 
 
 /*************************************** Race payer Option ***************************************/
@@ -674,7 +880,13 @@ async function createRaceOptionPartition(rid)
         raceOptionsList.race[rid].legId = rid;
         raceOptionsList.race[rid].uinfo = [];
         raceOptionsList.race[rid].ts = 0;
-        raceOptionsList.knowRaceOpt.push(rid);
+        var knowRace = false;
+        raceOptionsList.knowRaceOpt.find((value, index) => {
+            if (value === rid) {
+                knowRace = true;
+            }
+        });
+        if(!knowRace) raceOptionsList.knowRaceOpt.push(rid);
         await saveLocal("RPOList",raceOptionsList.knowRaceOpt);
     } 
 }
@@ -684,7 +896,7 @@ async function getRaceOptionsListLocal(rid)
     var RPOLocal =  await getLocal("RPO_"+rid);
     if(RPOLocal) {
         RPOLocal.forEach(function (raceOptPlayer) {
-            mergeRaceOptionsList(rid,raceOptPlayer);
+            mergeRaceOptionsList(rid,JSON.parse(raceOptPlayer));
         });
     }
 }
@@ -710,6 +922,8 @@ async function getRaceOptionsListITYC(rid)
                         mergeRaceOptionsList(rid,raceOptPlayer);
                     });
 
+                    await saveLocal("RPO_"+rid,raceOptionsList.race[rid].uinfo);
+                    await saveLocal("RPO_"+rid+"ts",raceOptionsList.race[rid].ts); 
                     resolve(true);
                 } else {    
                     resolve(false);
@@ -734,8 +948,6 @@ async function getRaceOptionsList(rid,f) {
     if((raceOptionsList.race[rid].ts < (Date.now()- 30*60*1000)) || f)
     {
         getRaceOptionsListITYC(rid);
-        await saveLocal("RPO_"+rid,raceOptionsList.race[rid].uinfo);
-        await saveLocal("RPO_"+rid+"ts",raceOptionsList.race[rid].ts); 
     }
 
 }
@@ -743,16 +955,24 @@ async function getRaceOptionsList(rid,f) {
 function mergeRaceOptionsList(rid,raceOptPlayer) {
     var playerOption;
 
-    if(raceOptPlayer.opt=="FP") raceOptPlayer.opt = "Full Pack";
-    else if(raceOptPlayer.opt=="AO") raceOptPlayer.opt = "All Options";
-    else {
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("h","hull");
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("H","heavy");
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("L","light");
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("R","reach");
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("W","winch");
-        raceOptPlayer.opt = raceOptPlayer.opt.replace("F","foil");
+    if(raceOptPlayer.opt)
+    {
+        if(raceOptPlayer.opt=="FP") raceOptPlayer.opt = "Full Pack";
+        else if(raceOptPlayer.opt=="AO") raceOptPlayer.opt = "All Options";
+        else {
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("h","hull");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("H","heavy");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("L","light");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("R","reach");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("W","winch");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("F","foil");
+        }
+    } else {
+        raceOptPlayer.opt =raceOptPlayer.options ;
     }
+    if(!raceOptPlayer.stTs)
+        raceOptPlayer.stTs = raceOptPlayer.startRaceTime;
+    
     if(raceOptionsList.race[rid].uinfo[rid])
     {
         playerOption = raceOptionsList.race[rid].uinfo[playerOption.playerId];
@@ -781,7 +1001,11 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
 
 
 async function saveRaceOptionsList(rid) {
-    await saveLocal("RPO_"+rid,raceOptionsList.race[rid].uinfo); 
+    var t = [];
+    Object.keys(raceOptionsList.race[rid].uinfo).forEach(function (key) {
+        t.push(JSON.stringify(raceOptionsList.race[rid].uinfo[key]));
+    });
+    await saveLocal("RPO_"+rid,t);
 }
 
 async function addRaceOptionsList(raceId,raceOptionPlayer)
@@ -865,8 +1089,9 @@ function getRacePlayerInfos(raceId, playerId)
         getRaceOptionsList,saveRaceOptionsList,addRaceOptionsList,
         getRaceOptions,getRaceOptionsPlayer,getStartRaceTimePlayer,getRacePlayerInfos,
         saveLegInfo,getLegInfo,
-        serialize,cyrb53,getItycPolarHash,isHashOK,sendPolar2ITYC
-
+        serialize,cyrb53,getItycPolarHash,isHashOK,sendPolar2ITYC,
+        addRaceLogInfosLine,saveRaceLogInfos,initRaceLogInfos,getRaceLogInfos,
+        rebuildRecordedData
 
 
     };
