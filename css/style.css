@@ -1109,3 +1109,8 @@ tr.highlightMe {
 .cursorHelp {
     cursor: help;
 }
+
+#sel_Seperator {
+    font-size: 1.1em;
+    margin-bottom: 1em;
+}

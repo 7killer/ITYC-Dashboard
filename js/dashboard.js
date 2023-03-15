@@ -29,6 +29,7 @@ var controller = function () {
     var currentSortField = "none";
     var originClick;
     var drawTheme = "dark";
+    var csvSep = ";";
     const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
                      // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
                      "Auto", "Jib &#x24B6;", "Spi &#x24B6;", "Stay &#x24B6;", "LJ &#x24B6;", "C0 &#x24B6;", "HG &#x24B6;", "LG &#x24B6;"];
@@ -2187,27 +2188,40 @@ var controller = function () {
             else if (r.state == "waiting") pState = "Waiting";
             else if (r.state == "staying") pState = "Staying";
                 
-            let cSep = '\t';
-            let line = cSep; //first cell is RT, useless
+            let line = csvSep; //first cell is RT, useless
 
-            line += bi.name + cSep;
-            line += formatTime(r.lastCalcDate)  + cSep;
-            line += (r.rank ? r.rank : "-") + cSep;
-            line += ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + cSep;
-            line += (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ cSep;
-            line += "-" + cSep;
-            line += bi.sSail + cSep;
-            line += pState + cSep;
-            line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + cSep;
-            line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + cSep;
-            line += Util.roundTo(bi.heading, 2+nbdigits) + cSep;
-            line += Util.roundTo(bi.twa, 2+nbdigits)  + cSep;
-            line += Util.roundTo(bi.tws, 2+nbdigits)  + cSep;
-            line += Util.roundTo(bi.speed, 2+nbdigits) + cSep;
-            line += Util.roundTo(r.xfactor, 4) + cSep;
-            line += (r.xoption_foils || "?") + cSep;
-            line +=  (r.xoption_options || "?") + cSep;
-            line +=  (r.teamname ? r.teamname : "-") + cSep;
+            line += bi.name + csvSep;
+            line += formatTime(r.lastCalcDate)  + csvSep;
+            line += (r.rank ? r.rank : "-") + csvSep;
+            var data = ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            data =(r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            line += "-" + csvSep;
+            line += bi.sSail + csvSep;
+            line += pState + csvSep;
+            line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + csvSep;
+            line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + csvSep;
+            data =Util.roundTo(bi.heading, 2+nbdigits) + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            data =Util.roundTo(bi.twa, 2+nbdigits)  + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            data = Util.roundTo(bi.tws, 2+nbdigits)  + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            data = Util.roundTo(bi.speed, 2+nbdigits) + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            data = Util.roundTo(r.xfactor, 4) + csvSep;
+            if(csvSep!=',') data.replace(".",",");
+            line += data;
+            line += (r.xoption_foils || "?") + csvSep;
+            line +=  (r.xoption_options || "?") + csvSep;
+            line +=  (r.teamname ? r.teamname : "-") + csvSep;
             return line;
 
         }
@@ -2224,11 +2238,11 @@ var controller = function () {
         var  date = mm + '_' + dd + '_' + yyyy+ '_' + today.getHours()+today.getMinutes();        
         var tabletitle = " ";
             
-        tabletitle +=  'Name;' + race.legdata.name +";"+ race.id+"\n";
+        tabletitle +=  'Name'+csvSep + race.legdata.name +csvSep+ race.id+"\n";
         tabletitle +=  'VSR' + race.legdata.vsrLevel + "\n";
-        tabletitle += 'Export Date;'+date+ "\n\n";
+        tabletitle += 'Export Date'+csvSep+date+ "\n\n";
         var fileContent = tabletitle;
-        fileContent += "RT;Skipper;Last Update;Rank;DTF;DTU;BRG;Sail;State;RaceTime;Position;HDG;TWA;TWS;Speed;Factor;Foils;Options;team\n";
+        fileContent += "RT"+csvSep+"Skipper"+csvSep+"Last Update"+csvSep+"Rank"+csvSep+"DTF"+csvSep+"DTU"+csvSep+"BRG"+csvSep+"Sail"+csvSep+"State"+csvSep+"RaceTime"+csvSep+"Position"+csvSep+"HDG"+csvSep+"TWA"+csvSep+"TWS"+csvSep+"Speed"+csvSep+"Factor"+csvSep+"Foils"+csvSep+"Options"+csvSep+"team\n";
         
         fileContent += Array.from(fleet.table || []).map(makeLineFleet).join("\n");
                  
@@ -2278,23 +2292,36 @@ var controller = function () {
             var raceDatas = DM.getRaceInfos(rid);
             var raceName = raceDatas.legName?raceDatas.legName:raceDatas.name;
 
-            fileContent += "RaceID;"+rid; 
+            fileContent += "RaceID"+csvSep+rid; 
             fileContent += "\n";
-            fileContent += "Race Name;"+raceName.remExportAcc(); 
+            fileContent += "Race Name"+csvSep + raceName.remExportAcc(); 
             fileContent += "\n\n";
-            fileContent += "Time;TWS;TWD;TWA;HDG;Speed;Stamina;Sail\n";
-
+            fileContent += "Time"+csvSep+"TWS"+csvSep+"TWD"+csvSep+"TWA"+csvSep+"HDG"+csvSep+"Speed"+csvSep+"Stamina"+csvSep+"Sail\n";
+           
             for(var i=0;i<recordedInfos.ts.length;i++) {
-                fileContent += printDate(recordedInfos.ts[i])+";";
+                fileContent += printDate(recordedInfos.ts[i])+csvSep;
    
-
-                fileContent += recordedInfos.tws[i]?((recordedInfos.tws[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.twd[i]?((recordedInfos.twd[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.twa[i]?((recordedInfos.twa[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.hdg[i]?((recordedInfos.hdg[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.bs[i]?((recordedInfos.bs[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.stamina[i]?((recordedInfos.stamina[i] +";").replace(".",",")):";";
-                fileContent += recordedInfos.sail.id[i]?(sailNames[recordedInfos.sail.id[i]].split(" ")[0] +";\n"):";\n";
+                var data = recordedInfos.tws[i]?((recordedInfos.tws[i] +csvSep)):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.twd[i]?((recordedInfos.twd[i] +csvSep).replace(".",",")):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.twa[i]?((recordedInfos.twa[i] +csvSep).replace(".",",")):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.hdg[i]?((recordedInfos.hdg[i] +csvSep).replace(".",",")):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.bs[i]?((recordedInfos.bs[i] +csvSep).replace(".",",")):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.stamina[i]?((recordedInfos.stamina[i] +csvSep).replace(".",",")):csvSep;
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
+                data = recordedInfos.sail.id[i]?(sailNames[recordedInfos.sail.id[i]].split(" ")[0] +csvSep+"\n"):csvSep+"\n";
+                if(csvSep!=',') data.replace(".",",");
+                fileContent += data;
             }
 
             
@@ -3611,6 +3638,7 @@ async function initializeMap(race) {
 //    await chrome.storage.local.clear();
         await getOption("auto_router",true);
         await getOptionN("sel_router","zezo");
+        await getOptionN("sel_Seperator","sep_1");
         
     //    getOption("markers");
     await getOption("reuse_tab",true);
@@ -3741,8 +3769,8 @@ async function initializeMap(race) {
         document.getElementById("fleet_stamina" ).addEventListener("change", saveOption);
         document.getElementById("ITYC_record" ).addEventListener("change", saveOption);
         document.getElementById("auto_clean" ).addEventListener("change", saveOption);
-        document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);
-        
+        document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);   
+        document.getElementById("sel_Seperator").addEventListener("change", selectSeparator);
 
         
     }
@@ -3865,8 +3893,8 @@ async function initializeMap(race) {
         drawTheme = document.documentElement.getAttribute("data-theme");
         switchAddOnMode();
 
-        //var t = await chrome.storage.local.get();
-        //console.log(t);
+        var t = await chrome.storage.local.get();
+        console.log(t);
    }
 
     var callRouter = function (raceId, userId = currentUserId, auto = false,rtType="zezo") {
@@ -4765,6 +4793,8 @@ async function initializeMap(race) {
         saveLocal("dash_lang",lang);
         translateDash();
     }
+
+
     
     function translateDash () {
 
@@ -4960,6 +4990,16 @@ async function initializeMap(race) {
         makeRaceStatusHTML();
 
     }
+
+    async function selectSeparator(idSep)
+    {
+        let val = idSep.target.value;
+        if(val=="sep_2") csvSep = ',';
+        else if(val=="sep_3") csvSep = '\t';
+        else csvSep = ';';
+        await saveLocal('cb_sel_Seperator',val) ;
+
+    }
     
 
     return {    
@@ -4993,6 +5033,8 @@ async function initializeMap(race) {
         selectLgFR:selectLgFR,
         selectLgEN:selectLgEN,
         selectLgES:selectLgES,
+
+        selectSeparator:selectSeparator,
 
         // Fin ajout -----------------
     }
@@ -5034,6 +5076,7 @@ window.addEventListener("load", async function () {
     
     document.getElementById("bt_cleanGraph").addEventListener("click", controller.graphCleanData);
     document.getElementById("bt_exportGraphData").addEventListener("click", controller.exportGraphData);
+
     
     // Ajout ----------------------------------------------------------------------------
     //document.getElementById("sel_raceNotif").addEventListener("change", controller.changeRace);

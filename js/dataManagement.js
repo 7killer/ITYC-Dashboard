@@ -451,7 +451,7 @@ function makeRaceTable()
 
 function getRaceInfos(raceID)
 {
-    return raceList.uinfo[raceID];
+    return raceList.uinfo[raceID.replace(".","_")];
 }
 
 function getRaceListInfos()
