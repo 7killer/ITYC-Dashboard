@@ -547,6 +547,12 @@ async function initialize(race,raceFleetMap)
 
             document.getElementById("tab-content3").appendChild(divMap);
 
+            let mapTileColorFilterDarkMode = [
+                'hue:195deg',
+                'invert:92%',
+                'saturate:112%',
+            ];
+
             var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, ' +
                     'AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
@@ -555,9 +561,15 @@ async function initialize(race,raceFleetMap)
             var OSM_Layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             });
+
+            var OSM_DarkLayer = L.tileLayer.colorFilter('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+                filter: mapTileColorFilterDarkMode                
+            });
         
             var baseLayers = {
                 "Carte": OSM_Layer,
+                "Custom": OSM_DarkLayer,
                 "Satellite": Esri_WorldImagery
             };
         
