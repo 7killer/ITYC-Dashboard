@@ -19,6 +19,7 @@
         <script src="./lib/polylineDecorator/leaflet.polylineDecorator.js"></script>
         <script src="./lib/rotatedMarkers/leaflet.rotatedMarker.js"></script>
         <script src="./lib/geodesicLine/leaflet.geodesic.umd.min.js"></script>
+        <script src="./lib/tileLayerColorFilter/leaflet.tilelayer-colorfilter.min.js"></script>
         <script src="./lib/gpxParser/GPXParser.min.js"></script>
         <script src="./lib/md5/md5.min.js"></script>
         <script src="./js/stamina.js"></script>
@@ -369,7 +370,11 @@
                             <td class="us_title" id="t_config_rs">Race Status</td>
                             <td colspan="4"><input type="checkbox" id="showBVMGSpeed"><label id="t_showBVMGSpeed">Afficher Vitesse du bateau à la VMG</label></td>
                             <td colspan="4"><input type="checkbox" id="with_LastCommand" ><label id="t_with_LastCommand">Afficher derniers ordres</label></td>
-                            <td colspan="12"></td>
+                            <td colspan="13"></td>
+                        </tr>
+                        <tr class="us_line">
+                            <td class="us_title" id="t_config_l">Journal</td>
+                            <td colspan="21"><input type="checkbox" id="hideCommandsLines"><label id="t_hideCommandsLines">Cacher les lignes correspondantes aux actions/commandes</label></td>
                         </tr>
                         <tr class="us_line">
                             <td class="us_title" id="t_config_m">Carte</td>
@@ -404,21 +409,25 @@
                             <td><input type="checkbox" id="fleet_position"  checked><label id="t_fleet_position">Position</label></td>           
                             <td><input type="checkbox" id="fleet_options"  checked><label id="t_fleet_options">Options</label></td>     
                             <td><input type="checkbox" id="fleet_state"  checked><label id="t_fleet_state">State</label></td>  
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr class="us_line2">
+                            <td class="us_title">Export</td>
+                            <td width="150px">
+                                <select id="sel_Seperator" name="type" class="notif">
+                                    <option value ="sep_1" id="t_sep_1">; (EU style)</option>
+                                    <option value ="sep_2" id="t_sep_2">, (US style)</option>
+                                    <option value ="sep_3" id="t_sep_3">Tab (<a href="https://sailranks.com/v/home">SailRank</a>)</option>
+                                </select>
+                            </td>
+                            <td colspan="20">
+                                <button id="bt_exportPolar">Export polars</button>
+                                <button id="bt_exportStamina">Export stamina</button>
+                                <button id="bt_exportFleet">Export FleetInfos</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-            <div>            
-                <select id="sel_Seperator" name="type" class="notif">
-                    <option value ="sep_1" id="t_sep_1">; (EU style)</option>
-                    <option value ="sep_2" id="t_sep_2">, (US style)</option>
-                    <option value ="sep_3" id="t_sep_3">Tab (<a href="https://sailranks.com/v/home">SailRank</a>)</option>
-                </select>
-            </div>
-            <div>
-                <button id="bt_exportPolar">Export polars</button>
-                <button id="bt_exportStamina">Export stamina</button>
-                <button id="bt_exportFleet">Export FleetInfos</button>
             </div>
         </div>
     </div>
