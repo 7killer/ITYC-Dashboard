@@ -4799,8 +4799,8 @@ async function initializeMap(race) {
     function translateDash () {
 
         if(lang == "fr") {
-            document.getElementById("t_boat").innerHTML = "Bateau : ";	
-            document.getElementById("t_team").innerHTML = "Equipe: ";	
+            document.getElementById("t_boat").innerHTML = "Bateau: ";	
+            document.getElementById("t_team").innerHTML = "Équipe: ";	
             document.getElementById("t_race").innerHTML = "Course";	
             document.getElementById("t_NMEA").innerHTML = "Sortie NMEA";
             document.getElementById("t_help").innerHTML = "Aide";
@@ -4815,14 +4815,14 @@ async function initializeMap(race) {
             document.getElementById("t_rawLog").innerHTML = "Raw Log";
             
             document.getElementById("t_filter").innerHTML = "Filtres";
-            document.getElementById("lbl_team").innerHTML = '<span style="color:Red;">&#x2B24;</span>&nbsp;Equipe';
+            document.getElementById("lbl_team").innerHTML = '<span style="color:Red;">&#x2B24;</span>&nbsp;Équipe';
             document.getElementById("lbl_friends").innerHTML = '<span style="color:LimeGreen;">&#x2B24;</span>&nbsp;Amis';
             document.getElementById("lbl_top").innerHTML = '<span style="color:GoldenRod;">&#x2B24;</span>&nbsp;Top VSR';
             document.getElementById("lbl_sponsors").innerHTML = '<span style="color:DarkSlateBlue;">&#x2B24;</span>&nbsp;Sponsors';
-            document.getElementById("lbl_certified").innerHTML = '<span style="color:DodgerBlue;">&#x2B24;</span>&nbsp;Certifié';
+            document.getElementById("lbl_certified").innerHTML = '<span style="color:DodgerBlue;">&#x2B24;</span>&nbsp;Certifiés';
             document.getElementById("lbl_opponents").innerHTML = '<span style="color:lightgray;">&#x2B24;</span>&nbsp;Adversaires';
             document.getElementById("lbl_reals").innerHTML = '<span style="color:Chocolate;">&#x2B24;</span>&nbsp;Réels';
-            document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Sélectionné';
+            document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Sélectionnés';
             document.getElementById("lbl_inrace").innerHTML = 'En course';
             
             document.getElementById("lbl_helpLmap").innerHTML = "Aide";
@@ -4835,7 +4835,7 @@ async function initializeMap(race) {
             document.getElementById("bt_rt_addLmap").innerHTML = "Import";
             
             document.getElementById("bt_cleanGraph").innerHTML = "Effacer graphiques";
-            document.getElementById("bt_exportGraphData").innerHTML = "Export data";
+            document.getElementById("bt_exportGraphData").innerHTML = "Exporter les données";
             
             document.getElementById("t_notif2").innerHTML = "Notifications et rappels";
             document.getElementById("t_notif21").innerHTML = 'Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
@@ -4855,11 +4855,11 @@ async function initializeMap(race) {
             
             
             
-            document.getElementById("t_config_g").innerHTML = "General";
+            document.getElementById("t_config_g").innerHTML = "Général";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
             document.getElementById("t_2digits").innerHTML = "+1 digit";
-            document.getElementById("t_reuse_tab").innerHTML = "Re-utilisation onglet";
-            document.getElementById("t_local_time").innerHTML = "Local times";
+            document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
+            document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
@@ -4867,7 +4867,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
-            document.getElementById("t_track_infos").innerHTML = "charger infos traces  (redémarrage dashboard requis)"		;
+            document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
                 
             document.getElementById("t_config_f").innerHTML = "Flotte";
             document.getElementById("t_abbreviatedOption").innerHTML = "Options abrégées";
@@ -4884,14 +4884,14 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
             
-            document.getElementById("bt_exportPolar").innerHTML = "Export polars";
-            document.getElementById("bt_exportStamina").innerHTML = "Export stamina";
-            document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
+            document.getElementById("bt_exportPolar").innerHTML = "Exporter Polaires";
+            document.getElementById("bt_exportStamina").innerHTML = "Exporter Stamina";
+            document.getElementById("bt_exportFleet").innerHTML = "Exporter FleetInfos";
             
             document.getElementById("t_credit_all").innerHTML = "Tous les contributeurs inconnus !";
             document.getElementById("t_credit_me").innerHTML = "Votre serviteur !";
         } else {
-            document.getElementById("t_boat").innerHTML = "Boat : ";	
+            document.getElementById("t_boat").innerHTML = "Boat: ";	
             document.getElementById("t_team").innerHTML = "Team: ";	
             document.getElementById("t_race").innerHTML = "Race";	
             document.getElementById("t_NMEA").innerHTML = "NMEA output";
@@ -4917,7 +4917,7 @@ async function initializeMap(race) {
             document.getElementById("lbl_selected").innerHTML = '<span style="color:HotPink;">&#x2B24;</span>&nbsp;Selected';
             document.getElementById("lbl_inrace").innerHTML = 'Racing';
             
-            document.getElementById("lbl_helpLmap").innerHTML = "Helps";
+            document.getElementById("lbl_helpLmap").innerHTML = "Help";
             document.getElementById("lbl_showMarkersLmap").innerHTML = "Marks";
             document.getElementById("lbl_showTracksLmap").innerHTML = "Tracks";
             document.getElementById("lbl_rt_openLmap").innerHTML = "Add";	
@@ -4930,8 +4930,8 @@ async function initializeMap(race) {
             document.getElementById("bt_exportGraphData").innerHTML = "Export data";
             
             document.getElementById("t_notif2").innerHTML = "Notifications and recall";
-            document.getElementById("t_notif21").innerHTML = 'Select a race : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
-            document.getElementById("t_notif22").innerHTML = "Paramètres :";
+            document.getElementById("t_notif21").innerHTML = 'Select a race: <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif22").innerHTML = "Parameters:";
             
             document.getElementById("t_notif_opt1").innerHTML = "inferior";
             document.getElementById("t_notif_opt2").innerHTML = "inferior or equal";
@@ -4950,8 +4950,8 @@ async function initializeMap(race) {
             document.getElementById("t_config_g").innerHTML = "General";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
             document.getElementById("t_2digits").innerHTML = "+1 digit";
-            document.getElementById("t_reuse_tab").innerHTML = "tab re-use";
-            document.getElementById("t_local_time").innerHTML = "Local times";
+            document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
+            document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
@@ -4959,11 +4959,11 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
             document.getElementById("t_config_m").innerHTML = "Map";
-            document.getElementById("t_track_infos").innerHTML = "Load track infos  (dashboard restart needed)"		;
+            document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
                 
             document.getElementById("t_config_f").innerHTML = "Fleet";
-            document.getElementById("t_abbreviatedOption").innerHTML = "shorted options";
-            document.getElementById("t_auto_clean").innerHTML = "old data cleaner";
+            document.getElementById("t_abbreviatedOption").innerHTML = "Shorted options";
+            document.getElementById("t_auto_clean").innerHTML = "Old data cleaner";
             
             document.getElementById("t_config_c").innerHTML = "Columns";
             document.getElementById("t_fleet_team").innerHTML = "Team";
@@ -4976,8 +4976,8 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
             
-            document.getElementById("bt_exportPolar").innerHTML = "Export polars";
-            document.getElementById("bt_exportStamina").innerHTML = "Export stamina";
+            document.getElementById("bt_exportPolar").innerHTML = "Export Polars";
+            document.getElementById("bt_exportStamina").innerHTML = "Export Stamina";
             document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
             
             document.getElementById("t_credit_all").innerHTML = "All unknows contributors !";
