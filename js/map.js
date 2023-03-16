@@ -954,7 +954,7 @@ function updateMapMe(race, track) {
                     var deltaD =  Util.gcDistance(track[i-1], segment);
                     var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                     var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                    var title =  "Me " + " : " + timeStamp + " | " + speed + "kn" + " | " + (segment.tag || "-");
+                    var title =  "Me " + "<br><b>" + timeStamp + "</b><br>Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
                     var trackcolor = "#b86dff";
                     buildCircle(pos, race.lMap.meLayerMarkers,trackcolor, 1.5 ,1, title);
                     race.lMap.refPoints.push(pos[1]);
@@ -980,10 +980,9 @@ function updateMapMe(race, track) {
 
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
-        var title = "Me | HDG : " 
-                    + Util.roundTo(race.curr.heading, 2 + nbdigits) 
-                    + " | TWA : " + Util.roundTo(race.curr.twa, 2 + nbdigits) 
-                    + " | SPD : " + Util.roundTo(race.curr.speed, 2+nbdigits);
+        var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 2 + nbdigits) + "°</b>"
+                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2 + nbdigits) + "°</b>"
+                    + "<br>Speed: " + Util.roundTo(race.curr.speed, 2 + nbdigits) + " kts";
 
         buildMarker(pos, race.lMap.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading);
      }
@@ -1157,7 +1156,7 @@ function updateMapFleet(race,raceFleetMap) {
             }
             
             var nbdigits = (document.getElementById("2digits").checked?1:0);
-            var info = bi.name + " | HDG : " + Util.roundTo(bi.heading, 1+nbdigits) + " | TWA : " + Util.roundTo(bi.twa, 2+nbdigits) + " | SPD : " + Util.roundTo(bi.speed, 2 + nbdigits);
+            var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts";
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
             }
@@ -1181,7 +1180,7 @@ function updateMapFleet(race,raceFleetMap) {
                                 var deltaD =  Util.gcDistance(elem.track[i-1], segment);
                                 var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                                 var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                                var title =  elem.displayName + " : " + timeStamp + " | " + speed + "kn" + " | " + (segment.tag || "-");
+                                var title =  elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
 
                                 buildCircle(pos2,race.lMap.fleetLayerMarkers,bi.bcolor, 1.5,1,title);
                         }
