@@ -473,20 +473,20 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
         pos= buildPt(initLat, initLng);
         cpath[cpathNum].push(pos);   
     }
-    pos= buildPt(path[0].lat, path[0].lon);
+    pos= buildPt(path[0].lat, (path[0].lon?path[0].lon:path[0].lng));
     cpath[cpathNum].push(pos);
 
     if(path.length >1)
         for (var i = 1; i < path.length; i++) {
 
-            if((path[i-1].lon > 0 && path[i].lon < 0)
-            || (path[i].lon > 0 && path[i-1].lon < 0))
+            if((path[i-1].lon > 0 && (path[i].lon?path[i].lon:path[i].lng) < 0)
+            || (path[i].lon > 0 && (path[i-1].lon?path[i-1].lon:path[i-1].lng) < 0))
             {//antimeridian crossing
                 cpathNum++;
                 cpath[cpathNum] = [];
                 continue; //best is build the 2 parts path to track gap
             }
-            pos = buildPt(path[i].lat, path[i].lon);
+            pos = buildPt(path[i].lat, (path[i].lon?path[i].lon:path[i].lng));
             cpath[cpathNum].push(pos);
         }
     if(finishLat && finshLng)
@@ -851,7 +851,10 @@ function updateMapCheckpoints(race) {
         var pathColor = "yellow";
         if(g_passed) pathColor = "green";
         
-        buildTrace([position_e[1],position_s[1]],race.lMap.checkPointLayer,race,pathColor,1,op,'20, 20','10');   
+        var tpath = [];;
+        tpath.push(position_e[1]);
+        tpath.push(position_s[1]);
+        buildTrace(buildPath(tpath),race.lMap.checkPointLayer,race,pathColor,1,op,'20, 20','10');   
     }
     race.lMap.checkPointLayer.addTo(map); 
     if(!race.lMap.userZoom) updateBounds(race);
@@ -1030,9 +1033,8 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
             }
         }
     }
-    
-    var cpath = buildPath(ghostTrack);    
-    buildTrace(cpath,layer,race, color,1,0.6,'10, 10','5');
+       
+    buildTrace(buildPath(ghostTrack),layer,race, color,1,0.6,'10, 10','5');
 
 
     if (ghostPos) {
@@ -1095,7 +1097,7 @@ function drawProjectionLine(race,pos,hdg,speed) {
         var title = 2*(i+1)+"min";
         buildCircle(pos,race.lMap.me_PlLayer,"#b86dff", 1.5,1,title); 
     }  
-    buildTrace(tpath,race.lMap.me_PlLayer, race,"#b86dff",1,0.4,'10, 10','5');
+    buildTrace(buildPath(tpath) ,race.lMap.me_PlLayer, race,"#b86dff",1,0.4,'10, 10','5');
 
     race.lMap.me_PlLayer.addTo(map); 
 
@@ -1229,9 +1231,7 @@ function importRoute(route,race,name) {
 
         
     }
-    
-    var cpath = buildPath(route.points);    
-    buildTrace(cpath,lmapRoute.traceLayer,race, lmapRoute.color,1,1.5);
+    buildTrace(buildPath(route.points), lmapRoute.traceLayer,race, lmapRoute.color,1,1.5);
     lmapRoute.traceLayer.addTo(map); 
     
     if(document.getElementById('sel_showMarkersLmap').checked) lmapRoute.markersLayer.addTo(map);
