@@ -1401,12 +1401,13 @@ var controller = function () {
 
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
-            return '<tr>'
-           + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>'           // Modif
-           + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>'                             // Modif
-           + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
-           + '</tr>';
-       }
+            return '<tr class="commandLine">'
+            + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>' // Modif
+            + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>' // Modif
+            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '</tr>';
+        }
+
         function makeRaceLineLog(rinfo)
         {
             function isDifferingSpeed(realSpeed, calculatedSpeed) {
@@ -1580,6 +1581,21 @@ var controller = function () {
             + '</table>';
     }
 
+    function makeTableHTMLProcess(r) {
+        divRecordLog.innerHTML = makeTableHTML(r);
+        updateToggleRaceLogCommandsLines();
+    }
+
+    function updateToggleRaceLogCommandsLines() {
+        var commandLines = document.querySelectorAll('tr.commandLine');
+        commandLines.forEach(function(line) {
+            if (document.getElementById("hideCommandsLines").checked) {
+                line.style.display = 'none';
+            } else {
+                line.style.display = '';
+            }
+        });
+    }
 
     function clearRecordedData(rid) {
         var race = races.get(rid);
@@ -2396,7 +2412,7 @@ var controller = function () {
         await DM.saveRaceLogInfos(r.id);
 
         if (r.id == selRace.value) {
-            divRecordLog.innerHTML = makeTableHTML(r);  
+            makeTableHTMLProcess(r);
         }
         // updateMapWaypoints(r);
     }
@@ -2474,7 +2490,7 @@ var controller = function () {
             await DM.addRaceLogInfosLine(r.id,rliLine);
             await DM.saveRaceLogInfos(r.id);
             if (r.id == selRace.value) {
-                divRecordLog.innerHTML = makeTableHTML(r);
+                makeTableHTMLProcess(r);
             }
         }
     }
@@ -2513,7 +2529,7 @@ var controller = function () {
         currentRaceId = raceId;
         makeRaceStatusHTML();
         //await DM.initRaceLogInfos(raceId);
-        divRecordLog.innerHTML = makeTableHTML(race);
+        makeTableHTMLProcess(race);
         if(race && race.recordedData) {
             gr.upDateGraph(race.recordedData);
         }
@@ -3650,6 +3666,7 @@ async function initializeMap(race) {
         await getOption("with_LastCommand",false);
         await getOption("vrzenPositionFormat",false);
         await getOption("showBVMGSpeed",false);
+        await getOption("hideCommandsLines", false);
         await getOption("abbreviatedOption",true);
         await getOption("fleet_team",true);
         await getOption("fleet_rank",true);
@@ -3748,6 +3765,8 @@ async function initializeMap(race) {
         document.getElementById("with_LastCommand").addEventListener("change", makeRaceStatusHTML);
         document.getElementById("vrzenPositionFormat").addEventListener("change", saveOption);
         document.getElementById("showBVMGSpeed").addEventListener("change", saveOption);
+        document.getElementById("hideCommandsLines").addEventListener("change", saveOption);
+        document.getElementById("hideCommandsLines").addEventListener("change", updateToggleRaceLogCommandsLines);
         document.getElementById("abbreviatedOption").addEventListener("change", saveOption);
         document.getElementById("fleet_team").addEventListener("change", saveOption);
         document.getElementById("fleet_rank").addEventListener("change", saveOption);
@@ -3839,7 +3858,7 @@ async function initializeMap(race) {
         divRaceStatus = document.getElementById("raceStatus");
         divFriendList = document.getElementById("friendList");
         divRecordLog = document.getElementById("recordlog");
-        divRecordLog.innerHTML = makeTableHTML();
+        makeTableHTMLProcess();
         cbRawLog = document.getElementById("cb_rawlog");
         divRawLog = document.getElementById("rawlog");
         cb2digits = document.getElementById("2digits");
@@ -3947,7 +3966,7 @@ async function initializeMap(race) {
                 race.lMap = undefined;
             });
             makeRaceStatusHTML();
-            divRecordLog.innerHTML = makeTableHTML();
+            makeTableHTMLProcess();
             updateFleetHTML();
             buildlogBookHTML();
         };
@@ -4240,7 +4259,7 @@ async function initializeMap(race) {
             gr.upDateGraph(race.recordedData);
         }
 
-        divRecordLog.innerHTML = makeTableHTML(race);
+        makeTableHTMLProcess(race);
         updateFleetHTML(raceFleetMap.get(selRace.value));
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
@@ -4865,6 +4884,9 @@ async function initializeMap(race) {
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
+
+            document.getElementById("t_config_l").innerHTML = "Journal";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
             document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
@@ -4957,6 +4979,9 @@ async function initializeMap(race) {
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
+            
+            document.getElementById("t_config_l").innerHTML = "Race Log";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands";
             
             document.getElementById("t_config_m").innerHTML = "Map";
             document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
