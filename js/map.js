@@ -441,6 +441,8 @@ function buildPt(lat,lon)
         ptCorr = ptCorr+360;     
         lPt = L.latLng(lat,ptCorr,true);       
     }*/
+    if(!lat) lat = 0;
+    if(!lon) lon = 0;
     return L.latLng(lat,lon);
 }
 
@@ -454,6 +456,8 @@ function buildPt2(lat,lon)
         ptCorr = ptCorr+360;     
         lPt = L.latLng(lat,ptCorr,true);       
     }*/
+    if(!lat) lat = 0;
+    if(!lon) lon = 0;
     var ret = [];
     ret[0] =  L.latLng(lat,lon-360,true);
     ret[1] =  L.latLng(lat,lon);
@@ -478,15 +482,19 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
 
     if(path.length >1)
         for (var i = 1; i < path.length; i++) {
-
-            if((path[i-1].lon > 0 && (path[i].lon?path[i].lon:path[i].lng) < 0)
-            || (path[i].lon > 0 && (path[i-1].lon?path[i-1].lon:path[i-1].lng) < 0))
+            var lon = (path[i].lon?path[i].lon:path[i].lng);
+            var lon2 = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
+            if(lon==0 && lon2 < 0)lon = -0.000001;
+            else  if(lon==0 && lon2 > 0)lon = 0.000001;
+            if((lon2 > 0 && lon < 0)
+            || (lon > 0 && lon2 < 0))
             {//antimeridian crossing
                 cpathNum++;
                 cpath[cpathNum] = [];
                 continue; //best is build the 2 parts path to track gap
             }
-            pos = buildPt(path[i].lat, (path[i].lon?path[i].lon:path[i].lng));
+
+            pos = buildPt(path[i].lat, lon);
             cpath[cpathNum].push(pos);
         }
     if(finishLat && finshLng)
