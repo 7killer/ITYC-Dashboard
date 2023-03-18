@@ -3526,9 +3526,6 @@ function buildlogBookHTML(race) {
 async function initializeMap(race) {
         if (!race || !race.legdata) return; // no legdata yet;
 
-
-        if (!race || !race.legdata) return; // no legdata yet;
-
         updateUserConfig();
         lMap.initialize(race,raceFleetMap);
         lMap.updateMapWaypoints(race); 

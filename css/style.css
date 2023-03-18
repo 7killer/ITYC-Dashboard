@@ -1118,3 +1118,13 @@ tr.highlightMe {
 #sel_Seperator {
     font-size: 14px;
 }
+
+.tagGatePassed {
+    width:66px;
+    line-height:1.2;
+    text-align:center;
+    margin:0 0 4px 0;
+    border-radius:6px;
+    background-color:#228B22;
+    color:#FFF;
+}
