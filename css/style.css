@@ -562,6 +562,7 @@ tr.us_line>td.us_title, tr.us_line2>td.us_title , tr.us_line3>td.us_title, tr.us
 }
 tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
     font-size: 1em;
+    cursor: pointer;
 }
 
 
@@ -1132,4 +1133,10 @@ tr.highlightMe {
     border-radius:6px;
     background-color:#228B22;
     color:#FFF;
+}
+
+.top label[for=auto_router],
+.top label[for=nmea_output],
+.top label[for=color_theme] {
+    cursor: pointer;
 }
