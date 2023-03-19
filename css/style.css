@@ -463,6 +463,7 @@ fieldset {
     position: relative;
     color: #000000;
     background: #EEEEEE;
+    line-height: 1.6;
 }
 .tab2 .tab>label:hover {
     display: block;
@@ -490,7 +491,7 @@ fieldset {
     color: #F5F5F5;
 }
 #sel_skippers {
-
+    margin-left:5em;
     visibility: visible;
     margin-top: 0.1em;;
     float: left;
@@ -583,7 +584,7 @@ div#selRankSlave {
 .tabs {
     display: block;
     position: relative;
-    padding: 0px;
+    padding: 2px 0 0 0;
 }
 
 .tabs .tab {
