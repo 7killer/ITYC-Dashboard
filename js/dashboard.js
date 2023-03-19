@@ -2631,8 +2631,8 @@ var controller = function () {
             case "th_sd":
                 Util.set_sortField("startDate");
                 break;
-            case "th_RaceTime":
-                Util.set_sortField("RaceTime");
+            case "th_racetime":
+                Util.set_sortField("raceTime");
                 break;
             case "th_eRT":
                 Util.set_sortField("eRT");

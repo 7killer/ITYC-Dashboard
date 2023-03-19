@@ -253,7 +253,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options {
+#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime {
     cursor: pointer;
 }
 
@@ -380,6 +380,11 @@ td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td
 
 td.options, td.state {
     cursor: help;
+}
+
+td.RaceTime {
+    text-align: center;
+    white-space: nowrap;
 }
 
 td.gender, td.flag, td.userid, td.level, td.role, td.type, td.members {
