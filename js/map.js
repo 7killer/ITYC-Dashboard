@@ -284,7 +284,7 @@ function buildCircleEndRace(pos, layer, trackcolor, size)
     return ret;
 }
 
-function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset) {
+function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset,mode=true) {
 
     for(var i=0;i<tpath.length;i++)
     {
@@ -305,13 +305,26 @@ function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset
         }
         for(var k=0;k<path.length;k++)
         {
-            var trackLineP = L.geodesic(path[k],
+            var trackLineP;
+            if(mode)
             {
-                color: color,
-                opacity: opacity,
-                weight: weight,
-                wrap:false
-            });
+                trackLineP = L.geodesic(path[k],
+                    {
+                        color: color,
+                        opacity: opacity,
+                        weight: weight,
+                        wrap:false
+                    });
+            } else
+            {
+                trackLineP = L.polyline(path[k],
+                    {
+                        color: color,
+                        opacity: opacity,
+                        weight: weight,
+                        wrap:false
+                    });                
+            }
             if(dashArray) trackLineP.options.dashArray = dashArray;
             if(dashOffset) trackLineP.options.dashOffset = dashOffset;
             trackLineP.on('mouseover', function() {
@@ -428,6 +441,8 @@ function buildPt(lat,lon)
         ptCorr = ptCorr+360;     
         lPt = L.latLng(lat,ptCorr,true);       
     }*/
+    if(!lat) lat = 0;
+    if(!lon) lon = 0;
     return L.latLng(lat,lon);
 }
 
@@ -441,6 +456,8 @@ function buildPt2(lat,lon)
         ptCorr = ptCorr+360;     
         lPt = L.latLng(lat,ptCorr,true);       
     }*/
+    if(!lat) lat = 0;
+    if(!lon) lon = 0;
     var ret = [];
     ret[0] =  L.latLng(lat,lon-360,true);
     ret[1] =  L.latLng(lat,lon);
@@ -465,15 +482,19 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
 
     if(path.length >1)
         for (var i = 1; i < path.length; i++) {
-
-            if((path[i-1].lon > 0 && (path[i].lon?path[i].lon:path[i].lng) < 0)
-            || (path[i].lon > 0 && (path[i-1].lon?path[i-1].lon:path[i-1].lng) < 0))
+            var lon = (path[i].lon?path[i].lon:path[i].lng);
+            var lon2 = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
+            if(lon==0 && lon2 < 0)lon = -0.000001;
+            else  if(lon==0 && lon2 > 0)lon = 0.000001;
+            if((lon2 > 0 && lon < 0)
+            || (lon > 0 && lon2 < 0))
             {//antimeridian crossing
                 cpathNum++;
                 cpath[cpathNum] = [];
                 continue; //best is build the 2 parts path to track gap
             }
-            pos = buildPt(path[i].lat, (path[i].lon?path[i].lon:path[i].lng));
+
+            pos = buildPt(path[i].lat, lon);
             cpath[cpathNum].push(pos);
         }
     if(finishLat && finshLng)
@@ -556,7 +577,7 @@ async function initialize(race,raceFleetMap)
         
             var baseLayers = {
                 "Carte": OSM_Layer,
-                "Custom": OSM_DarkLayer,
+                "Dark": OSM_DarkLayer,
                 "Satellite": Esri_WorldImagery
             };
         
@@ -670,7 +691,7 @@ async function initialize(race,raceFleetMap)
                     && iceData[4].lat == -90 && iceData[4].lon == 180
                     )) //is not a dummy ice limits ;)
                 {
-                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",4,0.5);
+                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
                 }
             }
 
