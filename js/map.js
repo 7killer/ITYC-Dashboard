@@ -284,7 +284,7 @@ function buildCircleEndRace(pos, layer, trackcolor, size)
     return ret;
 }
 
-function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset) {
+function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset,mode=true) {
 
     for(var i=0;i<tpath.length;i++)
     {
@@ -305,13 +305,26 @@ function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset
         }
         for(var k=0;k<path.length;k++)
         {
-            var trackLineP = L.geodesic(path[k],
+            var trackLineP;
+            if(mode)
             {
-                color: color,
-                opacity: opacity,
-                weight: weight,
-                wrap:false
-            });
+                trackLineP = L.geodesic(path[k],
+                    {
+                        color: color,
+                        opacity: opacity,
+                        weight: weight,
+                        wrap:false
+                    });
+            } else
+            {
+                trackLineP = L.polyline(path[k],
+                    {
+                        color: color,
+                        opacity: opacity,
+                        weight: weight,
+                        wrap:false
+                    });                
+            }
             if(dashArray) trackLineP.options.dashArray = dashArray;
             if(dashOffset) trackLineP.options.dashOffset = dashOffset;
             trackLineP.on('mouseover', function() {
@@ -577,7 +590,7 @@ async function initialize(race,raceFleetMap)
         
             var baseLayers = {
                 "Carte": OSM_Layer,
-                "Custom": OSM_DarkLayer,
+                "Dark": OSM_DarkLayer,
                 "Satellite": Esri_WorldImagery
             };
         
@@ -692,7 +705,7 @@ async function initialize(race,raceFleetMap)
                     && iceData[4].lat == -90 && iceData[4].lon == 180
                     )) //is not a dummy ice limits ;)
                 {
-                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",4,0.5);
+                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
                 }
             }
 
