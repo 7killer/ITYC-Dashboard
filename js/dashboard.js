@@ -634,11 +634,8 @@ var controller = function () {
             zUrl = prepareZezoUrl(r.id, currentUserId, beta, false, false);
             pUrl = preparePolarUrl(r.id);
             if(r.url) rzUrl = "http://zezo.org/"+ r.url+"/chart.pl?";
-            if (document.getElementById("sel_polarsWebsite").value == "toxcct") {
-                rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId;
-            } else {
-                rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
-            }
+            rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId ; 
+//            rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId ; 
             
             rvUrl  = prepareVrzUrl(r.id);   
  
@@ -3180,11 +3177,8 @@ var controller = function () {
     }
 
     function preparePolarUrl(raceId) {
-        if (document.getElementById("sel_polarsWebsite").value == "toxcct") {
-            var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
-        } else {
-            var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
-        }
+        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
+        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
        
         var race = races.get(raceId);
 
@@ -3207,11 +3201,8 @@ var controller = function () {
     }
 
     function callPolars(raceId) {
-        if (document.getElementById("sel_polarsWebsite").value=="toxcct") {
-            var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
-        } else {
-            var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
-        }
+        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;      
+        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var url = preparePolarUrl(raceId)
         window.open(url, cbReuseTab.checked ? baseURL : "_blank");
     }
@@ -3661,7 +3652,6 @@ async function initializeMap(race) {
         await getOption("auto_router",true);
         await getOptionN("sel_router","zezo");
         await getOptionN("sel_Seperator","sep_1");
-        await getOptionN("sel_polarsWebsite","incbureauvallee");
         
     //    getOption("markers");
     await getOption("reuse_tab",true);
@@ -3750,7 +3740,6 @@ async function initializeMap(race) {
 
         document.getElementById("auto_router").addEventListener("change", saveOption);
         document.getElementById("sel_router").addEventListener("change", saveOptionN);
-        document.getElementById("sel_polarsWebsite").addEventListener("change", saveOptionN);
         document.getElementById("reuse_tab").addEventListener("change", saveOption);
         document.getElementById("local_time").addEventListener("change", saveOption);
         document.getElementById("nmea_output").addEventListener("change", saveOption);
@@ -4888,8 +4877,6 @@ async function initializeMap(race) {
             document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
             document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
-            document.getElementById("t_polar_incbureauvallee").innerHTML = "Polaires INC-BureauVallée";
-            document.getElementById("t_polar_toxcct").innerHTML = "Polaires Toxcct";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
@@ -4985,8 +4972,6 @@ async function initializeMap(race) {
             document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
             document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
-            document.getElementById("t_polar_incbureauvallee").innerHTML = "Polars INC-BureauVallée";
-            document.getElementById("t_polar_toxcct").innerHTML = "Polars Toxcct";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";

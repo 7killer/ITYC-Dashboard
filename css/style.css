@@ -1122,8 +1122,7 @@ tr.highlightMe {
     cursor: help;
 }
 
-#sel_Seperator,
-#sel_polarsWebsite {
+#sel_Seperator {
     font-size: 14px;
 }
 
