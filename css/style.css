@@ -503,8 +503,13 @@ fieldset {
 
 
 #userConfig {
-    padding-left: 1em;
+    padding: 0 1em;
 }
+
+#userConfig button {
+    padding: 3px 12px;
+}
+
 .us_general {
     border-spacing: 0 25px;
     border-collapse: separate;
@@ -550,7 +555,7 @@ tr.us_line2>td {
 tr.us_line>td.us_title, tr.us_line2>td.us_title , tr.us_line3>td.us_title, tr.us_line3t>td.us_title, tr.us_line3b>td.us_title{
     font-size: 1.2em;
 }
-tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label #bt_exportPolar {
+tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
     font-size: 1em;
 }
 
@@ -1111,6 +1116,5 @@ tr.highlightMe {
 }
 
 #sel_Seperator {
-    font-size: 1.1em;
-    margin-bottom: 1em;
+    font-size: 14px;
 }
