@@ -260,10 +260,10 @@ function manage(r) {
                 notifications[i].repet++;
                 var icon = 3;
                 if(lang ==  "fr") { 
-                    TextNotif =  r.curr.displayName + " : rappel programmé à " + formatTimeNotif(notifications[i].time) + " !";
+                    TextNotif =  r.curr.displayName + " : rappel programmé à " + Util.formatTimeNotif(notifications[i].time) + " !";
                 } else
                 {
-                    TextNotif =  r.curr.displayName + " : recall programmed at " + formatTimeNotif(notifications[i].time) + " !";
+                    TextNotif =  r.curr.displayName + " : recall programmed at " + Util.formatTimeNotif(notifications[i].time) + " !";
                 }
                 doNotif(TitreNotif, TextNotif, icon, i);    
             }
