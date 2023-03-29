@@ -178,6 +178,14 @@ function zezoCall(uinfo,raceInfos,color,race) {
             }
             
         });
+		xhr.addEventListener('error', () => {
+                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").disabled = false;
+        });
+        xhr.addEventListener('abort', () => {
+                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").disabled = false;
+        });  
         xhr.open("GET", url);
         xhr.send();
     });
