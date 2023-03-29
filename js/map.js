@@ -286,14 +286,14 @@ function buildCircleEndRace(pos, layer, trackcolor, size)
 
 function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset,mode=true) {
 
+    var nbTrackLine = 0;
+    var trackLine = [];
     for(var i=0;i<tpath.length;i++)
     {
         var path = [];
         path[0] = [];
         path[1] = [];
         path[2] = [];
-        var trackLine = [];
-        var nbTrackLine = 0;
         
         for(var j=0;j<tpath[i].length;j++)
         {
@@ -486,6 +486,10 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
             var lon2 = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
             if(lon==0 && lon2 < 0)lon = -0.000001;
             else  if(lon==0 && lon2 > 0)lon = 0.000001;
+            if(lon==180 && lon2 < 180)lon = 179.999999;
+            else  if(lon==180 && lon2 > 180)lon = 180.000001;
+            if(lon==-180 && lon2 < -180)lon = -180.000001;
+            else  if(lon==-180 && lon2 > -180)lon = -179.999999;
             if((lon2 > 0 && lon < 0)
             || (lon > 0 && lon2 < 0))
             {//antimeridian crossing
