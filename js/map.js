@@ -227,7 +227,7 @@ function buildBoatIcon(fillColor,borderColor,opacity)
         iconUrl: MARKER_ICON_URL,
         iconSize: [24, 24],
         iconAnchor: [12, 12],
-        popupAnchor: [0, 0],
+        popupAnchor: [0, -2],
     });
 }
 
@@ -350,88 +350,75 @@ function buildTrace (tpath,layer,race, color,weight,opacity,dashArray,dashOffset
 var greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
     shadowUrl: '../img/RRIconShadowNok.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35], // size of the icon
+    shadowSize:   [53, 51], // size of the shadow
+    iconAnchor:   [10, 35], // point of the icon which will correspond to marker's location
+    shadowAnchor: [27, 45],  // the same for the shadow
+    popupAnchor:  [0, -42] // point from which the popup should open relative to the iconAnchor
 });
 var redRLIcon = L.icon({
     iconUrl: '../img/redIcon.png',
     shadowUrl: '../img/RLIconShadowNok.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
 var greenRRIconP = L.icon({
     iconUrl: '../img/greenIcon.png',
     shadowUrl: '../img/RRIconShadowOK.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
 var redRLIconP = L.icon({
     iconUrl: '../img/redIcon.png',
     shadowUrl: '../img/RLIconShadowOK.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
-
 var yellowRRIcon = L.icon({
     iconUrl: '../img/yellowIcon.png',
     shadowUrl: '../img/RRIconShadowNok.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
-
 var yellowRLIcon = L.icon({
     iconUrl: '../img/yellowIcon.png',
     shadowUrl: '../img/RLIconShadowNok.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
-
 var yellowRRIconP = L.icon({
     iconUrl: '../img/yellowIcon.png',
     shadowUrl: '../img/RRIconShadowOK.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
-
 var yellowRLIconP = L.icon({
     iconUrl: '../img/yellowIcon.png',
     shadowUrl: '../img/RLIconShadowOK.png',
-
-    iconSize:     [20, 40], // size of the icon
-    shadowSize:   [53, 52], // size of the shadow
-    iconAnchor:   [10, 40], // point of the icon which will correspond to marker's location
-    shadowAnchor: [27, 46],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [20, 35],
+    shadowSize:   [53, 51],
+    iconAnchor:   [10, 35],
+    shadowAnchor: [27, 45],
+    popupAnchor:  [0, -42]
 });
-
 
 function cleanMap(race) {
 
@@ -658,16 +645,15 @@ async function initialize(race,raceFleetMap)
                 
         
                 
-
-            var title1 = "Start: " + race.legdata.start.name 
-                        + "\nPosition: " + Util.formatPosition(race.legdata.start.lat, race.legdata.start.lon);
+            var title1 = "Start: <b>" + race.legdata.start.name + "</b><br>"
+                        + Util.formatPosition(race.legdata.start.lat, race.legdata.start.lon);
           
             var latlng = buildPt2(race.legdata.start.lat,race.legdata.start.lon);
-            buildMarker(latlng,race.lMap.refLayer,buildTextIcon('','blue','red',"S"),title1,0);
+            buildMarker(latlng,race.lMap.refLayer,buildTextIcon('','white','blue',"S"),title1,0);
             race.lMap.refPoints.push(latlng[1]);
             
-            title1 =  "<span>Finish: " + race.legdata.end.name 
-                + "\nPosition: " + Util.formatPosition(race.legdata.end.lat, race.legdata.end.lon) +"</span>";
+            title1 =  "Finish: <b>" + race.legdata.end.name  + "</b><br>"
+                + Util.formatPosition(race.legdata.end.lat, race.legdata.end.lon);
             latlng = buildPt2(race.legdata.end.lat,race.legdata.end.lon);
             buildMarker(latlng,race.lMap.refLayer,buildTextIcon('','yellow','red',"F"),title1,0);
             race.lMap.refPoints.push(latlng[1]);
@@ -749,7 +735,6 @@ async function initialize(race,raceFleetMap)
             
             lMapInfos = race.lMap;
         }
-
     }
 }
 
@@ -804,14 +789,13 @@ function updateMapCheckpoints(race) {
             op = 0.6;
         } // mark/gate passed - semi transparent
         
-        var label_g = "checkpoint " + cp.group + "." + cp.id +  ", type: " + cp_name + ", engine: " + cp.engine + ", name: " + cp.name + (g_passed ? ", PASSED" : "");
-        var side_s =  cp.side ;
-        var side_e = (cp.side == "stbd")?"port":"stbd";
-        var label_s = label_g + ", side: " + side_s + "\nPosition: " + Util.formatPosition(cp.start.lat, cp.start.lon);
-        var label_e = label_g + ", side: " + side_e + "\nPosition: " + Util.formatPosition(cp.end.lat, cp.end.lon);
-
-       
-
+        var label_g = (g_passed ? "<div class='tagGatePassed'>PASSED</div>" : "") 
+            + "Checkpoint " + cp.group + "." + cp.id +  ": <b>" + cp.name + "</b><br>";
+        var label_g_more = "<br>Type: <b>" + cp_name[0].toUpperCase() + cp_name.slice(1) + "</b> | Engine: " + cp.engine;
+        var side_s =  (cp.side == "stbd") ? "Starboard" : "Port";
+        var side_e = (cp.side == "stbd") ? "Port" : "Starboard";
+        var label_s = label_g + Util.formatPosition(cp.start.lat, cp.start.lon) + label_g_more + " | Side: " + side_s;
+        var label_e = label_g + Util.formatPosition(cp.end.lat, cp.end.lon) + label_g_more + " | Side: " + side_e;
         if (cp.display == "buoy") {
             if (cp.side == "stbd") {
        
@@ -839,21 +823,20 @@ function updateMapCheckpoints(race) {
             if (cp.side == "stbd") {
                 if(!g_passed) {
                     buildMarker(position_s, race.lMap.checkPointLayer, greenRRIcon, label_s,  8, op,0);
-                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIcon, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIcon, label_e, 8, op, 0);
                 } else
                 {
                     buildMarker(position_s, race.lMap.checkPointLayer, greenRRIconP, label_s,  8, op,0);
-                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIconP, label_s,  8, op,0);
-
+                    buildMarker(position_e, race.lMap.checkPointLayer, redRLIconP, label_e, 8, op, 0);
                 }
             } else {
                 if(!g_passed) {
                     buildMarker(position_s, race.lMap.checkPointLayer, redRLIcon, label_s,  8, op,0);
-                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIcon, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIcon, label_e, 8, op, 0);
                 } else
                 {
                     buildMarker(position_s, race.lMap.checkPointLayer, redRLIconP, label_s,  8, op,0);
-                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIconP, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, greenRRIconP, label_e, 8, op, 0);
                 }
                 
             }
@@ -1036,12 +1019,12 @@ function updateMapLeader(race) {
         if(race.lMap.leaderLayer) map.removeLayer(race.lMap.leaderLayer);
         race.lMap.leaderLayer = L.layerGroup(); 
 
-        addGhostTrack(race,race.leaderTrack, "Leader : " + race.leaderName + " | Elapsed : " + Util.formatDHMS(offset), offset,  "#FF8C00",race.lMap.leaderLayer);
+        addGhostTrack(race,race.leaderTrack, "Leader: <b>" + race.leaderName + "</b><br>Elapsed: " + Util.formatDHMS(offset), offset, "#FF8C00", race.lMap.leaderLayer);
     }
     if (race.myTrack && race.myTrack.length > 0) {
         if(race.lMap.leaderMeLayer) map.removeLayer(race.lMap.leaderMeLayer);
         race.lMap.leaderMeLayer = L.layerGroup(); 
-        addGhostTrack(race,race.myTrack,"Best Attempt" + " | Elapsed : " + Util.formatDHMS(offset), offset,  "#b86dff",race.lMap.leaderMeLayer);
+        addGhostTrack(race,race.myTrack, "<b>Best Attempt</b><br>Elapsed: " + Util.formatDHMS(offset), offset, "#b86dff", race.lMap.leaderMeLayer);
     }
     lMapInfos = race.lMap;
 

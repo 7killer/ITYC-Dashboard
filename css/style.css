@@ -253,7 +253,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options {
+#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime {
     cursor: pointer;
 }
 
@@ -382,6 +382,11 @@ td.options, td.state {
     cursor: help;
 }
 
+td.RaceTime {
+    text-align: center;
+    white-space: nowrap;
+}
+
 td.gender, td.flag, td.userid, td.level, td.role, td.type, td.members {
     text-align: center;
     padding-left: 10px;
@@ -458,6 +463,7 @@ fieldset {
     position: relative;
     color: #000000;
     background: #EEEEEE;
+    line-height: 1.6;
 }
 .tab2 .tab>label:hover {
     display: block;
@@ -485,7 +491,7 @@ fieldset {
     color: #F5F5F5;
 }
 #sel_skippers {
-
+    margin-left:5em;
     visibility: visible;
     margin-top: 0.1em;;
     float: left;
@@ -557,6 +563,7 @@ tr.us_line>td.us_title, tr.us_line2>td.us_title , tr.us_line3>td.us_title, tr.us
 }
 tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
     font-size: 1em;
+    cursor: pointer;
 }
 
 
@@ -577,7 +584,7 @@ div#selRankSlave {
 .tabs {
     display: block;
     position: relative;
-    padding: 0px;
+    padding: 2px 0 0 0;
 }
 
 .tabs .tab {
@@ -1117,4 +1124,20 @@ tr.highlightMe {
 
 #sel_Seperator {
     font-size: 14px;
+}
+
+.tagGatePassed {
+    width:66px;
+    line-height:1.2;
+    text-align:center;
+    margin:0 0 4px 0;
+    border-radius:6px;
+    background-color:#228B22;
+    color:#FFF;
+}
+
+.top label[for=auto_router],
+.top label[for=nmea_output],
+.top label[for=color_theme] {
+    cursor: pointer;
 }

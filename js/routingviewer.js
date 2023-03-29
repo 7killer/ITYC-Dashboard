@@ -170,7 +170,7 @@ function updateFleet(race,raceFleetInfo)
 
     });
 
-    if(popupStateLmap) loadskipperList("sel_rt_skipperLmap");
+    if (popupStateLmap) loadRacingSkipperList("sel_rt_skipperLmap");
 }
 
 function updateRaces(races)
@@ -366,7 +366,7 @@ function initializeWebInterface(mkState)
     
 }
 
-function loadskipperList(elt)
+function loadRacingSkipperList(elt)
 {
     var selectobject = document.getElementById(elt);
     var options = selectobject.getElementsByTagName('OPTION');
@@ -380,7 +380,9 @@ function loadskipperList(elt)
     var fln = new Array();
 
     Object.keys(fleetInfos).forEach(function (key) {
-        fln.push(key);
+        if (fleetInfos[key].state != "Arrived") {
+            fln.push(key);
+        }
     });
 
     function numeric (s) {
@@ -455,8 +457,7 @@ function onPopupOpenLmap()
         document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
         document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
         document.getElementById("route_colorLmap").value = actualZezoColor;
-        loadskipperList("sel_rt_skipperLmap");
-        
+        loadRacingSkipperList("sel_rt_skipperLmap");
     }
 }
 
