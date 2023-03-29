@@ -1389,6 +1389,7 @@ var controller = function () {
                 + '<th title="Reported speed">' + "vR (kn)" + '</th>'
                 + '<th title="Calculated speed (Δd/Δt)">' + "vC (kn)" + '</th>'
                 + '<th title="Foiling factor">' + "Foils" + '</th>'
+                + '<th title="Speed factor">' + "Factor" + '</th>'
                 + '<th title="Stamina">' + "Stamina" + '</th>'
                 + '<th title="Calculated distance">' + "Δd (nm)" + '</th>'
                 + '<th title="Time between positions">' + "Δt (s)" + '</th>'
@@ -1530,6 +1531,22 @@ var controller = function () {
                 else 
                     staminaStyle = 'style="color:green"';   
             }
+
+            var xfactorStyle= 'style="color:' + ((rinfo.xplained) ? ((drawTheme =='dark')?"#a5A5A5" :"black") : "red") + ';"'
+            if(rinfo.xoption_sailOverlayer != "0%" && rinfo.xplained) {
+            let x = rinfo.xoption_sailOverlayer.replace('%','');
+                x = Number(x);
+                if(x > 1.2 || (x<0 && Math.abs(x)<98))
+                    xfactorStyle = 'style="color:red;"';
+                else if(x > 0)
+                    xfactorStyle = 'style="color:orange ;"';
+            }
+
+            var xfactorTxt = Util.roundTo(rinfo.xfactor, 4);
+            if(rinfo.xoption_sailOverlayer != "0%" && rinfo.xplained) {
+                xfactorTxt += " " + rinfo.xoption_sailOverlayer;
+            } 
+
             return '<tr>'
                 + '<td class="time">' + formatDateUTC(rinfo.lastCalcDate) + '</td>'    // Modif
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
@@ -1537,6 +1554,7 @@ var controller = function () {
                 + '<td class="speed1">' + Util.roundTo(rinfo.speed, 2+nbdigits) + '</td>'
                 + '<td class="speed2" ' + speedCStyle + '>' + Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")" + '</td>'
                 + '<td class="foils">' + (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-") + '</td>'
+                + '<td class="xfactor"' + xfactorStyle + '>' + xfactorTxt + '</td>'
                 + '<td class="stamina" ' +staminaStyle+'>' + (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-")  + '</td>'
                 + '<td class="deltaD" ' + speedTStyle + '>' + deltaDist + '</td>'
                 + '<td class="deltaT">' + Util.roundTo(rinfo.deltaT, 0) + '</td>'
@@ -2063,7 +2081,17 @@ var controller = function () {
                 //here check for overspeed due to sail
                 //spd = speedT *ff* hf *sf
                 //sf = spd /  speedT *ff* hf
-                var sf = info.speed / (speedT * foilFactor * hullFactor);
+                var sf = 1.0;
+                if((info.options.includes("foil") && info.options.includes("hull"))
+                || info.options.includes("Full Pack")|| info.options.includes("All Options"))
+                    sf = info.speed / (speedT * foilFactor * hullFactor);
+                else if(info.options.includes("foil"))
+                    sf = info.speed / (speedT * foilFactor);
+                else if(info.options.includes("hull"))
+                    sf = info.speed / (speedT * hullFactor);
+                else
+                    sf = info.speed / (speedT * hullFactor);
+
                 if(sf >1.0 && sf <= 1.14) {
                     info.xoption_sailOverlayer = "+"+Util.roundTo((sf-1.0)*100, 2) + "%";
                 } else if(sf < 1.0) {
@@ -2437,6 +2465,19 @@ var controller = function () {
         if (r.curr.receivedTS) {
             t = r.curr.receivedTS;
         } 
+        var xfactor = 1.0030;
+        var xoption_sailOverlayer = "0%";
+        var xplained = false;
+
+        var fleet = raceFleetMap.get(r.id);
+        if(fleet && fleet.uinfo[currentUserId])
+        {
+            var uinfo = fleet.uinfo[currentUserId];
+            xplained = uinfo.xplained;
+            xoption_sailOverlayer = uinfo.xoption_sailOverlayer;
+            xfactor = uinfo.xfactor;
+        }
+
         var rinfo = {
         /* racelog info*/
             lastCalcDate : r.curr.lastCalcDate,
@@ -2470,7 +2511,12 @@ var controller = function () {
                 (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0)),
             autoSailTime :( r.curr.hasPermanentAutoSails ? '∞' : Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate)),
             badSail : r.curr.badSail,
-            
+
+            /*factor*/
+            xfactor : xfactor,
+            xoption_sailOverlayer : xoption_sailOverlayer,
+            xplained : xplained,
+
             lastCalcDelta : t - r.curr.lastCalcDate,   
             rlType : "log" ,
             ts : r.curr.receivedTS
