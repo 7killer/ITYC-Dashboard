@@ -1082,7 +1082,7 @@ var controller = function () {
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
                 + Util.genth("th_rank", "Rank", undefined, Util.sortField == "rank", Util.currentSortOrder)
-                + ((race.type !== "record")?Util.genth("th_racetime", "RaceTime", undefined, Util.sortField == "raceTime", Util.currentSortOrder):"")
+                + ((race.type !== "record")?Util.genth("th_racetime", "RaceTime", "Current Race Time", Util.sortField == "raceTime", Util.currentSortOrder):"")
                 + Util.genth("th_dtu", "DTU", "Distance to Us", Util.sortField == "distanceToUs", Util.currentSortOrder)
                 + Util.genth("th_dtf", "DTF", "Distance to Finish", Util.sortField == "dtf", Util.currentSortOrder)
                 + Util.genth("th_twd", "TWD", "True Wind Direction", Util.sortField == "twd", Util.currentSortOrder)
