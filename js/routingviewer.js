@@ -771,21 +771,17 @@ function displayMapTrace(race,routeName)
 
 // Help for import
 function help(){
-    var msg = "Affichage des trait de cotes :\n" +
-        "- zoomer sur la zone de la carte où vous souhaitez afficher les traits de cotes\n" +
-        "- Appuyer sur le bouton Cotes ( il devient gris ) et attendez quelques instants \n" +
-        "- Les traits de cotes apparaissent en bleu\n" + 
-        " - Si vous souhaitez afficher une zone différente\n" +
-        " - Désactiver l affichage des traits de cotes en appuyant sur le bouton Cotes ( il devient blanc) et reprendre l opération au début\n\n" +
+    var msg = "Affichage des traits de côtes :\n" +
+        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Ils apparaissent automatiquement en bleu.\n\n" + 
         "Import Zezo :\n" +
-        "- Importe la route en cours sur votre onglet zezo.\n" +
-        "- Si vous modifiez le paramétrage de votre route zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne RT avant d'importer.\n\n" +
+        "- Importer la route en cours suggéré par Zezo.\n" +
+        "- Si vous modifiez le paramétrage de votre route Zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne \"RT\" avant d'importer.\n\n" +
         "Import Avalon :\n" +
         "- Depuis votre logiciel Avalon, exportez votre route au format CSV et importez le.\n\n" +
         "Import VRZen :\n" +
         "- Depuis le routeur VRZen, exportez votre route au format CSV et importez le.\n\n" +
         "Import GPX :\n" +
-        "- Importez le!\n\n";
+        "- Importez le !";
         
     alert(msg);
 }
