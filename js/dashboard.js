@@ -248,9 +248,9 @@ var controller = function () {
 
     function commonHeaders() {
 
-        return '<th>' + "Rank" + '</th>'
-             + '<th title="Distance To Leader">' + "DTL" + '</th>'
-             + '<th title="Distance To Finish">' + "DTF" + '</th>'
+        return Util.genthRacelog("th_rl_rank", "rank", "Rank")
+            + Util.genthRacelog("th_rl_dtl", "dtl", "DTL", "Distance To Leader")
+            + Util.genthRacelog("th_rl_dtf", "dtf", "DTF", "Distance To Finish")
              + '<th title="True Wind Direction">' + "TWD" + '</th>'
              + '<th title="True Wind Speed">' + "TWS" + '</th>'
              + '<th title="True Wind Angle">' + "TWA" + '</th>'
@@ -347,9 +347,9 @@ var controller = function () {
         if(drawTheme =='dark')
             hdgFG = isTWAMode ? "white" : "darkcyan"; 
         
-        return '<td class="rank">' + (r.rank ? r.rank : "-") + '</td>'
-            + '<td class="dtl">' + Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 2+nbdigits) + '</td>'
-            + '<td class="dtf">' + Util.roundTo(r.curr.distanceToEnd, 2+nbdigits) + '</td>'
+        return Util.gentdRacelog("rank", "rank", null, "Rank", (r.rank ? r.rank : "-"))
+            + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 2+nbdigits))
+            + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(r.curr.distanceToEnd, 2+nbdigits))
             + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
             + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
             + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
@@ -1386,14 +1386,14 @@ var controller = function () {
                 + '<th>' + "Time" + dateUTC() + '</th>'
                 + commonHeaders()
                 + '<th title="Auto Sail time remaining">' + "aSail" + '</th>'
-                + '<th title="Reported speed">' + "vR (kn)" + '</th>'
-                + '<th title="Calculated speed (Δd/Δt)">' + "vC (kn)" + '</th>'
-                + '<th title="Foiling factor">' + "Foils" + '</th>'
-                + '<th title="Speed factor">' + "Factor" + '</th>'
-                + '<th title="Stamina">' + "Stamina" + '</th>'
-                + '<th title="Calculated distance">' + "Δd (nm)" + '</th>'
-                + '<th title="Time between positions">' + "Δt (s)" + '</th>'
-                + '<th>' + "Position" + '</th>'
+                + Util.genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed")
+                + Util.genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)")
+                + Util.genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor")
+                + Util.genthRacelog("th_rl_factor", "factor", "Factor", "Speed factor")
+                + Util.genthRacelog("th_rl_stamina", "stamina", "Stamina", "Stamina Value. (penalities factor)")
+                + Util.genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance")
+                + Util.genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions")
+                + Util.genthRacelog("th_rl_psn", "position", "Position")
                 + '<th title="Sail change time remaining">' + "Sail" + '</th>'
                 + '<th title="Gybing time remaining">' + "Gybe" + '</th>'
                 + '<th title="Tacking time remaining">' + "Tack" + '</th>'
@@ -1489,9 +1489,9 @@ var controller = function () {
                 if(drawTheme =='dark')
                     hdgFG = isTWAMode ? "white" : "darkcyan"; 
                 
-                return '<td class="rank">' + (rinfo.rank ? rinfo.rank : "-") + '</td>'
-                    + '<td class="dtl">' + Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits) + '</td>'
-                    + '<td class="dtf">' + Util.roundTo(rinfo.distanceToEnd, 2+nbdigits) + '</td>'
+                return Util.gentdRacelog("rank", "rank", null, "Rank", (rinfo.rank ? rinfo.rank : "-"))
+                    + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits))
+                    + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(rinfo.distanceToEnd, 2+nbdigits))
                     + '<td class="twd">' + Util.roundTo(rinfo.twd, 2+nbdigits) + '</td>'
                     + '<td class="tws">' + Util.roundTo(rinfo.tws, 2+nbdigits) + '</td>'
                     + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(rinfo.twa), 2+nbdigits) + '</td>'
@@ -1551,14 +1551,14 @@ var controller = function () {
                 + '<td class="time">' + formatDateUTC(rinfo.lastCalcDate) + '</td>'    // Modif
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
-                + '<td class="speed1">' + Util.roundTo(rinfo.speed, 2+nbdigits) + '</td>'
-                + '<td class="speed2" ' + speedCStyle + '>' + Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")" + '</td>'
-                + '<td class="foils">' + (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-") + '</td>'
-                + '<td class="xfactor"' + xfactorStyle + '>' + xfactorTxt + '</td>'
-                + '<td class="stamina" ' +staminaStyle+'>' + (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-")  + '</td>'
-                + '<td class="deltaD" ' + speedTStyle + '>' + deltaDist + '</td>'
-                + '<td class="deltaT">' + Util.roundTo(rinfo.deltaT, 0) + '</td>'
-                + '<td class="position">' + Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon) + '</td>'
+                + Util.gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", Util.roundTo(rinfo.speed, 2+nbdigits))
+                + Util.gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")"))
+                + Util.gentdRacelog("foils", "foils", null, "Foils", (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-"))
+                + Util.gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt)
+                + Util.gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-"))
+                + Util.gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist)
+                + Util.gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", Util.roundTo(rinfo.deltaT, 0))
+                + Util.gentdRacelog("position", "position", null, "Position", Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon))
                 + '<td class="sail" ' + getBG(rinfo.sailTime) + '>' + sailChange + '</td>'
                 + '<td class="gybe" ' + getBG(rinfo.gybeTime) + '>' + gybing + '</td>'
                 + '<td class="tack" ' + getBG(rinfo.tackTime) + '>' + tacking + '</td>'
@@ -3735,6 +3735,16 @@ async function initializeMap(race) {
         await getOption("ITYC_record",true);
         await getOption("auto_clean",true);
         await getOptionN("auto_cleanInterval",5);
+
+        await getOption("racelog_position", true);
+        await getOption("racelog_stamina", true);
+        await getOption("racelog_dtl", true);
+        await getOption("racelog_dtf", true);
+        await getOption("racelog_deltaDistance", true);
+        await getOption("racelog_deltaTime", true);
+        await getOption("racelog_rank", true);
+        await getOption("racelog_factor", true);
+        await getOption("racelog_foils", true);
         
 
         await getOption("sel_friends",true);
@@ -3837,6 +3847,15 @@ async function initializeMap(race) {
         document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);   
         document.getElementById("sel_Seperator").addEventListener("change", selectSeparator);
 
+        document.getElementById("racelog_position").addEventListener("change", saveOption);
+        document.getElementById("racelog_stamina").addEventListener("change", saveOption);
+        document.getElementById("racelog_dtl").addEventListener("change", saveOption);
+        document.getElementById("racelog_dtf").addEventListener("change", saveOption);
+        document.getElementById("racelog_deltaDistance").addEventListener("change", saveOption);
+        document.getElementById("racelog_deltaTime").addEventListener("change", saveOption);
+        document.getElementById("racelog_rank").addEventListener("change", saveOption);
+        document.getElementById("racelog_factor").addEventListener("change", saveOption);
+        document.getElementById("racelog_foils").addEventListener("change", saveOption);
         
     }
 
@@ -4951,6 +4970,16 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
+
+            document.getElementById("t_racelog_position").innerHTML = "Position";
+            document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
+            document.getElementById("t_racelog_dtl").innerHTML = "DTL";
+            document.getElementById("t_racelog_dtf").innerHTML = "DTF";
+            document.getElementById("t_racelog_deltaDistance").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_deltaTime").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_rank").innerHTML = "Rang";
+            document.getElementById("t_racelog_factor").innerHTML = "Factor";
+            document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
             document.getElementById("bt_exportPolar").innerHTML = "Exporter Polaires";
             document.getElementById("bt_exportStamina").innerHTML = "Exporter Stamina";
@@ -5046,6 +5075,16 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
+
+            document.getElementById("t_racelog_position").innerHTML = "Position";
+            document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
+            document.getElementById("t_racelog_dtl").innerHTML = "DTL";
+            document.getElementById("t_racelog_dtf").innerHTML = "DTF";
+            document.getElementById("t_racelog_deltaDistance").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_deltaTime").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_rank").innerHTML = "Rank";
+            document.getElementById("t_racelog_factor").innerHTML = "Factor";
+            document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
             document.getElementById("bt_exportPolar").innerHTML = "Export Polars";
             document.getElementById("bt_exportStamina").innerHTML = "Export Stamina";

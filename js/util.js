@@ -195,6 +195,17 @@ function genth(id, content, title, sortfield, sortmark) {
     }
 }
 
+function genthRacelog(id, checkboxConfigName, content, title) {
+    var checkboxId = "racelog_" + checkboxConfigName;
+    var checkBox = document.getElementById(checkboxId);
+    if ((! checkBox ) || checkBox.checked ) {
+        return '<th id="' + id + '"'
+            + (title ? (' title="' + title + '"') : "")
+            + '>' + content + '</th>';
+    } else {
+        return ""
+    }
+}
 function gentd(name, style,title, value) {
     var checkboxId = "fleet_" + name.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
@@ -207,6 +218,18 @@ function gentd(name, style,title, value) {
         return ""
     }
 
+}
+function gentdRacelog(className, checkboxConfigName, style, title, value) {
+    var checkboxId = "racelog_" + checkboxConfigName;
+    var checkBox = document.getElementById(checkboxId);
+    if ((! checkBox ) || checkBox.checked ) {
+        return '<td class="' + className + '" ' 
+            + style 
+            + (title ? (' title="' + title + '"') : "")
+            + ' >' + value + '</td>';
+    } else {
+        return "";
+    }
 }
 
 function formatDateTable(ts) {
@@ -502,6 +525,7 @@ export { angle,
          toRad,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
-         formatShortDate,readTextFile,cpy2Clipbord,sailId2Color
+         formatShortDate,readTextFile,cpy2Clipbord,sailId2Color,
+         genthRacelog,gentdRacelog
        };
 
