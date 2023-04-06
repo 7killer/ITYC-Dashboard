@@ -1141,3 +1141,7 @@ tr.highlightMe {
 .top label[for=color_theme] {
     cursor: pointer;
 }
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
