@@ -4900,7 +4900,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportGraphData").innerHTML = "Exporter les données";
             
             document.getElementById("t_notif2").innerHTML = "Notifications et rappels";
-            document.getElementById("t_notif21").innerHTML = 'Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif21").innerHTML = 'Sélectionner une course :';
             document.getElementById("t_notif22").innerHTML = "Paramètres :";
             document.getElementById("t_notif_opt1").innerHTML = "inférieur";
             document.getElementById("t_notif_opt2").innerHTML = "inférieur ou égal";
@@ -4995,7 +4995,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportGraphData").innerHTML = "Export data";
             
             document.getElementById("t_notif2").innerHTML = "Notifications and recall";
-            document.getElementById("t_notif21").innerHTML = 'Select a race: <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif21").innerHTML = 'Select a race:';
             document.getElementById("t_notif22").innerHTML = "Parameters:";
             
             document.getElementById("t_notif_opt1").innerHTML = "inferior";
