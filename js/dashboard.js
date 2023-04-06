@@ -1094,7 +1094,7 @@ var controller = function () {
                 + Util.genth("th_sail", "Sail", "Sail Used", Util.sortField == "sail", Util.currentSortOrder)
                 + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", undefined)
                 + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", undefined)				
-                + Util.genth("th_stamina", "Stamina", "Stamina Value. (penalities factor)", undefined)
+                + Util.genth("th_stamina", "Stamina", "Stamina Value. (penalities factor)", Util.sortField == "stamina", Util.currentSortOrder)
                 + recordRaceColumns()
                 + Util.genth("th_psn", "Position", undefined)
                 + Util.genth("th_options", "Options", "Options according to Usercard",  Util.sortField == "xoption_options", Util.currentSortOrder)
@@ -2723,10 +2723,13 @@ var controller = function () {
             case "th_options":
                 Util.set_sortField("xoption_options");
                 break;
+            case "th_stamina":
+                Util.set_sortField("stamina");
+                break;
             case "th_rt":
             case "th_brg":
-            case "th_psn":
-            case "th_foils":
+            //case "th_psn":
+            //case "th_foils":
                 Util.set_sortField("none");
                 break;
             default:
