@@ -560,9 +560,11 @@ async function initialize(race,raceFleetMap)
             document.getElementById("tab-content3").appendChild(divMap);
 
             let mapTileColorFilterDarkMode = [
+                'invert:100%',
+                'bright:106%',
+                'contrast:121%',
                 'hue:195deg',
-                'invert:92%',
-                'saturate:112%',
+                'saturate:43%'
             ];
 
             var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
