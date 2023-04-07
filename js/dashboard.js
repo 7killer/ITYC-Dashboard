@@ -1323,7 +1323,7 @@ var controller = function () {
 
                     return '<tr class="hovred' + bi.nameClass + '" id="ui:' + uid + '">'
                         + routerCell
-                        + '<td class="time">' + formatTime(r.lastCalcDate) + '</td>'
+                        + Util.gentd("Time","",null, formatTime(r.lastCalcDate, 1))
                         + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
@@ -1403,9 +1403,8 @@ var controller = function () {
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
             return '<tr class="commandLine">'
-            + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>' // Modif
-            + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>' // Modif
-            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>' // Modif
+            + '<td colspan="100%"><div style="padding:0 5px">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts)) + ' - Actions:' + printLastCommand(cinfo.action) + '</div></td>'
             + '</tr>';
         }
 
@@ -1548,7 +1547,7 @@ var controller = function () {
             } 
 
             return '<tr>'
-                + '<td class="time">' + formatDateUTC(rinfo.lastCalcDate) + '</td>'    // Modif
+                + Util.gentdRacelog("time", "time", null, "Time", formatDateUTC(rinfo.lastCalcDate, 1))
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
                 + Util.gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", Util.roundTo(rinfo.speed, 2+nbdigits))
@@ -2400,16 +2399,27 @@ var controller = function () {
     }
 
     // Ajout - Affichage Heure locale / Heure UTC
-    function formatDateUTC(ts, dflt) {
-        if (!ts && dflt) return dflt;
+    function formatDateUTC(ts, format = 0) {
+        if (!ts) return;
+        // Format: MM/DD HH:MM:SS
         var tsOptions = {
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            hour12: false
-         };
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: false
+        };
+        if (format == 1) {
+            // Format: MM/DD HH:MM
+            tsOptions = {
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false
+            };
+        }
         var d = (ts) ? (new Date(ts)) : (new Date());
         var dtUTCLocal = new Intl.DateTimeFormat("lookup", tsOptions).format(d);
         tsOptions.timeZone = "UTC";
@@ -2419,13 +2429,20 @@ var controller = function () {
     }
     // Fin ajout
 
-    function formatTime(ts) {
+    function formatTime(ts, format = 0) {
         var tsOptions = {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            hour12: false
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: false
         };
+        if (format == 1) {
+            tsOptions = {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false
+            };
+        }
         var d = (ts) ? (new Date(ts)) : (new Date());
         if (!cbLocalTime.checked) {
             tsOptions.timeZone = "UTC";
@@ -2446,9 +2463,11 @@ var controller = function () {
     }
 
     function saveRaceLogLineCmd(r) {
+        var now = new Date();
         var cinfo = {
             action : r.lastCommand.request.actions,
             ts : r.lastCommand.request.ts,
+            ts_order_sent : now,
             rlType : "cmd"     
         }
         return cinfo;
@@ -3528,7 +3547,7 @@ function buildlogBookHTML(race) {
                                 "Start",
                                 race.legdata.start.lat,race.legdata.start.lon,
                                 null,null,
-                                "Date : "+ formatDateUTC(race.legdata.start.date) );
+                                "Date : "+ formatDateUTC(race.legdata.start.date, 1) );
 
     if(race.legdata.checkpoints)
     {
@@ -3557,7 +3576,7 @@ function buildlogBookHTML(race) {
                                 "End",
                                 race.legdata.end.lat,race.legdata.end.lon,
                                 race.legdata.end.radius?race.legdata.end.radius:null,null,
-                                "Date : "+ formatDateUTC(race.legdata.end.date) );
+                                "Date : "+ formatDateUTC(race.legdata.end.date, 1) );
  
     var raceBookTable = '<table id="raceStatusTable">'
     + '<thead>'
