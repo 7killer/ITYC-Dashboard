@@ -195,12 +195,21 @@ function genth(id, content, title, sortfield, sortmark) {
     }
 }
 
-function gentd(name, style,title, value, noCheckBox = true) {
-    if (noCheckBox) {
-        var checkboxId = "fleet_" + name.toLowerCase();
-        var checkBox = document.getElementById(checkboxId);
+function genthRacelog(id, checkboxConfigName, content, title) {
+    var checkboxId = "racelog_" + checkboxConfigName;
+    var checkBox = document.getElementById(checkboxId);
+    if ((! checkBox ) || checkBox.checked ) {
+        return '<th id="' + id + '"'
+            + (title ? (' title="' + title + '"') : "")
+            + '>' + content + '</th>';
+    } else {
+        return ""
     }
-    if (!noCheckBox || checkBox.checked ) {
+}
+function gentd(name, style,title, value) {
+    var checkboxId = "fleet_" + name.toLowerCase();
+    var checkBox = document.getElementById(checkboxId);
+    if ((! checkBox ) || checkBox.checked ) {
         return '<td class="' + name + '" ' 
                             + style 
                             + (title ? (' title="' + title + '"') : "")
@@ -209,6 +218,18 @@ function gentd(name, style,title, value, noCheckBox = true) {
         return ""
     }
 
+}
+function gentdRacelog(className, checkboxConfigName, style, title, value) {
+    var checkboxId = "racelog_" + checkboxConfigName;
+    var checkBox = document.getElementById(checkboxId);
+    if ((! checkBox ) || checkBox.checked ) {
+        return '<td class="' + className + '" ' 
+            + style 
+            + (title ? (' title="' + title + '"') : "")
+            + ' >' + value + '</td>';
+    } else {
+        return "";
+    }
 }
 
 function formatDateTable(ts) {
@@ -322,22 +343,27 @@ function set_currentSortOrder(value)
 {
     currentSortOrder = value;
 }
-function formatShortDate(ts, dflt,timezone) {
+
+function formatShortDate(ts, dflt, timezone) {
     if (!ts && dflt) return dflt;
-    var tsOptions = {
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false
-    };
-    var d = (ts) ? (new Date(ts)) : (new Date());
-    if (!timezone ) {
-        tsOptions.timeZone = "UTC";
+
+    const date = new Date(ts);
+    var month, day, hours, minutes, utcDate;
+    if (!timezone) {
+        utcDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()));
+        month = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0');
+        day = utcDate.getUTCDate().toString().padStart(2, '0');
+        hours = utcDate.getUTCHours().toString().padStart(2, '0');
+        minutes = utcDate.getUTCMinutes().toString().padStart(2, '0');
+    } else {
+        month = (date.getMonth() + 1).toString().padStart(2, '0');
+        day = date.getDate().toString().padStart(2, '0');
+        hours = date.getHours().toString().padStart(2, '0');
+        minutes = date.getMinutes().toString().padStart(2, '0');
     }
-    var d = new Date(ts);
-    return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
+    return `${day}/${month} ${hours}:${minutes}`;
 }
+
 function readTextFile(file) {
     var csvFile = "";
     new Promise((resolve, reject) => {
@@ -499,6 +525,7 @@ export { angle,
          toRad,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
-         formatShortDate,readTextFile,cpy2Clipbord,sailId2Color
+         formatShortDate,readTextFile,cpy2Clipbord,sailId2Color,
+         genthRacelog,gentdRacelog
        };
 

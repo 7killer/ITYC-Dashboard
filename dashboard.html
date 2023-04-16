@@ -293,7 +293,8 @@
     <div id="tab-content6" class="content hidden">
         <div class="shadowbox" style="margin-top:40px">
             <H3 id="t_notif2" style="margin-top:0px">Notifications</H3>
-            <p id="t_notif21">Sélectionner une course : 
+            <p>
+                <span id="t_notif21">Sélectionner une course :</span>
                 <select id="sel_raceNotif" name="raceNotif" class="notif">
                     <option>---</option>
                 </select>
@@ -354,9 +355,26 @@
                             <td colspan="4"><input type="checkbox" id="with_LastCommand"><label for="with_LastCommand" id="t_with_LastCommand">Afficher derniers ordres</label></td>
                             <td colspan="13"></td>
                         </tr>
-                        <tr class="us_line">
+                        <tr class="us_line2">
                             <td class="us_title" id="t_config_l">Journal</td>
                             <td colspan="21"><input type="checkbox" id="hideCommandsLines"><label for="hideCommandsLines" id="t_hideCommandsLines">Cacher les lignes correspondantes aux actions/commandes</label></td>
+                        </tr>
+                        <tr class="us_line">
+                            <td id="t_config_c">Colonnes</td>
+                            <td><input type="checkbox" id="racelog_rank" checked><label for="racelog_rank" id="t_racelog_rank">Rank</label></td>
+                            <td><input type="checkbox" id="racelog_dtl" checked><label for="racelog_dtl" id="t_racelog_dtl" title="Distance To Leader">DTL</label></td>
+                            <td><input type="checkbox" id="racelog_dtf" checked><label for="racelog_dtf" id="t_racelog_dtf" title="Distance To Finish">DTF</label></td>
+                            <td><input type="checkbox" id="racelog_reportedSpeed" checked><label for="racelog_reportedSpeed" id="t_racelog_reportedSpeed" title="Reported speed">vR (kn)</label></td>
+                            <td><input type="checkbox" id="racelog_calcSpeed" checked><label for="racelog_calcSpeed" id="t_racelog_calcSpeed" title="Calculated speed (Δd/Δt)">vC (kn)</label></td>
+                            <td colspan="2"><input type="checkbox" id="racelog_foils" checked><label for="racelog_foils" id="t_racelog_foils">Foils</label></td>
+                            <td colspan="2"><input type="checkbox" id="racelog_factor" checked><label for="racelog_factor" id="t_racelog_factor" title="Speed factor over no-options boat">Factor</label></td>
+                            <td colspan="2"><input type="checkbox" id="racelog_stamina" checked><label for="racelog_stamina" id="t_racelog_stamina">Stamina</label></td>
+                            <td><input type="checkbox" id="racelog_deltaDistance" checked><label for="racelog_deltaDistance" id="t_racelog_deltaDistance" title="Calculated distance">Δd (nm)</label></td>
+                            <td><input type="checkbox" id="racelog_deltaTime" checked><label for="racelog_deltaTime" id="t_racelog_deltaTime" title="Time between positions">Δt (s)</label></td>
+                            <td><input type="checkbox" id="racelog_position" checked><label for="racelog_position" id="t_racelog_position">Position</label></td>
+                            <td></td>
+                            <td colspan="2">(redémarrage dashboard requis)</td>
+                            <td colspan="5"></td>
                         </tr>
                         <tr class="us_line">
                             <td class="us_title" id="t_config_m">Carte</td>
@@ -377,16 +395,16 @@
                             <td><input type="checkbox" id="fleet_team" checked><label for="fleet_team" id="t_fleet_team">Team</label></td>
                             <td><input type="checkbox" id="fleet_rank" checked><label for="fleet_rank" id="t_fleet_rank">Rank</label></td>
                             <td><input type="checkbox" id="fleet_racetime" checked><label for="fleet_racetime" id="t_fleet_racetime">Race Time</label></td>
-                            <td><input type="checkbox" id="fleet_dtu" checked><label for="fleet_dtu">DTU</label></td>
-                            <td><input type="checkbox" id="fleet_dtf" checked><label for="fleet_dtf">DTF</label></td>
-                            <td><input type="checkbox" id="fleet_twd" checked><label for="fleet_twd">TWD</label></td>
-                            <td><input type="checkbox" id="fleet_tws" checked><label for="fleet_tws">TWS</label></td>
-                            <td><input type="checkbox" id="fleet_twa" checked><label for="fleet_twa">TWA</label></td>
-                            <td><input type="checkbox" id="fleet_hdg" checked><label for="fleet_hdg">HDG</label></td>
+                            <td><input type="checkbox" id="fleet_dtu" checked><label for="fleet_dtu" title="Distance To Us">DTU</label></td>
+                            <td><input type="checkbox" id="fleet_dtf" checked><label for="fleet_dtf" title="Distance To Finish">DTF</label></td>
+                            <td><input type="checkbox" id="fleet_twd" checked><label for="fleet_twd" title="True Wind Direction">TWD</label></td>
+                            <td><input type="checkbox" id="fleet_tws" checked><label for="fleet_tws" title="True Wind Speed">TWS</label></td>
+                            <td><input type="checkbox" id="fleet_twa" checked><label for="fleet_twa" title="True Wind Angle">TWA</label></td>
+                            <td><input type="checkbox" id="fleet_hdg" checked><label for="fleet_hdg" title="Heading">HDG</label></td>
                             <td><input type="checkbox" id="fleet_speed" checked><label for="fleet_speed" id="t_fleet_speed">Speed</label></td>
-                            <td><input type="checkbox" id="fleet_vmg" checked><label for="fleet_vmg">VMG</label></td>
+                            <td><input type="checkbox" id="fleet_vmg" checked><label for="fleet_vmg" title="Velocity Made Good">VMG</label></td>
                             <td><input type="checkbox" id="fleet_sail" checked><label for="fleet_sail" id="t_fleet_sail">Sail</label></td>
-                            <td><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor">Factor</label></td>
+                            <td><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor" title="Speed factor over no-options boat">Factor</label></td>
                             <td><input type="checkbox" id="fleet_foils" checked><label for="fleet_foils">Foils</label></td>
 							<td><input type="checkbox" id="fleet_stamina" checked><label for="fleet_stamina">Stamina</label></td>
                             <td><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></td>

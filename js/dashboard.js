@@ -248,9 +248,9 @@ var controller = function () {
 
     function commonHeaders() {
 
-        return '<th>' + "Rank" + '</th>'
-             + '<th title="Distance To Leader">' + "DTL" + '</th>'
-             + '<th title="Distance To Finish">' + "DTF" + '</th>'
+        return Util.genthRacelog("th_rl_rank", "rank", "Rank")
+            + Util.genthRacelog("th_rl_dtl", "dtl", "DTL", "Distance To Leader")
+            + Util.genthRacelog("th_rl_dtf", "dtf", "DTF", "Distance To Finish")
              + '<th title="True Wind Direction">' + "TWD" + '</th>'
              + '<th title="True Wind Speed">' + "TWS" + '</th>'
              + '<th title="True Wind Angle">' + "TWA" + '</th>'
@@ -347,9 +347,9 @@ var controller = function () {
         if(drawTheme =='dark')
             hdgFG = isTWAMode ? "white" : "darkcyan"; 
         
-        return '<td class="rank">' + (r.rank ? r.rank : "-") + '</td>'
-            + '<td class="dtl">' + Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 2+nbdigits) + '</td>'
-            + '<td class="dtf">' + Util.roundTo(r.curr.distanceToEnd, 2+nbdigits) + '</td>'
+        return Util.gentdRacelog("rank", "rank", null, "Rank", (r.rank ? r.rank : "-"))
+            + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 2+nbdigits))
+            + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(r.curr.distanceToEnd, 2+nbdigits))
             + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
             + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
             + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
@@ -1082,7 +1082,7 @@ var controller = function () {
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
                 + Util.genth("th_rank", "Rank", undefined, Util.sortField == "rank", Util.currentSortOrder)
-                + ((race.type !== "record")?Util.genth("th_racetime", "RaceTime", undefined, Util.sortField == "raceTime", Util.currentSortOrder):"")
+                + ((race.type !== "record")?Util.genth("th_racetime", "RaceTime", "Current Race Time", Util.sortField == "raceTime", Util.currentSortOrder):"")
                 + Util.genth("th_dtu", "DTU", "Distance to Us", Util.sortField == "distanceToUs", Util.currentSortOrder)
                 + Util.genth("th_dtf", "DTF", "Distance to Finish", Util.sortField == "dtf", Util.currentSortOrder)
                 + Util.genth("th_twd", "TWD", "True Wind Direction", Util.sortField == "twd", Util.currentSortOrder)
@@ -1094,7 +1094,7 @@ var controller = function () {
                 + Util.genth("th_sail", "Sail", "Sail Used", Util.sortField == "sail", Util.currentSortOrder)
                 + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", undefined)
                 + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", undefined)				
-                + Util.genth("th_stamina", "Stamina", "Stamina Value. (penalities factor)", undefined)
+                + Util.genth("th_stamina", "Stamina", "Stamina Value. (penalities factor)", Util.sortField == "stamina", Util.currentSortOrder)
                 + recordRaceColumns()
                 + Util.genth("th_psn", "Position", undefined)
                 + Util.genth("th_options", "Options", "Options according to Usercard",  Util.sortField == "xoption_options", Util.currentSortOrder)
@@ -1323,7 +1323,7 @@ var controller = function () {
 
                     return '<tr class="hovred' + bi.nameClass + '" id="ui:' + uid + '">'
                         + routerCell
-                        + '<td class="time">' + formatTime(r.lastCalcDate) + '</td>'
+                        + Util.gentd("Time","",null, formatTime(r.lastCalcDate, 1))
                         + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
@@ -1347,7 +1347,7 @@ var controller = function () {
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
                         + Util.gentd("State", "", txtTitle, iconState)
-                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""), false)
+                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""))
                         + '</tr>';
                 }
             }
@@ -1386,14 +1386,14 @@ var controller = function () {
                 + '<th>' + "Time" + dateUTC() + '</th>'
                 + commonHeaders()
                 + '<th title="Auto Sail time remaining">' + "aSail" + '</th>'
-                + '<th title="Reported speed">' + "vR (kn)" + '</th>'
-                + '<th title="Calculated speed (Δd/Δt)">' + "vC (kn)" + '</th>'
-                + '<th title="Foiling factor">' + "Foils" + '</th>'
-                + '<th title="Speed factor">' + "Factor" + '</th>'
-                + '<th title="Stamina">' + "Stamina" + '</th>'
-                + '<th title="Calculated distance">' + "Δd (nm)" + '</th>'
-                + '<th title="Time between positions">' + "Δt (s)" + '</th>'
-                + '<th>' + "Position" + '</th>'
+                + Util.genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed")
+                + Util.genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)")
+                + Util.genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor")
+                + Util.genthRacelog("th_rl_factor", "factor", "Factor", "Speed factor")
+                + Util.genthRacelog("th_rl_stamina", "stamina", "Stamina", "Stamina Value. (penalities factor)")
+                + Util.genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance")
+                + Util.genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions")
+                + Util.genthRacelog("th_rl_psn", "position", "Position")
                 + '<th title="Sail change time remaining">' + "Sail" + '</th>'
                 + '<th title="Gybing time remaining">' + "Gybe" + '</th>'
                 + '<th title="Tacking time remaining">' + "Tack" + '</th>'
@@ -1403,9 +1403,8 @@ var controller = function () {
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
             return '<tr class="commandLine">'
-            + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>' // Modif
-            + '<td colspan="3">Command @ ' + formatDateUTC() + '</td>' // Modif
-            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>' // Modif
+            + '<td colspan="100%"><div style="padding:0 5px">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts)) + ' - Actions:' + printLastCommand(cinfo.action) + '</div></td>'
             + '</tr>';
         }
 
@@ -1489,9 +1488,9 @@ var controller = function () {
                 if(drawTheme =='dark')
                     hdgFG = isTWAMode ? "white" : "darkcyan"; 
                 
-                return '<td class="rank">' + (rinfo.rank ? rinfo.rank : "-") + '</td>'
-                    + '<td class="dtl">' + Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits) + '</td>'
-                    + '<td class="dtf">' + Util.roundTo(rinfo.distanceToEnd, 2+nbdigits) + '</td>'
+                return Util.gentdRacelog("rank", "rank", null, "Rank", (rinfo.rank ? rinfo.rank : "-"))
+                    + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits))
+                    + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(rinfo.distanceToEnd, 2+nbdigits))
                     + '<td class="twd">' + Util.roundTo(rinfo.twd, 2+nbdigits) + '</td>'
                     + '<td class="tws">' + Util.roundTo(rinfo.tws, 2+nbdigits) + '</td>'
                     + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(rinfo.twa), 2+nbdigits) + '</td>'
@@ -1548,17 +1547,17 @@ var controller = function () {
             } 
 
             return '<tr>'
-                + '<td class="time">' + formatDateUTC(rinfo.lastCalcDate) + '</td>'    // Modif
+                + Util.gentdRacelog("time", "time", null, "Time", formatDateUTC(rinfo.lastCalcDate, 1))
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
-                + '<td class="speed1">' + Util.roundTo(rinfo.speed, 2+nbdigits) + '</td>'
-                + '<td class="speed2" ' + speedCStyle + '>' + Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")" + '</td>'
-                + '<td class="foils">' + (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-") + '</td>'
-                + '<td class="xfactor"' + xfactorStyle + '>' + xfactorTxt + '</td>'
-                + '<td class="stamina" ' +staminaStyle+'>' + (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-")  + '</td>'
-                + '<td class="deltaD" ' + speedTStyle + '>' + deltaDist + '</td>'
-                + '<td class="deltaT">' + Util.roundTo(rinfo.deltaT, 0) + '</td>'
-                + '<td class="position">' + Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon) + '</td>'
+                + Util.gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", Util.roundTo(rinfo.speed, 2+nbdigits))
+                + Util.gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")"))
+                + Util.gentdRacelog("foils", "foils", null, "Foils", (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-"))
+                + Util.gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt)
+                + Util.gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-"))
+                + Util.gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist)
+                + Util.gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", Util.roundTo(rinfo.deltaT, 0))
+                + Util.gentdRacelog("position", "position", null, "Position", Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon))
                 + '<td class="sail" ' + getBG(rinfo.sailTime) + '>' + sailChange + '</td>'
                 + '<td class="gybe" ' + getBG(rinfo.gybeTime) + '>' + gybing + '</td>'
                 + '<td class="tack" ' + getBG(rinfo.tackTime) + '>' + tacking + '</td>'
@@ -1606,8 +1605,8 @@ var controller = function () {
 
     function updateToggleRaceLogCommandsLines() {
         var commandLines = document.querySelectorAll('tr.commandLine');
-        commandLines.forEach(function(line) {
-            if (document.getElementById("hideCommandsLines").checked) {
+        commandLines.forEach(function(line, index) {
+            if (document.getElementById("hideCommandsLines").checked && index !== 0) {
                 line.style.display = 'none';
             } else {
                 line.style.display = '';
@@ -2400,16 +2399,27 @@ var controller = function () {
     }
 
     // Ajout - Affichage Heure locale / Heure UTC
-    function formatDateUTC(ts, dflt) {
-        if (!ts && dflt) return dflt;
+    function formatDateUTC(ts, format = 0) {
+        if (!ts) return;
+        // Format: MM/DD HH:MM:SS
         var tsOptions = {
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            hour12: false
-         };
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: false
+        };
+        if (format == 1) {
+            // Format: MM/DD HH:MM
+            tsOptions = {
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false
+            };
+        }
         var d = (ts) ? (new Date(ts)) : (new Date());
         var dtUTCLocal = new Intl.DateTimeFormat("lookup", tsOptions).format(d);
         tsOptions.timeZone = "UTC";
@@ -2419,13 +2429,20 @@ var controller = function () {
     }
     // Fin ajout
 
-    function formatTime(ts) {
+    function formatTime(ts, format = 0) {
         var tsOptions = {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            hour12: false
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: false
         };
+        if (format == 1) {
+            tsOptions = {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false
+            };
+        }
         var d = (ts) ? (new Date(ts)) : (new Date());
         if (!cbLocalTime.checked) {
             tsOptions.timeZone = "UTC";
@@ -2446,9 +2463,11 @@ var controller = function () {
     }
 
     function saveRaceLogLineCmd(r) {
+        var now = new Date();
         var cinfo = {
             action : r.lastCommand.request.actions,
             ts : r.lastCommand.request.ts,
+            ts_order_sent : now,
             rlType : "cmd"     
         }
         return cinfo;
@@ -2723,10 +2742,13 @@ var controller = function () {
             case "th_options":
                 Util.set_sortField("xoption_options");
                 break;
+            case "th_stamina":
+                Util.set_sortField("stamina");
+                break;
             case "th_rt":
             case "th_brg":
-            case "th_psn":
-            case "th_foils":
+            //case "th_psn":
+            //case "th_foils":
                 Util.set_sortField("none");
                 break;
             default:
@@ -3525,7 +3547,7 @@ function buildlogBookHTML(race) {
                                 "Start",
                                 race.legdata.start.lat,race.legdata.start.lon,
                                 null,null,
-                                "Date : "+ formatDateUTC(race.legdata.start.date) );
+                                "Date : "+ formatDateUTC(race.legdata.start.date, 1) );
 
     if(race.legdata.checkpoints)
     {
@@ -3554,7 +3576,7 @@ function buildlogBookHTML(race) {
                                 "End",
                                 race.legdata.end.lat,race.legdata.end.lon,
                                 race.legdata.end.radius?race.legdata.end.radius:null,null,
-                                "Date : "+ formatDateUTC(race.legdata.end.date) );
+                                "Date : "+ formatDateUTC(race.legdata.end.date, 1) );
  
     var raceBookTable = '<table id="raceStatusTable">'
     + '<thead>'
@@ -3732,6 +3754,16 @@ async function initializeMap(race) {
         await getOption("ITYC_record",true);
         await getOption("auto_clean",true);
         await getOptionN("auto_cleanInterval",5);
+
+        await getOption("racelog_position", true);
+        await getOption("racelog_stamina", true);
+        await getOption("racelog_dtl", true);
+        await getOption("racelog_dtf", true);
+        await getOption("racelog_deltaDistance", true);
+        await getOption("racelog_deltaTime", true);
+        await getOption("racelog_rank", true);
+        await getOption("racelog_factor", true);
+        await getOption("racelog_foils", true);
         
 
         await getOption("sel_friends",true);
@@ -3834,6 +3866,15 @@ async function initializeMap(race) {
         document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);   
         document.getElementById("sel_Seperator").addEventListener("change", selectSeparator);
 
+        document.getElementById("racelog_position").addEventListener("change", saveOption);
+        document.getElementById("racelog_stamina").addEventListener("change", saveOption);
+        document.getElementById("racelog_dtl").addEventListener("change", saveOption);
+        document.getElementById("racelog_dtf").addEventListener("change", saveOption);
+        document.getElementById("racelog_deltaDistance").addEventListener("change", saveOption);
+        document.getElementById("racelog_deltaTime").addEventListener("change", saveOption);
+        document.getElementById("racelog_rank").addEventListener("change", saveOption);
+        document.getElementById("racelog_factor").addEventListener("change", saveOption);
+        document.getElementById("racelog_foils").addEventListener("change", saveOption);
         
     }
 
@@ -4900,7 +4941,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportGraphData").innerHTML = "Exporter les données";
             
             document.getElementById("t_notif2").innerHTML = "Notifications et rappels";
-            document.getElementById("t_notif21").innerHTML = 'Sélectionner une course : <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif21").innerHTML = 'Sélectionner une course :';
             document.getElementById("t_notif22").innerHTML = "Paramètres :";
             document.getElementById("t_notif_opt1").innerHTML = "inférieur";
             document.getElementById("t_notif_opt2").innerHTML = "inférieur ou égal";
@@ -4929,7 +4970,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
 
             document.getElementById("t_config_l").innerHTML = "Journal";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf la dernière)";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
             document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
@@ -4948,6 +4989,16 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
+
+            document.getElementById("t_racelog_position").innerHTML = "Position";
+            document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
+            document.getElementById("t_racelog_dtl").innerHTML = "DTL";
+            document.getElementById("t_racelog_dtf").innerHTML = "DTF";
+            document.getElementById("t_racelog_deltaDistance").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_deltaTime").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_rank").innerHTML = "Rang";
+            document.getElementById("t_racelog_factor").innerHTML = "Factor";
+            document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
             document.getElementById("bt_exportPolar").innerHTML = "Exporter Polaires";
             document.getElementById("bt_exportStamina").innerHTML = "Exporter Stamina";
@@ -4995,7 +5046,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportGraphData").innerHTML = "Export data";
             
             document.getElementById("t_notif2").innerHTML = "Notifications and recall";
-            document.getElementById("t_notif21").innerHTML = 'Select a race: <select id="sel_raceNotif" name="raceNotif" class="notif"><option>---</option></select>';
+            document.getElementById("t_notif21").innerHTML = 'Select a race:';
             document.getElementById("t_notif22").innerHTML = "Parameters:";
             
             document.getElementById("t_notif_opt1").innerHTML = "inferior";
@@ -5024,7 +5075,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
             document.getElementById("t_config_l").innerHTML = "Race Log";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except last one)";
             
             document.getElementById("t_config_m").innerHTML = "Map";
             document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
@@ -5043,6 +5094,16 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
+
+            document.getElementById("t_racelog_position").innerHTML = "Position";
+            document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
+            document.getElementById("t_racelog_dtl").innerHTML = "DTL";
+            document.getElementById("t_racelog_dtf").innerHTML = "DTF";
+            document.getElementById("t_racelog_deltaDistance").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_deltaTime").innerHTML = "Δd (nm)";
+            document.getElementById("t_racelog_rank").innerHTML = "Rank";
+            document.getElementById("t_racelog_factor").innerHTML = "Factor";
+            document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
             document.getElementById("bt_exportPolar").innerHTML = "Export Polars";
             document.getElementById("bt_exportStamina").innerHTML = "Export Stamina";

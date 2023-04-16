@@ -253,7 +253,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime {
+#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }
 
@@ -1139,5 +1139,9 @@ tr.highlightMe {
 .top label[for=auto_router],
 .top label[for=nmea_output],
 .top label[for=color_theme] {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
     cursor: pointer;
 }
