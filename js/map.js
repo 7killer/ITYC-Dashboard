@@ -600,6 +600,13 @@ async function initialize(race,raceFleetMap)
             var layerControl = L.control.layers(baseLayers);
             layerControl.addTo(map);
             L.control.scale().addTo(map);
+
+            L.control.coordinates({
+                useDMS:true,
+                labelTemplateLat:"N {y}",
+                labelTemplateLng:"E {x}",
+                useLatLngOrder:true
+            }).addTo(map);
         /*  handleError = function (err) {
                 console.log('handleError...');
                 console.log(err);
