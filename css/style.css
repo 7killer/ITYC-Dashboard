@@ -1006,9 +1006,33 @@ thead.sticky th {
     max-width: 30px;
     border: none;
     background-color: transparent;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
 }
 
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+#existingRoute3Lmap>.rt_lst_color {
 
+    height: 1.2em;
+    width: 46%;
+    padding-left: 2px;
+}
+#sel_borderColorLmap,#sel_projectionColorLmap {
+ 
+    width: 50%;
+    max-width: none;
+    padding: 0;
+    height: 1.4em;
+}
 #rt_popup, #rt_popupLmap{
     margin-top: 5%;
     margin-left: 30%;

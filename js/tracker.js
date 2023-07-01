@@ -12,7 +12,7 @@ var recordEnable = false; //pour ne record que le fleet info depuis le mergeboat
 var racetype = "-";
 
 var mesData = [];
-function initMessage(type,rid,name,myId,rtype) {
+function initMessage(type,rid,name,myId,rtype,lastCalcDate) {
 
     mesData[type] = [];
     mesData[type]["raceId"] = rid;
@@ -22,8 +22,10 @@ function initMessage(type,rid,name,myId,rtype) {
     if(type=="fleet") {
         lastCalcDate = 0;   //init timestamp dernière ite
         recordEnable = true;
+    } else
+    {
+        mesData[type]["measTime"] = 0;
     }
-    
 }
 
 function addInfoFleet(uid,uinfo) {
@@ -96,11 +98,11 @@ function addInfoFleet(uid,uinfo) {
 const rankInfosModel = { 
     displayName : "-",
     rank : "-",
-    distance : 0,
-    lastCalcDate : "-",
+    distance : 0,   //0 quand arrivee sinon distance à l arrivee
     xOptions : "?",
     teamId : "",
-    teamName : "-"
+    teamName : "-",
+    time : "-"      //temps mis pour la course, deja arrivee!
 };
 
 function addInfoRanking(uid,uinfo) {
@@ -136,45 +138,62 @@ function addInfoRanking(uid,uinfo) {
 
     var webinfo = {
 
-        date : uinfo.lastCalcDate,
         uid:uid,
         name: uinfo.displayName,
         teamId : (uinfo.teamId?uinfo.teamId:"-"),
         teamName : (uinfo.teamName?uinfo.teamName:"-"),
         rank : (uinfo.rank ?  uinfo.rank : "-"),
         opt : xOptionsTxt,
-        dist : uinfo.distance
+        dist : uinfo.distance,
+        time : uinfo.time
     };
 
     mesData["rank"][uid] = webinfo;
 }
 
-function sendInfo(type) {
-    var timeP = Math.floor(Math.random() * 300);
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(sendInfoR(type)), timeP*10);
-      });
+function sendInfo(type,withRandom = true) {
+    if(withRandom)
+    {//to avoid to be flooded by fleet at the same time
+        var timeP = Math.floor(Math.random() * 300);
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(sendInfoR(type)), timeP*10);
+          });
+    } else
+        sendInfoR(type);
 }
 
 function sendInfoR(type) {
- 
+    
+
+    if(type=="fleet") {
+        lastSendDate = lastCalcDate;
+        recordEnable = false;
+    } else
+    {
+        mesData[type]["measTime"] = Math.round(Date.now()/60000)*6000;
+    }
+
     var webdata = "";
     Object.keys(mesData[type]).forEach(function (key) {
         webdata += "/**/"+JSON.stringify(mesData[type][key]);
     });
     let dat = JSON.stringify(webdata);
 
-    if(type=="fleet") {
-        lastSendDate = lastCalcDate;
-        recordEnable = false;
-    }
+
     let xhr = new XMLHttpRequest();    
     if(type=="fleet")
         xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbi5waHA="));
     else
-        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpbnIucGhw"));
+        xhr.open("POST","https://vr.ityc.fr/dinrV2.php");
+    //    xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpbnIucGhw"));
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
+    
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        //console.log(xhr.status);
+        //console.log(xhr.responseText);
+      }};
     xhr.send(dat);
     
 }

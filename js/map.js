@@ -472,6 +472,7 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
     var cpathNum = 0;
     cpath[cpathNum] = [];
     var pos;
+    if(!path )    return cpath;
     if(initLat && initLng)
     {
         pos= buildPt(initLat, initLng);
@@ -1099,6 +1100,20 @@ function computeNextPos(pos,hdg,speed,time) {
 
 }
 
+var pColor;
+var pSize;
+
+function setProjectionLineColor(e)
+{
+    pColor =  e;
+}
+
+function setProjectionLineSize(e)
+{
+    pSize =  e;
+}
+
+
 function drawProjectionLine(race,pos,hdg,speed) {
 
     if(!hdg || !speed) return;
@@ -1111,14 +1126,14 @@ function drawProjectionLine(race,pos,hdg,speed) {
 
     tpath.push(pos[1]);
 
-    for(var i=0;i<5;i++)
+    for(var i=0;i<pSize/2;i++)
     {
         pos = computeNextPos(pos[1],hdg,speed,2*60);
         tpath.push(pos[1]);
         var title = 2*(i+1)+"min";
-        buildCircle(pos,race.lMap.me_PlLayer,"#b86dff", 1.5,1,title); 
+        buildCircle(pos,race.lMap.me_PlLayer,pColor, 1.5,1,title); 
     }  
-    buildTrace(buildPath(tpath) ,race.lMap.me_PlLayer, race,"#b86dff",1,0.4,'10, 10','5');
+    buildTrace(buildPath(tpath) ,race.lMap.me_PlLayer, race,pColor,1,0.4,'10, 10','5');
 
     race.lMap.me_PlLayer.addTo(map); 
 
@@ -1360,5 +1375,5 @@ function hideShowTracks(race) {
 export {
     initialize,updateMapCheckpoints,updateMapFleet,cleanMap,set_displayFilter,set_currentId,set_currentTeam,
     updateMapWaypoints,updateMapMe,updateMapLeader,
-    importRoute,hideRoute,showRoute,deleteRoute,onMarkersChange,hideShowTracks
+    importRoute,hideRoute,showRoute,deleteRoute,onMarkersChange,hideShowTracks,setProjectionLineColor,setProjectionLineSize
 };

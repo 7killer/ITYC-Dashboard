@@ -164,7 +164,7 @@ const playerModel = {
     country : "-",
     city : "-",
     teamId : teamModel.teamId,
-    isFollowed : false
+    isFollowed : "-"
 }
 
 async function getPlayerListLocal() {
@@ -525,7 +525,35 @@ async function saveLegInfo(races) {
             await saveLocal("race_"+race.id+"ts",Date.now());    
         }
     }); 
+    function sendInfoRaceInfo(racelist) {
+        var webdata = "";
+        racelist.forEach(async function(rid) {
+            var r = racelist.get(rid.id);
+            if(!r || !r.legdata) return;
+            var legData = new Object;
+            legData.rid = rid.id;
+            legData.boat = r.legdata.boat;
+            legData.checkpoints = r.legdata.checkpoints;
+            legData.course = r.legdata.course;
+            legData.ice_limits = r.legdata.ice_limits;
+            legData.loadingScreenLogo = r.legdata.loadingScreenLogo;
+            legData.name = r.legdata.name;
+            legData.open = r.legdata.open;
+            legData.priceLevel = r.legdata.priceLevel;
+            legData.race = r.legdata.race;
+            legData.start = r.legdata.start;
+            legData.end = r.legdata.end;
+            webdata += "/**/"+JSON.stringify(legData);
+        });
 
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://vr.ityc.fr/dinRaceInfo.php"); 
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(webdata);
+        
+    }
+    sendInfoRaceInfo(races);
     /*clear data after 24h*/
     rList.forEach(async function(rid) {
         var saveTs = await getLocal("race_"+rid+"ts",Date.now());
@@ -954,7 +982,11 @@ async function getRaceOptionsList(rid,f) {
 
 function mergeRaceOptionsList(rid,raceOptPlayer) {
     var playerOption;
-
+    if(!raceOptPlayer.playerId)
+    {
+        if(!raceOptPlayer.uid) return;
+        raceOptPlayer.playerId = raceOptPlayer.uid;
+    }
     if(raceOptPlayer.opt)
     {
         if(raceOptPlayer.opt=="FP") raceOptPlayer.opt = "Full Pack";
@@ -973,9 +1005,9 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
     if(!raceOptPlayer.stTs)
         raceOptPlayer.stTs = raceOptPlayer.startRaceTime;
     
-    if(raceOptionsList.race[rid].uinfo[rid])
+    if(raceOptionsList.race[rid].uinfo[raceOptPlayer.playerId])
     {
-        playerOption = raceOptionsList.race[rid].uinfo[playerOption.playerId];
+        playerOption = raceOptionsList.race[rid].uinfo[raceOptPlayer.playerId];
         if(raceOptPlayer.update > playerOption.time)
         {
             playerOption.options = raceOptPlayer.opt;
@@ -987,7 +1019,7 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
     } else
     {
         playerOption = Object.create(raceOptionPlayerModel);
-        playerOption.playerId = raceOptPlayer.uid;
+        playerOption.playerId = raceOptPlayer.playerId;
         playerOption.time = raceOptPlayer.update;
         playerOption.options = raceOptPlayer.opt;
         if(raceOptPlayer.stTs == 0 || raceOptPlayer.stTs =="0" ||  raceOptPlayer.stTs =="-") playerOption.startRaceTime = "-";

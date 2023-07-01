@@ -1,7 +1,7 @@
 
 import * as Util from './util.js';
 
-var selRaceNotif, divNotif,  lbRaceNotif, lbType1Notif, lbType2Notif, lbValNotif, lbMinNotif,  TextNotif,chRepNotif,chRepNotif2;
+var divNotif,  lbRaceNotif, lbType1Notif, lbType2Notif, lbValNotif, lbMinNotif,  TextNotif,chRepNotif,chRepNotif2,lbnotifUnit;
 var lang = "fr";
 var permission = false;
 var notifications = [];     // Notifications
@@ -19,7 +19,6 @@ Notification.requestPermission(function (status) {
 
 
 function initialize(language) {
-    selRaceNotif = document.getElementById("sel_raceNotif");
         
     lbRaceNotif = document.getElementById("sel_raceNotif");
     lbType1Notif = document.getElementById("sel_type1Notif");
@@ -29,11 +28,14 @@ function initialize(language) {
     divNotif = document.getElementById("notif");
     chRepNotif = document.getElementById("notif_repeat");
     chRepNotif2 = document.getElementById("notif_repeat2");
-    
+    lbnotifUnit = document.getElementById("notifUnit");
+
     lang = language;
 
     document.getElementById("bt_notif").addEventListener("click", create);
     document.getElementById("bt_notif2").addEventListener("click", createTime);
+    document.getElementById("sel_type1Notif").addEventListener("change", adaptUnit);
+
 }
 
 function addRace(rid,rName)
@@ -41,8 +43,38 @@ function addRace(rid,rName)
     var optionNotif = document.createElement("option");
     optionNotif.text = rName;
     optionNotif.id = rid;
-    selRaceNotif.appendChild(optionNotif);
+    lbRaceNotif.appendChild(optionNotif);
 }
+ function adaptUnit()
+ {
+    let text ="";
+    let padL = "3em";
+    switch(lbType1Notif.value) {
+        case "1" : // TWA
+        case "2" : // HDG
+        case "4" : // TWD
+            text = "°";
+            padL = "4em"
+            break;
+        case "3" : // TWS
+            if(lang ==  "fr")
+                text = "nds";
+            else
+                text = "knds";
+            padL = "3em"
+            break;
+        case "5" : // STAMINA
+        case "6" : // overSpeed
+            text = "%";
+            padL = "4em"
+            break;
+        default :
+            break;
+    }
+    lbnotifUnit.innerHTML = text;
+    document.getElementById("bt_notif2").style.paddingRight = padL;
+ }
+
 
 function createTime(){
 
@@ -98,6 +130,9 @@ function create(){
                     case "5" : // STAMINA
                         nText += "stamina";
                         break;
+                    case "6" : // overSpeed
+                        nText += "overSpeed";
+                        break;
                     default :
                         break;
                 }
@@ -140,6 +175,9 @@ function create(){
                     case "5" : // STAMINA
                         nText += "stamina";
                         break;
+                    case "6" : // overSpeed
+                        nText += "overSpeed";
+                        break;
                     default :
                         break;
                 }
@@ -168,7 +206,7 @@ function create(){
                 
             notifications.push({race: lbRaceNotif.value,
                                 type : lbType1Notif.value,
-                                val : Util.roundTo(lbValNotif.value,1),
+                                val : Util.roundTo(lbValNotif.value,2),
                                 repActive : chRepNotif.checked,
                                 ope : lbType2Notif.value,
                                 repet: 0,
@@ -224,7 +262,7 @@ function showList() {
     }        
 }
 
-function manage(r) {
+function manage(r,currentUserId,raceFleetMap) {
     
     var TitreNotif = r.name;
     var icon = 2;
@@ -249,7 +287,6 @@ function manage(r) {
         }
         doNotif(TitreNotif, TextNotif, icon);
     }
-
     for (var i = 0; i < notifications.length; i++) {
         var icon = 1;
         if(!notifications[i]) continue;
@@ -300,6 +337,17 @@ function manage(r) {
                     if(lang ==  "fr")  textType =  " : votre stamina";
                     else textType =  " : your stamina";
                     val = Util.roundTo(Math.abs(r.curr.stamina), 1);
+                    break;
+                case "6" : // overspeed
+                    if(lang ==  "fr")  textType =  " : votre coefficient de survitesse";
+                    else textType =  " : your overspeed coefficient";
+                    var fleet = raceFleetMap.get(r.id);
+                    val = 0;
+                    if(fleet && fleet.uinfo[currentUserId])
+                    {
+                        var uinfo = fleet.uinfo[currentUserId];
+                        if(uinfo.xplained) Util.roundTo(Number(uinfo.xoption_sailOverlayer.replace('%','')), 1);
+                    }
                     break;
                 default :
                     break;

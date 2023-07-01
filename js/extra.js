@@ -5,6 +5,8 @@ import * as Util from './util.js';
 var dashVersion ="1.0.6";
 var wpGuideLayer = undefined;
 
+var borderColor;
+
 async function initialize()
 {
     document.getElementById("mapfilterLmap").style.visibility = "hidden";
@@ -113,29 +115,30 @@ async function initCachedTilesList()
 
 function styleLines(feature) {
     return {
-                color: '#0000ff',
+                color: borderColor,
                 weight: 1,
                 opacity: .7
             };
 }
 
-
 //
-// Ajout - Routage / Ranking
+// Ajout - Routage
 function extraRoute(state) {
    
     document.getElementById("mapfilterLmap").style.visibility = state;
     document.getElementById("extraLmap").style.visibility = state;
-
 }
 
 
-
+function setBorderColor(e)
+{
+    borderColor = e;
+}
 
 
 
 export {
     extraRoute,initialize,
-    loadBorder
+    loadBorder,setBorderColor
 
 };

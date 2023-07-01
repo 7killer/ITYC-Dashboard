@@ -109,11 +109,9 @@ let vrZenUrlRace = "";
                     if(idC)
                     {
                         chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"data"},function(response) {manageAnswer(response)});
-                    }   
-                    
+                    }
                 }   
-            } catch(err) {
-            }
+            } catch(err) {}
         }            
         return send.apply(this, arguments);
     };
@@ -157,6 +155,37 @@ function createContainer() {
     return ourDiv2;
   
 }
+  var chrono = {
+    secondsPass: 0,
+    timer: undefined,
+ 
+    Start: function() {
+        //Initialisation du nombre de secondes selon la valeur passée en paramètre
+        this.secondsPass = 0;
+        //Démarrage du chrono
+        if(this.timer ) clearInterval(this.timer);
+        this.timer = setInterval(this.Tick.bind(this), 1000);
+    },
+    Reset: function(){
+
+        this.secondsPass = 0;
+        clearInterval(this.timer);
+        this.timer = setInterval(this.Tick.bind(this), 1000);
+
+    },
+    Tick: function() {
+        //On actualise la valeur affichée du nombre de secondes
+       if(document.getElementById("dashIntegTime")) document.getElementById("dashIntegTime").innerHTML = '+ '+ ++this.secondsPass + 's';
+    },
+ 
+    Stop: function() {
+        //quand le temps est écoulé, on arrête le timer
+        clearInterval(this.timer);
+
+    }
+ 
+};
+
 var comTimer ;
 
 function sendAlive() {
@@ -175,7 +204,10 @@ function manageAnswer(msg) {
         clearTimeout(comTimer);
     }
     comTimer = setTimeout(sendAlive, 5000);
-    if(msg.type=="data") fillContainer(msg);
+    if(msg.type=="data") {
+    	fillContainer(msg);
+        chrono.Start();
+    }
 }
 
 function fillContainer(msg) {

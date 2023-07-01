@@ -428,6 +428,19 @@ function sailId2Color(sailId) {
 }
 
 
+
+var createRingBuffer = function(length){
+
+    var pointer = 0, buffer = []; 
+  
+    return {
+      get  : function(key){return buffer[key];},
+      push : function(item){
+        buffer[pointer] = item;
+        pointer = (length + pointer +1) % length;
+      }
+    };
+  };
 /* Fonctions inutilisées --------------------------------------------------
 function addDistance (pos, distnm, angle, radiusnm) {
     var posR = {};
@@ -526,6 +539,6 @@ export { angle,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
          formatShortDate,readTextFile,cpy2Clipbord,sailId2Color,
-         genthRacelog,gentdRacelog
+         genthRacelog,gentdRacelog,createRingBuffer
        };
 

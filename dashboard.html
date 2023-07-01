@@ -194,7 +194,16 @@
                 <input type="button" id="sel_rt_cleanLmap" name="button4" checked class="content hidden">
                 <label for:"sel_rt_cleanLmap" id="lbl_rt_cleanLmap">Effacer</label>
             </div>
-            <div id="existingRoute3Lmap" class="mapBtDiv mapPrevSep"></div>
+            <div id="existingRoute3Lmap" class="mapBtDiv mapPrevSep">
+                <div class="rt_lst_color">
+                    <label for:"sel_borderColorLmap" id="lbl_borderColorLmap">Cotes</label>
+                    <input type="color"id="sel_borderColorLmap" value="#0000FF" >
+                </div>
+                <div class="rt_lst_color">
+                    <label  for:"sel_projectionColorLmap" id="lbl_projectionColorLmap">Projection</label>
+                    <input type="color"id="sel_projectionColorLmap" value="#0000FF" >   
+                </div>
+            </div>
             <div class="extraMapSep"></div>
             <table id="route_list_tableLmap" class="noBorderElt"></table>
         </div>
@@ -259,14 +268,14 @@
                     </td>
                     <td class="td-graph">
                         <div style="font-size:0.8em; position: relative;">
-                            <canvas id="bsChart" class="myfChart"></canvas>
+                            <canvas id="twdChart" class="myfChart"></canvas>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="td-graph">
                         <div style="font-size:0.8em; position: relative;">
-                            <canvas id="twdChart" class="myfChart"></canvas>
+                            <canvas id="bsChart" class="myfChart"></canvas>
                         </div>
                     </td>
                     <td class="td-graph">
@@ -317,7 +326,10 @@
                 <option value ="sup" id="t_notif_opt5">supérieur</option>
             </select>
             <label class="notif" id="t_notif23">à</label>
-            <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif" style="width:50px"> (1 digit).<br>
+            <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif" style="width:50px">
+            
+            <label id="notifUnit" class="notif notifSpacer"></label>    
+            <label id="notifPrecision" class="notif">(XX.XX)</label>
             <p class="notifBorderBottom">
                 <input type="checkbox" id="notif_repeat" checked>
                 <label for="notif_repeat" id="t_notif_repeat" class="notif">Répétition (x3)</label>
@@ -378,8 +390,12 @@
                         </tr>
                         <tr class="us_line">
                             <td class="us_title" id="t_config_m">Carte</td>
-                            <td colspan="4"><input type="checkbox" id="track_infos"><label for="track_infos" id="t_track_infos">Charger infos traces (redémarrage dashboard requis)</label></td>
-                            <td colspan="17"></td>
+                            <td colspan="3"><input type="checkbox" id="track_infos"><label for="track_infos" id="t_track_infos">Charger infos traces (redémarrage dashboard requis)</label></td>
+                            <td colspan="4">
+                                <label for="projectionLine_Size" id="t_projectionLine_Size">Taille ligne de projection</label>
+                                <input type="number" min="0" max="360" id="projectionLine_Size" value="20"> min</td>
+                            </td>
+                            <td colspan="14"></td>
                         </tr>
 
                         <tr class="us_line2">
@@ -406,8 +422,7 @@
                             <td><input type="checkbox" id="fleet_sail" checked><label for="fleet_sail" id="t_fleet_sail">Sail</label></td>
                             <td><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor" title="Speed factor over no-options boat">Factor</label></td>
                             <td><input type="checkbox" id="fleet_foils" checked><label for="fleet_foils">Foils</label></td>
-							<td><input type="checkbox" id="fleet_stamina" checked><label for="fleet_stamina">Stamina</label></td>
-                            <td><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></td>
+							<td><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></td>
                             <td><input type="checkbox" id="fleet_options" checked><label for="fleet_options" id="t_fleet_options">Options</label></td>
                             <td><input type="checkbox" id="fleet_state" checked><label for="fleet_state" id="t_fleet_state">State</label></td>
                             <td colspan="3"></td>
