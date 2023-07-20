@@ -771,21 +771,17 @@ function displayMapTrace(race,routeName)
 
 // Help for import
 function help(){
-    var msg = "Affichage des trait de cotes :\n" +
-        "- zoomer sur la zone de la carte où vous souhaitez afficher les traits de cotes\n" +
-        "- Attendez quelques instants \n" +
-        "- La couleur des traits de cotes peut être personnalisé (Selection couleur côtes)\n" + 
-        " - Si vous souhaitez afficher une zone différente\n" +
-        " - Dézoomez et zommez à l endroit désiré\n\n" +
+    var msg = "Affichage des traits de côtes :\n" +
+        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Attendez quelques instants. Ils apparaissent automatiquement en bleu.\nLa couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\nSi vous souhaitez afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n\n" + 
         "Import Zezo :\n" +
-        "- Importe la route en cours sur votre onglet zezo.\n" +
-        "- Si vous modifiez le paramétrage de votre route zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne RT avant d'importer.\n\n" +
+        "- Importer la route en cours suggéré par Zezo.\n" +
+        "- Si vous modifiez le paramétrage de votre route Zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne \"RT\" avant d'importer.\n\n" +
         "Import Avalon :\n" +
         "- Depuis votre logiciel Avalon, exportez votre route au format CSV et importez le.\n\n" +
         "Import VRZen :\n" +
         "- Depuis le routeur VRZen, exportez votre route au format CSV et importez le.\n\n" +
         "Import GPX :\n" +
-        "- Importez le!\n\n";
+        "- Importez le !";
         
     alert(msg);
 }
