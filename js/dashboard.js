@@ -3544,7 +3544,7 @@ function buildlogBookHTML(race) {
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+' ' + determineRankingCategory(playerOption) + '</th>'
+        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') • VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' • ' + race.legdata.boat.name + ' • ' + determineRankingCategory(playerOption) + ' • GFS ' + race.gfsWinds + '</th>'
         + '</tr>' 
         + '</thead>'
         + '</table>'
@@ -4455,6 +4455,9 @@ async function initializeMap(race) {
             race.record = legInfo.record;
             if (legInfo.problem == "badSail") {} else if (legInfo.problem == "...") {}
         
+            race.gfsWinds = '1.0';
+            if (legInfo.fineWinds && legInfo.fineWinds === true) race.gfsWinds = '0.25';
+
             var raceData = DM.getRaceInfos(rid);
             if(!raceData|| raceData.raceType == DM.raceInfosModel.raceType)
             {
