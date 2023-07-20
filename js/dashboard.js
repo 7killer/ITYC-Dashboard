@@ -1438,6 +1438,7 @@ var controller = function () {
             divFriendList.innerHTML = fleetHTML;
 
             addEventListenersToRemoveSelectedBoatButtons();
+            addEventListenersToSelectedLine();
         }
     }
 
@@ -3867,6 +3868,20 @@ async function initializeMap(race) {
         var fleet = raceFleetMap.get(race.id);
         fleet.uinfo[boatId].choice = false;
         updateFleetHTML(raceFleetMap.get(selRace.value));
+    }
+
+    function addEventListenersToSelectedLine() {
+        document.querySelectorAll("tr.hovred").forEach(function(row) {
+            row.addEventListener("click", function() {
+                row.classList.add("selectedLine");
+                var siblings = Array.from(row.parentNode.children).filter(function(child) {
+                    return child !== row && child.classList.contains("hovred");
+                });
+                siblings.forEach(function(sibling) {
+                    sibling.classList.remove("selectedLine");
+                });
+            });
+        });
     }
 
     function addConfigListeners() {
