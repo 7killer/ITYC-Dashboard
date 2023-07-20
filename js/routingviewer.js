@@ -760,6 +760,26 @@ function buildMarkerTitle(point)
 
 }
 
+function darkenColor(hexColor, amount) {
+    const color = hexColor.replace("#", "");
+    // Extract RGB comp.
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    // Calculer les nouvelles valeurs RVB avec une luminosité réduite
+    const darkenedR = Math.max(0, r - amount);
+    const darkenedG = Math.max(0, g - amount);
+    const darkenedB = Math.max(0, b - amount);
+
+    // Convertir les nouvelles valeurs RVB en format hexadécimal
+    const darkenedHexColor = `#${componentToHex(darkenedR)}${componentToHex(darkenedG)}${componentToHex(darkenedB)}`;
+    return darkenedHexColor;
+}
+function componentToHex(component) {
+    const hex = component.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+}
+
 function displayMapTrace(race,routeName)
 {
     var route = getRoute(race.id,routeName);
@@ -789,6 +809,7 @@ function help(){
 export {
     initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
     myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
-    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId
+    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId,
+    darkenColor
 
 };
