@@ -1454,9 +1454,9 @@ var controller = function () {
 
         function tableHeader() {
             return '<tr>'
-                + '<th>' + "Time" + dateUTC() + '</th>'
+                + Util.genthRacelog("th_rl_date", "dateTime", "Time" + dateUTC())
                 + commonHeaders()
-                + '<th title="Auto Sail time remaining">' + "aSail" + '</th>'
+                + Util.genthRacelog("th_rl_aSail", "aSail", "aSail", "Auto Sail time remaining")
                 + Util.genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed")
                 + Util.genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)")
                 + Util.genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor")
@@ -1465,9 +1465,9 @@ var controller = function () {
                 + Util.genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance")
                 + Util.genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions")
                 + Util.genthRacelog("th_rl_psn", "position", "Position")
-                + '<th title="Sail change time remaining">' + "Sail" + '</th>'
-                + '<th title="Gybing time remaining">' + "Gybe" + '</th>'
-                + '<th title="Tacking time remaining">' + "Tack" + '</th>'
+                + Util.genthRacelog("th_rl_sail", "sail", "Sail", "Sail change time remaining")
+                + Util.genthRacelog("th_rl_gybe", "gybe", "Gybe", "Gybing time remaining")
+                + Util.genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining")
                 + '</tr>';
         }
 

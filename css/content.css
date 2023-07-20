@@ -423,3 +423,8 @@ td.position>p {
 .cursorHelp {
     cursor: help !important;
 }
+
+td.position p {
+    font-size: 11px !important;
+    line-height: 16px !important;
+}
