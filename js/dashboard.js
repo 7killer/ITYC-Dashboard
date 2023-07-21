@@ -1962,6 +1962,26 @@ var controller = function () {
         if(document.getElementById("ITYC_record").checked) tr.addInfoFleet(uid,storedInfo,race.type);
     }
 
+    function mergeBoatTrackInfo(rid, uid, data) {
+        var fleet = raceFleetMap.get(rid);
+        if (!fleet) {
+            console.log("raceInfo not initialized");
+            return;
+        }
+        var storedInfo = fleet.uinfo[uid];
+        if (!storedInfo) {
+            storedInfo = new Object();
+            fleet.uinfo[uid] = storedInfo;
+            fleet.table.push(uid);
+        }
+        // copy elems from data to uinfo
+        elemList.forEach( function (tag) {
+            if (tag in data && data[tag]) {
+                storedInfo[tag] = data[tag];
+            }
+        });
+    }
+
     function fixMessageData (message, userId) {
 
         if (message.type == "pilotBoat") {
@@ -4208,6 +4228,8 @@ async function initializeMap(race) {
                     if (message.track._id.user_id == currentUserId) {
                         handleOwnTrackInfo(message.track);
                     } else {
+                        mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
+                        lMap.updateMapFleet(race,raceFleetMap);
                         // Ignore track info.
                         // There is currently no function to update a single competitor track.
                     }
@@ -4634,7 +4656,7 @@ async function initializeMap(race) {
                 
                 var race = races.get(raceId);
                 lMap.updateMapFleet(race,raceFleetMap);
-                updateMapFleet(race);
+                //updateMapFleet(race);
                 rt.updateFleet(race,raceFleetMap);
             }
         }
@@ -4698,7 +4720,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
         updateFleet(raceId, "followed", response.scriptData.res);
-        updateMapFleet(race);
+        //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
         if (raceId == selRace.value) {
@@ -4710,7 +4732,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
         updateFleet(raceId, "opponents", response.scriptData.res);
-        updateMapFleet(race);
+        //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
         if (raceId == selRace.value) {
