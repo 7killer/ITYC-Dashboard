@@ -1474,7 +1474,7 @@ var controller = function () {
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
             return '<tr class="commandLine">'
-           + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>' 
+            + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
            + '<td colspan="3">Command @ ' + formatDateUTC(cinfo.ts) + '</td>'
            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
            + '</tr>';
