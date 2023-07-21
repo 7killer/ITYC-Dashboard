@@ -5071,15 +5071,15 @@ async function initializeMap(race) {
             document.getElementById("t_auto_clean").innerHTML = "Nettoyage infos obsolètes";
             
             document.getElementById("t_config_c").innerHTML = "Colonnes";
-            document.getElementById("t_fleet_team").innerHTML = "Team";
-            document.getElementById("t_fleet_rank").innerHTML = "Rank";
-            document.getElementById("t_fleet_racetime").innerHTML = "Race Time";
-            document.getElementById("t_fleet_speed").innerHTML = "Speed";
-            document.getElementById("t_fleet_sail").innerHTML = "Sail";
+            document.getElementById("t_fleet_team").innerHTML = "Équipe";
+            document.getElementById("t_fleet_rank").innerHTML = "Rang";
+            document.getElementById("t_fleet_racetime").innerHTML = "Temps de course";
+            document.getElementById("t_fleet_speed").innerHTML = "Vitesse";
+            document.getElementById("t_fleet_sail").innerHTML = "Voile";
             document.getElementById("t_fleet_factor").innerHTML = "Factor";
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
-            document.getElementById("t_fleet_state").innerHTML = "State";
+            document.getElementById("t_fleet_state").innerHTML = "État";
 
             document.getElementById("t_racelog_position").innerHTML = "Position";
             document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
