@@ -216,6 +216,9 @@ tr.hov:hover {
 tr.hovred:hover {
     border: 0.16em solid red;    
 }
+.selectedLine {
+    border: 0.16em solid rgb(245, 245, 93);
+}
 
 tr {
     height: 23px;
@@ -268,6 +271,38 @@ td.tdc {
     width: 25px;
     padding: 0px;
 }
+
+#th_rl_date {
+    width: 120px;
+}
+#th_rl_rank {
+    width: 70px;
+}
+#th_rl_deltaDistance, #th_rl_deltaTime {
+    width: 80px;
+}
+#th_rl_sail, #th_rl_gybe, #th_rl_tack {
+    width: 60px;
+}
+#th_rl_calcSpeed {
+    width: 110px;
+}
+#th_rl_reportedSpeed {
+    width: 80px;
+}
+#th_rl_dtf {
+    width: 120px;
+}
+#th_rl_factor {
+    width: 130px;
+}
+#th_rl_stamina {
+    width: 100px;
+}
+#th_lu {
+    width: 82px;
+}
+
 td.remove {
     padding: 0px;
     text-align: center;
@@ -305,6 +340,9 @@ td.twa {
 }
 
 
+td.stamina {
+    text-align: right;
+}
 
 td.speed1 {
     background-color: var(--td_speed1_color);

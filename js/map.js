@@ -1263,6 +1263,7 @@ function importRoute(route,race,name) {
     lmapRoute.displayedName = route.displayedName;
 
     lmapRoute.projectionData = [];
+    let currentSail = '';
     for (var i = 0 ; i < route.points.length ; i++) {
         var pos = buildPt2(route.points[i].lat, route.points[i].lon);
 
@@ -1270,7 +1271,15 @@ function importRoute(route,race,name) {
         
         lmapRoute.projectionData.push(createProjectionPoint(route.points[i].timestamp,route.points[i].lat, route.points[i].lon)); 
 
-        buildCircle(pos, lmapRoute.markersLayer,lmapRoute.color, 2,1,rt.buildMarkerTitle(route.points[i]));
+        let circleSize = 2;
+        let circleColor = lmapRoute.color;
+        if (currentSail != route.points[i].sail) {
+            if (currentSail != '') {
+                circleColor = rt.darkenColor(lmapRoute.color, 110);
+            }
+            currentSail = route.points[i].sail;
+        }
+        buildCircle(pos, lmapRoute.markersLayer, circleColor, circleSize, 1, rt.buildMarkerTitle(route.points[i]));
 
         
     }

@@ -78,6 +78,10 @@
     background-repeat: no-repeat;
     background-size: contain;
 }*/
+body {
+    background-color: var(--bg_body_color) !important;
+}
+
 #main-header, .et_pb_section {
     background-color: var(--bg_body_color)!important;
     color: var(--body_color)!important;
@@ -418,4 +422,9 @@ td.position>p {
 
 .cursorHelp {
     cursor: help !important;
+}
+
+td.position p {
+    font-size: 11px !important;
+    line-height: 16px !important;
 }

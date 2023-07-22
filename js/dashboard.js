@@ -1416,8 +1416,8 @@ var controller = function () {
                         + recordRaceFields(race, r)
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
-                        + Util.gentd("State",null, 'title="' + txtTitle + '"', iconState )
-                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""), false)
+                        + Util.gentd("State", "", txtTitle, iconState)
+                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""))
                         + '</tr>';
                 }
             }
@@ -1438,6 +1438,7 @@ var controller = function () {
             divFriendList.innerHTML = fleetHTML;
 
             addEventListenersToRemoveSelectedBoatButtons();
+            addEventListenersToSelectedLine();
         }
     }
 
@@ -1453,9 +1454,9 @@ var controller = function () {
 
         function tableHeader() {
             return '<tr>'
-                + '<th>' + "Time" + dateUTC() + '</th>'
+                + Util.genthRacelog("th_rl_date", "dateTime", "Time" + dateUTC())
                 + commonHeaders()
-                + '<th title="Auto Sail time remaining">' + "aSail" + '</th>'
+                + Util.genthRacelog("th_rl_aSail", "aSail", "aSail", "Auto Sail time remaining")
                 + Util.genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed")
                 + Util.genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)")
                 + Util.genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor")
@@ -1464,16 +1465,16 @@ var controller = function () {
                 + Util.genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance")
                 + Util.genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions")
                 + Util.genthRacelog("th_rl_psn", "position", "Position")
-                + '<th title="Sail change time remaining">' + "Sail" + '</th>'
-                + '<th title="Gybing time remaining">' + "Gybe" + '</th>'
-                + '<th title="Tacking time remaining">' + "Tack" + '</th>'
+                + Util.genthRacelog("th_rl_sail", "sail", "Sail", "Sail change time remaining")
+                + Util.genthRacelog("th_rl_gybe", "gybe", "Gybe", "Gybing time remaining")
+                + Util.genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining")
                 + '</tr>';
         }
 
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
             return '<tr class="commandLine">'
-           + '<td class="time">' + formatDateUTC(cinfo.ts) + '</td>' 
+            + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
            + '<td colspan="3">Command @ ' + formatDateUTC(cinfo.ts) + '</td>'
            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
            + '</tr>';
@@ -1668,8 +1669,10 @@ var controller = function () {
     function updateToggleRaceLogCommandsLines() {
         var commandLines = document.querySelectorAll('tr.commandLine');
         commandLines.forEach(function(line, index) {
-            if (document.getElementById("hideCommandsLines").checked && index !== 0) {
-                line.style.display = 'none';
+            if (document.getElementById("hideCommandsLines").checked) {
+                if ( index > 2) {
+                    line.style.display = 'none';
+                }
             } else {
                 line.style.display = '';
             }
@@ -1957,6 +1960,26 @@ var controller = function () {
         }
 
         if(document.getElementById("ITYC_record").checked) tr.addInfoFleet(uid,storedInfo,race.type);
+    }
+
+    function mergeBoatTrackInfo(rid, uid, data) {
+        var fleet = raceFleetMap.get(rid);
+        if (!fleet) {
+            console.log("raceInfo not initialized");
+            return;
+        }
+        var storedInfo = fleet.uinfo[uid];
+        if (!storedInfo) {
+            storedInfo = new Object();
+            fleet.uinfo[uid] = storedInfo;
+            fleet.table.push(uid);
+        }
+        // copy elems from data to uinfo
+        elemList.forEach( function (tag) {
+            if (tag in data && data[tag]) {
+                storedInfo[tag] = data[tag];
+            }
+        });
     }
 
     function fixMessageData (message, userId) {
@@ -3542,7 +3565,7 @@ function buildlogBookHTML(race) {
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' ' + race.legdata.boat.name+' ' + determineRankingCategory(playerOption) + '</th>'
+        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') • VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' • ' + race.legdata.boat.name + ' • ' + determineRankingCategory(playerOption) + ' • GFS ' + race.gfsWinds + '</th>'
         + '</tr>' 
         + '</thead>'
         + '</table>'
@@ -3865,6 +3888,20 @@ async function initializeMap(race) {
         var fleet = raceFleetMap.get(race.id);
         fleet.uinfo[boatId].choice = false;
         updateFleetHTML(raceFleetMap.get(selRace.value));
+    }
+
+    function addEventListenersToSelectedLine() {
+        document.querySelectorAll("tr.hovred").forEach(function(row) {
+            row.addEventListener("click", function() {
+                row.classList.add("selectedLine");
+                var siblings = Array.from(row.parentNode.children).filter(function(child) {
+                    return child !== row && child.classList.contains("hovred");
+                });
+                siblings.forEach(function(sibling) {
+                    sibling.classList.remove("selectedLine");
+                });
+            });
+        });
     }
 
     function addConfigListeners() {
@@ -4191,6 +4228,8 @@ async function initializeMap(race) {
                     if (message.track._id.user_id == currentUserId) {
                         handleOwnTrackInfo(message.track);
                     } else {
+                        mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
+                        lMap.updateMapFleet(race,raceFleetMap);
                         // Ignore track info.
                         // There is currently no function to update a single competitor track.
                     }
@@ -4453,6 +4492,9 @@ async function initializeMap(race) {
             race.record = legInfo.record;
             if (legInfo.problem == "badSail") {} else if (legInfo.problem == "...") {}
         
+            race.gfsWinds = '1.0';
+            if (legInfo.fineWinds && legInfo.fineWinds === true) race.gfsWinds = '0.25';
+
             var raceData = DM.getRaceInfos(rid);
             if(!raceData|| raceData.raceType == DM.raceInfosModel.raceType)
             {
@@ -4614,7 +4656,7 @@ async function initializeMap(race) {
                 
                 var race = races.get(raceId);
                 lMap.updateMapFleet(race,raceFleetMap);
-                updateMapFleet(race);
+                //updateMapFleet(race);
                 rt.updateFleet(race,raceFleetMap);
             }
         }
@@ -4678,7 +4720,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
         updateFleet(raceId, "followed", response.scriptData.res);
-        updateMapFleet(race);
+        //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
         if (raceId == selRace.value) {
@@ -4690,7 +4732,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
         updateFleet(raceId, "opponents", response.scriptData.res);
-        updateMapFleet(race);
+        //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
         if (raceId == selRace.value) {
@@ -5039,7 +5081,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
 
             document.getElementById("t_config_l").innerHTML = "Journal";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf la dernière)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 3 dernières)";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
             document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
@@ -5051,15 +5093,15 @@ async function initializeMap(race) {
             document.getElementById("t_auto_clean").innerHTML = "Nettoyage infos obsolètes";
             
             document.getElementById("t_config_c").innerHTML = "Colonnes";
-            document.getElementById("t_fleet_team").innerHTML = "Team";
-            document.getElementById("t_fleet_rank").innerHTML = "Rank";
-            document.getElementById("t_fleet_racetime").innerHTML = "Race Time";
-            document.getElementById("t_fleet_speed").innerHTML = "Speed";
-            document.getElementById("t_fleet_sail").innerHTML = "Sail";
+            document.getElementById("t_fleet_team").innerHTML = "Équipe";
+            document.getElementById("t_fleet_rank").innerHTML = "Rang";
+            document.getElementById("t_fleet_racetime").innerHTML = "Temps de course";
+            document.getElementById("t_fleet_speed").innerHTML = "Vitesse";
+            document.getElementById("t_fleet_sail").innerHTML = "Voile";
             document.getElementById("t_fleet_factor").innerHTML = "Factor";
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
-            document.getElementById("t_fleet_state").innerHTML = "State";
+            document.getElementById("t_fleet_state").innerHTML = "État";
 
             document.getElementById("t_racelog_position").innerHTML = "Position";
             document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
@@ -5148,7 +5190,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
             document.getElementById("t_config_l").innerHTML = "Race Log";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except last one)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 3)";
             
             document.getElementById("t_config_m").innerHTML = "Map";
             document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";

@@ -760,6 +760,26 @@ function buildMarkerTitle(point)
 
 }
 
+function darkenColor(hexColor, amount) {
+    const color = hexColor.replace("#", "");
+    // Extract RGB comp.
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    // Calculer les nouvelles valeurs RVB avec une luminosité réduite
+    const darkenedR = Math.max(0, r - amount);
+    const darkenedG = Math.max(0, g - amount);
+    const darkenedB = Math.max(0, b - amount);
+
+    // Convertir les nouvelles valeurs RVB en format hexadécimal
+    const darkenedHexColor = `#${componentToHex(darkenedR)}${componentToHex(darkenedG)}${componentToHex(darkenedB)}`;
+    return darkenedHexColor;
+}
+function componentToHex(component) {
+    const hex = component.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+}
+
 function displayMapTrace(race,routeName)
 {
     var route = getRoute(race.id,routeName);
@@ -771,21 +791,17 @@ function displayMapTrace(race,routeName)
 
 // Help for import
 function help(){
-    var msg = "Affichage des trait de cotes :\n" +
-        "- zoomer sur la zone de la carte où vous souhaitez afficher les traits de cotes\n" +
-        "- Attendez quelques instants \n" +
-        "- La couleur des traits de cotes peut être personnalisé (Selection couleur côtes)\n" + 
-        " - Si vous souhaitez afficher une zone différente\n" +
-        " - Dézoomez et zommez à l endroit désiré\n\n" +
+    var msg = "Affichage des traits de côtes :\n" +
+        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Attendez quelques instants. Ils apparaissent automatiquement en bleu.\nLa couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\nSi vous souhaitez afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n\n" + 
         "Import Zezo :\n" +
-        "- Importe la route en cours sur votre onglet zezo.\n" +
-        "- Si vous modifiez le paramétrage de votre route zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne RT avant d'importer.\n\n" +
+        "- Importer la route en cours suggéré par Zezo.\n" +
+        "- Si vous modifiez le paramétrage de votre route Zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne \"RT\" avant d'importer.\n\n" +
         "Import Avalon :\n" +
         "- Depuis votre logiciel Avalon, exportez votre route au format CSV et importez le.\n\n" +
         "Import VRZen :\n" +
         "- Depuis le routeur VRZen, exportez votre route au format CSV et importez le.\n\n" +
         "Import GPX :\n" +
-        "- Importez le!\n\n";
+        "- Importez le !";
         
     alert(msg);
 }
@@ -793,6 +809,7 @@ function help(){
 export {
     initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
     myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
-    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId
+    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId,
+    darkenColor
 
 };
