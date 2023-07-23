@@ -29,7 +29,10 @@ var controller = function () {
     var currentSortField = "none";
     var originClick;
     var drawTheme = "dark";
+    var CompasWin;
     var csvSep = ";";
+    
+
     const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
                      // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
                      "Auto", "Jib &#x24B6;", "Spi &#x24B6;", "Stay &#x24B6;", "LJ &#x24B6;", "C0 &#x24B6;", "HG &#x24B6;", "LG &#x24B6;"];
@@ -951,6 +954,7 @@ var controller = function () {
                     + '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
                     + '<td class="tdc"><span id="wi:' + r.id + '"><img class="icon" src="./img/wind.svg"/></span></td>'
                     + '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'
+                    + '<td class="tdc"><span id="cp:' + r.id + '"><img class="icon" src="./img/compass.svg"/></span></td>'
                     + '<td class="name">' + r.name + '</td>'
                     +'<td class="time" ' + lastCalcStyle + '>' + Util.formatTimeNotif(r.curr.lastCalcDate) + '</td>'
                     + commonTableLines(r,best)
@@ -1101,6 +1105,7 @@ var controller = function () {
             + '<th title="Call Polars">' + "PL" + '</th>'
             + '<th title="Call WindInfo">' + "WI" + '</th>'
             + '<th title="Call ITYC">' + "ITYC" + '</th>'
+            + '<th title="Open compass">' + "C" + '</th>'
             + '<th>' + "Race" + '</th>'
             + '<th>' + "Time" + '</th>'
             + commonHeaders()
@@ -2628,6 +2633,7 @@ var controller = function () {
             await DM.saveRaceLogInfos(r.id);
             if (r.id == selRace.value) {
                 makeTableHTMLProcess(r);
+                updateCompas(r);
             }
         }
     }
@@ -2707,6 +2713,7 @@ var controller = function () {
         var call_wi = false;
         var call_pl = false;
         var call_ityc = false;
+        var call_cp = false;
         var call_vrzen = false;
         var friend = false;
         var tabsel = false;
@@ -2722,6 +2729,7 @@ var controller = function () {
         var re_usel = new RegExp("^ui:(.+)"); // User-Selection
         var re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
         var re_cbox = new RegExp("^sel_(.+)"); // Checkbox-Selection
+        var re_cpsp = new RegExp("^cp:(.+)"); // Call-Compass
         var re_ntdel = new RegExp("^notif_delete_(.+)"); // Notif delete button
 
         var ev_lbl = ev.target.id;
@@ -2852,6 +2860,8 @@ var controller = function () {
                 call_wi = true;
             } else if (re_ityc.exec(id)) {
                 call_ityc = true;
+            } else if (re_cpsp.exec(id)) {
+                call_cp = true;
             } else if (re_vrzen.exec(id)) {
                 call_vrzen = true;  
             } else if (match = re_rsel.exec(id)) {
@@ -2919,6 +2929,7 @@ var controller = function () {
             else if (call_rt) callRouter(rmatch, currentUserId, false,"zezo");
             else if (call_pl) callPolars(rmatch);
             else if (call_ityc) callITYC(rmatch);
+            else if (call_cp) callCompass(selRace.value,currentUserId);
             else if (call_vrzen) callRouter(rmatch, currentUserId, false,"vrzen");
     
             else
@@ -3668,6 +3679,152 @@ async function initializeMap(race) {
         updateUserConfig();
         lMap.initialize(race,raceFleetMap);
         lMap.updateMapWaypoints(race); 
+    }
+
+
+    function updateCompas (r) {
+        // Test if Compas Popup is already open?
+        if (typeof(CompasWin) === "object") {
+            var sailInfo = sailNames[r.curr.sail % 10];
+            var sailCompasInfo = sailInfo;
+    
+            var isAutoSail = r.curr.hasPermanentAutoSails || (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0);
+            var autoSailTime = r.curr.hasPermanentAutoSails?'∞':Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
+            if (isAutoSail) {
+                sailInfo = sailInfo + " (A " + autoSailTime + ")";
+                sailCompasInfo = sailCompasInfo + "<BR><font style='font-size: 10px;'>(A " + autoSailTime + ")</font>";
+            } else {
+                sailInfo = sailInfo + " (Man)";
+                sailCompasInfo = sailCompasInfo + "<BR><font style='font-size: 10px;'>(Man)</font>";
+            }
+    
+            // Remember when this message was received ...
+            if (! r.curr.receivedTS) {
+                r.curr.receivedTS = new Date();
+            }
+            // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
+            var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate;
+            
+            var isTWAMode = r.curr.isRegulated;
+            
+            var twaFG = (r.curr.twa < 0) ? "red" : "green";
+            var arrowFG = (r.curr.twa < 0) ? "red" : "lime";
+            var twaBold = isTWAMode ? "bold;" : "normal";
+         
+            var hdgFG = isTWAMode ? "black" : "blue";
+            var hdgBold = isTWAMode ? "normal;" : "bold;";
+            if(drawTheme =='dark')
+                hdgFG = isTWAMode ? "white" : "darkcyan";
+            
+            var speedFG = (r.curr.aground ?'red':'');
+
+            var BoatLabel = r.curr.boat.label;
+            var BoatType = r.curr.boat.type;
+            if(r.curr.distanceFromStart && r.curr.distanceToEnd) {
+              r.dfs = r.curr.distanceFromStart;
+              r.dtf = r.curr.distanceToEnd;
+              r.dtfC = Util.gcDistance(r.curr.pos, r.legdata.end);
+              if (!r.dtf || r.dtf == "null") {
+                  r.dtf = r.dtfC;
+              }
+              // console.log("DFS/DTS: "+Util.roundTo(r.dfs, 1)+","+Util.roundTo(r.dtf, 1));
+            }
+    
+            // List Checkpoints Coordinates & Status
+            var gate = "";
+            gate = "<table>";
+            gate = gate + "<tr>";
+            gate = gate + "<th>#</th><th>Type</th><th>Name</th><th>Side</th><th>Position (S/E)</th><th>Status</th>";
+            gate = gate + "</tr>";
+            for (var i = 0; i < r.legdata.checkpoints.length; i++) {
+              var cp = r.legdata.checkpoints[i];
+              var cp_name = "invsible";
+              if (cp.display != "none") cp_name = cp.display;
+    
+              if (cp.display == "none") {
+                continue;
+              }
+    
+              var position_s = Util.formatPosition(cp.start.lat, cp.start.lon);
+              var position_e = Util.formatPosition(cp.end.lat, cp.end.lon);
+    
+              var g_passed = "<img class='icon' src='./img/Status_KO.svg'/>";
+              if (r.gatecnt[cp.group - 1]) {
+                g_passed = "<img class='icon' src='./img/Status_OK.svg'/>";
+              }
+    
+              var side_s =  cp.side ;
+              var side_e = (cp.side == "stbd")?"port":"stbd";
+              gate = gate + "<tr><td style='vertical-align: top;'>"+ cp.group + "</td><td style='vertical-align: top;'>" + cp_name + "</td><td style='vertical-align: top;'>" + cp.name + "</td><td style='vertical-align: top;" + ((cp.side == "stbd")?"color: red;":"color:green;") + "'>" + side_s + "</td><td style='text-align: left; line-height: 10px;'>S: " + Util.formatPosition(cp.start.lat, cp.start.lon) + "<br>E: " + Util.formatPosition(cp.end.lat, cp.end.lon) + "</td>";
+    
+              gate = gate + "<td 'vertical-align: middle; text-align:center;'>" + g_passed + "</td></tr>";
+            }
+            gate = gate + "</table>";
+    
+            CompasWin.document.title = "Compas / "+r.name;
+            CompasWin.document.getElementById("hdg_v").innerHTML = Util.roundTo(r.curr.heading, 3)+'&deg;';
+            CompasWin.document.getElementById("hdg_v").style.fontWeight = hdgBold;
+            CompasWin.document.getElementById("twa_v").innerHTML = Util.roundTo(Math.abs(r.curr.twa), 3)+'&deg;';
+            CompasWin.document.getElementById("twa_v").style.color = twaFG;
+            CompasWin.document.getElementById("twa_v").style.fontWeight = twaBold;
+            
+            CompasWin.document.getElementById("twd_v").innerHTML = Util.roundTo(r.curr.twd, 3)+'&deg;';
+            CompasWin.document.getElementById("sail_v").innerHTML = sailCompasInfo;
+            CompasWin.document.getElementById("tws_v").innerHTML = Util.roundTo(r.curr.tws, 2)+'kts';
+            CompasWin.document.getElementById("sog_v").innerHTML = Util.roundTo(r.curr.speed, 2)+'kts';
+            CompasWin.document.getElementById("sog_v").backgroundColor = speedFG;
+            CompasWin.document.getElementById("boat_v").innerHTML = BoatLabel+' ('+BoatType+')';
+            CompasWin.document.getElementById("updt_v").innerHTML = formatDate(r.curr.lastCalcDate);
+            // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
+            var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate;
+           
+            CompasWin.document.getElementById("updt_v").style.color = (lastCalcDelta > 900000)?'red':'';
+            
+            // Mettre à jour la rosace....
+            CompasWin.document.querySelector(".arrow").style = 'border-color:'+arrowFG+' transparent transparent transparent;';
+            CompasWin.document.querySelector(".arrow").style.transform = 'translate(-10px, 0px) rotate('+r.curr.twd+'deg)';
+            CompasWin.document.querySelector(".boat").style.transform = 'translate(47.5px, 47.5px) rotate('+r.curr.heading+'deg)';
+    
+            CompasWin.document.getElementById("race_v").innerHTML = r.name;
+            CompasWin.document.getElementById("pos_v").innerHTML = Util.formatPosition(r.curr.pos.lat, r.curr.pos.lon);
+            CompasWin.document.getElementById("rank_v").innerHTML = (r.curr.rank ? r.curr.rank : "-");
+            CompasWin.document.getElementById("startpos_v").innerHTML = Util.formatPosition(r.legdata.start.lat, r.legdata.start.lon);
+            CompasWin.document.getElementById("endpos_v").innerHTML = Util.formatPosition(r.legdata.end.lat, r.legdata.end.lon);
+            CompasWin.document.getElementById("dist_v").innerHTML = Util.roundTo(r.dfs, 1)+" nm / "+Util.roundTo(r.dtf, 1)+" nm";
+            CompasWin.document.getElementById("gate_v").innerHTML = (gate ? gate : "-");
+            
+            
+        }
+    }
+    
+    function callCompass (raceId, userId) {
+        var baseURL = "compass.html";
+        var r = races.get(raceId);
+        var uinfo;
+    
+        if (userId) {
+
+            uinfo = raceFleetMap.get(raceId).uinfo[userId];
+            if (uinfo === undefined) {
+                alert("Can't find record for user id " + userId);
+                return;
+            }
+        }
+    
+        var pos = r.curr.pos;
+        if (uinfo) pos = uinfo.pos;
+        var url = baseURL;
+        var tinfo = "compass";
+        CompasWin = Util.PositionOpenPopup(url, cbReuseTab.checked ? tinfo : "_blank", 400, 310);
+
+        if(CompasWin)
+        {  
+            var race = races.get(raceId);
+            new Promise((resolve) => {
+                setTimeout(() => resolve(updateCompas (race)), 3000);
+              });
+
+        }
     }
 
     async function updateUserConfig(e)

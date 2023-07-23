@@ -242,7 +242,26 @@ function formatDateTable(ts) {
     var d = (ts) ? (new Date(ts)) : (new Date());
     return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
 }
+function PositionOpenPopup(url, title, w, h) {
+    // Fixes dual-screen position                         Most browsers      Firefox
+    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+    var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
 
+    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    // var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+    // var top = ((height / 2) - (h / 2)) + dualScreenTop;
+    var left = (width - w) + dualScreenLeft;
+    var top = (height - h) + dualScreenTop;
+    var newWindow = window.open(url, title, 'location=no, menubar=no, resizable=no, scrollbars=no, status=no, titlebar=no, toolbar=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+    // Puts focus on the newWindow
+    if (window.focus) {
+        newWindow.focus();
+    }
+    return newWindow;
+}
 
 function sortFriends(fleet,origin) {
     function sortFriendsByField(rf, field) {
@@ -539,6 +558,6 @@ export { angle,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
          formatShortDate,readTextFile,cpy2Clipbord,sailId2Color,
-         genthRacelog,gentdRacelog,createRingBuffer
+         genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,
        };
 

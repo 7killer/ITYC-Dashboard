@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"  data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script async defer src="./js/compass.js"></script>
+    <link rel="stylesheet" href="./css/compass.css">
+    <title>Compas</title>
+  </head>
+  <body>
+    <table width="100%" height="100%" border="0">
+      <tr>
+        <td>
+          <table>
+            <tr>
+              <td id="hdg_v" class="value">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">HDG</td>
+            </tr>
+          </table>
+        </td>
+        <td rowspan=3 width="155">
+          <div class="compass">
+            <div class="compass-circle"></div>
+            <div class="arrow"></div>
+            <div class="boat"></div>
+          </div>
+        </td>
+        <td>
+          <table>
+            <tr>
+              <td id="twa_v" class="value">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">TWA</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <table>
+            <tr>
+              <td id="twd_v" class="value">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">TWD</td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <table>
+            <tr>
+              <td id="sail_v" class="sailvalue">Wait...<td>
+            </tr>
+            <tr>
+              <td class="sticker">SAIL</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <table>
+            <tr>
+              <td id="tws_v" class="value">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">TWS</td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <table>
+            <tr>
+              <td id="sog_v" class="value">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">SOG</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <table>
+            <tr>
+              <!-- <td id="pos_v" class="value2">Wait...</td> -->
+              <td class="value2"><textarea readonly class="value2" id="pos_v">Wait...</textarea></td>
+              <td id="updt_v" class="value2">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">Current Position</td>
+              <td class="sticker">Last Update</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="sticker">Thanks 2 Frank / SailSmurf - LSV Team</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" colspan=3>
+          <center><button id="bt_infocourse">Race Information</button></center>
+          <table id="tb_infocourse" style="display:none;" border="0">
+            
+            <tr>
+              <td id="race_v" class="value2">Wait...</td>
+              <td id="rank_v" class="value2">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">Race</td>
+              <td class="sticker">Rank</td>
+            </tr>
+            <tr>
+              <td id="boat_v" class="value3">Wait...</td>
+              <td id="startpos_v" class="value3">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">Boat Type</td>
+              <td class="sticker">Race Start Position</td>
+            </tr>
+            <tr>
+              <td id="dist_v" class="value3">Wait...</td>
+              <td id="endpos_v" class="value3">Wait...</td>
+            </tr>
+            <tr>
+              <td class="sticker">DFS / DTF</td>
+              <td class="sticker">Race End Position</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="sticker">Gates<hr style="margin-block-start: 0px; margin-block-end: 0px;"></td>
+            </tr>
+            <tr>
+              <td colspan="2" id="gate_v" class="value3">Wait...</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>    
+  </body>
+</html>
