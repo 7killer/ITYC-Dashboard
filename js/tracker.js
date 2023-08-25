@@ -28,15 +28,11 @@ function initMessage(type,rid,name,myId,rtype,lastCalcDate) {
     }
 }
 
-function addInfoFleet(uid,uinfo) {
+function addOptInfo(uid,uinfo)
+{
+    if(!uinfo || !uid || !mesData["opt"]) return;
 
-    if(!uinfo || !uid || !mesData["fleet"] || !recordEnable) return;
-
-    if(uinfo.lastCalcDate < lastSendDate) return; //not uptodate
-
-    lastCalcDate = uinfo.lastCalcDate;    
-
-    var xOptionsTxt = "-";
+    var xOptionsTxt = "?";
     if(uinfo.xoption_options) {
         xOptionsTxt = uinfo.xoption_options;
         xOptionsTxt = xOptionsTxt.replace("All Options","AO");
@@ -70,6 +66,39 @@ function addInfoFleet(uid,uinfo) {
         name: uinfo.displayName,
         teamId : (uinfo.teamId?uinfo.teamId:"-"),
         teamName : (uinfo.teamname?uinfo.teamname:"-"),
+        opt : xOptionsTxt,
+        startRaceTime: startRaceTime
+    };
+
+    mesData["opt"][uid] = webinfo;
+
+}
+
+function addInfoFleet(uid,uinfo) {
+
+    if(!uinfo || !uid || !mesData["fleet"] || !recordEnable) return;
+
+    if(uinfo.lastCalcDate < lastSendDate) return; //not uptodate
+
+    lastCalcDate = uinfo.lastCalcDate;    
+
+    var playerData = DM.getPlayerInfos(uid);
+    if(playerData)
+    {
+        var teamName = DM.getTeamName(playerData.teamId);
+        if(teamName != undefined || teamName != teamModel.teamName) {
+            uinfo.teamname = teamName;
+            uinfo.teamId = playerData.teamId;    
+        }
+    }
+
+    var webinfo = {
+
+        date : uinfo.lastCalcDate,
+        uid:uid,
+        name: uinfo.displayName,
+        teamId : (uinfo.teamId?uinfo.teamId:"-"),
+        teamName : (uinfo.teamname?uinfo.teamname:"-"),
         speed: uinfo.speed,
         heading: uinfo.heading,
         tws: uinfo.tws,
@@ -80,14 +109,12 @@ function addInfoFleet(uid,uinfo) {
         foil :  (uinfo.xplained?uinfo.xoption_foils:"-"),
         posLat : (uinfo.pos ? uinfo.pos.lat : "-"),
         posLong : (uinfo.pos ?  uinfo.pos.lon : "-"),
-        opt : xOptionsTxt,
         xf : (uinfo.xplained?uinfo.xfactor:"-"),
         xfs : (uinfo.xplained?uinfo.xoption_sailOverlayer:"-"),
         state : uinfo.state,
         rank : (uinfo.rank ?  uinfo.rank : "-"),
         stamina: (uinfo.stamina ? uinfo.stamina : "-"), 
-        dist: (uinfo.dtf ? uinfo.dtf : 99999999999.0), 
-        startRaceTime: startRaceTime
+        dist: (uinfo.dtf ? uinfo.dtf : 99999999999.0)
     };
 
 //foils
@@ -99,7 +126,6 @@ const rankInfosModel = {
     displayName : "-",
     rank : "-",
     distance : 0,   //0 quand arrivee sinon distance à l arrivee
-    xOptions : "?",
     teamId : "",
     teamName : "-",
     time : "-"      //temps mis pour la course, deja arrivee!
@@ -110,21 +136,6 @@ function addInfoRanking(uid,uinfo) {
     if(!uinfo || !uid|| !mesData["rank"]) return;
 
     //if(uinfo.lastCalcDate < mostIteDate) return; //not uptodate
-    
-
-    var xOptionsTxt = "-";
-    if(uinfo.xoption_options) {
-        xOptionsTxt = uinfo.xoption_options;
-        xOptionsTxt = xOptionsTxt.replace("All Options","AO");
-        xOptionsTxt = xOptionsTxt.replace("Full Pack","FP");
-        xOptionsTxt = xOptionsTxt.replace("reach","R");
-        xOptionsTxt = xOptionsTxt.replace("light","L");
-        xOptionsTxt = xOptionsTxt.replace("heavy","H");
-        xOptionsTxt = xOptionsTxt.replace("winch","W");
-        xOptionsTxt = xOptionsTxt.replace("foil","F");
-        xOptionsTxt = xOptionsTxt.replace("hull","h");
-        
-    }
 
     var playerData = DM.getPlayerInfos(uid);
     if(playerData)
@@ -143,7 +154,6 @@ function addInfoRanking(uid,uinfo) {
         teamId : (uinfo.teamId?uinfo.teamId:"-"),
         teamName : (uinfo.teamName?uinfo.teamName:"-"),
         rank : (uinfo.rank ?  uinfo.rank : "-"),
-        opt : xOptionsTxt,
         dist : uinfo.distance,
         time : uinfo.time
     };
@@ -182,10 +192,11 @@ function sendInfoR(type) {
 
     let xhr = new XMLHttpRequest();    
     if(type=="fleet")
-        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbi5waHA="));
-    else
-        xhr.open("POST","https://vr.ityc.fr/dinrV2.php");
-    //    xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpbnIucGhw"));
+        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VEYXRhLnBocA=="));
+    else if(type=="rank") 
+        xhr.open("POST",atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhbmsucGhw"));
+    else if(type=="opt") 
+        xhr.open("POST",atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbk9wdC5waHA="));
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     
@@ -198,6 +209,32 @@ function sendInfoR(type) {
     
 }
 
+function sendInfoOpt() {
+    
+    mesData['opt']["measTime"] = Math.round(Date.now()/60000)*6000;
+    var webdata = "";
+    Object.keys(mesData['opt']).forEach(function (key) {
+        webdata += "/**/"+JSON.stringify(mesData['opt'][key]);
+    });
+    let dat = JSON.stringify(webdata);
+
+
+    let xhr = new XMLHttpRequest();    
+    xhr.open("POST",atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbk9wdC5waHA="),false);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    
+    /*xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        //console.log(xhr.status);
+        //console.log(xhr.responseText);
+      }};*/
+    xhr.send(dat);
+
+    return (xhr.status == 200)
+}
+
+
 export {
-    sendInfo,initMessage,addInfoFleet,addInfoRanking,rankInfosModel
+    sendInfo,initMessage,addInfoFleet,addOptInfo,addInfoRanking,rankInfosModel,sendInfoOpt
 }

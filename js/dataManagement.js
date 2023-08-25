@@ -543,11 +543,14 @@ async function saveLegInfo(races) {
             legData.race = r.legdata.race;
             legData.start = r.legdata.start;
             legData.end = r.legdata.end;
+            legData.gfsWinds = '1.0';
+            if (r.legdata.fineWinds && r.legdata.fineWinds === true) legData.gfsWinds = '0.25';
+            legData.optionPrices = r.legdata.optionPrices;
             webdata += "/**/"+JSON.stringify(legData);
         });
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://vr.ityc.fr/dinRaceInfo.php"); 
+        xhr.open("POST", atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VJbmZvLnBocA==")); 
         xhr.setRequestHeader("Accept", "application/json");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(webdata);
@@ -878,7 +881,7 @@ function getRaceLogInfos(rid)
 const raceOptionPlayerModel = { 
     playerId : "",
     time : "-",
-    options : "",
+    options : "?",
     startRaceTime :"-"             //For record
 };
 
@@ -987,7 +990,7 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
         if(!raceOptPlayer.uid) return;
         raceOptPlayer.playerId = raceOptPlayer.uid;
     }
-    if(raceOptPlayer.opt)
+    if(raceOptPlayer.opt && raceOptPlayer.opt != "?")
     {
         if(raceOptPlayer.opt=="FP") raceOptPlayer.opt = "Full Pack";
         else if(raceOptPlayer.opt=="AO") raceOptPlayer.opt = "All Options";
@@ -999,7 +1002,7 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
             raceOptPlayer.opt = raceOptPlayer.opt.replace("W","winch");
             raceOptPlayer.opt = raceOptPlayer.opt.replace("F","foil");
         }
-    } else {
+    } else if(raceOptPlayer.options) {
         raceOptPlayer.opt =raceOptPlayer.options ;
     }
     if(!raceOptPlayer.stTs)
@@ -1069,7 +1072,7 @@ function getRaceOptions(raceId)
 }
 function getRaceOptionsPlayer(raceId, playerId)
 {
-    var options = "-";
+    var options = "?";
     if(raceOptionsList.race[raceId])
     {
         if(raceOptionsList.race[raceId].uinfo)

@@ -948,6 +948,13 @@ var controller = function () {
                     staminaTxt += " (x" + Util.roundTo(penalties.staminaFactor , 2)+")" ;
                 }
 
+                let itycLedColor = "LightGrey";
+                if(document.getElementById("ITYC_record").checked)
+                {
+                    if(r.optITYCStatus) itycLedColor = "LimeGreen";
+                    else  itycLedColor = "Red";
+                }
+
                 var returnVal = '<tr class="' + trstyle + '" id="rs:' + r.id + '">'
                     + (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
                     +  '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
@@ -976,6 +983,7 @@ var controller = function () {
                 if(cbWithLastCmd.checked)   
                     returnVal += '<td ' + lastCommandBG + '">' + lastCommand + '</td>';
                 
+                returnVal += '<td><span style="color:'+itycLedColor+';font-size:16px;"><b>&#9679</b></span></td>';
                 returnVal += '</tr>';
                 return returnVal;
 
@@ -1129,7 +1137,9 @@ var controller = function () {
             + '<th title="Boat is maneuvering, half speed">' + "Mnvr" + '</th>';
         if(cbWithLastCmd.checked)  
             raceStatusHeader += '<th >' + "Last Command" + '</th>';
+        raceStatusHeader += '<th title="ITYC option Status">' + "Co" + '</th>'
         
+
         raceStatusHeader += '</tr>';
 
         divRaceStatus.innerHTML =  '<table id="raceStatusTable">'
@@ -1289,7 +1299,7 @@ var controller = function () {
                     iconState = "-";
                 }
                 // Fin Ajout - Puces colonne State
-    
+
                 // Ajout - Puces colonne Skipper
                 var bull = "";
                 if (r.choice) {
@@ -1887,11 +1897,13 @@ var controller = function () {
             }
         }
 
-        explainPlayerOptions(storedInfo);
+        if(uid==currentUserId) explainPlayerOptions(storedInfo); /* options are now transmit only for current user */
+        else initPlayerOptions(storedInfo);
+
         if(storedInfo.xoption_options == "---" || storedInfo.xoption_options == "?")
         {
             var storedPlayerOption = DM.getRaceOptionsPlayer(rid,uid);
-			if(storedPlayerOption)
+			if(storedPlayerOption && storedPlayerOption != "?")
             {
                 var optionsList = [];
                 if(storedPlayerOption == "Full Pack" || storedPlayerOption =="All Options") {
@@ -1908,9 +1920,9 @@ var controller = function () {
                         }
                     }
                 }
-                storedInfo.xoption_options = storedPlayerOption;
                 storedInfo.options = optionsList;
-            }
+                explainPlayerOptions(storedInfo);
+            }        
         }
 
         if (boatPolars) {
@@ -2000,7 +2012,7 @@ var controller = function () {
     }
 
     function initFoils (boatData) {
-        if (boatData.options && boatData.options!="-") {
+        if (boatData.options && boatData.options!="?") {
             for (const feature of boatData.options) {
                 if (feature == "foil") {
                     return "0%";
@@ -2017,10 +2029,12 @@ var controller = function () {
         if(savedOptions == "Full Pack" || savedOptions == "All Options"
         || savedOptions == "FP" || savedOptions == "AO")
             return "Full Pack";
-        else if(savedOptions == "-" || savedOptions == "?"|| savedOptions == "---")
+        else if(savedOptions == "?"|| savedOptions == "---")
         {
-            return "-";
-        } else {
+            return "?";
+        } else if(savedOptions == "-") {
+            return "PDD";        
+        }  else {
             if(!Array.isArray(savedOptions)) {
                 var optionsType = savedOptions.split(" ");
                 var optionsList = [];
@@ -2080,13 +2094,20 @@ var controller = function () {
         
         }
     }
+    function initPlayerOptions(info)
+    {
+        info.xoption_foils = "?";
+        info.xoption_sailOverlayer = "0%";
+        info.xoption_options = "?";
+        info.savedOption = "?";
+    }
 
     function explainPlayerOptions(info)
     {
         info.xoption_foils = initFoils(info);
         info.xoption_sailOverlayer = "0%";
         info.xoption_options = "?";
-        info.savedOption = "---";
+        info.savedOption = "?";
         
         if (info.fullOptions === true) {
             info.xoption_options = "Full Pack";
@@ -2100,27 +2121,53 @@ var controller = function () {
             } else {
                 var opt_sail = "[";
                 var opt_perf = "[";
+                var opt_sail_found = false;
+                var opt_perf_found = false;
+                
                 for (const opt of info.options.sort()) {
                     if (opt == "reach" || opt == "light" || opt == "heavy") {
                         opt_sail += opt + ",";
+                        opt_sail_found = true;
                     }
                     if (opt == "winch" || opt == "foil" || opt == "hull" ){
                         opt_perf += opt + ",";
+                        opt_perf_found = true;
                     }
-                    
-
-
                 }
                 opt_sail = opt_sail.substring(0,opt_sail.length-1);
                 opt_perf = opt_perf.substring(0,opt_perf.length-1);
                 if (opt_sail.length != "") opt_sail += "]";
                 if (opt_perf.length != "") opt_perf += "]";                
-                info.xoption_options = opt_sail + " " + opt_perf;
-                info.savedOption = opt_sail + " " + opt_perf;
+                
+                if(opt_sail_found && opt_perf_found)
+                {
+                    info.xoption_options = opt_sail + " " + opt_perf;
+                    info.savedOption = opt_sail + " " + opt_perf;
+                    info.xoption_foils = "no";
+                } else if(opt_sail_found && !opt_perf_found)
+                {
+                    info.xoption_options = opt_sail;
+                    info.savedOption = opt_sail;
+                    info.xoption_foils = "no";
+                } else if(!opt_sail_found && opt_perf_found)
+                {
+                    info.xoption_options = opt_perf;
+                    info.savedOption = opt_perf;
+                } else
+                { // get only skin or radio
+                    info.xoption_options = "-";
+                    info.savedOption = "-";
+                    info.xoption_foils = "no";
+                }
+                
+                
             }
-        }
-
-             
+        } else if(!info.options)
+        {
+            info.xoption_options = "-";
+            info.savedOption = "-";
+            info.xoption_foils = "no";
+        }        
     }
 
     function explain(info, foilFactor, hullFactor, speedT) {
@@ -2165,6 +2212,7 @@ var controller = function () {
                 info.xoption_sailOverlayer = "0%";
                 info.xoption_foils = Util.roundTo(foils, 0) + "%";
             } else {
+                if(!info.options) return;
                 info.xplained = true;
                 info.xoption_foils = Util.roundTo(foils, 0) + "%";
                 //here check for overspeed due to sail
@@ -2669,6 +2717,8 @@ var controller = function () {
 
         if(race && race.curr ) welcomePage = false; 
         await DM.getRaceOptionsList(raceId);
+        if(!race.optITYCStatus) race.optITYCStatus = false;
+                        
         currentRaceId = raceId;
         makeRaceStatusHTML();
         //await DM.initRaceLogInfos(raceId);
@@ -4364,6 +4414,8 @@ async function initializeMap(race) {
                         await DM.getRaceList(); 
                         await DM.getItycPolarHash();
                         await DM.getRaceOptionsList(raceId);
+                        if(!race.optITYCStatus) race.optITYCStatus = false;
+                         
                         await DM.initRaceLogInfos(raceId);
                         race.recordedData =  DM.rebuildRecordedData(raceId);
                         if (cbNMEAOutput.checked) {
@@ -4476,8 +4528,6 @@ async function initializeMap(race) {
                             playerData.rank  = message.rank[i].rank;
                             playerData.distance  = message.rank[i].distance;
                             playerData.lastCalcDate  = lastCalcDate;
-
-                            playerData.xOptions   = DM.getRaceOptionsPlayer(race.id,id);
                             tr.addInfoRanking(id,playerData);
                         }
                         if(fleet && fleet.uinfo && fleet.uinfo[id])fleet.uinfo[id].rank =  message.rank[i].rank;
@@ -4534,6 +4584,19 @@ async function initializeMap(race) {
                     }
                     await DM.addRaceOptionsList(raceId,playerOptionsData);
                     await DM.saveRaceOptionsList(raceId);
+                    if(document.getElementById("ITYC_record").checked && isFirstBoatInfo)
+                    {
+                        var raceData = DM.getRaceInfos(raceId);
+                        var name ="-";
+                        var type = "-";
+                        if(raceData) {
+                            name = raceData.legName;
+                            type= raceData.raceType;
+                        }
+                        tr.initMessage("opt",raceId,name,currentUserId,type);
+                        tr.addOptInfo(userId,fleet.uinfo[userId]);
+                        race.optITYCStatus = tr.sendInfoOpt();
+                    }
                 }     
             }
         }
@@ -4573,7 +4636,8 @@ async function initializeMap(race) {
             DM.addPlayerInfo(playerData) ;
             DM.makePlayerTable();  
             await DM.savePlayerList();
-            
+
+/* As others player options isn t need anymore             
             if(fleet.uinfo[userId].savedOption)
             {
                 if(fleet.uinfo[userId].savedOption != "---" && fleet.uinfo[userId].savedOption != "?")
@@ -4589,6 +4653,17 @@ async function initializeMap(race) {
                     await DM.saveRaceOptionsList(raceId);
                 }
             }
+*/
+            /* replace by */
+            if (race.type === "record" && fleet.uinfo[userId].startDate) {
+                var playerOptionsData = Object.create(DM.raceOptionPlayerModel);
+                playerOptionsData.playerId = userId;
+                playerOptionsData.time = fleet.uinfo[userId].lastCalcDate;
+                playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
+                await DM.addRaceOptionsList(raceId,playerOptionsData);
+                await DM.saveRaceOptionsList(raceId);
+            }
+
         }
         makeRaceStatusHTML();
 
