@@ -1490,10 +1490,10 @@ var controller = function () {
             if(!cinfo.action) return"";
             return '<tr class="commandLine">'
             + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
-           + '<td colspan="3">Command @ ' + formatDateUTC(cinfo.ts) + '</td>'
-           + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
-           + '</tr>';
-       }
+            + '<td colspan="3">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts))
+            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '</tr>';
+        }
         function makeRaceLineLog(rinfo)
         {
             function isDifferingSpeed(realSpeed, calculatedSpeed) {
@@ -2591,9 +2591,11 @@ var controller = function () {
     }
 
     function saveRaceLogLineCmd(r) {
+        var now = new Date();
         var cinfo = {
             action : r.lastCommand.request.actions,
             ts : r.lastCommand.request.ts,
+            ts_order_sent : now,
             rlType : "cmd"     
         }
         return cinfo;
