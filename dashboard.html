@@ -214,7 +214,7 @@
                 <img id="rt_close_popupLmap" src="./img/close.png">
             </div>
             <table class="noBorderElt">
-                <tbody>
+                <tbody style="display: block;">
                     <tr>
                         <td class="noBorderElt rt_left_col">
                             <select id="sel_routeTypeLmap" name="routeType">
@@ -224,7 +224,7 @@
                                 <option value="rt_gpx">GPX</option>
                             </select>
                         </td>
-                        <td class="select-editable noBorderElt">
+                        <td class="select-editable noBorderElt" colspan="3">
                             <select id="sel_rt_skipperLmap" name="rt_skipper"></select>
                             <input type="text" name="rt_nameSkipper" id="rt_nameSkipperLmap" style="display: none;" value="">
                         </td>
@@ -232,15 +232,39 @@
                             <input type="color" id="route_colorLmap" value="#ff0000">
                         </td>
                     </tr>
-                    <tr id="rt_extraFormatLmap" style="display: none;">
-                        <td class="noBorderElt" id="t_format">Format</td>
-                        <td class="noBorderElt">
-                            <select id="sel_routeFormatLmap" name="routeFormat">
-                                <option value="rt_Format_Avalon">Avalon</option>
-                                <option value="rt_Format_VRZen">VR Zen</option>
-                            </select>
+                    <tr id="rt_extraFormat2Lmap" style="display: flex;">
+                        <td class="noBorderElt"  style="width: 17%;background-color: transparent;" id="t_opt_opts">Options</td>
+                        <td class="noBorderElt" style="width: 25%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_FP_Lmap" checked>
+                            <label id="t_opt_hull">Full Pack</label>
                         </td>
-                        <td class="noBorderElt"></td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_hull_Lmap" checked>
+                            <label id="t_opt_hull">Polish</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_foils_Lmap" checked>
+                            <label id="t_opt_foil">Foils</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;">
+                            <input type="checkbox" id="opt_winch_Lmap" checked>
+                            <label id="t_opt_winch">Winch</label></td>
+                    </tr>
+                    <tr id="rt_extraFormat3Lmap" style="display: flex;">
+                        <td class="noBorderElt" style="width: 17%;background-color: transparent;" id="t_opt_sails">Voiles</td>
+                        <td class="noBorderElt" style="width: 25%;background-color: transparent;">
+                            <input type="checkbox" id="opt_c0_Lmap" checked>
+                            <label id="t_opt_c0">Reaching</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_ljg_Lmap" checked>
+                            <label id="t_opt_ljg">Light</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_hgss_Lmap" checked>
+                            <label id="t_opt_hgss">Heavy</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"></td>
                     </tr>
                 </tbody>
             </table>

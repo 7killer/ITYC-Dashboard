@@ -5194,6 +5194,13 @@ async function initializeMap(race) {
     
     }
 
+    function onSkipperSelectChange() {
+        var race = races.get(selRace.value);
+        if (!race)  return;
+        rt.onSkipperSelectedChange("Lmap");
+
+    }
+
     let tracksState = true;
     async function onTracksChange() {
         var race = races.get(selRace.value);
@@ -5279,8 +5286,10 @@ async function initializeMap(race) {
             document.getElementById("lbl_rt_openLmap").innerHTML = "Ajouter";	
             document.getElementById("lbl_rt_cleanLmap").innerHTML = "Effacer";
             document.getElementById("t_rtTitle").innerHTML = "Import Routage";
-            document.getElementById("t_format").innerHTML = "Format";
             document.getElementById("bt_rt_addLmap").innerHTML = "Import";
+            document.getElementById("t_opt_sails").innerHTML = "Voiles";
+            document.getElementById("t_opt_hull").innerHTML = "Polish";
+            document.getElementById("t_opt_c0").innerHTML = "C0";
             
             document.getElementById("bt_cleanGraph").innerHTML = "Effacer graphiques";
             document.getElementById("bt_exportGraphData").innerHTML = "Exporter les données";
@@ -5388,8 +5397,10 @@ async function initializeMap(race) {
             document.getElementById("lbl_rt_openLmap").innerHTML = "Add";	
             document.getElementById("lbl_rt_cleanLmap").innerHTML = "Clean";
             document.getElementById("t_rtTitle").innerHTML = "Routes Import";
-            document.getElementById("t_format").innerHTML = "Format";
             document.getElementById("bt_rt_addLmap").innerHTML = "Import";
+            document.getElementById("t_opt_sails").innerHTML = "Sails";
+            document.getElementById("t_opt_hull").innerHTML = "Hull";
+            document.getElementById("t_opt_c0").innerHTML = "Reaching";
             
             document.getElementById("bt_cleanGraph").innerHTML = "Clear graphics";
             document.getElementById("bt_exportGraphData").innerHTML = "Export data";
@@ -5503,6 +5514,7 @@ async function initializeMap(race) {
         onAddRouteLmap:onAddRouteLmap,
         onCleanRoute:onCleanRoute,
         onMarkersChange:onMarkersChange,
+        onSkipperSelectChange:onSkipperSelectChange,
         onTracksChange:onTracksChange,
         exportPolar:exportPolar,
         exportStamina:exportStamina,
@@ -5580,6 +5592,7 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_rt_addLmap").addEventListener("click", controller.onAddRouteLmap);
     document.getElementById("lbl_rt_cleanLmap").addEventListener("click", controller.onCleanRoute);
     document.getElementById("lbl_showMarkersLmap").addEventListener("click", controller.onMarkersChange);
+    document.getElementById("sel_rt_skipperLmap").addEventListener("change", controller.onSkipperSelectChange);
 
     
     document.getElementById("lbl_showTracksLmap").addEventListener("click", controller.onTracksChange);

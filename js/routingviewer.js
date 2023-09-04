@@ -358,7 +358,6 @@ function initializeWebInterface(mkState)
     document.getElementById("rt_popupLmap").style.display = "none";
     document.getElementById("sel_routeTypeLmap").addEventListener("change", onChangeRouteTypeLmap);
     document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
-    document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
     document.getElementById("lbl_helpLmap").addEventListener("click", help);
     markersState = mkState;
     
@@ -370,7 +369,9 @@ function loadRacingSkipperList(elt)
 {
     var selectobject = document.getElementById(elt);
     var options = selectobject.getElementsByTagName('OPTION');
-
+    var optionsSelect = selectobject.value;
+    var optionsSelectStillExist = false;
+    
     for (var i=0; i<options.length; i++) {
         selectobject.removeChild(options[i]);
         i--;
@@ -432,15 +433,19 @@ function loadRacingSkipperList(elt)
         if (isDisplayEnabled(fleetInfos[fln[key]], fln[key])) {
             var option = document.createElement("option");
 
-            option.text = fleetInfos[fln[key]].displayName;
+            let optionK = "";
+            if(!fleetInfos[fln[key]].options || fleetInfos[fln[key]].options=="?")
+                optionK = "(*) ";
+
+            option.text = optionK+fleetInfos[fln[key]].displayName;
             option.value = fln[key];
+            if(fln[key]==optionsSelect) optionsSelectStillExist = true;
 
             document.getElementById(elt).appendChild(option);
         }
     });
-
-
-
+    if(optionsSelectStillExist) selectobject.value = optionsSelect;
+    onSkipperSelectedChange("Lmap");
 }
 
 
@@ -453,9 +458,9 @@ function onPopupOpenLmap()
         document.getElementById("rt_popupLmap").style.display = "block";
         document.getElementById("sel_rt_skipperLmap").style.display = "block";
         document.getElementById("rt_nameSkipperLmap").style.display = "none";
-        document.getElementById("rt_extraFormatLmap").style.display = "none";
+        document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
+        document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
         document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
-        document.getElementById("sel_routeFormatLmap").value = "rt_Format_Avalon";
         document.getElementById("route_colorLmap").value = actualZezoColor;
         loadRacingSkipperList("sel_rt_skipperLmap");
     }
@@ -496,34 +501,39 @@ function onChangeRouteTypeLmap() {
         case "rt_Zezo":
             document.getElementById("sel_rt_skipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").style.display = "none";
-            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("route_colorLmap").value = actualZezoColor;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
+            document.getElementById("rt_popupLmap").style.height = "9.5em";
             break;
         case "rt_Avalon":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
-            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("route_colorLmap").value = actualAvalon06Color;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_popupLmap").style.height = "6em";
             break;
         case "rt_VRZen":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
-            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("route_colorLmap").value =  actualVRZenColor;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_popupLmap").style.height = "6em";
             break;
         case "rt_gpx":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
-            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("route_colorLmap").value =  actualgpxColor;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_popupLmap").style.height = "6em";
             break;
-
-        
-
-            
+      
     }
 }
 
@@ -585,6 +595,56 @@ async function loadExternalFile(race,type) {
 
     
 }
+
+function buildPlayerOption(type)
+{
+    let option = "";
+    let option2 = "";
+    let optFound = false;
+    let optFound2 = false;
+
+    if(getCheckbox("opt_FP_"+type)) {
+        optFound = true;
+        option = "All Options";
+    } else{
+        if(getCheckbox("opt_hgss_"+type)) {
+            optFound = true;
+            option = "[heavy";
+        }
+        if(getCheckbox("opt_ljg_"+type)) {
+            if(optFound) option+=","; else option = "[";
+            optFound = true;
+            option += "light";
+        }
+        if(getCheckbox("opt_c0_"+type)) {
+            if(optFound) option+=","; else option = "[";
+            optFound = true;
+            option += "reach";
+        }
+        if(optFound) option += "]";
+        
+        if(getCheckbox("opt_foils_"+type)) {
+            optFound2 = true;
+            option2 = "[foil";
+        }
+        if(getCheckbox("opt_hull_"+type)) {
+            if(optFound2) option2+=","; else option2 = "[";
+            optFound2 = true;
+            option2 += "hull";
+        }
+        if(getCheckbox("opt_winch_"+type)) {
+            if(optFound2) option2+=","; else option2 = "[";
+            optFound2 = true;
+            option2 += "winch";
+        }
+        if(optFound2) option2 += "] ";
+
+    }
+    if(!optFound && !optFound2) option = "-";
+    else if(optFound2) option += option2; 
+    return option;
+}
+
 async function onAddRouteLmap(race) {
     var routeType = document.getElementById("sel_routeTypeLmap").value;
 
@@ -607,13 +667,10 @@ async function onAddRouteLmap(race) {
                 alert("Unknown player - no routing available");
                 return;
             }
-            if( currentUinfo.options == "-" || currentUinfo.options == "?"|| currentUinfo.options == "---")
-            {
-            alert("No player loaded - no routing available");
-            return;
-            }
+            
+            currentUinfo.options = buildPlayerOption("Lmap");
     
-            document.getElementById("bt_rt_addLmap").value = "Loading";
+            document.getElementById("bt_rt_addLmap").innerText = "Loading";
             document.getElementById("bt_rt_addLmap").disabled = true;
             
             zz.zezoCall(currentUinfo,raceInfos,document.getElementById("route_colorLmap").value,race);    
@@ -638,6 +695,85 @@ async function onAddRouteLmap(race) {
     }
 
          
+}
+function upDateCheckbox(elt,value)
+{
+    var checkBox = document.getElementById(elt);
+    if(checkBox) 
+    {
+        checkBox.checked = value;
+        var event = new Event('change');
+        checkBox.dispatchEvent(event);
+    }
+}
+function getCheckbox(elt)
+{
+    var checkBox = document.getElementById(elt);
+    if(checkBox) 
+    
+        return checkBox.checked;
+     else
+        return null;
+}
+function onSkipperSelectedChange(type)
+{
+
+    if(!currentRace.id) return;
+    var raceInfos = racesInfos.get(currentRace.id);
+    if(!raceInfos) return;
+    var currentUinfo = fleetInfos[document.getElementById("sel_rt_skipper"+type).value];
+    if(!currentUinfo) { //shall never be true
+        alert("Unknown player - no routing available");
+        return;
+    }
+    if(currentUinfo.options == "?"|| currentUinfo.options == "---")
+    {
+         //unlock full pack 
+         upDateCheckbox("opt_FP_"+type,false);
+    } else
+    {
+        //preload player options
+        if (currentUinfo.options) {
+            if(currentUinfo.options == "Full Pack" || currentUinfo.options == "All Options")
+            {
+                upDateCheckbox("opt_FP_"+type,true);
+                upDateCheckbox("opt_hull_"+type,true);
+                upDateCheckbox("opt_foils_"+type,true);
+                upDateCheckbox("opt_winch_"+type,true);
+                upDateCheckbox("opt_c0_"+type,true);
+                upDateCheckbox("opt_ljg_"+type,true);
+                upDateCheckbox("opt_hgss_"+type,true);
+            }
+            else if(currentUinfo.options == "-")
+            {
+                upDateCheckbox("opt_FP_"+type,false);
+                upDateCheckbox("opt_hull_"+type,false);
+                upDateCheckbox("opt_foils_"+type,false);
+                upDateCheckbox("opt_winch_"+type,false);
+                upDateCheckbox("opt_c0_"+type,false);
+                upDateCheckbox("opt_ljg_"+type,false);
+                upDateCheckbox("opt_hgss_"+type,false);
+        
+            } else if(currentUinfo.options == "?"|| currentUinfo.options == "---") {
+                upDateCheckbox("opt_FP_"+type,false);
+            } else {
+                upDateCheckbox("opt_FP_"+type,false);
+                if(currentUinfo.options.indexOf("hull") == -1) upDateCheckbox("opt_hull_"+type,false); else upDateCheckbox("opt_hull_"+type,true);
+                if(currentUinfo.options.indexOf("foil") == -1) upDateCheckbox("opt_foils_"+type,false); else upDateCheckbox("opt_foils_"+type,true);
+                if(currentUinfo.options.indexOf("winch") == -1) upDateCheckbox("opt_winch_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
+                if(currentUinfo.options.indexOf("light") == -1) upDateCheckbox("opt_c0_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
+                if(currentUinfo.options.indexOf("reach") == -1) upDateCheckbox("opt_ljg_"+type,false); else upDateCheckbox("opt_ljg_"+type,true);
+                if(currentUinfo.options.indexOf("heavy") == -1) upDateCheckbox("opt_hgss_"+type,false); else upDateCheckbox("opt_hgss_"+type,true);
+            }
+        } else{
+            upDateCheckbox("opt_FP_"+type,false);
+            upDateCheckbox("opt_hull_"+type,false);
+            upDateCheckbox("opt_foils_"+type,false);
+            upDateCheckbox("opt_c0_"+type,false);
+            upDateCheckbox("opt_ljg_"+type,false);
+            upDateCheckbox("opt_hgss_"+type,false);
+        }
+    }
 }
 
 function onRouteListClick(ev,race) {
@@ -810,6 +946,6 @@ export {
     initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
     myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
     initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId,
-    darkenColor
+    darkenColor,onSkipperSelectedChange
 
 };

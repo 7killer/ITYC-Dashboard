@@ -169,21 +169,21 @@ function zezoCall(uinfo,raceInfos,color,race) {
                 }
                 rt.updateRouteListHTML();
                 rt.displayMapTrace(race,routeNameClean);
-                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").innerText = "Import";
                 document.getElementById("bt_rt_addLmap").disabled = false;
             }else {
                 resolve(false);
-                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").innerText = "Import";
                 document.getElementById("bt_rt_addLmap").disabled = false;
             }
             
         });
 		xhr.addEventListener('error', () => {
-                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").innerText = "Import";
                 document.getElementById("bt_rt_addLmap").disabled = false;
         });
         xhr.addEventListener('abort', () => {
-                document.getElementById("bt_rt_addLmap").value = "Import";
+                document.getElementById("bt_rt_addLmap").innerText = "Import";
                 document.getElementById("bt_rt_addLmap").disabled = false;
         });  
         xhr.open("GET", url);
