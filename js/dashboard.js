@@ -614,7 +614,7 @@ var controller = function () {
             zUrl = prepareZezoUrl(r.id, currentUserId, beta, false, false);
             pUrl = preparePolarUrl(r.id);
             if(r.url) rzUrl = "http://zezo.org/"+ r.url+"/chart.pl?";
-            rpUrl = "http://toxcct.free.fr/polars/?race_id=" + raceId ; 
+            rpUrl = preparePolarBaseUrl() + "race_id=" + raceId ; 
 //            rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId ; 
             
             rvUrl  = prepareVrzUrl(r.id);   
@@ -3379,10 +3379,21 @@ var controller = function () {
         var tinfo = "windy:" + r.url;
         window.open(url, cbReuseTab.checked ? tinfo : "_blank");
     }
+    function preparePolarBaseUrl()
+    {
+        var siteSel = document.getElementById("sel_polarSite").value ;
+
+        if(siteSel==1)
+            return "http://inc.bureauvallee.free.fr/polaires/?";
+        else if(siteSel==2)
+            return "https://cert.civis.net/polars/?";
+        
+        return "http://toxcct.free.fr/polars/?";
+        
+    }
 
     function preparePolarUrl(raceId) {
-        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;
-        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
+        var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;
        
         var race = races.get(raceId);
 
@@ -3405,7 +3416,7 @@ var controller = function () {
     }
 
     function callPolars(raceId) {
-        var baseURL = "http://toxcct.free.fr/polars/?race_id=" + raceId;      
+        var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;      
         //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var url = preparePolarUrl(raceId)
         window.open(url, cbReuseTab.checked ? baseURL : "_blank");
@@ -5318,6 +5329,7 @@ async function initializeMap(race) {
             document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
             document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
+            document.getElementById("t_polarSite").innerHTML = "Site polaires";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
@@ -5429,6 +5441,7 @@ async function initializeMap(race) {
             document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
             document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
+            document.getElementById("t_polarSite").innerHTML = "Polars site";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";
