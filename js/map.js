@@ -588,15 +588,13 @@ async function initialize(race,raceFleetMap)
                 "Satellite": Esri_WorldImagery
             };
         
-        
+            var z = await getLocal("selectBaseMap");
+            var selectBaseMap = OSM_Layer;
+            if(z == "Dark") selectBaseMap = OSM_DarkLayer;
+            else if(z == "Satellite") selectBaseMap = Esri_WorldImagery;
+
             var map = L.map('lMap'+race.id, {
-    /*          contextmenu: true,
-                contextmenuWidth: 150,
-                contextmenuItems: [{
-                    text: 'Obtenir Position',
-                    callback: obtenirPositionGEFS
-                }],*/
-                layers: [OSM_Layer]
+                layers: [selectBaseMap]
             });
             var layerControl = L.control.layers(baseLayers);
             layerControl.addTo(map);
@@ -746,7 +744,9 @@ async function initialize(race,raceFleetMap)
             map.on('drag', function() {
                 map.panInsideBounds(bounds, { animate: false });
             });
-            
+            map.on('baselayerchange', async function (e) {
+                await saveLocal("selectBaseMap" , e.name);
+             });
             lMapInfos = race.lMap;
         }
     }
@@ -1387,7 +1387,45 @@ function hideShowTracks(race) {
             map.removeLayer(race.lMap.fleetLayerTracks);
     }
 }
+const toPromise = (callback) => {
+    const promise = new Promise((resolve, reject) => {
+        try {
+            callback(resolve, reject);
+        }
+        catch (err) {
+            reject(err);
+        }
+    });
+    return promise;
+}
 
+const saveLocal = (k,v) => {
+    const key = k;
+    const value = { val: v };
+
+    return toPromise((resolve, reject) => {
+        chrome.storage.local.set({ [key]: value }, () => {
+            if (chrome.runtime.lastError)
+                reject(chrome.runtime.lastError);
+
+            resolve(value);
+        });
+    });
+}
+
+const getLocal = (k) => {
+    const key = k;
+
+    return toPromise((resolve, reject) => {
+        chrome.storage.local.get([key], (result) => {
+            if (chrome.runtime.lastError)
+                reject(chrome.runtime.lastError);
+
+            const researches = result[key]?((result[key].val!==undefined)?result[key].val:undefined):undefined ;
+            resolve(researches);
+        });
+    });
+}
 export {
     initialize,updateMapCheckpoints,updateMapFleet,cleanMap,set_displayFilter,set_currentId,set_currentTeam,
     updateMapWaypoints,updateMapMe,updateMapLeader,
