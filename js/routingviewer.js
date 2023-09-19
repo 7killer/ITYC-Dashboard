@@ -760,9 +760,9 @@ function onSkipperSelectedChange(type)
                 upDateCheckbox("opt_FP_"+type,false);
                 if(currentUinfo.options.indexOf("hull") == -1) upDateCheckbox("opt_hull_"+type,false); else upDateCheckbox("opt_hull_"+type,true);
                 if(currentUinfo.options.indexOf("foil") == -1) upDateCheckbox("opt_foils_"+type,false); else upDateCheckbox("opt_foils_"+type,true);
-                if(currentUinfo.options.indexOf("winch") == -1) upDateCheckbox("opt_winch_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
-                if(currentUinfo.options.indexOf("light") == -1) upDateCheckbox("opt_c0_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
-                if(currentUinfo.options.indexOf("reach") == -1) upDateCheckbox("opt_ljg_"+type,false); else upDateCheckbox("opt_ljg_"+type,true);
+                if(currentUinfo.options.indexOf("winch") == -1) upDateCheckbox("opt_winch_"+type,false); else upDateCheckbox("opt_winch_"+type,true);
+                if(currentUinfo.options.indexOf("reach") == -1) upDateCheckbox("opt_c0_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
+                if(currentUinfo.options.indexOf("light") == -1) upDateCheckbox("opt_ljg_"+type,false); else upDateCheckbox("opt_ljg_"+type,true);
                 if(currentUinfo.options.indexOf("heavy") == -1) upDateCheckbox("opt_hgss_"+type,false); else upDateCheckbox("opt_hgss_"+type,true);
             }
         } else{
