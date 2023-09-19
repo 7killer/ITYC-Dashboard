@@ -2522,7 +2522,7 @@ var controller = function () {
             options.timeZone = "UTC";
         }
         var str = new Intl.DateTimeFormat("lookup", options).format(new Date());
-        var res = str.substring(6);
+        var res = str.substring(5);
         return  '<span id="small">&nbsp;(' + res + ')</span>';
     }
 
