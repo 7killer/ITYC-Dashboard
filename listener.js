@@ -123,30 +123,63 @@ let vrZenUrlRace = "";
   if (!window.fetch) return;
 
   const oldFetch = window.fetch;
+  const responseProxy = (response, text) => {
+
+    const proxy = new Proxy(response, {
+      get(obj, prop) {
+
+        if(prop === 'text'){
+          return () => Promise.resolve(text);
+        }
+        if(prop === "body"){
+          return new ReadableStream({
+            start(controller){
+                controller.enqueue(new TextEncoder().encode(text));
+                controller.close();
+            }
+        });
+        }
+
+        return obj[prop];
+      }
+    })
+
+    return proxy;
+  };
+
   const handleResponse = async (url, response, headers) => {
     if (!checkUrl(url)) {
-      return;
+      return response;
     }
 
     const idC = document.getElementById("itycDashId");
     if (!response.headers.get("content-type").includes("text/") && idC) {
+      let text;
       try {
+        text = await response.text();
         chrome.runtime.sendMessage(
           idC.getAttribute("extId"),
           {
             url,
             req: JSON.stringify(headers),
-            resp: await response.text(),
+            resp: text,
             type: "data",
           },
           function (response) {
             manageAnswer(response);
           }
         );
+        return responseProxy(response, text);
       } catch (err) {
         console.error(err);
+
+        if(text){
+          return responseProxy(response, text);
+        }
       }
     }
+
+    return response;
   };
 
   window.fetch = async function (input, init) {
@@ -188,8 +221,7 @@ let vrZenUrlRace = "";
 
       const response = await oldFetch(input, init);
 
-      handleResponse(url, response, headers);
-      return response;
+      return handleResponse(url, response, headers);
     } catch (error) {
       console.error(error);
       return oldFetch(input, init);
