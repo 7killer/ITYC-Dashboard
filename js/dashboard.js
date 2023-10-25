@@ -165,6 +165,7 @@ var controller = function () {
     var selRace, selNmeaport, selFriends;
     var cbFriends, cbOpponents, cbCertified, cbTeam, cbTop, cbReals, cbSponsors,cbTrackinfos, cbWithLastCmd,cbSelect, cbInRace, cbRouter, cbReuseTab, cbLocalTime, cbRawLog, cbNMEAOutput;
     var lbBoatname, lbTeamname, lbCycle;
+    var currentCycle;
 
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
@@ -2736,9 +2737,9 @@ var controller = function () {
             NMEA.setActiveRace(raceId);
     }
 
-    function getRaceLegId(id) {
-        // work around for certain messages (Game_GetOpponents)
-        // Modify to work for User_GetCard when no race selected (ie => race_id:0, leg_num:0)
+    function transformRaceLegId(id)
+    {
+        if(!id) return undefined;
         if (id.raceId) {
             return id.raceId + "." + id.legNum;
         } else {
@@ -2749,11 +2750,27 @@ var controller = function () {
             } else if (id.num) {
                 return id.race_id + "." + id.num;
             } else {
-                console.log(id);
-                alert("Unknown race id format");
                 return undefined;
             }
         }
+    }
+
+    function getRaceLegId(id) {
+        var ret = transformRaceLegId(id);
+        if(!ret)
+        {
+            if(lastRaceIdReceived)
+                ret = transformRaceLegId(lastRaceIdReceived);
+        } else
+        {
+            lastRaceIdReceived = id;
+        }
+        if(!ret)
+        {
+            console.log(id);
+            alert("Unknown race id format");    
+        }
+        return ret;            
     }
 
     function clearLog() {
@@ -3314,6 +3331,29 @@ var controller = function () {
 
     }
     /////////////////////////
+    function openTab(url, baseUrl,reuseTab)
+    {
+        var isTabActive = false;
+        var tabId = 0;
+        chrome.tabs.query({}, function(tabs) { 
+            for(var i=0;i<tabs.length;i++) {
+                if(tabs[i].url.toLowerCase().includes(baseUrl.toLowerCase()) == true) {
+                    isTabActive = true;
+                    tabId = tabs[i].id;
+                    break;
+                }
+            }
+    
+            if(isTabActive == false || !reuseTab) {
+                chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
+            } else{
+                chrome.tabs.update(tabId, {url:url});
+                chrome.tabs.reload(tabId);
+            }
+        });
+    }
+
+
 // Call VRZEN
     function prepareVrzUrl(raceId) {
         var baseURL = "https://routage.vrzen.org/Course";   
@@ -3352,13 +3392,13 @@ var controller = function () {
         // https://routage.vrzen.org/Course/CourseParDefaut/LatitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut
         // https://routage.vrzen.org/Course/CourseParDefaut/atitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut/EnergieParDefaut   
         var baseURL = prepareVrzUrl(raceId);
-        var url = prepareVrzFullUrl(raceId,pid); 
-        window.open(url, cbReuseTab.checked ? baseURL : "_blank");
+        var url = prepareVrzFullUrl(raceId,pid);     
+        openTab(url, baseURL,cbReuseTab.checked);
     }
     function callRouterZezo(raceId, userId, beta, auto = false) {
         var urlBeta =  "http://zezo.org/"+ races.get(raceId).url+ (beta ? "b" : "")+"/chart.pl?";
         var url = prepareZezoUrl(raceId, userId, beta, auto);
-        window.open(url, cbReuseTab.checked ? urlBeta : "_blank");
+        openTab(url, urlBeta,cbReuseTab.checked);
     }
 
     function callWindy(raceId, userId) {
@@ -3377,7 +3417,7 @@ var controller = function () {
         if (uinfo) pos = uinfo.pos;
         var url = baseURL + "/?gfs," + pos.lat + "," + pos.lon + ",6,i:pressure,d:picker";
         var tinfo = "windy:" + r.url;
-        window.open(url, cbReuseTab.checked ? tinfo : "_blank");
+        openTab(url, tinfo,cbReuseTab.checked);
     }
     function preparePolarBaseUrl()
     {
@@ -3419,7 +3459,7 @@ var controller = function () {
         var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;      
         //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
         var url = preparePolarUrl(raceId)
-        window.open(url, cbReuseTab.checked ? baseURL : "_blank");
+        openTab(url, baseURL,cbReuseTab.checked);
     }
 
     function getITYCBase(raceId) {
@@ -3483,8 +3523,21 @@ var controller = function () {
     function callITYC(raceId) {
         var baseURL = getITYCBase(raceId);
         var url =  getITYCFull(raceId);
-        window.open(url, cbReuseTab.checked ? baseURL : "_blank");
+        openTab(url, baseURL,cbReuseTab.checked);
     }
+
+    function callPolarAnalysis(rtSite="ityc")
+    {
+        if (selRace.selectedIndex == -1) {
+            alert("Race info not available - please reload VR Offshore");
+            return;
+        }
+        if(rtSite=="ityc")
+            callITYC(selRace.value)
+        else
+            callPolars(selRace.value);
+    }
+
     
     function formatPositionWithMilliSec(lat, lon) {
         var latDMS = Util.toDMS(lat);
@@ -4187,7 +4240,8 @@ async function initializeMap(race) {
         document.getElementById("racelog_foils").addEventListener("change", saveOption);  
         document.getElementById("sel_borderColorLmap").addEventListener("change", saveOptionN);
         document.getElementById("sel_projectionColorLmap").addEventListener("change", saveOptionN);
-        document.getElementById("projectionLine_Size" ).addEventListener("change", saveOptionN);   
+        document.getElementById("projectionLine_Size" ).addEventListener("change", saveOptionN);  
+        document.getElementById("sel_polarSite").addEventListener("change", saveOptionN); 
     }
 
     function switchAddOnMode()
@@ -4375,7 +4429,7 @@ async function initializeMap(race) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-
+    var lastRaceIdReceived = undefined;
     async function handleBoatInfo (requestData, message)  {
         if (message) {
             if (cbRawLog.checked) {
@@ -4398,6 +4452,8 @@ async function initializeMap(race) {
                 }
                 if (message.bs) {
                     var raceId = getRaceLegId(message.bs._id);
+                    lastRaceIdReceived = message.bs._id;
+
                     var race = races.get(raceId);
                     if (!currentUserId &&  message.bs.credits) { // it s the connected player! //credits value is only available for the current user
                         //dashboard has been start with race openned, do full init
@@ -4476,7 +4532,6 @@ async function initializeMap(race) {
                 var race = races.get(raceId);
 
                 updateFleet(raceId, "fleet", message);
-
 
                 var idx = message.length;
                 for (var i = 0; i< idx; i++) {
@@ -4713,7 +4768,7 @@ async function initializeMap(race) {
 
     async function handleLegGetListResponse (response)  
     {
-                // Contains destination coords, ice limits
+        // Contains destination coords, ice limits
         // ToDo: contains Bad Sail warnings. Show in race status table?
         var legInfos = response.scriptData.res;
         legInfos.map(function (legInfo) {
@@ -5098,6 +5153,8 @@ async function initializeMap(race) {
         "Game_GetOpponents",
         "Social_GetPlayers"
         ]; //1
+
+    
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             var msg = request;
@@ -5149,23 +5206,37 @@ async function initializeMap(race) {
                     } else if (event == 'getlegranks') {
                         handleLegRank(postData, body.res);
                     } else{
-                    if(postData == "" && body == "") {
-                        var cycleString = msg.url.substring(45, 56);
-                        var d = parseInt(cycleString.substring(0, 8));
-                        var c = parseInt(cycleString.substring(9, 11));
-                        var cycle = d * 100 + c;
-                        if (cycle > currentCycle) {
-                            currentCycle = cycle;
-                            lbCycle.innerHTML = "(Cycle : "+cycleString+")";
-                        }
-                    } else
                         if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
                     }
                 }
                 sendResponse(makeIntegratedHTML());
-            } else {
+            }  else if(msg.type=="wndCycle") {
+                var cycleString = msg.url.substring(45, 56);
+                var d = parseInt(cycleString.substring(0, 8));
+                var c = parseInt(cycleString.substring(9, 11));
+                var cycle = d * 100 + c;
+                
+                if (!currentCycle || (cycle > currentCycle)) {
+                    currentCycle = cycle;
+                    lbCycle.innerHTML = "(Cycle : "+cycleString+")";
+                }
+            } else if(msg.type=="openZezo") {
+                callRouter(selRace.value, currentUserId, false,"zezo");  
+                sendResponse({type:"dummy"});
+            } else if(msg.type=="openVrzen") {
+                callRouter(selRace.value, currentUserId, false,"vrzen"); 
+                sendResponse({type:"dummy"});
+            } else if(msg.type=="openItyc") {
+                callPolarAnalysis("ityc"); 
+                sendResponse({type:"dummy"});
+            } else if(msg.type=="openToxxct") {
+                callPolarAnalysis("toxxct"); 
+                sendResponse({type:"dummy"});
+            }else {
                 sendResponse({type:"dummy"});
             }
+
+            
         }
     );
 

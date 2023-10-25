@@ -22,30 +22,23 @@ window.addEventListener("load", function () {
 
 
 function callRouterZezo() { 
-  if(zezoUrl!= "") window.open(zezoUrl, openNewTab ? zezoUrlRace  :"_blank");
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openZezo" });             
 }
 
 function callRouterToxxct() { 
-  if(toxxctUrl!= "")  window.open(toxxctUrl  , openNewTab ? toxxctUrlRace:"_blank" );
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openToxxct" });  
 }
 
 function callItyc() { 
-  if(itycUrl!= "")  window.open( itycUrl, openNewTab ?itycUrlRace :"_blank" );
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openItyc" });  
 }
 function callRouterVrZen() { 
-    if(vrZenUrl!= "") window.open(vrZenUrl, openNewTab ? vrZenUrlRace  :"_blank");
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
 }
-let openNewTab = false;
-let zezoUrl = "";
-let vrZenUrl = "";
-let toxxctUrl = "";
-let itycUrl = "";
-let zezoUrlRace = "";
-let toxxctUrlRace = "";
-let itycUrlRace = "";
-let vrZenUrlRace = "";
-
-
 
 (function(xhr) {
 
@@ -108,7 +101,7 @@ let vrZenUrlRace = "";
                     var idC = document.getElementById('itycDashId');
                     if(idC)
                     {
-                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"data"},function(response) {manageAnswer(response)});
+                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"wndCycle"},function(response) {manageAnswer(response)});
                     }
                 }   
             } catch(err) {}
@@ -208,7 +201,7 @@ let vrZenUrlRace = "";
           if (string != "" && idC) {
             chrome.runtime.sendMessage(
               idC.getAttribute("extId"),
-              { url: url, req: "wndCycle", resp: "wndVal", type: "data" },
+              { url: url, req: "wndCycle", resp: "wndVal", type: "wndCycle" },
               function (response) {
                 manageAnswer(response);
               }
@@ -325,18 +318,6 @@ function fillContainer(msg) {
 
     if(!msg) return;
     
-    openNewTab = msg.newTab;
-    zezoUrl = msg.zurl;
-    vrZenUrl = msg.vurl;
-    toxxctUrl = msg.purl;
-    itycUrl  = msg.iurl;
-
-    zezoUrlRace = msg.rzurl;
-    vrZenUrlRace = msg.rvurl;
-    toxxctUrlRace = msg.rpurl;
-    itycUrlRace = msg.riurl;
-
-
     let ourDiv = document.getElementById('dashInteg');
     if(!ourDiv) { //page has been refresh but not dashboard tab
         document.documentElement.setAttribute("data-theme", drawTheme);
