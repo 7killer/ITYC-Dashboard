@@ -118,6 +118,85 @@ let vrZenUrlRace = "";
 
 })(XMLHttpRequest);
 
+(() => {
+  // Should be useless
+  if (!window.fetch) return;
+
+  const oldFetch = window.fetch;
+  const handleResponse = async (url, response, headers) => {
+    if (!checkUrl(url)) {
+      return;
+    }
+
+    const idC = document.getElementById("itycDashId");
+    if (!response.headers.get("content-type").includes("text/") && idC) {
+      try {
+        chrome.runtime.sendMessage(
+          idC.getAttribute("extId"),
+          {
+            url,
+            req: JSON.stringify(headers),
+            resp: await response.text(),
+            type: "data",
+          },
+          function (response) {
+            manageAnswer(response);
+          }
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  window.fetch = async function (input, init) {
+    try {
+      const headers = init?.headers ?? {};
+      let url = "";
+
+      if (typeof input === "string") {
+        // Unity use that
+        url = input;
+      } else if (input instanceof URL) {
+        // Fallback
+        url = input.toString();
+      } else {
+        // Unknown input
+      }
+
+      if (
+        url.startsWith("https://static.virtualregatta.com/winds/live/") &&
+        url.endsWith("wnd")
+      ) {
+        try {
+          const string = JSON.stringify(headers);
+          const idC = document.getElementById("itycDashId");
+
+          if (string != "" && idC) {
+            chrome.runtime.sendMessage(
+              idC.getAttribute("extId"),
+              { url: url, req: "wndCycle", resp: "wndVal", type: "data" },
+              function (response) {
+                manageAnswer(response);
+              }
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      const response = await oldFetch(input, init);
+
+      handleResponse(url, response, headers);
+      return response;
+    } catch (error) {
+      console.error(error);
+      return oldFetch(input, init);
+    }
+  };
+})();
+
 function checkUrl(url) {
     if(!url) return false;
     url = url ? url.toLowerCase() : url;
