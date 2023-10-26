@@ -146,7 +146,7 @@ function callRouterVrZen() {
     }
 
     const idC = document.getElementById("itycDashId");
-    if (!response.headers.get("content-type").includes("text/") && idC) {
+    if (idC) {
       let text;
       try {
         text = await response.text();
@@ -177,9 +177,15 @@ function callRouterVrZen() {
 
   window.fetch = async function (input, init) {
     try {
-      const headers = init?.headers ?? {};
+      let headers = init?.headers ?? {};
       let url = "";
 
+      if ( init.body instanceof Blob) {
+        try {
+            headers = JSON.parse(await  init.body.text());
+        } catch {}
+      }
+       
       if (typeof input === "string") {
         // Unity use that
         url = input;
