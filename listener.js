@@ -40,76 +40,6 @@ function callRouterVrZen() {
   if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
 }
 
-(function(xhr) {
-
-    var XHR = XMLHttpRequest.prototype;
-
-    var open = XHR.open;
-    var send = XHR.send;
-    var setRequestHeader = XHR.setRequestHeader;
-
-    XHR.open = function(method, url) {
-        this._method = method;
-        this._url = url;
-        this._requestHeaders = {};
-        this._startTime = (new Date()).toISOString();
-        return open.apply(this, arguments);
-    };
-
-    XHR.setRequestHeader = function(header, value) {
-        this._requestHeaders[header] = value;
-        return setRequestHeader.apply(this, arguments);
-    };
-
-    XHR.send = function(postData) {
-
-        this.addEventListener('load', function() {
-            var endTime = (new Date()).toISOString();
-
-            if(checkUrl(this._url)) {
-                var responseHeaders = this.getAllResponseHeaders();
-                if ( this.responseType == 'arraybuffer' && this.response) {
-                    try {
-                        var arr = this.response;
-                        if(arr) {   
-                            var string = new TextDecoder().decode(arr);
-                            var idC = document.getElementById('itycDashId');
-                            if(idC)
-                            {
-                                chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url,req :this._requestHeaders,resp:string ,type:"data"},function(response) {manageAnswer(response)});
-                            }   
-                        }
-                    } catch(err) {
-                    }
-                }
-
-            }
-        });
-
-        if(postData && checkUrl(this._url))
-            try {
-                var string = new TextDecoder().decode(postData);
-                if(string != "") {
-                    this._requestHeaders = string;
-                }   
-            } catch(err) {
-            }
-        if(postData &&  this._url.substring(0, 45) == "https://static.virtualregatta.com/winds/live/" && this._url.endsWith('wnd'))  {
-            try {
-                var string = new TextDecoder().decode(postData);
-                if(string != "") {
-                    var idC = document.getElementById('itycDashId');
-                    if(idC)
-                    {
-                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"wndCycle"},function(response) {manageAnswer(response)});
-                    }
-                }   
-            } catch(err) {}
-        }            
-        return send.apply(this, arguments);
-    };
-
-})(XMLHttpRequest);
 
 (() => {
   // Should be useless
@@ -140,106 +70,100 @@ function callRouterVrZen() {
     return proxy;
   };
 
-  const handleResponse = async (url, response, headers) => {
-    if (!checkUrl(url)) {
-      return response;
-    }
+  const handleResponse = async (extId, url, response, body) => {
+    const text = await response.text().catch(() => {});
 
-    const idC = document.getElementById("itycDashId");
-    if (idC) {
-      let text;
-      try {
-        text = await response.text();
-        chrome.runtime.sendMessage(
-          idC.getAttribute("extId"),
-          {
-            url,
-            req: JSON.stringify(headers),
-            resp: text,
-            type: "data",
-          },
-          function (response) {
-            manageAnswer(response);
-          }
-        );
-        return responseProxy(response, text);
-      } catch (err) {
-        console.error(err);
-
-        if(text){
-          return responseProxy(response, text);
+    if (text) {
+      chrome.runtime.sendMessage(
+        extId,
+        {
+          url,
+          req: JSON.stringify(body),
+          resp: text,
+          type: "data",
         }
-      }
+      ).then(manageAnswer).catch(() => {})
     }
-
-    return response;
+    
+    return text ? responseProxy(response, text) : response
   };
 
-  window.fetch = async function (input, init) {
+  window.fetch = async function (...fetchArgs) {
+    const idC = document.getElementById("itycDashId");
+    const extId = idC?.getAttribute?.('extId')
+    let init
+    let url
+
     try {
-      let headers = init?.headers ?? {};
-      let url = "";
-
-      if ( init.body instanceof Blob) {
-        try {
-            headers = JSON.parse(await  init.body.text());
-        } catch {}
-      }
-       
-      if (typeof input === "string") {
-        // Unity use that
-        url = input;
-      } else if (input instanceof URL) {
-        // Fallback
-        url = input.toString();
+      if (fetchArgs.length === 2) {
+        url = fetchArgs[0].toString()
+        init = fetchArgs[1]
       } else {
-        // Unknown input
+        url = fetchArgs[0].url.toString()
+        init = fetchArgs[0]
       }
+    } catch {}
 
-      if (
-        url.startsWith("https://static.virtualregatta.com/winds/live/") &&
-        url.endsWith("wnd")
-      ) {
-        try {
-          const string = JSON.stringify(headers);
-          const idC = document.getElementById("itycDashId");
-
-          if (string != "" && idC) {
-            chrome.runtime.sendMessage(
-              idC.getAttribute("extId"),
-              { url: url, req: "wndCycle", resp: "wndVal", type: "wndCycle" },
-              function (response) {
-                manageAnswer(response);
-              }
-            );
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-
-      const response = await oldFetch(input, init);
-
-      return handleResponse(url, response, headers);
-    } catch (error) {
-      console.error(error);
-      return oldFetch(input, init);
+    if (!extId || !url) {
+      return oldFetch(...fetchArgs)
     }
+
+    if (
+      url.startsWith("https://static.virtualregatta.com/winds/live/") &&
+      url.endsWith("wnd")
+    ) {
+      chrome.runtime.sendMessage(
+        extId,
+        { url: url, req: "wndCycle", resp: "wndVal", type: "wndCycle" },
+      )
+        .then(manageAnswer)
+        .catch(() => {});
+    }
+
+    if (!checkUrl(url)) {
+      return oldFetch(...fetchArgs)
+    }
+    
+    let body
+    
+    try {
+      if (init.body instanceof Blob) {
+        // Blob to text to object
+        body = sanitizeBody(JSON.parse(await init.body.text()));
+      } else if (Object.getPrototypeOf(init.body) === Object.prototype) {
+        // Object
+        body = init.body
+      } else if (typeof body === 'string') {
+        // Attempt to convert string to object
+        body = JSON.parse(init.body)
+      }
+    } catch {}
+
+    if (!body) {
+      return oldFetch(...fetchArgs)
+    }
+
+    return oldFetch(...fetchArgs).then(response => 
+      response.ok
+        ? handleResponse(extId, url, response, body)
+        : response
+    )
   };
 })();
 
 function checkUrl(url) {
-    if(!url) return false;
-    url = url ? url.toLowerCase() : url;
-            
-    if(url &&
-    (url.startsWith("https://prod.vro.sparks.virtualregatta.com")
-    || url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
-    || url.startsWith("https://vro-api-client.prod.virtualregatta.com"))) 
-        return true;
-    else
-        return false;
+    return url.startsWith("https://prod.vro.sparks.virtualregatta.com")
+      || url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
+      || url.startsWith("https://vro-api-client.prod.virtualregatta.com")
+}
 
+function sanitizeBody(body) {
+  // We don't want sensitive data (email, password)
+  // to transit through the extension
+  delete body.password
+  delete body.username
+
+  return body
 }
 
 function createContainer() {
@@ -301,9 +225,10 @@ var comTimer ;
 function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
     var idC = document.getElementById('itycDashId');
-    if(idC)
-    {
-        chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},function(response) {manageAnswer(response)});
+    if(idC) {
+      chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"})
+        .then(manageAnswer)
+        .catch(() => {})
     }
     comTimer = setTimeout(sendAlive, 5000);
 } 
