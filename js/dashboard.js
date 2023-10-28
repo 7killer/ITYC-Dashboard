@@ -511,7 +511,7 @@ var controller = function () {
 
 
 
-   function makeIntegratedHTML() {
+   function makeIntegratedHTML(rstTimer) {
 
         function vmg (speed, twa) {
             var r = Math.abs(Math.cos(twa / 180 * Math.PI));
@@ -556,15 +556,7 @@ var controller = function () {
         var raceLine ="";
         var r = races.get(selRace.value);
         var raceId ="";
-        let zUrl = "";
-        let pUrl = "";
-        let iUrl = "";
-        let vUrl = "";
-            
-        let rzUrl = "";
-        let rpUrl = "";
-        let riUrl = ""; 
-        let rvUrl = ""; 
+
         if(!currentUserId ) {
             if(lang ==  "fr") {
                 raceLine ="<tr><td colspan='22'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com'>Relancer</a>)</td></tr>";
@@ -582,7 +574,7 @@ var controller = function () {
             let p=  raceFleetMap.get(r.id).uinfo[currentUserId];
 
             raceId = r.id;
-            var bestTwa = r.curr.bestVmg;// bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options);
+            var bestTwa = r.curr.bestVmg;
             var bestVMGString = bestTwa.twaUp + " | " + bestTwa.twaDown;
             var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + "kts";
             var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + "kts | " + bestTwa.btwa;
@@ -609,20 +601,6 @@ var controller = function () {
             var hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
             if(drawTheme =='dark')
                 hdgFG = isTWAMode ? "white" : "darkcyan";
-            
-            var beta = selRace.options[selRace.selectedIndex].betaflag;
-            
-            zUrl = prepareZezoUrl(r.id, currentUserId, beta, false, false);
-            pUrl = preparePolarUrl(r.id);
-            if(r.url) rzUrl = "http://zezo.org/"+ r.url+"/chart.pl?";
-            rpUrl = preparePolarBaseUrl() + "race_id=" + raceId ; 
-//            rpUrl = "http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId ; 
-            
-            rvUrl  = prepareVrzUrl(r.id);   
- 
-            riUrl  = getITYCBase(raceId);
-            iUrl =  getITYCFull(raceId);
-            vUrl =  prepareVrzFullUrl(raceId,currentUserId);
 
             if(drawTheme =='dark')
             	var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
@@ -707,7 +685,6 @@ var controller = function () {
 
         }
 
-        var manifest = chrome.runtime.getManifest();
         let outputTable =  '<table id="raceStatusTable">'
             + '<thead>'
             + raceStatusHeader
@@ -726,9 +703,7 @@ var controller = function () {
         content:outputTable,
         newTab:cbReuseTab.checked,
         rid:raceId,
-        zurl:zUrl,purl:pUrl,iurl:iUrl,vurl:vUrl,
-        rzurl:rzUrl,rpurl:rpUrl,riurl:riUrl,rvurl:rvUrl,
-        mode:mode,theme:drawTheme,type:"data"}
+        mode:mode,theme:drawTheme,type:"data",rstTimer:rstTimer}
 	}
     function computeEnergyPenalitiesFactor(stamina) {
         return stamina * -0.015 + 2;
@@ -3347,8 +3322,7 @@ var controller = function () {
             if(isTabActive == false || !reuseTab) {
                 chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
             } else{
-                chrome.tabs.update(tabId, {url:url});
-                chrome.tabs.reload(tabId);
+                chrome.tabs.update(tabId, {url:url,selected: true});
             }
         });
     }
@@ -4431,6 +4405,7 @@ async function initializeMap(race) {
 
     var lastRaceIdReceived = undefined;
     async function handleBoatInfo (requestData, message)  {
+        var retVal = false;
         if (message) {
             if (cbRawLog.checked) {
                 divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(message);
@@ -4497,6 +4472,7 @@ async function initializeMap(race) {
                     if (currentUserId ==  message.bs._id.user_id) {
                         var isFirstBoatInfo =  (message.leg != undefined);
                         handleOwnBoatInfo(message.bs, isFirstBoatInfo);
+                        retVal = true;
                     } else {
                         await handleFleetBoatInfo(message.bs);
                     }
@@ -4520,6 +4496,7 @@ async function initializeMap(race) {
                 console.log(e + " at " + e.stack);
             }
         }
+        return retVal;
     }
 
     async function handleFleet (requestData, message) {
@@ -5158,6 +5135,8 @@ async function initializeMap(race) {
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             var msg = request;
+            let rstTimer = false;
+            let sendResp = true;
             if(msg.type=="data") {
                 if(msg.req.Accept) {sendResponse({type:"dummy"}); return;}  //json ranking request not supported
                 var postData = JSON.parse(msg.req);
@@ -5200,7 +5179,7 @@ async function initializeMap(race) {
                 else {
                     var event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
                     if (event == 'getboatinfos') {
-                        handleBoatInfo(postData, body.res);
+                        rstTimer = handleBoatInfo(postData, body.res);
                     } else if (event == 'getfleet') {
                         handleFleet(postData, body.res);
                     } else if (event == 'getlegranks') {
@@ -5209,7 +5188,8 @@ async function initializeMap(race) {
                         if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
                     }
                 }
-                sendResponse(makeIntegratedHTML());
+                sendResponse(makeIntegratedHTML(rstTimer));
+                sendResp = false;
             }  else if(msg.type=="wndCycle") {
                 var cycleString = msg.url.substring(45, 56);
                 var d = parseInt(cycleString.substring(0, 8));
@@ -5222,21 +5202,14 @@ async function initializeMap(race) {
                 }
             } else if(msg.type=="openZezo") {
                 callRouter(selRace.value, currentUserId, false,"zezo");  
-                sendResponse({type:"dummy"});
             } else if(msg.type=="openVrzen") {
                 callRouter(selRace.value, currentUserId, false,"vrzen"); 
-                sendResponse({type:"dummy"});
             } else if(msg.type=="openItyc") {
                 callPolarAnalysis("ityc"); 
-                sendResponse({type:"dummy"});
             } else if(msg.type=="openToxxct") {
-                callPolarAnalysis("toxxct"); 
-                sendResponse({type:"dummy"});
-            }else {
-                sendResponse({type:"dummy"});
+                callPolarAnalysis("toxxct");
             }
-
-            
+            if(sendResp) sendResponse({type:"dummy"});  
         }
     );
 

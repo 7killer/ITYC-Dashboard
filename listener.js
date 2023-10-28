@@ -9,6 +9,9 @@ readVal = window.localStorage.getItem('addOnMode');
 if(readVal) mode = readVal;
 if(mode=="incognito") drawTheme = "light";
 
+let fullScreenBt;
+let fullScreenState = false;
+let dashStateDetected = false;
 
 window.addEventListener("load", function () {
     document.documentElement.style.height = '100%';
@@ -17,8 +20,39 @@ window.addEventListener("load", function () {
     document.body.style.width = '100%';
     document.documentElement.setAttribute("data-theme", drawTheme);
     drawDashBoardInstalled();
+    fullScreenBt = document.getElementsByClassName('fullscreen VR')[0];
+    fullScreenBt.addEventListener("click", manageFullScreen);
+    fullScreenBt.setAttribute("onClick", "");
+
     sendAlive();
 });
+
+let pContPadding =""
+function manageFullScreen(e) {
+  if(!fullScreenState) {
+    document.getElementById('top-header').style.display = "none";
+    document.getElementById('main-header').style.display = "none";
+    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="none";
+    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="90%";
+    document.getElementById('dashIntegRow').style.maxWidth="none";
+    document.getElementById('main-header').style.display = "sfsi_floater";
+    let t = document.getElementById('page-container');
+    if(t.style.paddingTop != "0px") pContPadding = t.style.paddingTop;
+    t.style.paddingTop = "0px";
+    fullScreenState =  true;
+
+  } else {
+    document.getElementById('top-header').style.display = "block";
+    document.getElementById('main-header').style.display = "block";
+    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="1080px";
+    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="80%";
+    document.getElementById('dashIntegRow').style.maxWidth="1080px";
+    document.getElementById('main-header').style.display = "block";
+    let t = document.getElementById('page-container');
+    t.style.paddingTop = pContPadding;
+    fullScreenState =  false;
+  }
+}
 
 
 function callRouterZezo() { 
@@ -81,8 +115,8 @@ function callRouterVrZen() {
           req: JSON.stringify(body),
           resp: text,
           type: "data",
-        }
-      ).then(manageAnswer).catch(() => {})
+        },
+        function (response) {manageAnswer(response);});
     }
     
     return text ? responseProxy(response, text) : response
@@ -114,10 +148,10 @@ function callRouterVrZen() {
     ) {
       chrome.runtime.sendMessage(
         extId,
-        { url: url, req: "wndCycle", resp: "wndVal", type: "wndCycle" },
-      )
-        .then(manageAnswer)
-        .catch(() => {});
+        { url: url,type: "wndCycle" },
+        function (response) {manageAnswer(response);}
+      );
+      
     }
 
     if (!checkUrl(url)) {
@@ -175,7 +209,10 @@ function createContainer() {
     ourDiv.id = 'dashIntegRow';
     ourDiv.classList.add("et_pb_row");
     
-  
+    if(!fullScreenState) 
+      ourDiv.style.maxWidth="1080px";
+    else
+      ourDiv.style.maxWidth="none";
     let ourDiv2 = document.createElement( 'div' );
     ourDiv2.id = 'dashInteg';
     ourDiv2.classList.add("et_pb_column");
@@ -226,9 +263,8 @@ function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
     var idC = document.getElementById('itycDashId');
     if(idC) {
-      chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"})
-        .then(manageAnswer)
-        .catch(() => {})
+      chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},
+      function (response) {manageAnswer(response);})
     }
     comTimer = setTimeout(sendAlive, 5000);
 } 
@@ -241,23 +277,26 @@ function manageAnswer(msg) {
     comTimer = setTimeout(sendAlive, 5000);
     if(msg.type=="data") {
     	fillContainer(msg);
+      if(msg.rstTimer)
         chrono.Start();
     }
+    if(!dashStateDetected) drawDashBoardDetected();
 }
 
 function fillContainer(msg) {
 
     if(!msg) return;
-    
+
+    drawTheme = msg.theme;
+    window.localStorage.setItem('addOnTheme', msg.theme);
+
     let ourDiv = document.getElementById('dashInteg');
     if(!ourDiv) { //page has been refresh but not dashboard tab
         document.documentElement.setAttribute("data-theme", drawTheme);
         ourDiv = createContainer();
     }
     ourDiv.innerHTML = msg.content;
-    
-    drawTheme = msg.theme;
-    window.localStorage.setItem('addOnTheme', msg.theme);
+
     document.documentElement.setAttribute("data-theme", drawTheme);
 
     if(msg.rid !="") {
@@ -266,6 +305,7 @@ function fillContainer(msg) {
         document.getElementById('pl:' + msg.rid).addEventListener("click", callRouterToxxct);
         document.getElementById('ityc:' + msg.rid).addEventListener("click", callItyc);
     }
+    dashStateDetected = true;
 }
 function drawDashBoardInstalled()
 {
@@ -283,4 +323,23 @@ function drawDashBoardInstalled()
         ourDiv = createContainer();
     }
     ourDiv.innerHTML = outputTable;
+    dashStateDetected = false;
+}
+function drawDashBoardDetected()
+{
+    let outputTable =  '<table id="raceStatusTable">'
+    + '<thead>'
+    + '<tr><th>ITYC Dashboard</th></tr>'
+    + '</thead>'
+    + '<tbody>'
+    + '<tr><td>Dashboard détectée /Dashboard detected</td></tr>'
+    + '</tbody>'
+    + '</table>';
+    let ourDiv = document.getElementById('dashInteg');
+    if(!ourDiv) { //page has been refresh but not dashboard tab
+        document.documentElement.setAttribute("data-theme", drawTheme);
+        ourDiv = createContainer();
+    }
+    ourDiv.innerHTML = outputTable;
+    dashStateDetected = true;
 }
