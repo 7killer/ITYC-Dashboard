@@ -22,30 +22,23 @@ window.addEventListener("load", function () {
 
 
 function callRouterZezo() { 
-  if(zezoUrl!= "") window.open(zezoUrl, openNewTab ? zezoUrlRace  :"_blank");
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openZezo" });             
 }
 
 function callRouterToxxct() { 
-  if(toxxctUrl!= "")  window.open(toxxctUrl  , openNewTab ? toxxctUrlRace:"_blank" );
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openToxxct" });  
 }
 
 function callItyc() { 
-  if(itycUrl!= "")  window.open( itycUrl, openNewTab ?itycUrlRace :"_blank" );
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openItyc" });  
 }
 function callRouterVrZen() { 
-    if(vrZenUrl!= "") window.open(vrZenUrl, openNewTab ? vrZenUrlRace  :"_blank");
+  var idC = document.getElementById('itycDashId');
+  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
 }
-let openNewTab = false;
-let zezoUrl = "";
-let vrZenUrl = "";
-let toxxctUrl = "";
-let itycUrl = "";
-let zezoUrlRace = "";
-let toxxctUrlRace = "";
-let itycUrlRace = "";
-let vrZenUrlRace = "";
-
-
 
 (function(xhr) {
 
@@ -108,7 +101,7 @@ let vrZenUrlRace = "";
                     var idC = document.getElementById('itycDashId');
                     if(idC)
                     {
-                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"data"},function(response) {manageAnswer(response)});
+                        chrome.runtime.sendMessage(idC.getAttribute('extId'), {url: this._url ,req :"wndCycle",resp:"wndVal" ,type:"wndCycle"},function(response) {manageAnswer(response)});
                     }
                 }   
             } catch(err) {}
@@ -117,6 +110,123 @@ let vrZenUrlRace = "";
     };
 
 })(XMLHttpRequest);
+
+(() => {
+  // Should be useless
+  if (!window.fetch) return;
+
+  const oldFetch = window.fetch;
+  const responseProxy = (response, text) => {
+
+    const proxy = new Proxy(response, {
+      get(obj, prop) {
+
+        if(prop === 'text'){
+          return () => Promise.resolve(text);
+        }
+        if(prop === "body"){
+          return new ReadableStream({
+            start(controller){
+                controller.enqueue(new TextEncoder().encode(text));
+                controller.close();
+            }
+        });
+        }
+
+        return obj[prop];
+      }
+    })
+
+    return proxy;
+  };
+
+  const handleResponse = async (url, response, headers) => {
+    if (!checkUrl(url)) {
+      return response;
+    }
+
+    const idC = document.getElementById("itycDashId");
+    if (idC) {
+      let text;
+      try {
+        text = await response.text();
+        chrome.runtime.sendMessage(
+          idC.getAttribute("extId"),
+          {
+            url,
+            req: JSON.stringify(headers),
+            resp: text,
+            type: "data",
+          },
+          function (response) {
+            manageAnswer(response);
+          }
+        );
+        return responseProxy(response, text);
+      } catch (err) {
+        console.error(err);
+
+        if(text){
+          return responseProxy(response, text);
+        }
+      }
+    }
+
+    return response;
+  };
+
+  window.fetch = async function (input, init) {
+    try {
+      let headers = init?.headers ?? {};
+      let url = "";
+
+      if ( init.body instanceof Blob) {
+        try {
+            headers = JSON.parse(await  init.body.text());
+        } catch {}
+      }
+       
+      if (typeof input === "string") {
+        // Unity use that
+        url = input;
+      } else if (input instanceof URL) {
+        // Fallback
+        url = input.toString();
+      } else {
+        // Unknown input
+      }
+
+      if (
+        url.startsWith("https://static.virtualregatta.com/winds/live/") &&
+        url.endsWith("wnd")
+      ) {
+        try {
+          const string = JSON.stringify(headers);
+          const idC = document.getElementById("itycDashId");
+
+          if (string != "" && idC) {
+            chrome.runtime.sendMessage(
+              idC.getAttribute("extId"),
+              { url: url, req: "wndCycle", resp: "wndVal", type: "wndCycle" },
+              function (response) {
+                manageAnswer(response);
+              }
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      const response = await oldFetch(input, init);
+
+      return handleResponse(url, response, headers);
+    } catch (error) {
+      console.error(error);
+      return oldFetch(input, init);
+    }
+  };
+})();
 
 function checkUrl(url) {
     if(!url) return false;
@@ -214,18 +324,6 @@ function fillContainer(msg) {
 
     if(!msg) return;
     
-    openNewTab = msg.newTab;
-    zezoUrl = msg.zurl;
-    vrZenUrl = msg.vurl;
-    toxxctUrl = msg.purl;
-    itycUrl  = msg.iurl;
-
-    zezoUrlRace = msg.rzurl;
-    vrZenUrlRace = msg.rvurl;
-    toxxctUrlRace = msg.rpurl;
-    itycUrlRace = msg.riurl;
-
-
     let ourDiv = document.getElementById('dashInteg');
     if(!ourDiv) { //page has been refresh but not dashboard tab
         document.documentElement.setAttribute("data-theme", drawTheme);
