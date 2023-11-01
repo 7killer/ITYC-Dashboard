@@ -484,19 +484,30 @@ function buildPath(path,initLat,initLng,finishLat,finshLng)
     if(path.length >1)
         for (var i = 1; i < path.length; i++) {
             var lon = (path[i].lon?path[i].lon:path[i].lng);
-            var lon2 = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
-            if(lon==0 && lon2 < 0)lon = -0.000001;
-            else  if(lon==0 && lon2 > 0)lon = 0.000001;
-            if(lon==180 && lon2 < 180)lon = 179.999999;
-            else  if(lon==180 && lon2 > 180)lon = 180.000001;
-            if(lon==-180 && lon2 < -180)lon = -180.000001;
-            else  if(lon==-180 && lon2 > -180)lon = -179.999999;
-            if((lon2 > 0 && lon < 0)
-            || (lon > 0 && lon2 < 0))
-            {//antimeridian crossing
-                cpathNum++;
+            var lonP = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
+            var lat = path[i].lat;
+            var latP = path[i-1].lat;
+            if(lon==0 && lonP < 0)lon = -0.000001;
+            else  if(lon==0 && lonP > 0)lon = 0.000001;
+            if(lon==180 && lonP < 180)lon = 179.999999;
+            else  if(lon==180 && lonP > 180)lon = 180.000001;
+            if(lon==-180 && lonP < -180)lon = -180.000001;
+            else  if(lon==-180 && lonP > -180)lon = -179.999999;
+            if((lonP > 0 && lon < 0)
+            || (lon > 0 && lonP < 0))
+            {//meridian or antimeridian crossing
+            /*    cpathNum++;
                 cpath[cpathNum] = [];
                 continue; //best is build the 2 parts path to track gap
+            */
+                var latM = (lat+latP) /2
+                //First finish the actual line
+            //    pos = buildPt(latM, lon);
+            //    cpath[cpathNum].push(pos);
+                //then start new one
+                cpathNum++;
+                cpath[cpathNum] = [];
+                
             }
 
             pos = buildPt(path[i].lat, lon);

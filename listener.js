@@ -1,15 +1,12 @@
-
 let drawTheme = "dark";
-let mode="pirate";
+let gameSize = 0;
 
 let readVal = window.localStorage.getItem('addOnTheme');
 if(readVal) drawTheme = readVal;
 
-readVal = window.localStorage.getItem('addOnMode');
-if(readVal) mode = readVal;
-if(mode=="incognito") drawTheme = "light";
+readVal = window.localStorage.getItem('addOnGameSize');
+if(readVal) gameSize = readVal;
 
-let fullScreenBt;
 let fullScreenState = false;
 let dashStateDetected = false;
 
@@ -20,37 +17,40 @@ window.addEventListener("load", function () {
     document.body.style.width = '100%';
     document.documentElement.setAttribute("data-theme", drawTheme);
     drawDashBoardInstalled();
-    fullScreenBt = document.getElementsByClassName('fullscreen VR')[0];
-    fullScreenBt.addEventListener("click", manageFullScreen);
-    fullScreenBt.setAttribute("onClick", "");
+    manageFullScreen();
 
     sendAlive();
 });
 
 let pContPadding =""
 function manageFullScreen(e) {
-  if(!fullScreenState) {
-    document.getElementById('top-header').style.display = "none";
-    document.getElementById('main-header').style.display = "none";
-    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="none";
-    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="90%";
-    document.getElementById('dashIntegRow').style.maxWidth="none";
-    document.getElementById('main-header').style.display = "sfsi_floater";
-    let t = document.getElementById('page-container');
-    if(t.style.paddingTop != "0px") pContPadding = t.style.paddingTop;
-    t.style.paddingTop = "0px";
-    fullScreenState =  true;
-
-  } else {
-    document.getElementById('top-header').style.display = "block";
-    document.getElementById('main-header').style.display = "block";
-    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="1080px";
-    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="80%";
-    document.getElementById('dashIntegRow').style.maxWidth="1080px";
-    document.getElementById('main-header').style.display = "block";
-    let t = document.getElementById('page-container');
-    t.style.paddingTop = pContPadding;
-    fullScreenState =  false;
+  if(gameSize != 0) {
+    if(!fullScreenState) {
+      document.getElementById('top-header').style.display = "none";
+      document.getElementById('main-header').style.display = "none";
+      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="none";
+      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="90%";
+      document.getElementById('dashIntegRow').style.maxWidth="none";
+      document.getElementById('main-header').style.display = "sfsi_floater";
+      let t = document.getElementById('page-container');
+      if(t.style.paddingTop != "0px") pContPadding = t.style.paddingTop;
+      t.style.paddingTop = "0px";
+      fullScreenState =  true;
+    }  
+    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width=gameSize+"%";
+  } else
+  {
+    if(fullScreenState) {
+      document.getElementById('top-header').style.display = "block";
+      document.getElementById('main-header').style.display = "block";
+      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="1080px";
+      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width="80%";
+      document.getElementById('dashIntegRow').style.maxWidth="1080px";
+      document.getElementById('main-header').style.display = "block";
+      let t = document.getElementById('page-container');
+      t.style.paddingTop = pContPadding;
+      fullScreenState =  false;
+    }
   }
 }
 
@@ -276,29 +276,43 @@ function manageAnswer(msg) {
     }
     comTimer = setTimeout(sendAlive, 5000);
     if(msg.type=="data") {
-    	fillContainer(msg);
+    	manageGameInfos(msg);
       if(msg.rstTimer)
         chrono.Start();
     }
     if(!dashStateDetected) drawDashBoardDetected();
+    manageUI(msg);
+
+}
+function manageUI(msg)
+{
+  if(msg.theme)
+  {
+	  drawTheme = msg.theme;
+    window.localStorage.setItem('addOnTheme', msg.theme);
+    document.documentElement.setAttribute("data-theme", drawTheme);
+  }
+  if(msg.gameSize != undefined)
+  {
+    gameSize = msg.gameSize;
+    window.localStorage.setItem('addOnGameSize', msg.gameSize);
+    manageFullScreen();
+  }
 }
 
-function fillContainer(msg) {
+function fillDashContainer(content)
+{
+  let ourDiv = document.getElementById('dashInteg');
+  if(!ourDiv) { //page has been refresh but not dashboard tab
+      ourDiv = createContainer();
+  }
+  ourDiv.innerHTML = content;
+}
+
+function manageGameInfos(msg) {
 
     if(!msg) return;
-
-    drawTheme = msg.theme;
-    window.localStorage.setItem('addOnTheme', msg.theme);
-
-    let ourDiv = document.getElementById('dashInteg');
-    if(!ourDiv) { //page has been refresh but not dashboard tab
-        document.documentElement.setAttribute("data-theme", drawTheme);
-        ourDiv = createContainer();
-    }
-    ourDiv.innerHTML = msg.content;
-
-    document.documentElement.setAttribute("data-theme", drawTheme);
-
+    fillDashContainer(msg.content);
     if(msg.rid !="") {
         document.getElementById('rt:' + msg.rid).addEventListener("click", callRouterZezo);
         document.getElementById('vrz:' + msg.rid).addEventListener("click", callRouterVrZen);
@@ -317,12 +331,8 @@ function drawDashBoardInstalled()
     + '<tr><td>❌ Pas de dashboard détectée / No dashboard detected</td></tr>'
     + '</tbody>'
     + '</table>';
-    let ourDiv = document.getElementById('dashInteg');
-    if(!ourDiv) { //page has been refresh but not dashboard tab
-        document.documentElement.setAttribute("data-theme", drawTheme);
-        ourDiv = createContainer();
-    }
-    ourDiv.innerHTML = outputTable;
+
+    fillDashContainer(outputTable);
     dashStateDetected = false;
 }
 function drawDashBoardDetected()
@@ -335,11 +345,7 @@ function drawDashBoardDetected()
     + '<tr><td>Dashboard détectée /Dashboard detected</td></tr>'
     + '</tbody>'
     + '</table>';
-    let ourDiv = document.getElementById('dashInteg');
-    if(!ourDiv) { //page has been refresh but not dashboard tab
-        document.documentElement.setAttribute("data-theme", drawTheme);
-        ourDiv = createContainer();
-    }
-    ourDiv.innerHTML = outputTable;
+   
+    fillDashContainer(outputTable);
     dashStateDetected = true;
 }

@@ -694,16 +694,15 @@ var controller = function () {
             + '</tbody>'
             + '</table>';
 
-        var mode = "pirate";
 
+        let gameSize = document.getElementById("fullScreen_Size").value;
+        if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;
 
-
-        
         return {order: "update",
         content:outputTable,
         newTab:cbReuseTab.checked,
         rid:raceId,
-        mode:mode,theme:drawTheme,type:"data",rstTimer:rstTimer}
+        theme:drawTheme,type:"data",rstTimer:rstTimer,gameSize:gameSize}
 	}
     function computeEnergyPenalitiesFactor(stamina) {
         return stamina * -0.015 + 2;
@@ -4093,7 +4092,12 @@ async function initializeMap(race) {
         await getOption("sel_selected",true);
         await getOption("sel_inrace",true);
         await getOption("sel_showMarkersLmap",false);
+        await getOption("FullScreen_Game",false);
+
     
+        let fullScreen_Size = await getOptionN("fullScreen_Size",80);
+        document.getElementById("fullScreen_Size").value = fullScreen_Size;
+
         let projectionColor = await getOptionN("sel_projectionColorLmap","#b86dff");
         lMap.setProjectionLineColor(projectionColor);
 
@@ -4216,6 +4220,8 @@ async function initializeMap(race) {
         document.getElementById("sel_projectionColorLmap").addEventListener("change", saveOptionN);
         document.getElementById("projectionLine_Size" ).addEventListener("change", saveOptionN);  
         document.getElementById("sel_polarSite").addEventListener("change", saveOptionN); 
+        document.getElementById("fullScreen_Size").addEventListener("change", saveOptionN);
+        document.getElementById("FullScreen_Game" ).addEventListener("change", saveOption);
     }
 
     function switchAddOnMode()
@@ -4251,8 +4257,6 @@ async function initializeMap(race) {
         makeRaceStatusHTML();     
     }
 
-  
-    
     var initialize = async function () {
         var manifest = chrome.runtime.getManifest();
         document.getElementById("lb_version").innerHTML = manifest.version;
@@ -5209,7 +5213,12 @@ async function initializeMap(race) {
             } else if(msg.type=="openToxxct") {
                 callPolarAnalysis("toxxct");
             }
-            if(sendResp) sendResponse({type:"dummy"});  
+            if(sendResp) 
+            {
+                let gameSize = document.getElementById("fullScreen_Size").value;
+                if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;   
+                sendResponse({type:"alive",rstTimer:false,theme:drawTheme,gameSize:gameSize});
+            }
         }
     );
 
