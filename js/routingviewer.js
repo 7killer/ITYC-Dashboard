@@ -285,8 +285,21 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             twd = Util.roundTo(poi[10], 1+nbdigits)+ "°";; 
         } else
         { //default Mode Avalon
-            lat = Number(poi[1]);
-            lon = Number(poi[2]);
+            const isNumber = n => (typeof(n) === 'number' || n instanceof Number ||
+                    (typeof(n) === 'string' && !isNaN(n))) &&
+                    isFinite(n);
+            
+            if(isNumber(poi[1]))  //old avalon format pos in decimal
+            {
+                lat = Number(poi[1]);
+                lon = Number(poi[2]);    
+            } else //new avalon format pos in xx°xx'xxss
+            {
+                
+               let posDec =  Util.convertDMS2Dec(poi[1],poi[2]);
+               lat = posDec.lat;
+               lon = posDec.lon
+            }
             hdg = poi[3]+ "°";
             tws = Util.roundTo(poi[8], 1+nbdigits)+ " kts";
             stw = Util.roundTo(poi[4], 1+nbdigits) + " kts";
@@ -303,7 +316,11 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             if(poi[6]>180) poi[6] -=360;
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
             twd = Util.roundTo(poi[7], 1+nbdigits) + "°";
-            sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
+            if(isNumber(poi[5]))
+                sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
+            else
+                sail = poi[5]; //new version give sail name
+            
         }
         
         
@@ -726,7 +743,7 @@ function onSkipperSelectedChange(type)
         alert("Unknown player - no routing available");
         return;
     }
-    if(currentUinfo.options == "?"|| currentUinfo.options == "---")
+    if( currentUinfo.options == "-" || currentUinfo.options == "?"|| currentUinfo.options == "---")
     {
          //unlock full pack 
          upDateCheckbox("opt_FP_"+type,false);

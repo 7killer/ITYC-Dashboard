@@ -380,9 +380,14 @@
                         <tr class="us_line">
                             <td class="us_title" id="t_config_g">General</td>
                             <td colspan="4"><input type="checkbox" id="vrzenPositionFormat"><label for="vrzenPositionFormat" id="t_vrzenPositionFormat">Afficher position sans le séparateur "-" (redémarrage dashboard requis)</label></td>
-                            <td colspan="3"><input type="checkbox" id="2digits" checked><label for="2digits" id="t_2digits">+1 digit</label></td>
-                            <td colspan="3"><input type="checkbox" id="reuse_tab" checked><label for="reuse_tab" id="t_reuse_tab">Re-utilisation onglet</label></td>
-                            <td colspan="3"><input type="checkbox" id="local_time" checked><label for="local_time" id="t_local_time">Local times</label></td>
+                            <td colspan="2"><input type="checkbox" id="2digits" checked><label for="2digits" id="t_2digits">+1 digit</label></td>
+                            <td colspan="2"><input type="checkbox" id="reuse_tab" checked><label for="reuse_tab" id="t_reuse_tab">Re-utilisation onglet</label></td>
+                            <td colspan="2"><input type="checkbox" id="local_time" checked><label for="local_time" id="t_local_time">Local times</label></td>
+                            <td colspan="2"><input type="checkbox" id="FullScreen_Game" ><label id="t_FullScreen_Game">Mode plein Ecran</label></td>
+                            <td colspan="3">
+                                <label for="game_Size" id="t_fullScreen_Size">Taille du jeu</label>
+                                <input type="number" min="50" max="95" id="fullScreen_Size" value="85"> %</td>
+                            </td>
                             <td colspan="3"><label for="local_time" id="t_polarSite">Site polaires</label>
                                             <select id="sel_polarSite" name="polarSite">
                                                 <option value="0">Toxcct</option>
@@ -390,8 +395,7 @@
                                                 <option value="2">LSV</option>
                                             </select>
                             </td>
-                            <td colspan="4"><input type="checkbox" id="ITYC_record" checked><label for="ITYC_record" id="t_ITYC_record">Envoi infos ITYC</label></td>
-                            <td colspan="1"></td>
+                            <td colspan="3"><input type="checkbox" id="ITYC_record" checked><label for="ITYC_record" id="t_ITYC_record">Envoi infos ITYC</label></td>
                         </tr>
                         <tr class="us_line">
                             <td class="us_title" id="t_config_rs">Race Status</td>

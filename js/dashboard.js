@@ -1206,7 +1206,7 @@ var controller = function () {
                             + t
                             + '<td class="avg">' + Util.roundTo(r.avgSpeed, 1+nbdigits) + '</td>';
                     } else {
-                        if(r.startDate && r.state === "racing") {
+                        if(r.startDate && r.state === "racing" && r.startDate!="-") {
                             //r.dtf can replace 
                             var raceTime = (Date.now() - r.startDate);
                             var retVal = '<td class="eRT" title= "Start : ' + Util.formatShortDate(r.startDate,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(raceTime) + '</td>'  // Modif Class;
@@ -1533,7 +1533,7 @@ var controller = function () {
                 var twaBG = " ";
                 if(bestTwa)
                 {
-                    twaBG = twaBackGround(r.curr.twa,bestTwa);
+                    twaBG = twaBackGround(rinfo.twa,bestTwa);
                 }
                 
                 var hdgFG = isTWAMode ? "black" : "blue";
@@ -1835,6 +1835,42 @@ var controller = function () {
                 storedInfo.teamId = playerData.teamId;
         }
 
+        if(!storedInfo.extraPos) storedInfo.extraPos=[];
+        let lghtExtraPt  = storedInfo.extraPos.length;
+        let addPt = false;
+        if(lghtExtraPt != 0)
+        {
+            let lastExtraPt = storedInfo.extraPos[lghtExtraPt-1];
+            if(lastExtraPt.ts < data.lastCalcDate)
+            {
+                if(data.track && data.track.length != 0)
+                {
+                    if(data.track[data.track.length-1].ts < data.lastCalcDate)
+                        addPt = true;
+                } else
+                    addPt = true;
+            }
+        } else
+        {
+            if(data.track && data.track.length != 0)
+            {
+                if(data.track[data.track.length-1].ts < data.lastCalcDate)
+                    addPt = true;
+            } else
+                addPt = true;
+        }
+
+        if(addPt)
+        {
+            let newPt = [];
+            newPt.lat = data.pos.lat;
+            newPt.lon = data.pos.lon;
+            newPt.ts = data.lastCalcDate
+            if(data.isRegulated) newPt.tag = "twa"; else newPt.tag = "hdg";
+            storedInfo.extraPos.push(newPt);    
+            lghtExtraPt += 1;
+        }
+
         // copy elems from data to uinfo
         elemList.forEach( function (tag) {
             if (tag in data &&  data[tag]) {
@@ -1850,9 +1886,39 @@ var controller = function () {
                     if (ad > 180) storedInfo.distanceToUs = -storedInfo.distanceToUs; // "behind" us
                 } else if(tag=="stamina" && uid != currentUserId) {
                     storedInfo.lastStaminaUpdate = data["lastCalcDate"];
+                } else if(tag=="track")
+                {
+                    //here merge incomming track infos with kno ones which have been complete with 
+                    if(lghtExtraPt!=0 && data.track.length != 0)
+                    {
+                        let idxExtraPt=lghtExtraPt-1;
+                        let extendedTrack = [];
+                        let lastExtraPosTsAdd = 0;
+                        for(let i =data.track.length-1; i >= 0;)
+                        {
+                            let extraPosTs = storedInfo.extraPos[idxExtraPt].ts
+                            if( extraPosTs > data.track[i].ts && lastExtraPosTsAdd != extraPosTs)
+                            {
+                                extendedTrack.push(storedInfo.extraPos[idxExtraPt]);
+                                lastExtraPosTsAdd = extraPosTs;
+                                if(idxExtraPt>0) lghtExtraPt--;
+                            } else
+                            {
+                                extendedTrack.push(data.track[i]);
+                                if(i>=0) i--;
+                            }
+                        }
+                        
+                        storedInfo.track = extendedTrack.reverse();
+                    }
                 }
             }
         });
+
+        if((!storedInfo.track || storedInfo.track.lenght == 0) && lghtExtraPt!=0)
+        {
+            storedInfo.track = storedInfo.extraPos;
+        }
         
         fixMessageData(storedInfo, uid);
         
@@ -3222,6 +3288,29 @@ var controller = function () {
 			fraction: (absVal - steps[index-1]) / (steps[index] - steps[index-1])
 		};
     }
+    /////////////////////////  Router / polar site call back
+    function openTab(url, baseUrl,reuseTab)
+    {
+        var isTabActive = false;
+        var tabId = 0;
+        chrome.tabs.query({}, function(tabs) { 
+            for(var i=0;i<tabs.length;i++) {
+                if(tabs[i].url.toLowerCase().includes(baseUrl.toLowerCase()) == true) {
+                    isTabActive = true;
+                    tabId = tabs[i].id;
+                    break;
+                }
+            }
+    
+            if(isTabActive == false || !reuseTab) {
+                chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
+            } else{
+                chrome.tabs.update(tabId, {url:url,selected:true});
+            }
+        });
+    }
+
+
 
     function prepareZezoUrl(raceId, userId, beta, auto = false,withConfirm = true) {
         var optionBits = {
@@ -3305,26 +3394,7 @@ var controller = function () {
 
     }
     /////////////////////////
-    function openTab(url, baseUrl,reuseTab)
-    {
-        var isTabActive = false;
-        var tabId = 0;
-        chrome.tabs.query({}, function(tabs) { 
-            for(var i=0;i<tabs.length;i++) {
-                if(tabs[i].url.toLowerCase().includes(baseUrl.toLowerCase()) == true) {
-                    isTabActive = true;
-                    tabId = tabs[i].id;
-                    break;
-                }
-            }
-    
-            if(isTabActive == false || !reuseTab) {
-                chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
-            } else{
-                chrome.tabs.update(tabId, {url:url,selected: true});
-            }
-        });
-    }
+
 
 
 // Call VRZEN
@@ -3351,12 +3421,14 @@ var controller = function () {
         var lat = Util.roundTo(pos.lat, 6)
         var lon = Util.roundTo(pos.lon, 6)
         
-        return (baseURL 
+        let retVal = baseURL 
             + "/" + lat.replace(".",",")
             + "/" + lon.replace(".",",")
             + "/" + Util.roundTo(hdg, 0)
-            + "/" + voile
-            + "/" + Util.roundTo(sta, 0));
+            + "/" + voile;
+        if(sta && sta!="-") retVal += "/" + Util.roundTo(sta, 0);
+
+        return retVal;
 
     }
     
@@ -3365,13 +3437,14 @@ var controller = function () {
         // https://routage.vrzen.org/Course/CourseParDefaut/LatitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut
         // https://routage.vrzen.org/Course/CourseParDefaut/atitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut/EnergieParDefaut   
         var baseURL = prepareVrzUrl(raceId);
-        var url = prepareVrzFullUrl(raceId,pid);     
-        openTab(url, baseURL,cbReuseTab.checked);
+        var url = prepareVrzFullUrl(raceId,pid); 
+        openTab(url, baseURL,(cbReuseTab.checked && pid == currentUserId));
+    
     }
-    function callRouterZezo(raceId, userId, beta, auto = false) {
+    function callRouterZezo(raceId, pid, beta, auto = false) {
         var urlBeta =  "http://zezo.org/"+ races.get(raceId).url+ (beta ? "b" : "")+"/chart.pl?";
-        var url = prepareZezoUrl(raceId, userId, beta, auto);
-        openTab(url, urlBeta,cbReuseTab.checked);
+        var url = prepareZezoUrl(raceId, pid, beta, auto);
+        openTab(url, urlBeta,(cbReuseTab.checked && pid == currentUserId));
     }
 
     function callWindy(raceId, userId) {
@@ -3389,8 +3462,8 @@ var controller = function () {
         var pos = r.curr.pos;
         if (uinfo) pos = uinfo.pos;
         var url = baseURL + "/?gfs," + pos.lat + "," + pos.lon + ",6,i:pressure,d:picker";
-        var tinfo = "windy:" + r.url;
-        openTab(url, tinfo,cbReuseTab.checked);
+        
+        openTab(url, r.url,cbReuseTab.checked);
     }
     function preparePolarBaseUrl()
     {
@@ -3429,22 +3502,24 @@ var controller = function () {
     }
 
     function callPolars(raceId) {
-        var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;      
-        //var baseURL = " http://inc.bureauvallee.free.fr/polaires/?race_id=" + raceId;
-        var url = preparePolarUrl(raceId)
+        var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;   
+        var url = preparePolarUrl(raceId);
         openTab(url, baseURL,cbReuseTab.checked);
     }
 
-    function getITYCBase(raceId) {
+    function getITYCBase() {
+        return "https://ityc.fr/autoSail.html";
+    }
+    
+    function getITYCBoat(raceId) {
         var r = races.get(raceId);
-        var baseURL = "https://ityc.fr/autoSail.html?b=";
-        baseURL += r.curr.boat.label.replace(" ","_");
-        return baseURL;
+        return "?b="+ r.curr.boat.label.replace(" ","_");
     }
 
-    function getITYCFull(raceId)  {
+    function getITYCFull(baseUrl, raceId)  {
         var r = races.get(raceId);
 
+        if(!r.curr) return "";
         //get needed info
         var twa = r.curr.twa;
         var tws = r.curr.tws;
@@ -3483,8 +3558,7 @@ var controller = function () {
         options = options.replace("hull","h");
 
         //build url
-        var baseURL = getITYCBase(raceId);
-        var url = baseURL+"&s="+sailNames[r.curr.sail % 10];
+        var url = baseUrl+"&s="+sailNames[r.curr.sail % 10];
         url += "&o="+options;
         url += "&ts="+tws;
         url += "&ta="+twa;
@@ -3493,9 +3567,22 @@ var controller = function () {
 
     }
 
+    function getITYCFullExtra(baseUrl, raceId)  {
+        var r = races.get(raceId);
+
+        if(!r.curr) return "";
+        //get needed info boat speed , energy
+        var bs = r.curr.speed;
+        var se = r.curr.stamina;
+        var url = baseUrl+"&bs="+bs;
+        url += "&se="+se;
+        url += "&th="+drawTheme;
+        return url;
+
+    }
     function callITYC(raceId) {
-        var baseURL = getITYCBase(raceId);
-        var url =  getITYCFull(raceId);
+        var baseURL = getITYCBase()+getITYCBoat(raceId);
+        var url =  getITYCFull(baseURL,raceId);
         openTab(url, baseURL,cbReuseTab.checked);
     }
 
@@ -5383,7 +5470,9 @@ async function initializeMap(race) {
             document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
             document.getElementById("t_polarSite").innerHTML = "Site polaires";
-            
+            document.getElementById("t_FullScreen_Game").innerHTML = "Mode plein Ecran";
+            document.getElementById("t_fullScreen_Size").innerHTML = "Taille du jeu";
+
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
@@ -5495,6 +5584,8 @@ async function initializeMap(race) {
             document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
             document.getElementById("t_polarSite").innerHTML = "Polars site";
+            document.getElementById("t_FullScreen_Game").innerHTML = "FullScreen Mode";
+            document.getElementById("t_fullScreen_Size").innerHTML = "Game Size";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";

@@ -175,6 +175,39 @@ function toRad(angle) {
     return angle / 180 * Math.PI;
 }
 
+function convertDMS2Dec(lat,lon)
+{
+   // const regex = /^(\d+)A(\d+)'(\d+) ([NS])\s+(\d+)A(\d+)'(\d+) ([EW])$/;
+    
+    const regex = /(\d+)[^A-Za-z0-9](\d+)'((\d+)|(\d+(\.|,)\d+)) ([NSEW])/;
+    
+    const match = lat.match(regex);
+    const match1 = lon.match(regex);
+    
+    if (match && match1) {
+        const latDegrees = parseInt(match[1]);
+        const latMinutes = parseInt(match[2]);
+        const latSeconds = parseFloat(match[3]);
+        const latDirection = match[7];
+        const latitude = latDegrees + latMinutes / 60 + latSeconds / 3600;
+        
+        const lonDegrees = parseInt(match1[1]);
+        const lonMinutes = parseInt(match1[2]);
+        const lonSeconds = parseFloat(match1[3]);
+        const lonDirection = match1[7];
+        const longitude = lonDegrees + lonMinutes / 60 + lonSeconds / 3600;    
+        return {
+            lat: latDirection === 'N' ? latitude : -latitude,
+            lon: lonDirection === 'E' ? longitude : -longitude
+        };       
+    } else {
+        return {
+            lat:0,
+            lon:0
+        }; // Coordonnées invalides
+    }
+
+}
 function genth(id, content, title, sortfield, sortmark) {
     var checkboxId = "fleet_" + content.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
@@ -239,6 +272,7 @@ function formatDateTable(ts) {
         day: "numeric",
         hour12: false
     };
+    if(ts=='-') return "-";
     var d = (ts) ? (new Date(ts)) : (new Date());
     return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
 }
@@ -365,7 +399,7 @@ function set_currentSortOrder(value)
 
 function formatShortDate(ts, dflt, timezone) {
     if (!ts && dflt) return dflt;
-
+    if(ts=='-') return "-";
     const date = new Date(ts);
     var month, day, hours, minutes, utcDate;
     if (!timezone) {
@@ -553,7 +587,7 @@ export { angle,
          roundTo,
          sign,
          toDeg,
-         toDMS,
+         toDMS,convertDMS2Dec,
          toRad,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
