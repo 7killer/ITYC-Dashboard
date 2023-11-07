@@ -2995,7 +2995,7 @@ var controller = function () {
                 originClick= rmatch ;
              //   EX.extraRoute("hidden");
                 display_selbox("hidden");
-                for (var t = 1; t <= 8; t++) {
+                for (var t = 1; t <= 9; t++) {
                     if(t==3)
                         document.getElementById("tab-content" + t).style.display = (rmatch == t ? "flex" : "none");
                     else document.getElementById("tab-content" + t).style.display = (rmatch == t ? "block" : "none");
@@ -3021,6 +3021,8 @@ var controller = function () {
                     nf.showList();
                 } else if (rmatch == 8) {
    //                 updateUserConfigHTML();
+                }  else if (rmatch == 9) {
+                    document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;
                 } 
             } else if (friend) {
                 // Friend-Routing
@@ -5416,6 +5418,7 @@ async function initializeMap(race) {
             document.getElementById("t_map").innerHTML = "Carte";
             document.getElementById("t_resume").innerHTML = "Résumé";
             document.getElementById("t_graph").innerHTML = "Graph";
+            document.getElementById("t_analyse").innerHTML = "Analyse";
             document.getElementById("t_notif").innerHTML = "Notifications";
             document.getElementById("t_config").innerHTML = "Config";
             document.getElementById("t_rawLog").innerHTML = "Raw Log";
@@ -5530,6 +5533,7 @@ async function initializeMap(race) {
             document.getElementById("t_map").innerHTML = "Map";
             document.getElementById("t_resume").innerHTML = "RaceBook";
             document.getElementById("t_graph").innerHTML = "Graph";
+            document.getElementById("t_analyse").innerHTML = "Analysis";
             document.getElementById("t_notif").innerHTML = "Notifications";
             document.getElementById("t_config").innerHTML = "Config";
             document.getElementById("t_rawLog").innerHTML = "Raw Log";
