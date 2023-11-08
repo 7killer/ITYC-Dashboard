@@ -1373,7 +1373,7 @@ var controller = function () {
                     r.raceTime = "";
                     var legS = 0;
                     if (r.legStartDate != undefined && r.legStartDate > 0) legS = r.legStartDate;
-                    if (race.legdata && race.legdata.start != undefined && race.legdata.start.date != undefined) legS = race.legdata.start.date;;
+                    if (race.legdata && race.legdata.start != undefined && race.legdata.start.date != undefined) legS = race.legdata.start.date;
                     if (legS > 0) r.raceTime = r.lastCalcDate-legS;
 
                     var routerCell = '<td>&nbsp;</td>';
@@ -4619,7 +4619,7 @@ async function initializeMap(race) {
  //               makeIntegratedHTML();
 
             } catch (e) {
-                console.log(e + " at " + e.stack);;
+                console.log(e + " at " + e.stack);
             }
         }
     }
@@ -4674,7 +4674,7 @@ async function initializeMap(race) {
                         tr.sendInfo("rank"); 
                 }
             } catch (e) {
-                console.log(e + " at " + e.stack);;
+                console.log(e + " at " + e.stack);
             }
         }
     }            
@@ -4842,7 +4842,7 @@ async function initializeMap(race) {
         // ToDo: contains Bad Sail warnings. Show in race status table?
         var legInfos = response.scriptData.res;
         legInfos.map(function (legInfo) {
-            var rid = legInfo.raceId + "." + legInfo.legNum;;
+            var rid = legInfo.raceId + "." + legInfo.legNum;
             var race = races.get(rid);
             if (race === undefined) {
                 race = {

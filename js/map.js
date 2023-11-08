@@ -892,7 +892,7 @@ function updateMapCheckpoints(race) {
         var pathColor = "yellow";
         if(g_passed) pathColor = "green";
         
-        var tpath = [];;
+        var tpath = [];
         tpath.push(position_e[1]);
         tpath.push(position_s[1]);
         buildTrace(buildPath(tpath),race.lMap.checkPointLayer,race,pathColor,1,op,'20, 20','10');   

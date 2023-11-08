@@ -181,7 +181,7 @@ function updateRaces(races)
 function routeExists(race,name) {
 
     if(!raceId || !name) return false;
-    if(!myRoute[raceId]) return false;;
+    if(!myRoute[raceId]) return false;
     if(myRoute[raceId][name]) return true; 
 
     return false;
@@ -282,7 +282,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
             sail =  poi[14];
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
-            twd = Util.roundTo(poi[10], 1+nbdigits)+ "°";; 
+            twd = Util.roundTo(poi[10], 1+nbdigits)+ "°"; 
         } else
         { //default Mode Avalon
             const isNumber = n => (typeof(n) === 'number' || n instanceof Number ||

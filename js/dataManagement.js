@@ -379,7 +379,7 @@ async function getRaceListITYC() {
                             raceList.uinfo[raceData.legId] = raceData;
                         }   
                     });
-                    raceList.ts = Date.now();;
+                    raceList.ts = Date.now();
                     await saveLocal("RaceList",raceList.uinfo);
                     await saveLocal("RaceList_ts",raceList.ts); 
                     makeRaceTable();
