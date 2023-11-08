@@ -171,6 +171,7 @@ var controller = function () {
 
     var cb2digits;
     var nbdigits = 0;
+    var nbTabs = 11;
     
     var lang = "fr";
 
@@ -2995,7 +2996,7 @@ var controller = function () {
                 originClick= rmatch ;
              //   EX.extraRoute("hidden");
                 display_selbox("hidden");
-                for (var t = 1; t <= 9; t++) {
+                for (var t = 1; t <= nbTabs; t++) {
                     if(t==3)
                         document.getElementById("tab-content" + t).style.display = (rmatch == t ? "flex" : "none");
                     else document.getElementById("tab-content" + t).style.display = (rmatch == t ? "block" : "none");
@@ -3075,7 +3076,7 @@ var controller = function () {
 
 
     function resize(ev) {
-        for (var t = 1; t <= 8; t++) {
+        for (var t = 1; t <= nbTabs; t++) {
             var tab = document.getElementById("tab-content" + t);
             tab.style.height = window.innerHeight - tab.getBoundingClientRect().y;
         }
