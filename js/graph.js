@@ -919,7 +919,7 @@ function drawStaminaChart(ts,stamina,sail) {
     staminaChart = new Chart(ctx, configChart);
 }
 
-function upDateGraph(data) {
+function upDateGraph(data, autoUpdate = false) {
   if(data == null) 
   {
     if(twsChart) twsChart.destroy();
@@ -936,6 +936,19 @@ function upDateGraph(data) {
   drawHDGChart(data.ts,data.hdg,data.sail);
   drawBoatSpeedChart(data.ts,data.bs,data.sail);
   drawStaminaChart(data.ts,data.stamina,data.sail);
+
+  if (autoUpdate) {
+    setTimeout(autoUpdateCharts, 1000);
+  }
+}
+
+function autoUpdateCharts() {
+  twsChart.update('none');
+  twaChart.update('none');
+  twdChart.update('none');
+  hdgChart.update('none');
+  bsChart.update('none');
+  staminaChart.update('none');
 }
 
 function buildDate(tps) {

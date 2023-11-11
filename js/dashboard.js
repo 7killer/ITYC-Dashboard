@@ -3171,7 +3171,7 @@ var controller = function () {
         }
 
         if(r.recordedData) {
-            gr.upDateGraph(r.recordedData);
+            gr.upDateGraph(r.recordedData, true);
         }
 
     }
