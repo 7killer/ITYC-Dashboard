@@ -1214,3 +1214,10 @@ tr.highlightMe {
 input[type="checkbox"] {
     cursor: pointer;
 }
+
+#lMapControls {
+    left: 42px;
+}
+.leaflet-control-custom {
+    font-size: 14px;
+}
