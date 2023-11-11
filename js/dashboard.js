@@ -171,7 +171,7 @@ var controller = function () {
 
     var cb2digits;
     var nbdigits = 0;
-    var nbTabs = 11;
+    var nbTabs = 9;
     
     var lang = "fr";
 
