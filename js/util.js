@@ -311,6 +311,22 @@ function sortFriends(fleet,origin) {
             }
             return r;
         }
+        function convertSymbolsEntry(entry) {
+            if (typeof entry !== 'string') {
+                return entry;
+            }
+            // By field
+            if (field == 'xoption_foils') {
+                if (entry === "no") return -1;
+                if (entry === "?") return -2;
+                if (entry.includes("%")) return parseFloat(entry.replace(/%/g, ''));
+            }
+            else if (field == 'xfactor') {
+                if (isNaN(entry)) return -3;
+            }
+            if (entry === "-") return -3;
+            return entry;
+        }
         rf.table.sort(function (uidA, uidB) {
             // Check if we have values at all
             if (rf.uinfo[uidA] == undefined && rf.uinfo[uidB] == undefined) return 0;
@@ -325,6 +341,9 @@ function sortFriends(fleet,origin) {
             if (entryA == undefined && entryB == undefined) return 0;
             if (entryB == undefined) return -1;
             if (entryA == undefined) return 1;
+
+            entryA = convertSymbolsEntry(entryA);
+            entryB = convertSymbolsEntry(entryB);
 
             // Cast to number if possible
             entryA = numeric(entryA);

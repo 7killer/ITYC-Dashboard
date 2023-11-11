@@ -1157,8 +1157,8 @@ var controller = function () {
                 + Util.genth("th_speed","Speed","Boat Speed", Util.sortField == 'speed', Util.currentSortOrder)
                 + Util.genth("th_vmg","VMG","Velocity Made Good", Util.sortField == 'vmg', Util.currentSortOrder)
                 + Util.genth("th_sail", "Sail", "Sail Used", Util.sortField == "sail", Util.currentSortOrder)
-                + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", undefined)
-                + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", undefined)				
+                + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", Util.sortField == "xfactor", Util.currentSortOrder)
+                + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", Util.sortField == "xoption_foils", Util.currentSortOrder)
                 + recordRaceColumns()
                 + Util.genth("th_psn", "Position", undefined)
                 + Util.genth("th_options", "Options", "Options according to Usercard",  Util.sortField == "xoption_options", Util.currentSortOrder)
@@ -1416,20 +1416,22 @@ var controller = function () {
         if (rf === undefined || rf.table.length==0) {
             divFriendList.innerHTML = "No friend positions received yet";
         } else {
-            Util.sortFriends(rf,originClick);
-            var fleetHTML =
-                '<table>'
-                + '<thead class="sticky">'
-                + friendListHeader()
-                + '</thead>'
-                + '<tbody>'
-                + Array.from(rf.table || []).map(makeFriendListLine, rf).join(" ");
-                + '</tbody>'
-                + '</table>';
-            divFriendList.innerHTML = fleetHTML;
+            if (originClick == 2) {
+                Util.sortFriends(rf,originClick);
+                var fleetHTML =
+                    '<table>'
+                    + '<thead class="sticky">'
+                    + friendListHeader()
+                    + '</thead>'
+                    + '<tbody>'
+                    + Array.from(rf.table || []).map(makeFriendListLine, rf).join(" ");
+                    + '</tbody>'
+                    + '</table>';
+                divFriendList.innerHTML = fleetHTML;
 
-            addEventListenersToRemoveSelectedBoatButtons();
-            addEventListenersToSelectedLine();
+                addEventListenersToRemoveSelectedBoatButtons();
+                addEventListenersToSelectedLine();
+            }
         }
     }
 
@@ -2925,7 +2927,12 @@ var controller = function () {
             case "th_sail":
                 Util.set_sortField("sail");
                 break;
-
+            case "th_factor":
+                Util.set_sortField("xfactor");
+                break;
+            case "th_foils":
+                Util.set_sortField("xoption_foils");
+                break;
             case "th_flag":
                 Util.set_sortField("country");
                 break;                

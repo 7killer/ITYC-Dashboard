@@ -260,7 +260,7 @@ td.tdc {
     cursor: pointer;
 }
 
-#th_teamname, #th_teamsize, #th_gender, #th_type , #th_total , #th_skipper , #th_raceRank , #th_xOptions , #th_gap , #th_id , #th_teamid , #th_uid{
+#th_teamname, #th_teamsize, #th_gender, #th_type , #th_total , #th_skipper , #th_raceRank , #th_xOptions , #th_gap , #th_id , #th_teamid , #th_uid, #th_foils, #th_factor {
     cursor: pointer;
 }
 #th_eRT, #th_avgS, #th_sd, #th_rankcategory, #th_flag, #lb_boatvip {
