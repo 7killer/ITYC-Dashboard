@@ -1464,7 +1464,7 @@ var controller = function () {
 
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
-            return '<tr class="commandLine">'
+            return '<tr class="commandLine hovred">'
             + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
             + '<td colspan="3">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts))
             + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
@@ -1600,7 +1600,7 @@ var controller = function () {
                 xfactorTxt += " " + rinfo.xoption_sailOverlayer;
             } 
 
-            return '<tr>'
+            return '<tr class="hovred">'
                 + Util.gentdRacelog("time", "time", null, "Time", formatDateUTC(rinfo.lastCalcDate, 1))
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
