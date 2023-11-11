@@ -302,6 +302,9 @@ td.tdc {
 #th_lu {
     width: 82px;
 }
+#th_rl_foils {
+    width: 80px;
+}
 
 td.remove {
     padding: 0px;

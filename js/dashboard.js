@@ -256,10 +256,10 @@ var controller = function () {
         return Util.genthRacelog("th_rl_rank", "rank", "Rank")
             + Util.genthRacelog("th_rl_dtl", "dtl", "DTL", "Distance To Leader")
             + Util.genthRacelog("th_rl_dtf", "dtf", "DTF", "Distance To Finish")
-             + '<th title="True Wind Direction">' + "TWD" + '</th>'
-             + '<th title="True Wind Speed">' + "TWS" + '</th>'
-             + '<th title="True Wind Angle">' + "TWA" + '</th>'
-             + '<th title="Heading">' + "HDG" + '</th>';
+            + Util.genthRacelog("th_rl_twd", "twd", "TWD", "True Wind Direction")
+            + Util.genthRacelog("th_rl_tws", "tws", "TWS", "True Wind Speed")
+            + Util.genthRacelog("th_rl_twaLarge", "twa", "TWA", "True Wind Angle")
+            + Util.genthRacelog("th_rl_hdg", "hdg", "HDG", "Heading");
     }
 
     function printLastCommand(lcActions) {
@@ -1318,7 +1318,7 @@ var controller = function () {
                 }
                 if (r.isRegulated == true) {
                     // var lock = "&#128272;";
-                    var lock = "<b title='TWA Locked' class='cursorHelp'>&#x24B6;</b>";
+                    var lock = "<span title='TWA Locked' class='cursorHelp'>&#x24B6;</span>";
                 }
                 if (r.isRegulated == false) {
                     var lock = "<span title='TWA Unlocked' class='cursorHelp'>&#x25EF;</span>";
@@ -1395,13 +1395,13 @@ var controller = function () {
                         + Util.gentd("TWD","",null, Util.roundTo(r.twd, 2+nbdigits) )
                         + Util.gentd("TWS","",null, Util.roundTo(bi.tws, 2+nbdigits) )
                         + Util.gentd("TWA", bi.twaStyle,null, Util.roundTo(bi.twa, 2+nbdigits) )
-                        + Util.gentd("TWA", 'style="color:grey; align:center; text-align:center;"', null, lock)
+                        + Util.gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock)
                         + Util.gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold ,null, Util.roundTo(bi.heading, 2+nbdigits) )
                         + Util.gentd("Speed","",null, Util.roundTo(bi.speed, 2+nbdigits) )
                         + Util.gentd("VMG","",null, Util.roundTo(r.vmg, 2+nbdigits))
 //                        + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sail )
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
-                        + Util.gentd("Sail", 'style="text-align:center;"', null, bi.aSail)
+                        + Util.gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, bi.aSail)
                         + Util.gentd("Factor", bi.xfactorStyle,null, xfactorTxt )
                         + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
                         + recordRaceFields(race, r)
