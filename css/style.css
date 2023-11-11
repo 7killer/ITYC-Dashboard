@@ -256,7 +256,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
+#th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }
 
@@ -306,6 +306,13 @@ td.tdc {
     width: 80px;
 }
 
+.bull {
+    display: inline-block;
+    width: 36px;
+    text-align: left;
+    padding-left: 2px;
+}
+
 td.remove {
     padding: 0px;
     text-align: center;
@@ -342,7 +349,8 @@ td.twa {
     text-align: right;
 }
 
-
+td.speed,
+td.factor,
 td.stamina {
     text-align: right;
 }

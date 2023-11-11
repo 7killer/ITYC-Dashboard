@@ -1142,7 +1142,7 @@ var controller = function () {
             }
             var race = races.get(selRace.value);
             return '<tr>'
-                + Util.genth("th_rt", "RT", "Call Router", Util.sortField == "none", undefined)
+                + Util.genth("th_rt", "RT", "Call Router", undefined)
                 + Util.genth("th_lu", "Date" + dateUTC(), undefined)
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
@@ -1280,9 +1280,7 @@ var controller = function () {
                 var bull = "";
                 if (r.choice) {
                     bull = '<span style="color:HotPink;font-size:16px;"><b>&#9679;</b></span>';
-                } else {
-                    bull = '&nbsp;';
-                }                    
+                }
     
                 if (r.team == true) {
                     bull += '<span style="color:Red;font-size:16px;"><b>&#9679;</b></span>';
@@ -1290,7 +1288,7 @@ var controller = function () {
                 if (r.followed == true || r.isFollowed == true) {
                     bull += '<span style="color:LimeGreen;font-size:16px;"><b>&#9679</b></span>';
                 } else if (r.type == "real") {
-                    bull = '&nbsp;<span style="color:Chocolate;font-size:16px;"><b>&#9679;</b></span>';
+                    bull = '<span style="color:Chocolate;font-size:16px;"><b>&#9679;</b></span>';
                 } else {
                     bull += '<span style="color:LightGrey;font-size:16px;"><b>&#9679;</b></span>';
                 }
@@ -1303,12 +1301,10 @@ var controller = function () {
                 }
                 if ( r.type == "sponsor") {
                     bull += '<span style="color:DarkSlateBlue;font-size:16px;"><b>&#9679;</b></span>';
-                }  else {
-                    bull += '&nbsp;';
                 }
                 
                 if (uid == currentUserId) {
-                    bull = '&nbsp;<span>&#11088</span>';
+                    bull = '<span>&#11088</span>';
                 }
                 // Fin Ajout - Puces colonne Skipper
     
@@ -1386,7 +1382,7 @@ var controller = function () {
                     return '<tr class="' + bi.nameClass + ' hovred" id="ui:' + uid + '">'
                         + routerCell
                         + Util.gentd("Time","",null, formatTime(r.lastCalcDate, 1))
-                        + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
+                        + '<td class="Skipper" style="' + bi.nameStyle + '"><div class="bull">' + bull + "</div> " + bi.name + '</td>'
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
                         + ((race.type !== "record")?Util.gentd("RaceTime","",null, (r.raceTime ? Util.formatDHMS(r.raceTime) : "-")):"")
@@ -2942,7 +2938,6 @@ var controller = function () {
             case "th_stamina":
                 Util.set_sortField("stamina");
                 break;
-            case "th_rt":
             case "th_brg":
             //case "th_psn":
             //case "th_foils":
