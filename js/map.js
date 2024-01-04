@@ -718,8 +718,45 @@ async function initialize(race,raceFleetMap)
                 }
             }
 
-            race.lMap.refLayer.addTo(map);
+            //restricted aera
+            if(race.legdata.restrictedZones && race.legdata.restrictedZones.length) {
+                race.legdata.restrictedZones.forEach(restrictedZone => {
+                    var polygonPts0 = [];
+                    var polygonPts1 = [];
+                    var polygonPts2 = [];
+                    for (var i = 0; i < restrictedZone.vertices.length; i++) {
 
+                        let ptRz = [restrictedZone.vertices[i].lat, restrictedZone.vertices[i].lon];
+                        polygonPts0.push(ptRz);
+                        ptRz = [restrictedZone.vertices[i].lat, restrictedZone.vertices[i].lon-360];
+                        polygonPts1.push(ptRz);
+                        ptRz = [restrictedZone.vertices[i].lat, restrictedZone.vertices[i].lon+360];
+                        polygonPts2.push(ptRz);
+                    }  
+                    L.polygon(polygonPts0,
+                            {
+                                color: restrictedZone.color,
+                                stroke : 0.35,
+                                weight : 1,
+                            }
+                        ).addTo(race.lMap.refLayer);
+                    L.polygon(polygonPts1,
+                            {
+                                color: restrictedZone.color,
+                                stroke : 0.35,
+                                weight : 1,
+                            }
+                        ).addTo(race.lMap.refLayer);
+                    L.polygon(polygonPts2,
+                            {
+                                color: restrictedZone.color,
+                                stroke : 0.35,
+                                weight : 1,
+                            }
+                        ).addTo(race.lMap.refLayer);
+                });
+            }
+            race.lMap.refLayer.addTo(map);
 
             updateBounds(race);
             updateMapCheckpoints(race);

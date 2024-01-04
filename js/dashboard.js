@@ -3850,7 +3850,94 @@ function buildlogBookHTML(race) {
     + '</tbody>'
     + '</table>';
 
-    document.getElementById("raceBook").innerHTML = raceIdentification+raceBookTable;
+    var raceIceLimitsTable = ""; 
+    if (race.legdata.ice_limits) {
+        var iceData = race.legdata.ice_limits.south;
+        if(!(iceData.length == 5 
+            && iceData[0].lat == -90 && iceData[0].lon == -180
+            && iceData[2].lat == -90 && iceData[2].lon == 0
+            && iceData[4].lat == -90 && iceData[4].lon == 180
+            )) //is not a dummy ice limits ;)
+        {
+
+            var raceIceLimitHeader = '<tr>'
+            + '<th title="Ice Limites" colspan="3">' + "Limites des glaces" + '</th>'
+            + '</tr>'
+            + '<tr>'
+            + '<th title="Ice Limites">' + "Section" + '</th>'
+            + '<th title="Position">' + "Position" + '</th>'
+            + '<th title="Position2">' + "Position2" + '</th>'
+            
+            raceIceLimitHeader += '</tr>';
+
+            var iceLimitLine = '<tr>'
+                + '<td class="type">Section 1</td>'
+                + '<td class="position">'+Util.formatPosition(iceData[0].lat,iceData[0].lon)+'</td>'
+                + '<td class="position">'+Util.formatPosition(iceData[1].lat,iceData[1].lon)+'</td>'
+                + '</tr>';
+
+
+            for (var i = 1; i < iceData.length; i++) {
+                iceLimitLine += '<tr>'
+                + '<td class="type">Section '+(i+1)+'</td>'
+                + '<td class="position">'+Util.formatPosition(iceData[i-1].lat, iceData[i-1].lon)+'</td>'
+                + '<td class="position">'+Util.formatPosition(iceData[i].lat, iceData[i].lon)+'</td>'
+                + '</tr>';
+
+            }
+            
+ 
+            raceIceLimitsTable = '<table id="raceIceLimitTable">'
+            + '<thead>'
+            + raceIceLimitHeader
+            + '</thead>'
+            + '<tbody>'
+            + iceLimitLine
+            + '</tbody>'
+            + '</table>';
+            
+
+
+        }
+    }
+
+    
+    var racerestrictedZonesTable = ""; 
+    if (race.legdata.restrictedZones && race.legdata.restrictedZones.length != 0) {
+            var racerestrictedZonesHeader = '<tr>'
+            + '<th title="Restricted Zones" colspan="2">' + "Zones interdites" + '</th>'
+            + '</tr>'
+            + '<tr>'
+            + '<th title="Name">' + "Nom" + '</th>'
+            + '<th title="Position">' + "Position" + '</th>'
+            
+            racerestrictedZonesHeader += '</tr>';
+
+            var racerestrictedZonesLine = '';
+            race.legdata.restrictedZones.forEach(restrictedZone => {
+
+                racerestrictedZonesLine += '<tr>'
+                        + '<td class="name" rowspan="'+  restrictedZone.vertices.length +'">'+restrictedZone.name +'</td>' 
+                
+                for (var i = 0; i < restrictedZone.vertices.length; i++) {
+                    racerestrictedZonesLine += '<td class="position">'+Util.formatPosition(restrictedZone.vertices[i].lat,restrictedZone.vertices[i].lon)+'</td>'  
+                        + '</tr>'; 
+
+                }            
+            });
+ 
+            racerestrictedZonesTable = '<table id="restrictedZonesTable">'
+            + '<thead>'
+            + racerestrictedZonesHeader
+            + '</thead>'
+            + '<tbody>'
+            + racerestrictedZonesLine
+            + '</tbody>'
+            + '</table>';
+            
+    }
+
+    document.getElementById("raceBook").innerHTML = raceIdentification+raceBookTable+racerestrictedZonesTable+raceIceLimitsTable;
 
 
 }
@@ -4186,6 +4273,7 @@ async function initializeMap(race) {
         await getOption("sel_showMarkersLmap",false);
         await getOption("FullScreen_Game",false);
 
+        await getOption("sel_polarSite",1);
     
         let fullScreen_Size = await getOptionN("fullScreen_Size",80);
         document.getElementById("fullScreen_Size").value = fullScreen_Size;
@@ -5422,7 +5510,7 @@ async function initializeMap(race) {
             document.getElementById("t_resume").innerHTML = "Résumé";
             document.getElementById("t_graph").innerHTML = "Graph";
             document.getElementById("t_analyse").innerHTML = "Analyse";
-            document.getElementById("t_notif").innerHTML = "Notifications";
+            document.getElementById("t_notif").innerHTML = "Notifs";
             document.getElementById("t_config").innerHTML = "Config";
             document.getElementById("t_rawLog").innerHTML = "Raw Log";
             
@@ -5537,7 +5625,7 @@ async function initializeMap(race) {
             document.getElementById("t_resume").innerHTML = "RaceBook";
             document.getElementById("t_graph").innerHTML = "Graph";
             document.getElementById("t_analyse").innerHTML = "Analysis";
-            document.getElementById("t_notif").innerHTML = "Notifications";
+            document.getElementById("t_notif").innerHTML = "Notifs";
             document.getElementById("t_config").innerHTML = "Config";
             document.getElementById("t_rawLog").innerHTML = "Raw Log";
             

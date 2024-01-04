@@ -1160,7 +1160,7 @@ a:active {
     margin :2em;
 }
 
-#raceidTable,#raceidTable2 {
+#raceidTable,#raceidTable2 ,#raceStatusTable, #restrictedZonesTable{
     margin-bottom: 3em;
 }
 table#raceidTable2>tbody>tr>td {
