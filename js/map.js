@@ -760,10 +760,26 @@ async function initialize(race,raceFleetMap)
              });
             lMapInfos = race.lMap;
         }
+        initButtonToCenterView(race.curr.pos.lat, race.curr.pos.lon, map);
     }
 }
 
-
+function initButtonToCenterView(lat, lon, map) {
+    // HTML
+    var buttonHTML = `
+    <div id="lMapControls" class="leaflet-top leaflet-left">
+        <div class="leaflet-control leaflet-bar">
+            <a id="recenterButton" class="leaflet-control-custom" href="#">🎯</a>
+        </div>
+    </div>`;
+    var mapContainer = document.querySelector(".leaflet-top.leaflet-left");
+    mapContainer.insertAdjacentHTML('afterbegin', buttonHTML);
+    // Control
+    document.getElementById('recenterButton').addEventListener('click', function (e) {
+        e.preventDefault();
+        map.setView([lat, lon], map.getZoom());
+    });
+}
 
 function updateBounds(race)
 {
@@ -892,7 +908,7 @@ function updateMapCheckpoints(race) {
         var pathColor = "yellow";
         if(g_passed) pathColor = "green";
         
-        var tpath = [];;
+        var tpath = [];
         tpath.push(position_e[1]);
         tpath.push(position_s[1]);
         buildTrace(buildPath(tpath),race.lMap.checkPointLayer,race,pathColor,1,op,'20, 20','10');   

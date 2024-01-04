@@ -171,6 +171,7 @@ var controller = function () {
 
     var cb2digits;
     var nbdigits = 0;
+    var nbTabs = 9;
     
     var lang = "fr";
 
@@ -255,10 +256,10 @@ var controller = function () {
         return Util.genthRacelog("th_rl_rank", "rank", "Rank")
             + Util.genthRacelog("th_rl_dtl", "dtl", "DTL", "Distance To Leader")
             + Util.genthRacelog("th_rl_dtf", "dtf", "DTF", "Distance To Finish")
-             + '<th title="True Wind Direction">' + "TWD" + '</th>'
-             + '<th title="True Wind Speed">' + "TWS" + '</th>'
-             + '<th title="True Wind Angle">' + "TWA" + '</th>'
-             + '<th title="Heading">' + "HDG" + '</th>';
+            + Util.genthRacelog("th_rl_twd", "twd", "TWD", "True Wind Direction")
+            + Util.genthRacelog("th_rl_tws", "tws", "TWS", "True Wind Speed")
+            + Util.genthRacelog("th_rl_twaLarge", "twa", "TWA", "True Wind Angle")
+            + Util.genthRacelog("th_rl_hdg", "hdg", "HDG", "Heading");
     }
 
     function printLastCommand(lcActions) {
@@ -1141,7 +1142,7 @@ var controller = function () {
             }
             var race = races.get(selRace.value);
             return '<tr>'
-                + Util.genth("th_rt", "RT", "Call Router", Util.sortField == "none", undefined)
+                + Util.genth("th_rt", "RT", "Call Router", undefined)
                 + Util.genth("th_lu", "Date" + dateUTC(), undefined)
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
@@ -1156,8 +1157,8 @@ var controller = function () {
                 + Util.genth("th_speed","Speed","Boat Speed", Util.sortField == 'speed', Util.currentSortOrder)
                 + Util.genth("th_vmg","VMG","Velocity Made Good", Util.sortField == 'vmg', Util.currentSortOrder)
                 + Util.genth("th_sail", "Sail", "Sail Used", Util.sortField == "sail", Util.currentSortOrder)
-                + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", undefined)
-                + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", undefined)				
+                + Util.genth("th_factor", "Factor", "Speed factor over no-options boat", Util.sortField == "xfactor", Util.currentSortOrder)
+                + Util.genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", Util.sortField == "xoption_foils", Util.currentSortOrder)
                 + recordRaceColumns()
                 + Util.genth("th_psn", "Position", undefined)
                 + Util.genth("th_options", "Options", "Options according to Usercard",  Util.sortField == "xoption_options", Util.currentSortOrder)
@@ -1279,9 +1280,7 @@ var controller = function () {
                 var bull = "";
                 if (r.choice) {
                     bull = '<span style="color:HotPink;font-size:16px;"><b>&#9679;</b></span>';
-                } else {
-                    bull = '&nbsp;';
-                }                    
+                }
     
                 if (r.team == true) {
                     bull += '<span style="color:Red;font-size:16px;"><b>&#9679;</b></span>';
@@ -1289,7 +1288,7 @@ var controller = function () {
                 if (r.followed == true || r.isFollowed == true) {
                     bull += '<span style="color:LimeGreen;font-size:16px;"><b>&#9679</b></span>';
                 } else if (r.type == "real") {
-                    bull = '&nbsp;<span style="color:Chocolate;font-size:16px;"><b>&#9679;</b></span>';
+                    bull = '<span style="color:Chocolate;font-size:16px;"><b>&#9679;</b></span>';
                 } else {
                     bull += '<span style="color:LightGrey;font-size:16px;"><b>&#9679;</b></span>';
                 }
@@ -1302,12 +1301,10 @@ var controller = function () {
                 }
                 if ( r.type == "sponsor") {
                     bull += '<span style="color:DarkSlateBlue;font-size:16px;"><b>&#9679;</b></span>';
-                }  else {
-                    bull += '&nbsp;';
                 }
                 
                 if (uid == currentUserId) {
-                    bull = '&nbsp;<span>&#11088</span>';
+                    bull = '<span>&#11088</span>';
                 }
                 // Fin Ajout - Puces colonne Skipper
     
@@ -1317,7 +1314,7 @@ var controller = function () {
                 }
                 if (r.isRegulated == true) {
                     // var lock = "&#128272;";
-                    var lock = "<b title='TWA Locked' class='cursorHelp'>&#x24B6;</b>";
+                    var lock = "<span title='TWA Locked' class='cursorHelp'>&#x24B6;</span>";
                 }
                 if (r.isRegulated == false) {
                     var lock = "<span title='TWA Unlocked' class='cursorHelp'>&#x25EF;</span>";
@@ -1373,7 +1370,7 @@ var controller = function () {
                     r.raceTime = "";
                     var legS = 0;
                     if (r.legStartDate != undefined && r.legStartDate > 0) legS = r.legStartDate;
-                    if (race.legdata && race.legdata.start != undefined && race.legdata.start.date != undefined) legS = race.legdata.start.date;;
+                    if (race.legdata && race.legdata.start != undefined && race.legdata.start.date != undefined) legS = race.legdata.start.date;
                     if (legS > 0) r.raceTime = r.lastCalcDate-legS;
 
                     var routerCell = '<td>&nbsp;</td>';
@@ -1385,7 +1382,7 @@ var controller = function () {
                     return '<tr class="' + bi.nameClass + ' hovred" id="ui:' + uid + '">'
                         + routerCell
                         + Util.gentd("Time","",null, formatTime(r.lastCalcDate, 1))
-                        + '<td class="Skipper" style="' + bi.nameStyle + '">' + bull + " " + bi.name + '</td>' 
+                        + '<td class="Skipper" style="' + bi.nameStyle + '"><div class="bull">' + bull + "</div> " + bi.name + '</td>'
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
                         + ((race.type !== "record")?Util.gentd("RaceTime","",null, (r.raceTime ? Util.formatDHMS(r.raceTime) : "-")):"")
@@ -1394,13 +1391,13 @@ var controller = function () {
                         + Util.gentd("TWD","",null, Util.roundTo(r.twd, 2+nbdigits) )
                         + Util.gentd("TWS","",null, Util.roundTo(bi.tws, 2+nbdigits) )
                         + Util.gentd("TWA", bi.twaStyle,null, Util.roundTo(bi.twa, 2+nbdigits) )
-                        + Util.gentd("TWA", 'style="color:grey; align:center; text-align:center;"', null, lock)
+                        + Util.gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock)
                         + Util.gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold ,null, Util.roundTo(bi.heading, 2+nbdigits) )
                         + Util.gentd("Speed","",null, Util.roundTo(bi.speed, 2+nbdigits) )
                         + Util.gentd("VMG","",null, Util.roundTo(r.vmg, 2+nbdigits))
 //                        + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sail )
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
-                        + Util.gentd("Sail", 'style="text-align:center;"', null, bi.aSail)
+                        + Util.gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, bi.aSail)
                         + Util.gentd("Factor", bi.xfactorStyle,null, xfactorTxt )
                         + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
                         + recordRaceFields(race, r)
@@ -1415,20 +1412,22 @@ var controller = function () {
         if (rf === undefined || rf.table.length==0) {
             divFriendList.innerHTML = "No friend positions received yet";
         } else {
-            Util.sortFriends(rf,originClick);
-            var fleetHTML =
-                '<table>'
-                + '<thead class="sticky">'
-                + friendListHeader()
-                + '</thead>'
-                + '<tbody>'
-                + Array.from(rf.table || []).map(makeFriendListLine, rf).join(" ");
-                + '</tbody>'
-                + '</table>';
-            divFriendList.innerHTML = fleetHTML;
+            if (originClick == 2) {
+                Util.sortFriends(rf,originClick);
+                var fleetHTML =
+                    '<table>'
+                    + '<thead class="sticky">'
+                    + friendListHeader()
+                    + '</thead>'
+                    + '<tbody>'
+                    + Array.from(rf.table || []).map(makeFriendListLine, rf).join(" ");
+                    + '</tbody>'
+                    + '</table>';
+                divFriendList.innerHTML = fleetHTML;
 
-            addEventListenersToRemoveSelectedBoatButtons();
-            addEventListenersToSelectedLine();
+                addEventListenersToRemoveSelectedBoatButtons();
+                addEventListenersToSelectedLine();
+            }
         }
     }
 
@@ -1463,7 +1462,7 @@ var controller = function () {
 
         function makeRaceLineLogCmd(cinfo) {
             if(!cinfo.action) return"";
-            return '<tr class="commandLine">'
+            return '<tr class="commandLine hovred">'
             + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
             + '<td colspan="3">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts))
             + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
@@ -1599,7 +1598,7 @@ var controller = function () {
                 xfactorTxt += " " + rinfo.xoption_sailOverlayer;
             } 
 
-            return '<tr>'
+            return '<tr class="hovred">'
                 + Util.gentdRacelog("time", "time", null, "Time", formatDateUTC(rinfo.lastCalcDate, 1))
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
@@ -2924,7 +2923,12 @@ var controller = function () {
             case "th_sail":
                 Util.set_sortField("sail");
                 break;
-
+            case "th_factor":
+                Util.set_sortField("xfactor");
+                break;
+            case "th_foils":
+                Util.set_sortField("xoption_foils");
+                break;
             case "th_flag":
                 Util.set_sortField("country");
                 break;                
@@ -2934,7 +2938,6 @@ var controller = function () {
             case "th_stamina":
                 Util.set_sortField("stamina");
                 break;
-            case "th_rt":
             case "th_brg":
             //case "th_psn":
             //case "th_foils":
@@ -2995,7 +2998,7 @@ var controller = function () {
                 originClick= rmatch ;
              //   EX.extraRoute("hidden");
                 display_selbox("hidden");
-                for (var t = 1; t <= 9; t++) {
+                for (var t = 1; t <= nbTabs; t++) {
                     if(t==3)
                         document.getElementById("tab-content" + t).style.display = (rmatch == t ? "flex" : "none");
                     else document.getElementById("tab-content" + t).style.display = (rmatch == t ? "block" : "none");
@@ -3075,7 +3078,7 @@ var controller = function () {
 
 
     function resize(ev) {
-        for (var t = 1; t <= 8; t++) {
+        for (var t = 1; t <= nbTabs; t++) {
             var tab = document.getElementById("tab-content" + t);
             tab.style.height = window.innerHeight - tab.getBoundingClientRect().y;
         }
@@ -3170,7 +3173,7 @@ var controller = function () {
         }
 
         if(r.recordedData) {
-            gr.upDateGraph(r.recordedData);
+            gr.upDateGraph(r.recordedData, true);
         }
 
     }
@@ -4619,7 +4622,7 @@ async function initializeMap(race) {
  //               makeIntegratedHTML();
 
             } catch (e) {
-                console.log(e + " at " + e.stack);;
+                console.log(e + " at " + e.stack);
             }
         }
     }
@@ -4674,7 +4677,7 @@ async function initializeMap(race) {
                         tr.sendInfo("rank"); 
                 }
             } catch (e) {
-                console.log(e + " at " + e.stack);;
+                console.log(e + " at " + e.stack);
             }
         }
     }            
@@ -4842,7 +4845,7 @@ async function initializeMap(race) {
         // ToDo: contains Bad Sail warnings. Show in race status table?
         var legInfos = response.scriptData.res;
         legInfos.map(function (legInfo) {
-            var rid = legInfo.raceId + "." + legInfo.legNum;;
+            var rid = legInfo.raceId + "." + legInfo.legNum;
             var race = races.get(rid);
             if (race === undefined) {
                 race = {

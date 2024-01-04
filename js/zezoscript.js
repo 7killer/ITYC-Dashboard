@@ -156,7 +156,7 @@ function zezoCall(uinfo,raceInfos,color,race) {
                     var routeData = Object.create(rt.routeInfosmodel);
         
                     routeData.lat = getLatitude(top, scale[1]);
-                    routeData.lon =  getLongitude(left, scale[1]);;
+                    routeData.lon =  getLongitude(left, scale[1]);
                     routeData.timestamp = Date.parse(isoDate);
                     routeData.heading = btw + "°";
                     routeData.tws = tws + "s";

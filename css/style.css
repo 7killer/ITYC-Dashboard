@@ -256,11 +256,11 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
+#th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }
 
-#th_teamname, #th_teamsize, #th_gender, #th_type , #th_total , #th_skipper , #th_raceRank , #th_xOptions , #th_gap , #th_id , #th_teamid , #th_uid{
+#th_teamname, #th_teamsize, #th_gender, #th_type , #th_total , #th_skipper , #th_raceRank , #th_xOptions , #th_gap , #th_id , #th_teamid , #th_uid, #th_foils, #th_factor {
     cursor: pointer;
 }
 #th_eRT, #th_avgS, #th_sd, #th_rankcategory, #th_flag, #lb_boatvip {
@@ -302,6 +302,16 @@ td.tdc {
 #th_lu {
     width: 82px;
 }
+#th_rl_foils {
+    width: 80px;
+}
+
+.bull {
+    display: inline-block;
+    width: 36px;
+    text-align: left;
+    padding-left: 2px;
+}
 
 td.remove {
     padding: 0px;
@@ -339,7 +349,8 @@ td.twa {
     text-align: right;
 }
 
-
+td.speed,
+td.factor,
 td.stamina {
     text-align: right;
 }
@@ -531,7 +542,7 @@ fieldset {
 #sel_skippers {
     margin-left:5em;
     visibility: visible;
-    margin-top: 0.1em;;
+    margin-top: 0.1em;
     float: left;
     padding-top: 0.2em;
 
@@ -1213,4 +1224,11 @@ tr.highlightMe {
 
 input[type="checkbox"] {
     cursor: pointer;
+}
+
+#lMapControls {
+    left: 42px;
+}
+.leaflet-control-custom {
+    font-size: 14px;
 }
