@@ -154,6 +154,7 @@ var controller = function () {
         {_id:18     ,name: "OffShore Racer",       stamina: "1"},
         {_id:19     ,name: "Mod70",       		   stamina: "1.2"},
         {_id:20     ,name: "Cruiser Racer",        stamina: "1.2"},
+        {_id:21     ,name: "Ultim BP XI",        stamina: "1.5"},
       ];
 
 
@@ -976,9 +977,29 @@ var controller = function () {
                 };
             function computeStaminaLoose(tws,basePt,boatId)
             {
-                    //take in account boat stamina
-                var boatStamina = 1;
-                if(boat2StaminaCoeff[boatId]) boatStamina = boat2StaminaCoeff[boatId].stamina;
+                //take in account boat stamina
+                var boatStamina = -1;
+                function getBoatCoefficient(boatWeight) {
+                    if(!paramStamina.consumption.boats) return -1;
+                    let i = 0;
+                    let rangeList = Object.keys(paramStamina.consumption.boats);
+                    for(i = 0 ; i<rangeList.length-1;i++)
+                    {
+                        if(boatWeight >= rangeList[i] && boatWeight < rangeList[i+1])
+                            break;
+                    }
+                    return paramStamina.consumption.boats[rangeList[i]];
+                }
+                
+                if(r.legdata && r.legdata.boat && r.legdata.boat.stats)
+                {
+                    boatStamina = getBoatCoefficient(r.legdata.boat.stats.weight/1000);
+                } 
+                if(boatStamina == -1)
+                {
+                    if(boat2StaminaCoeff[boatId]) boatStamina = boat2StaminaCoeff[boatId].stamina;
+                    else boatStamina = 1;
+                }
                 basePt *= boatStamina;
                 /* 0 - 10 nds 0.02*v + 1
                     10 - 20 nds 0.03*v + 0.9
