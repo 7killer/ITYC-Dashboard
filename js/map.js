@@ -1270,9 +1270,9 @@ function updateMapFleet(race,raceFleetMap) {
 
                     race.lMap.refPoints.push(pos2[1]);
                     if(displayFilter & 0x200) {
-                        if ((i > 0) && ((key = currentId)
-                                                || elem.isFollowed
-                                                || elem.followed))
+                        if ((i > 0) && ((key == currentId)
+                                        || elem.isFollowed
+                                        || elem.followed))
                         {
                                 var deltaT = (segment.ts -  elem.track[i-1].ts) / 1000;
                                 var deltaD =  Util.gcDistance(elem.track[i-1], segment);
