@@ -3057,8 +3057,8 @@ var controller = function () {
                 changeState(ev_lbl);
                 var tabClick = originClick; 
                 if (tabClick == 2 || tabClick == 4 || tabClick == 5) {
-                    updateFleetHTML(raceFleetMap.get(selRace.value));
-                    lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
+                    //updateFleetHTML(raceFleetMap.get(selRace.value));
+                    //lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
                 }
             } else if (call_wi) callWindy(rmatch, 0); // weather
             else if (call_rt) callRouter(rmatch, currentUserId, false,"zezo");
