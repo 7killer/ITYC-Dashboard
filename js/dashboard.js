@@ -3814,6 +3814,8 @@ function buildlogBookHTML(race) {
         + '</table>';
         
     var raceStatusHeader = '<tr>'
+    + '<th colspan="10">Race Stages</th>'
+    + '</tr><tr>'
     + '<th title="Type">' + "Type" + '</th>'
     + '<th title="Name">' + "Name" + '</th>'
     + '<th title="Id">' + "Id" + '</th>'
@@ -3825,7 +3827,7 @@ function buildlogBookHTML(race) {
 
     var raceLine ="";
     
-    raceLine += makelogBookLine("Start ",
+    raceLine += makelogBookLine("🚩 Start",
                                 race.legdata.start.name,
                                 "Start",
                                 race.legdata.start.lat,race.legdata.start.lon,
@@ -3836,12 +3838,14 @@ function buildlogBookHTML(race) {
     {
         for (var i = 0; i < race.legdata.checkpoints.length; i++) {
             var cp = race.legdata.checkpoints[i];
-            var cp_name = "invisible";
+            var cp_name = "<i>Invisible</i>";
             if (cp.display != "none") cp_name = cp.display;  
             
+            cp_name = cp_name.charAt(0).toUpperCase() + cp_name.slice(1);
+            if (cp_name == 'Buoy') cp_name = '🏳️ ' + cp_name;
             var g_passed = "";
             if (race.gatecnt && race.gatecnt[cp.group - 1]) {
-                g_passed = "Passed";
+                g_passed = '<span style="color:#228B22">Passed</span>';
             } // mark/gate passed - semi transparent
 
             raceLine += makelogBookLine(cp_name,
@@ -3854,7 +3858,7 @@ function buildlogBookHTML(race) {
     }
     
 
-    raceLine += makelogBookLine("End ",
+    raceLine += makelogBookLine("🏁 End",
                                 race.legdata.end.name,
                                 "End",
                                 race.legdata.end.lat,race.legdata.end.lon,

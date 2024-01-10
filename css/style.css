@@ -421,7 +421,7 @@ td.bull {
     font-size:15px;
 }
 
-td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td.asail {
+td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td.asail, td.id {
     text-align: center;
     white-space: nowrap;
     
