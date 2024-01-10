@@ -236,6 +236,9 @@ td.bvmg {
 td.bspeed, td.sailPenalties, td.gybe, td.tack {
     text-align: center;
 }
+td.stamina {
+    text-align: center;
+}
 
 td.sail {
     text-align: left;
@@ -427,4 +430,12 @@ td.position>p {
 td.position p {
     font-size: 11px !important;
     line-height: 16px !important;
+}
+.entry-content tr td {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+.textMini {
+    font-size: 11px !important;
+    line-height: 1.4;
 }

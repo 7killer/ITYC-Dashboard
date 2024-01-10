@@ -317,12 +317,12 @@ var controller = function () {
         var retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
         if(r.curr.bestVmg.sailTWSMax != 0)
         {
-            retVal +='<div>'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+'kts |</div>';
+            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts | </div>';
         }
-        retVal += '<div>'+sailInfo+' |</div>';
+        retVal += '<div>'+sailInfo+'</div>';
         if(r.curr.bestVmg.sailTWAMax != 0)
         {
-            retVal +='<div>'+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
+            retVal +='<div class="textMini"> | '+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
         }
         retVal +="</td>";
         return   retVal; 
@@ -577,9 +577,9 @@ var controller = function () {
 
             raceId = r.id;
             var bestTwa = r.curr.bestVmg;
-            var bestVMGString = bestTwa.twaUp + " | " + bestTwa.twaDown;
-            var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + "kts";
-            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + "kts | " + bestTwa.btwa;
+            var bestVMGString = bestTwa.twaUp + '<span class="textMini">°</span> | ' + bestTwa.twaDown + '<span class="textMini">°</span>';
+            var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
+            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + bestTwa.btwa + '<span class="textMini">°</span>';
     
             var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
             var lastCalcStyle = ""
@@ -622,8 +622,7 @@ var controller = function () {
                 staminaTxt += " (x" + Util.roundTo(computeEnergyPenalitiesFactor(r.curr.stamina) , 2)+")" ;
             };
 
-            var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime">'+'</div>';
-
+            var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
 
             raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
             raceLine += (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
