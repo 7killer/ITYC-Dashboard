@@ -1227,7 +1227,10 @@ input[type="checkbox"] {
 }
 
 #lMapControls {
-    left: 42px;
+    margin-top: 12px !important;
+}
+.leaflet-left .leaflet-control {
+    margin-left: 12px !important;
 }
 .leaflet-control-custom {
     font-size: 14px;

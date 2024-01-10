@@ -4796,6 +4796,9 @@ async function initializeMap(race) {
         var race = races.get(raceId);
         if(!race) addRace(message);
         await updatePosition(message, race);
+
+        lMap.updateCoordinatesToCenterViewMap(message.pos.lat, message.pos.lon);
+
         //message._id.user_id message.displayName
         if (isFirstBoatInfo && cbRouter.checked) {
             callRouter(raceId, currentUserId, true,document.getElementById("sel_router").value);
