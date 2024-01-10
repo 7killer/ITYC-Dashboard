@@ -671,9 +671,9 @@ var controller = function () {
             }
 
             if(r.curr.tsEndOfSailChange)
-                raceLine += '<td class="sail" ' + getBG(r.curr.tsEndOfSailChange) + '>' + formatSeconds(r.curr.tsEndOfSailChange - r.curr.lastCalcDate) + '</td>';
+                raceLine += '<td class="sailPenalties" ' + getBG(r.curr.tsEndOfSailChange) + '>' + formatSeconds(r.curr.tsEndOfSailChange - r.curr.lastCalcDate) + '</td>';
             else
-                raceLine += '<td class="sail"> - </td>';
+                raceLine += '<td class="sailPenalties"> - </td>';
             if(r.curr.tsEndOfGybe)
                 raceLine += '<td class="gybe" ' + getBG(r.curr.tsEndOfGybe) + '>' + formatSeconds(r.curr.tsEndOfGybe - r.curr.lastCalcDate) + '</td>';
             else
@@ -953,7 +953,7 @@ var controller = function () {
                     + '<td class="stamina" ' + staminaStyle + '>' + staminaTxt  + '</td>'
                     + '<td class="tack">' + tack + '</td>'
                     + '<td class="gybe">' + gybe + '</td>'
-                    + '<td class="sail">' + sail + '</td>'
+                    + '<td class="sailPenalties">' + sail + '</td>'
                     + '<td class="agrd" style="background-color:' + agroundBG + ';">' + (r.curr.aground ? "AGROUND" : "No") + '</td>'
                     + '<td class="man">' + (manoeuvering ? "Yes" : "No") + '</td>';
                 
@@ -1631,7 +1631,7 @@ var controller = function () {
                 + Util.gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist)
                 + Util.gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", Util.roundTo(rinfo.deltaT, 0))
                 + Util.gentdRacelog("position", "position", null, "Position", Util.formatPosition(rinfo.pos.lat, rinfo.pos.lon))
-                + '<td class="sail" ' + getBG(rinfo.sailTime) + '>' + sailChange + '</td>'
+                + '<td class="sailPenalties" ' + getBG(rinfo.sailTime) + '>' + sailChange + '</td>'
                 + '<td class="gybe" ' + getBG(rinfo.gybeTime) + '>' + gybing + '</td>'
                 + '<td class="tack" ' + getBG(rinfo.tackTime) + '>' + tacking + '</td>'
                 + '</tr>';
