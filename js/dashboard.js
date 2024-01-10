@@ -1424,7 +1424,7 @@ var controller = function () {
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
                         + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
                         + Util.gentd("State", "", txtTitle, iconState)
-                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat">❌</span>' : ""))
+                        + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat: ' + bi.name + '">❌</span>' : ""))
                         + '</tr>';
                 }
             }
