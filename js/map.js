@@ -797,25 +797,43 @@ async function initialize(race,raceFleetMap)
              });
             lMapInfos = race.lMap;
         }
-        initButtonToCenterView(race.curr.pos.lat, race.curr.pos.lon, map);
+        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map);
     }
 }
 
-function initButtonToCenterView(lat, lon, map) {
-    // HTML
-    var buttonHTML = `
-    <div id="lMapControls" class="leaflet-top leaflet-left">
-        <div class="leaflet-control leaflet-bar">
-            <a id="recenterButton" class="leaflet-control-custom" href="#">🎯</a>
-        </div>
-    </div>`;
-    var mapContainer = document.querySelector(".leaflet-top.leaflet-left");
-    mapContainer.insertAdjacentHTML('afterbegin', buttonHTML);
-    // Control
-    document.getElementById('recenterButton').addEventListener('click', function (e) {
-        e.preventDefault();
-        map.setView([lat, lon], map.getZoom());
-    });
+function initButtonToCenterViewMap(lat, lon, map) {
+    let recenterButton = document.getElementById('recenterButton');
+    if (recenterButton) {
+        updateCoordinatesToCenterViewMap(lat, lon);
+    }
+    else {
+        // HTML
+        let buttonHTML = `
+        <div id="lMapControls" class="leaflet-control-custom leaflet-control leaflet-bar">
+            <a id="recenterButton" title="Centrer" href="#">🎯</a>
+        </div>`;
+        let mapContainer = document.querySelector(".leaflet-top.leaflet-left");
+        mapContainer.insertAdjacentHTML('afterbegin', buttonHTML);
+        recenterButton = document.getElementById('recenterButton');
+        recenterButton.setAttribute('data-lat', lat);
+        recenterButton.setAttribute('data-lon', lon);
+        // Control
+        recenterButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            let defaultZoom = 10;
+            if (map.getZoom() >= defaultZoom) defaultZoom = map.getZoom();
+            let lat = parseFloat(recenterButton.getAttribute('data-lat'));
+            let lon = parseFloat(recenterButton.getAttribute('data-lon'));
+            map.setView([lat, lon], defaultZoom);
+        });
+    }
+}
+function updateCoordinatesToCenterViewMap(lat, lon) {
+    let recenterButton = document.getElementById('recenterButton');
+    if (recenterButton) {
+        recenterButton.setAttribute('data-lat', lat);
+        recenterButton.setAttribute('data-lon', lon);
+    }
 }
 
 function updateBounds(race)
@@ -1493,5 +1511,5 @@ const getLocal = (k) => {
 export {
     initialize,updateMapCheckpoints,updateMapFleet,cleanMap,set_displayFilter,set_currentId,set_currentTeam,
     updateMapWaypoints,updateMapMe,updateMapLeader,
-    importRoute,hideRoute,showRoute,deleteRoute,onMarkersChange,hideShowTracks,setProjectionLineColor,setProjectionLineSize
+    importRoute,hideRoute,showRoute,deleteRoute,onMarkersChange,hideShowTracks,setProjectionLineColor,setProjectionLineSize, updateCoordinatesToCenterViewMap
 };

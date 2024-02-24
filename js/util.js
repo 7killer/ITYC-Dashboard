@@ -255,6 +255,7 @@ function gentd(name, style,title, value) {
 function gentdRacelog(className, checkboxConfigName, style, title, value) {
     var checkboxId = "racelog_" + checkboxConfigName;
     var checkBox = document.getElementById(checkboxId);
+    if (!style || style === null) style = '';
     if ((! checkBox ) || checkBox.checked ) {
         return '<td class="' + className + '" ' 
             + style 
