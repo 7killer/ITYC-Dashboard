@@ -724,6 +724,8 @@ async function initialize(race,raceFleetMap)
                     var polygonPts0 = [];
                     var polygonPts1 = [];
                     var polygonPts2 = [];
+                    var restrictedZoneColor = "red";
+                    if(restrictedZone.color) restrictedZoneColor = restrictedZone.color;
                     for (var i = 0; i < restrictedZone.vertices.length; i++) {
 
                         let ptRz = [restrictedZone.vertices[i].lat, restrictedZone.vertices[i].lon];
@@ -735,21 +737,21 @@ async function initialize(race,raceFleetMap)
                     }  
                     L.polygon(polygonPts0,
                             {
-                                color: restrictedZone.color,
+                                color: restrictedZoneColor,
                                 stroke : 0.35,
                                 weight : 1,
                             }
                         ).addTo(race.lMap.refLayer);
                     L.polygon(polygonPts1,
                             {
-                                color: restrictedZone.color,
+                                color: restrictedZoneColor,
                                 stroke : 0.35,
                                 weight : 1,
                             }
                         ).addTo(race.lMap.refLayer);
                     L.polygon(polygonPts2,
                             {
-                                color: restrictedZone.color,
+                                color: restrictedZoneColor,
                                 stroke : 0.35,
                                 weight : 1,
                             }
