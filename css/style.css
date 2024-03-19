@@ -370,7 +370,7 @@ td.bvmg  {
     text-align: center;
     white-space: nowrap;
 }
-td.bspeed,td.sail,td.gybe,td.tack {
+td.bspeed, td.sailPenalties, td.gybe, td.tack {
     text-align: center;
 }
 
@@ -421,7 +421,7 @@ td.bull {
     font-size:15px;
 }
 
-td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td.asail {
+td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td.asail, td.id {
     text-align: center;
     white-space: nowrap;
     
@@ -1234,7 +1234,10 @@ input[type="checkbox"] {
 }
 
 #lMapControls {
-    left: 42px;
+    margin-top: 12px !important;
+}
+.leaflet-left .leaflet-control {
+    margin-left: 12px !important;
 }
 .leaflet-control-custom {
     font-size: 14px;
