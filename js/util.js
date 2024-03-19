@@ -55,7 +55,12 @@ function formatDHMS(seconds) {
     var days = Math.floor(seconds / 86400);
     var hours = Math.floor(seconds / 3600) % 24;
     var minutes = Math.floor(seconds / 60) % 60;
-    return pad0(days) + "d " + pad0(hours) + "h " + pad0(minutes) + "m"; // + seconds + "s";
+    let retVal = "";
+    if(days!=0) retVal = pad0(days) + "d " + pad0(hours) + "h " + pad0(minutes) + "m";
+    else if(hours!=0) retVal = pad0(hours) + "h " + pad0(minutes) + "m";
+    else retVal = pad0(minutes) + "m"; 
+
+    return retVal;
 }
 
 function formatHHMMSSSS (d) {
@@ -459,7 +464,12 @@ function readTextFile(file) {
     return csvFile;
 }
 
-
+function callCopyValue() {
+    var CopyText = document.getElementById("pos_v");
+    CopyText.select();
+    navigator.clipboard.writeText(CopyText.value);
+  }
+  
 function cpy2Clipbord(text) {
     var el = document.createElement('textarea');
     el.value = text;
@@ -514,87 +524,29 @@ var createRingBuffer = function(length){
       }
     };
   };
-/* Fonctions inutilisées --------------------------------------------------
-function addDistance (pos, distnm, angle, radiusnm) {
-    var posR = {};
-    posR.lat = toRad(pos.lat);
-    posR.lon = toRad(pos.lon);
-    var d = distnm / radiusnm;
-    var angleR = toRad(angle);
-    var dLatR = d * Math.cos(angleR);
-    var dLonR = d * (Math.sin(angleR) / Math.cos(posR.lat + dLatR));
-    return { "lat": toDeg(posR.lat + dLatR),
-             "lon": toDeg(posR.lon + dLonR) };
-}
 
-function formatMS(seconds) {
-    if (seconds === undefined || isNaN(seconds) || seconds < 0) {
-        return "-";
-    }
-    seconds = Math.floor(seconds / 1000);
-    var minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
-
-    return pad0(minutes) + "m" + pad0(seconds) + "s";
-}
-
-function intersectionPoint (p, q, m, r) {
-    // Compute the intersection points of a line (p, q) and a circle (m, r)
-
-    // Center on circle
-    var s = {}; s.x = p.lat - m.lat; s.y = p.lon - m.lon;
-    var t = {}; t.x = q.lat - m.lat; t.y = q.lon - m.lon;
-
-    // Aux variables
-    var d = {}; d.x = t.x - s.x; d.y = t.y - s.y;
-
-    var dr2 = d.x * d.x + d.y * d.y;
-    var D =  s.x * t.y - t.x * s.y;
-    var D2 = D * D;
-
-    // Check if line intersects at all
-    var discr = r * r * dr2 - D2;
-    if (discr < 0) {
-        return null;
-    }
-
-    // Compute intersection point of (infinite) line and circle
-    var R = Math.sqrt( r * r * dr2 - D2);
-
-    var x1 = (D*d.y + sign(d.y) * d.x * R)/dr2;
-    var x2 = (D*d.y - sign(d.y) * d.x * R)/dr2;
-
-    var y1 = (-D*d.x + Math.abs(d.y) * R)/dr2;
-    var y2 = (-D*d.x - Math.abs(d.y) * R)/dr2;
-
-    var l1 = (x1 - s.x) / d.x;
-    var l2 = (x2 - s.x) / d.x;
-
-    // Check if intersection point is on line segment;
-    // choose intersection point closer to p
-    if (l1 >= 0 && l1 <= 1 && l1 <= l2) {
-        return {"lat": x1 + m.lat, "lng": y1 + m.lon, "lambda": l1};
-    } else if (l2 >= 0 && l2 <= 1) {
-        return {"lat": x2 + m.lat, "lng": y2 + m.lon, "lambda": l2};
-    } else {
-        return null;
-    }
-}
-
-function raceDistance (course) {
-    var dist = 0;
-    for (i = 1; i < course.length; i++) {
-        dist += gcDistance(course[i-1], course[i]);
-    }
-    return dist;
-}
-*/
-
+  function openTab(url, baseUrl,reuseTab)
+  {
+      var isTabActive = false;
+      var tabId = 0;
+      chrome.tabs.query({}, function(tabs) { 
+          for(var i=0;i<tabs.length;i++) {
+              if(tabs[i].url.toLowerCase().includes(baseUrl.toLowerCase()) == true) {
+                  isTabActive = true;
+                  tabId = tabs[i].id;
+                  break;
+              }
+          }
+  
+          if(isTabActive == false || !reuseTab) {
+              chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
+          } else{
+              chrome.tabs.update(tabId, {url:url,selected:true});
+          }
+      });
+  }
+  
 export { angle,
-         // addDistance,        // Fct inutilisée
-         // formatMS,           // Fct inutilisée
-         // intersectionPoint,  // Fct inutilisée
-         // raceDistance,       // Fct inutilisée
          courseAngle,
          formatDDMMYY,
          formatDHMS,
@@ -611,7 +563,7 @@ export { angle,
          toRad,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
-         formatShortDate,readTextFile,cpy2Clipbord,sailId2Color,
-         genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,
+         formatShortDate,readTextFile,callCopyValue,sailId2Color,
+         genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,openTab
        };
 

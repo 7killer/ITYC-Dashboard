@@ -163,7 +163,7 @@ var controller = function () {
 
 // ---------------------------------------------------------------------------
 
-    var selRace, selNmeaport, selFriends;
+    var selRace, selNmeaport;
     var cbFriends, cbOpponents, cbCertified, cbTeam, cbTop, cbReals, cbSponsors,cbTrackinfos, cbWithLastCmd,cbSelect, cbInRace, cbRouter, cbReuseTab, cbLocalTime, cbRawLog, cbNMEAOutput;
     var lbBoatname, lbTeamname, lbCycle;
     var currentCycle;
@@ -3091,7 +3091,8 @@ var controller = function () {
     }
 
     function display_selbox(state) {
-        selFriends.style.visibility = state;
+        document.getElementById("sel_skippers").style.visibility = state;
+        document.getElementById("sel_export").style.visibility = state;
     }
 
 
@@ -3314,26 +3315,7 @@ var controller = function () {
 		};
     }
     /////////////////////////  Router / polar site call back
-    function openTab(url, baseUrl,reuseTab)
-    {
-        var isTabActive = false;
-        var tabId = 0;
-        chrome.tabs.query({}, function(tabs) { 
-            for(var i=0;i<tabs.length;i++) {
-                if(tabs[i].url.toLowerCase().includes(baseUrl.toLowerCase()) == true) {
-                    isTabActive = true;
-                    tabId = tabs[i].id;
-                    break;
-                }
-            }
-    
-            if(isTabActive == false || !reuseTab) {
-                chrome.tabs.create({ url:url },async function(tab){chrome.tabs.move(tab.id, {index: tab.index+1});});
-            } else{
-                chrome.tabs.update(tabId, {url:url,selected:true});
-            }
-        });
-    }
+
 
 
 
@@ -3463,13 +3445,13 @@ var controller = function () {
         // https://routage.vrzen.org/Course/CourseParDefaut/atitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut/EnergieParDefaut   
         var baseURL = prepareVrzUrl(raceId);
         var url = prepareVrzFullUrl(raceId,pid); 
-        openTab(url, baseURL,(cbReuseTab.checked && pid == currentUserId));
+        Util.openTab(url, baseURL,(cbReuseTab.checked && pid == currentUserId));
     
     }
     function callRouterZezo(raceId, pid, beta, auto = false) {
         var urlBeta =  "http://zezo.org/"+ races.get(raceId).url+ (beta ? "b" : "")+"/chart.pl?";
         var url = prepareZezoUrl(raceId, pid, beta, auto);
-        openTab(url, urlBeta,(cbReuseTab.checked && pid == currentUserId));
+        Util.openTab(url, urlBeta,(cbReuseTab.checked && pid == currentUserId));
     }
 
     function callWindy(raceId, userId) {
@@ -3488,7 +3470,7 @@ var controller = function () {
         if (uinfo) pos = uinfo.pos;
         var url = baseURL + "/?gfs," + pos.lat + "," + pos.lon + ",6,i:pressure,d:picker";
         
-        openTab(url, r.url,cbReuseTab.checked);
+        Util.openTab(url, r.url,cbReuseTab.checked);
     }
     function preparePolarBaseUrl()
     {
@@ -3529,7 +3511,7 @@ var controller = function () {
     function callPolars(raceId) {
         var baseURL = preparePolarBaseUrl() + "race_id=" + raceId;   
         var url = preparePolarUrl(raceId);
-        openTab(url, baseURL,cbReuseTab.checked);
+        Util.openTab(url, baseURL,cbReuseTab.checked);
     }
 
     function getITYCBase() {
@@ -3608,7 +3590,7 @@ var controller = function () {
     function callITYC(raceId) {
         var baseURL = getITYCBase()+getITYCBoat(raceId);
         var url =  getITYCFull(baseURL,raceId);
-        openTab(url, baseURL,cbReuseTab.checked);
+        Util.openTab(url, baseURL,cbReuseTab.checked);
     }
 
     function callPolarAnalysis(rtSite="ityc")
