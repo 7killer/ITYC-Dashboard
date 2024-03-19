@@ -4181,7 +4181,12 @@ async function initializeMap(race) {
         await saveLocal("cb_" + this.id,this.checked);
     }
     async function saveOptionN(e) {
-        await saveLocal("cb_" + this.id,this.value);
+        await saveLocal(this.id,this.value);
+    }
+    async function saveOptionNRid(e) { 
+        if(selRace.value !=0) 
+            await saveLocal(this.id + selRace.value,this.value);
+           
     }
     async function getOption(name,def) {
         
@@ -4201,11 +4206,35 @@ async function initializeMap(race) {
         }
         
     }
-    async function getOptionN(name,def) {
-        var z = await getLocal("cb_" + name,def);
+
+    async function getOptionNG(name,def) {
+        var z = await getLocal(name,def);
         if (z === undefined && def !== undefined) {
             z = def;
-            await saveLocal("cb_" + name,def);
+            await saveLocal(name,def);
+        }
+        if(z !== undefined) {
+            var inputBox = document.getElementById(name);
+                if(inputBox) 
+                {
+                    inputBox.value = z;
+                    var event = new Event('change');
+                    inputBox.dispatchEvent(event);
+                }
+        }
+        return z;
+    }
+
+
+    async function getOptionN(name,def) {
+        return await getOptionNG(name,def);
+    }
+
+    async function getOptionNRid(name,def,rid) {
+        var z = await getLocal(name + rid,def);
+        if (z === undefined && def !== undefined) {
+            z = def;
+            await saveLocal(name,def);
         }
         if(z !== undefined) {
             var inputBox = document.getElementById(name);
@@ -4281,8 +4310,7 @@ async function initializeMap(race) {
 
         await getOption("sel_polarSite",1);
     
-        let fullScreen_Size = await getOptionN("fullScreen_Size",80);
-        document.getElementById("fullScreen_Size").value = fullScreen_Size;
+        await getOptionN("fullScreen_Size",80);
 
         let projectionColor = await getOptionN("sel_projectionColorLmap","#b86dff");
         lMap.setProjectionLineColor(projectionColor);
@@ -4452,7 +4480,6 @@ async function initializeMap(race) {
         selRace = document.getElementById("sel_race");
         lbCycle = document.getElementById("lb_cycle");
         selNmeaport = document.getElementById("sel_nmeaport");
-        selFriends = document.getElementById("sel_skippers");
         cbFriends = document.getElementById("sel_friends");
         cbOpponents = document.getElementById("sel_opponents");
         cbCertified = document.getElementById("sel_certified");
