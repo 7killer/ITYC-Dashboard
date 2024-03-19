@@ -539,7 +539,7 @@ fieldset {
     background: #555555;
     color: #F5F5F5;
 }
-#sel_skippers {
+#sel_skippers, #sel_export {
     margin-left:5em;
     visibility: visible;
     margin-top: 0.1em;
@@ -1160,9 +1160,16 @@ a:active {
     margin :2em;
 }
 
-#raceidTable,#raceidTable2 ,#raceStatusTable, #restrictedZonesTable{
-    margin-bottom: 3em;
+#raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
+    margin-bottom: 1.5em;
 }
+#raceStatusTable {
+    margin-bottom: 0.2em;
+
+
+}
+
+
 table#raceidTable2>tbody>tr>td {
     text-align: center;
 }
