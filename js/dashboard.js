@@ -10,6 +10,7 @@ import * as rt from './routingviewer.js';
 import * as tr from './tracker.js';
 import * as gr from './graph.js';
 import * as nf from './notif.js'
+import * as exp from './exportTool.js'
 
 var controller = function () {
 
@@ -2351,51 +2352,23 @@ var controller = function () {
         return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
     }
 
-    function formatLongDate(ts) {
-        var tsOptions = {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: false
-        };
-        var d = (ts) ? (new Date(ts)) : (new Date());
-        return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
-    }
 
-    
+
+    function exportStamina()
+    {
+        exp.exportStamina(paramStamina);
+    }
     function exportPolar()
     {
-        function saveFile(fileName,urlFile){
-            let a = document.createElement("a");
-            a.style = "display: none";
-            document.body.appendChild(a);
-            a.href = urlFile;
-            a.download = fileName;
-            a.click();
-            window.URL.revokeObjectURL(urlFile);
-            a.remove();
-        }
-      //  if(format="json")
-        {
-            Object.keys(polars).forEach(function (id) {
-                var boatName = polars[id].label.split('/')[1]?polars[id].label.split('/')[1]:polars[id].label;
-                boatName = boatName.replace('-','_');
-                var ExportedData ="data_"+ boatName +" = '[";
-                ExportedData += JSON.stringify(polars[id]);
-                ExportedData += "]'"
-                var boatName = polars[id].label.split('/')[1]?polars[id].label.split('/')[1]:polars[id].label;
-                let blobData = new Blob([ExportedData], {type: "text/plain"});
-                let url = window.URL.createObjectURL(blobData);
-                saveFile(boatName+'.json',url);
-            });
-
-
-        }
-
+        exp.exportPolar(polars)
     }
 
+    function exportGraphData()
+    {
+        var race = races.get(selRace.value);
+        if (!race)  return;
+        exp.exportGraphData(race,csvSep);
+    }
     function saveFile(fileName,urlFile){
         let a = document.createElement("a");
         a.style = "display: none";
@@ -2482,88 +2455,8 @@ var controller = function () {
         saveFile(race.legdata.name+'_'+race.id + '_Fleet_'+date+'.csv',url);
 
     }
-    function exportStamina()
-    {
 
-        if(!paramStamina.consumption) return;
-      //  if(format="json")
-      var ExportedData = "stamina = ";
-      ExportedData += JSON.stringify(paramStamina);
-      let blobData = new Blob([ExportedData], {type: "text/plain"});
-      let url = window.URL.createObjectURL(blobData);
-      saveFile('stamina.json',url);  
-    }
-    function exportGraphData()
-    {
-        function printDate(tps) {
-            var a = new Date(Number(tps));
-            var year = a.getFullYear();
-            var month = a.getMonth();
-            var date = a.getDate();
-            var hour = a.getHours();
-            var min = a.getMinutes();
-            var sec = a.getSeconds();
-        
-            if(hour<10) hour = "0"+hour;
-            if(min<10) min = "0"+min;
-            if(sec<10) sec = "0"+sec;
-            
-            var pDate = date + '/' + month + '/' + year + ' ' + hour + 'h' + min;
-            if(sec!=0) pDate += ':' + sec ;
-            return pDate;
-        }
-
-        var fileContent = "Race data\n";
-        fileContent += "Date;"+printDate(Date.now()) +" \n";
-
-        var race = races.get(selRace.value);
-        if(race && race.recordedData) {
-            let rid = selRace.value; 
-            let recordedInfos = race.recordedData;
-            var raceDatas = DM.getRaceInfos(rid);
-            var raceName = raceDatas.legName?raceDatas.legName:raceDatas.name;
-
-            fileContent += "RaceID"+csvSep+rid; 
-            fileContent += "\n";
-            fileContent += "Race Name"+csvSep + raceName.remExportAcc(); 
-            fileContent += "\n\n";
-            fileContent += "Time"+csvSep+"TWS"+csvSep+"TWD"+csvSep+"TWA"+csvSep+"HDG"+csvSep+"Speed"+csvSep+"Stamina"+csvSep+"Sail\n";
-           
-            for(var i=0;i<recordedInfos.ts.length;i++) {
-                fileContent += printDate(recordedInfos.ts[i])+csvSep;
-   
-                var data = recordedInfos.tws[i]?((recordedInfos.tws[i] +csvSep)):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.twd[i]?((recordedInfos.twd[i] +csvSep).replace(".",",")):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.twa[i]?((recordedInfos.twa[i] +csvSep).replace(".",",")):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.hdg[i]?((recordedInfos.hdg[i] +csvSep).replace(".",",")):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.bs[i]?((recordedInfos.bs[i] +csvSep).replace(".",",")):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.stamina[i]?((recordedInfos.stamina[i] +csvSep).replace(".",",")):csvSep;
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-                data = recordedInfos.sail.id[i]?(sailNames[recordedInfos.sail.id[i]].split(" ")[0] +csvSep+"\n"):csvSep+"\n";
-                if(csvSep!=',') data.replace(".",",");
-                fileContent += data;
-            }
-
-            
-            let blobData = new Blob([fileContent], {type: "text/plain"});
-            let url = window.URL.createObjectURL(blobData);
-            let fileName = "graphData_";
-            fileName += rid;
-            fileName += ".csv";
-            saveFile(fileName,url);
-        }
-    }
+    
 
     function graphCleanData() {
         var race = races.get(selRace.value);
@@ -2794,6 +2687,7 @@ var controller = function () {
         switchMap(race);
         if (cbNMEAOutput.checked) 
             NMEA.setActiveRace(raceId);
+        await getOptionNRid("sailRankRaceId","",selRace.value);
     }
 
     function transformRaceLegId(id)
@@ -3053,6 +2947,7 @@ var controller = function () {
                 else if (call_vrzen) callRouter(selRace.value, rmatch, false,"vrzen");
             } else if (cbox) {
                 // Skippers-Choice
+                if(ev_lbl == "sel_ExportFleet") {onFleetInCpyClipBoard();return;}
                 changeState(ev_lbl);
                 var tabClick = originClick; 
                 if (tabClick == 2 || tabClick == 4 || tabClick == 5) {
@@ -4420,6 +4315,7 @@ async function initializeMap(race) {
         document.getElementById("auto_clean" ).addEventListener("change", saveOption);
         document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);   
         document.getElementById("sel_Seperator").addEventListener("change", selectSeparator);
+        document.getElementById("sailRankRaceId" ).addEventListener("change", saveOptionNRid);   
 
         document.getElementById("racelog_position").addEventListener("change", saveOption);
         document.getElementById("racelog_stamina").addEventListener("change", saveOption);
@@ -5479,6 +5375,12 @@ async function initializeMap(race) {
         if (!race)  return;
         rt.onSkipperSelectedChange("Lmap");
 
+    }
+
+    function onFleetInCpyClipBoard() {
+        var race = races.get(selRace.value);
+        if (!race)  return;
+        exp.onFleetInCpyClipBoard(raceFleetMap.get(selRace.value),currentUserId,race);
     }
 
     let tracksState = true;

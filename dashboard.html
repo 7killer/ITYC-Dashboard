@@ -168,6 +168,16 @@
                     </li>
                 </ul>
             </fieldset>
+            <fieldset  class="fieldset" id="sel_export"  id="export" align="left">
+                <legend>Export</legend>
+                <ul class="tab2">
+                    <li class="tab">
+                        <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
+                        <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRank - CSV in clipboard">SailRanks</label>
+                    </li>
+                </ul>
+            </fieldset>
+                
             <div align="inline" style="position:relative;"></div>
         </div>
     </div>
@@ -434,20 +444,24 @@
                         <tr class="us_line">
                             <td class="us_title" id="t_config_m">Carte</td>
                             <td colspan="3"><input type="checkbox" id="track_infos"><label for="track_infos" id="t_track_infos">Charger infos traces (redémarrage dashboard requis)</label></td>
-                            <td colspan="4">
+                            <td colspan="5">
                                 <label for="projectionLine_Size" id="t_projectionLine_Size">Taille ligne de projection</label>
                                 <input type="number" min="0" max="360" id="projectionLine_Size" value="20"> min</td>
                             </td>
-                            <td colspan="14"></td>
+                            <td colspan="12"></td>
                         </tr>
 
                         <tr class="us_line2">
                             <td class="us_title" id="t_config_f">Flotte</td>
-                            <td colspan="4"><input type="checkbox" id="abbreviatedOption" checked><label for="abbreviatedOption" id="t_abbreviatedOption">Options abrégées</label></td>
+                            <td colspan="2"><input type="checkbox" id="abbreviatedOption" checked><label for="abbreviatedOption" id="t_abbreviatedOption">Options abrégées</label></td>
+                            <td colspan="3">
+                                <label for="sailRankRaceId" id="t_sailRankRaceId">sailRank Race Id</label>
+                                <input type="number" id="sailRankRaceId" value=""></td>
+                            </td>
                             <td colspan="8">
                                 <input type="checkbox" id="auto_clean" checked><label for="auto_clean" id="t_auto_clean">Nettoyage infos obsolètes</label>
                                 <input type="number" min="0" max="360" id="auto_cleanInterval" value="5"> min</td>
-                            <td colspan="9"></td>
+                            <td colspan="8"></td>
                         </tr>
                         <tr class="us_line">
                             <td id="t_config_c">Colonnes</td>
@@ -477,7 +491,7 @@
                                 <select id="sel_Seperator" name="type" class="notif">
                                     <option value ="sep_1" id="t_sep_1">; (EU style)</option>
                                     <option value ="sep_2" id="t_sep_2">, (US style)</option>
-                                    <option value ="sep_3" id="t_sep_3">Tab (<a href="https://sailranks.com/v/home">SailRank</a>)</option>
+                                    <option value ="sep_3" id="t_sep_3">Tab (<a href="https://sailranks.com/v/home">SailRanks</a>)</option>
                                 </select>
                             </td>
                             <td colspan="20">
