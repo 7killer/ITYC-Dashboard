@@ -355,7 +355,7 @@ export function exportGraphData(race,csvSep)
     }
 }
 
-function exportStamina(paramStamina)
+export function exportStamina(paramStamina)
 {
 
     if(!paramStamina || !paramStamina.consumption) return;

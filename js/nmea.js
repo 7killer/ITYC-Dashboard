@@ -3,10 +3,18 @@
 
 import * as Util from './util.js';
 
+const NMEA_DELAY=1000;
+const NMEA_DELAY_MAX=NMEA_DELAY*120;
+const AIS_DELAY=60000;
+const AIS_DELAY_MAX=AIS_DELAY*120;
+
 var settings = {
     "proxyPort": "8081",
-    "nmeaInterval": 2000,
-    "aisInterval": 60000
+    "nmeaInterval": NMEA_DELAY,
+    "aisInterval": AIS_DELAY,
+    "nmeaRetry" : 0,
+    "activated" : false
+    
 }
 
 var running = false;
@@ -15,64 +23,93 @@ var crcTable = makeCRCTable();
 
 var nmeaTimer;
 var aisTimer;
-var activeRace =""
+var activeRace;
 function setActiveRace(rid)
 {
-    activeRace = rid
+    activeRace = rid;
+    settings.nmeaRetry = 0;
+    settings.nmeaInterval = NMEA_DELAY;
 }
 
-function start (races, raceFleetMap, isDisplay) {
+
+
+async function start (races, raceFleetMap, isDisplay) {
     if (running) {
         return;
     } else {
-        running = true,
-        sendNMEA(races);
+        running = true;
+        settings.nmeaRetry = 0;
+        settings.nmeaInterval = NMEA_DELAY;
+        settings.activated = true;
+        document.getElementById("ledNmeaStatus").style.color = "LimeGreen";
+        await sendNMEA(races);
         nmeaTimer = window.setInterval(sendNMEA, settings.nmeaInterval, races);
-        sendAIS(races, raceFleetMap, isDisplay);
+        await sendAIS(races, raceFleetMap, isDisplay);
         aisTimer = window.setInterval(sendAIS, settings.aisInterval, races, raceFleetMap, isDisplay);
     }
 }
 
 function stop () {
     if (!running) {
+        
+        settings.activated = false;
+        document.getElementById("ledNmeaStatus").style.color = "LightGrey";
         return;
     } else {
+        settings.activated = false;
         running = false;
+        settings.nmeaRetry = 0;
+        document.getElementById("ledNmeaStatus").style.color = "LightGrey";
+        settings.nmeaInterval = NMEA_DELAY;
         window.clearInterval(nmeaTimer);
         window.clearInterval(aisTimer);
     }
 }
 
-function sendNMEA (races) {
+async function sendNMEA (races) {
     try {
-        races.forEach(function (r) {
+        if(settings.activated == false) return;
+        await races.forEach(async function (r) {
+            
             if (r.curr && r.id == activeRace) {
+                settings.nmeaRetry++;
+                if(settings.nmeaRetry > 2)
+                {
+                    settings.nmeaInterval = settings.nmeaInterval*2;
+                    if(settings.nmeaInterval  > NMEA_DELAY_MAX) settings.nmeaInterval = NMEA_DELAY_MAX;
+                }
+
+
                 var rmc = formatGPRMC(r.curr);
                 var mwv = formatIIMWV(r.curr);
                 var vwr = formatIIVWR(r.curr);
                 var hdt = formatIIHDT(r.curr);
                 var rpm = formatRPM(r.curr);
-                sendSentence(r.id, "$" + rmc + "*" + nmeaChecksum(rmc));
-                sendSentence(r.id, "$" + mwv + "*" + nmeaChecksum(mwv));
-                sendSentence(r.id, "$" + vwr + "*" + nmeaChecksum(vwr));
-                sendSentence(r.id, "$" + hdt + "*" + nmeaChecksum(hdt));
-                sendSentence(r.id, "$" + rpm + "*" + nmeaChecksum(rpm));
+                let err = false;
+                err = await sendSentence(r.id, "$" + rmc + "*" + nmeaChecksum(rmc));
+                /*if(!err) err = */await sendSentence(r.id, "$" + mwv + "*" + nmeaChecksum(mwv));
+                /*if(!err) err = */await sendSentence(r.id, "$" + vwr + "*" + nmeaChecksum(vwr));
+                /*if(!err) err = */await sendSentence(r.id, "$" + hdt + "*" + nmeaChecksum(hdt));
+                /*if(!err) err = */await sendSentence(r.id, "$" + rpm + "*" + nmeaChecksum(rpm));
             }
         });
     } catch (e) {
-        alert (e);
+    //    alert (e);
     }
 }
 
 // Send fleet through NMEA/AIS
-function sendAIS (races, raceFleetMap, isDisplay) {
-    races.forEach( function (r) {
+async function sendAIS (races, raceFleetMap, isDisplay) {
+    if(settings.activated == false) return;
+    if(settings.nmeaInterval>NMEA_DELAY*120) return;
+    await races.forEach(async function (r) {
         if (r.curr && r.id == activeRace) {
             
             var fleet = raceFleetMap.get(r.id);
             
             // For each opponent
-            Object.keys(fleet.uinfo).forEach( function (uid) {
+            var err = false;
+            await Object.keys(fleet.uinfo).forEach(async function (uid) {
                 var info = fleet.uinfo[uid];
                 
                 if (isDisplay(info, uid) && (info.displayName != r.curr.displayName)) {
@@ -82,25 +119,59 @@ function sendAIS (races, raceFleetMap, isDisplay) {
                     }
                     // Send position report data (Type1)
                     var aivdm = formatAIVDM_AIS_msg1(info.mmsi, info);
-                    sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
+                    if(!err) err = await sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
                     // Send static and voyage related data (Type5)
                     aivdm = formatAIVDM_AIS_msg5(info.mmsi, info);
-                    sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
+                    if(!err) err = await sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
                 }
             });
         }
     });
 }
 
-function sendSentence (raceId, sentence) {
+async function sendSentence (raceId, sentence) {
 
-    new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
+
         var request = new XMLHttpRequest();
         request.open("POST", "http://localhost:" + settings.proxyPort + "/nmea/" + raceId, true);
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.timeout = 2000; // Set a timeout for the request (5 seconds)
+
+        request.onreadystatechange = function () {
+            if (request.readyState === 4) {
+              if(request.status == 200)
+              {
+                settings.nmeaRetry = 0;
+                
+                document.getElementById("ledNmeaStatus").style.color = "LimeGreen";
+                resolve(true);
+              } else{
+               // console.log("nmea err: " + request.status);
+                if(settings.nmeaInterval  >= NMEA_DELAY_MAX) 
+                    document.getElementById("ledNmeaStatus").style.color = "Red";
+                else
+                    document.getElementById("ledNmeaStatus").style.color = "Orange";
+                resolve(false);
+              }
+            }};
+            request.onerror = function() {                
+                if(settings.nmeaInterval  >= NMEA_DELAY_MAX) 
+                    document.getElementById("ledNmeaStatus").style.color = "Red";
+                else
+                    document.getElementById("ledNmeaStatus").style.color = "Orange";
+                reject(false);
+            };
+    
+            request.ontimeout = function() {
+                if(settings.nmeaInterval  >= NMEA_DELAY_MAX) 
+                    document.getElementById("ledNmeaStatus").style.color = "Red";
+                else
+                    document.getElementById("ledNmeaStatus").style.color = "Orange";
+                reject(false);
+            };
 
         request.send(sentence);
-        resolve(true);
     });
 }
 
