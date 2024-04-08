@@ -1242,3 +1242,7 @@ input[type="checkbox"] {
 .leaflet-control-custom {
     font-size: 14px;
 }
+.textMini {
+    font-size: 11px !important;
+    line-height: 1.4;
+}

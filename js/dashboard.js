@@ -580,7 +580,7 @@ var controller = function () {
             var bestTwa = r.curr.bestVmg;
             var bestVMGString = bestTwa.twaUp + '<span class="textMini">°</span> | ' + bestTwa.twaDown + '<span class="textMini">°</span>';
             var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
-            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + bestTwa.btwa + '<span class="textMini">°</span>';
+            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + bestTwa.btwa + '<span class="textMini">°</span>';
     
             var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
             var lastCalcStyle = ""
@@ -889,9 +889,9 @@ var controller = function () {
                 
                 var best = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options,r.curr.sail % 10,r.curr.twa);
                 r.curr.bestVmg = best;
-                var bestVMGString = best.twaUp + " | " + best.twaDown;
-                var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + "kts";
-                var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + "kts | " + best.btwa;
+                var bestVMGString = best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>';
+                var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
+                var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>';
     
                 // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
                 var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
