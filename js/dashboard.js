@@ -4630,8 +4630,10 @@ async function initializeMap(race) {
                     if (message.track._id.user_id == currentUserId) {
                         handleOwnTrackInfo(message.track);
                     } else {
-                        mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
-                        lMap.updateMapFleet(race,raceFleetMap);
+                        if (message.bs) {
+                            mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
+                            lMap.updateMapFleet(race,raceFleetMap);
+                        }
                         // Ignore track info.
                         // There is currently no function to update a single competitor track.
                     }
