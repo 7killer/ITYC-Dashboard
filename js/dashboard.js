@@ -2962,11 +2962,6 @@ var controller = function () {
                 // Skippers-Choice
                 if(ev_lbl == "sel_ExportFleet") {onFleetInCpyClipBoard();return;}
                 changeState(ev_lbl);
-                var tabClick = originClick; 
-                if (tabClick == 2 || tabClick == 4 || tabClick == 5) {
-                    //updateFleetHTML(raceFleetMap.get(selRace.value));
-                    //lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
-                }
             } else if (call_wi) callWindy(rmatch, 0); // weather
             else if (call_rt) callRouter(rmatch, currentUserId, false,"zezo");
             else if (call_pl) callPolars(rmatch);
@@ -2994,8 +2989,6 @@ var controller = function () {
                 selectedcbx.checked = true;
             }
         }
-        updateUserConfig();
-        
     }
 
     function display_selbox(state) {
@@ -4813,9 +4806,6 @@ async function initializeMap(race) {
         
         mergeBoatInfo(raceId, "usercard", userId, message);
 
-
-        rt.updateFleet(race,raceFleetMap);
-        
         var fleet = raceFleetMap.get(raceId);
 
         if(fleet && fleet.uinfo[userId])
@@ -5772,7 +5762,6 @@ window.addEventListener("load", async function () {
 
     document.getElementById("bt_router").addEventListener("click", controller.callRouter);
     document.getElementById("sel_race").addEventListener("change", controller.changeRace);
-    document.getElementById("sel_skippers").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_friends").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_opponents").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_team").addEventListener("change", controller.updateFleetFilter);
