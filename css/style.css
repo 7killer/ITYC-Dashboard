@@ -1192,6 +1192,7 @@ table#raceidTable2>tbody>tr>td {
 }
 
 .td-graph>div {
+    padding-bottom: 20px;
     height : 200px;/*300px;*/
 
 }
