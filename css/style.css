@@ -1106,7 +1106,8 @@ input[type="color"]::-webkit-color-swatch {
     position: absolute;
 }
 #bt_rt_addLmap{
-    float:right;
+    float:left;
+    margin-left: 6px;
 }
 
 .popupCloseBt{
