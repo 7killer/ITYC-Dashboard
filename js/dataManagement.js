@@ -1001,6 +1001,9 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
             raceOptPlayer.opt = raceOptPlayer.opt.replace("R","reach");
             raceOptPlayer.opt = raceOptPlayer.opt.replace("W","winch");
             raceOptPlayer.opt = raceOptPlayer.opt.replace("F","foil");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("M","magicFurler");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("J","vrtexJacket");
+            raceOptPlayer.opt = raceOptPlayer.opt.replace("C","comfortLoungePug");
         }
     } else if(raceOptPlayer.options) {
         raceOptPlayer.opt =raceOptPlayer.options ;

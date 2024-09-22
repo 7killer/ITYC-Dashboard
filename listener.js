@@ -25,32 +25,43 @@ window.addEventListener("load", function () {
 let pContPadding =""
 function manageFullScreen(e) {
   if(gameSize != 0) {
-    if(!fullScreenState) {
-      document.getElementById('top-header').style.display = "none";
-      document.getElementById('main-header').style.display = "none";
-      document.getElementById('main-header').style.display = "sfsi_floater";
-      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="100%";
-      document.getElementById('dashIntegRow').style.maxWidth="100%";
-      let t = document.getElementById('page-container');
-      if(t.style.paddingTop != "0px") pContPadding = t.style.paddingTop;
-      t.style.paddingTop = "0px";
-      fullScreenState =  true;
-    }  
-    document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width=gameSize+"%";
+    try {
+      if(!fullScreenState) {
+        document.getElementById('top-header').style.display = "none";
+        document.getElementById('main-header').style.display = "none";
+        document.getElementById('main-header').style.display = "sfsi_floater";
+        document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.maxWidth="100%";
+        document.getElementById('dashIntegRow').style.maxWidth="100%";
+        let t = document.getElementById('page-container');
+        if(t.style.paddingTop != "0px") pContPadding = t.style.paddingTop;
+        t.style.paddingTop = "0px";
+        fullScreenState =  true;
+      }  
+      document.getElementsByClassName('et_pb_row et_pb_row_0')[0].style.width=gameSize+"%";
+    } catch {}
+
   } else
   {
-    if(fullScreenState) {
-      document.getElementById('top-header').style.display = "block";
-      document.getElementById('main-header').style.display = "block";
-      document.getElementById('main-header').style.display = "block";
-      let t = document.getElementsByClassName('et_pb_row et_pb_row_0')[0];
-      t.style.maxWidth="1080px";
-      t.style.width="80%";
-      document.getElementById('dashIntegRow').style.maxWidth="1080px";
-      t = document.getElementById('page-container');
-      t.style.paddingTop = pContPadding;
-      fullScreenState =  false;
-    }
+    try {
+      if(fullScreenState) {
+        document.getElementById('top-header').style.display = "block";
+        document.getElementById('main-header').style.display = "block";
+        document.getElementById('main-header').style.display = "block";
+        let t = document.getElementsByClassName('et_pb_row et_pb_row_0')[0];
+        if(t)
+        {
+          t.style.maxWidth="1080px";
+          t.style.width="80%";
+          document.getElementById('dashIntegRow').style.maxWidth="1080px";  
+        } else
+          document.getElementById('dashIntegRow').style.maxWidth="100%";  
+        
+        
+        t = document.getElementById('page-container');
+        t.style.paddingTop = pContPadding;
+        fullScreenState =  false;
+      }
+    } catch {}
   }
 }
 
@@ -189,6 +200,9 @@ function checkUrl(url) {
     return url.startsWith("https://prod.vro.sparks.virtualregatta.com")
       || url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
       || url.startsWith("https://vro-api-client.prod.virtualregatta.com")
+      || url.startsWith("https://dev.vro.sparks.virtualregatta.com")
+      || url.startsWith("https://vro-api-ranking.devel.virtualregatta.com")
+      || url.startsWith("https://vro-api-client.devel.virtualregatta.com")
 }
 
 function sanitizeBody(body) {
@@ -221,8 +235,10 @@ function createContainer() {
   
     ourDiv.appendChild(ourDiv2);
     //append all elements
-   const gameDiv = document.getElementsByClassName('et_pb_section et_pb_section_0')[0];
-    gameDiv.appendChild(ourDiv);
+    let gameDiv = document.getElementsByClassName('et_pb_section et_pb_section_0')[0];
+    if(!gameDiv) gameDiv = document.getElementsByClassName('gameDiv')[0];;
+
+    if(gameDiv) gameDiv.appendChild(ourDiv);
     return ourDiv2;
   
 }
@@ -246,10 +262,7 @@ function createContainer() {
     },
     Tick: function() {
       //On actualise la valeur affichée du nombre de secondes
-      if(document.getElementById("dashIntegTime")) {
-        if (this.secondsPass > 65) document.getElementById("dashIntegTime").innerHTML = '<span style="color:red">+ '+ ++this.secondsPass + 's</span>';
-        else document.getElementById("dashIntegTime").innerHTML = '+ '+ ++this.secondsPass + 's';
-      }
+        //On actualise la valeur affichée du nombre de secondes
     },
  
     Stop: function() {

@@ -34,12 +34,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"],
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"],
       "js": ["./js/addResume2.js"],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"],
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"],
       "run_at": "document_end",
       "css":["./css/content.css"]
     }
@@ -50,7 +50,7 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*"
+    "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"
     ]
   }
 }

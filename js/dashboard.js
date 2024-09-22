@@ -74,63 +74,6 @@ var controller = function () {
         {nameStyle: "color: #a5a5a5;", bcolor: '#000000'}
     ];
 
-    const refCurvePena = [
-
-        0,0.035,0.069,0.17,0.264,0.353,0.439,0.521,0.602,0.681,
-        0.761, 0.84,0.922,1.005,1.092,1.182,1.276,1.376,1.481,1.593,
-        1.712,1.838,1.972,2.115,2.267,2.429,2.6,2.782,2.975,3.18,
-        3.395,3.623,3.863,4.116,4.382,4.661,4.953,5.258,5.578,5.912,
-        6.259,6.621,6.997,7.388,7.794,8.214,8.648,9.098,9.562,10.041,
-        10.535,11.044,11.567,12.105,12.657,13.224,13.805,14.4,15.01,15.633,
-        16.27,16.921,17.585,18.263,18.953,19.657,20.373,21.101,21.842,22.594,
-        23.358,24.133,24.919,25.716,26.523,27.341,28.168,29.004,29.85,30.704,
-        31.567,32.438,33.317,34.203,35.095,35.995,36.9,37.812,38.728,39.65,
-        40.576,41.507,42.441,43.378,44.319,45.262,46.207,47.154,48.102,49.051,
-        50,50.95,51.899,52.847,53.793,54.739,55.682,56.622,57.56,58.494,
-        59.424,60.351,61.272,62.189,63.1,64.006,64.905,65.798,66.684,67.562,
-        68.433,69.296,70.151,70.996,71.833,72.66,73.477,74.285,75.082,75.868,
-        76.643,77.407,78.159,78.9,79.628,80.344,81.047,81.738,82.415,83.08,
-        83.73,84.368,84.991,85.601,86.196,86.777,87.344,87.896,88.434,88.957,
-        89.466,89.96,90.439,90.903,91.352,91.787,92.207,92.613,93.004,93.38,
-        93.742,94.089,94.423,94.743,95.048,95.34,95.619,95.885,96.138,
-        96.378,96.606,96.822,97.026,97.219,97.401,97.573,97.734,97.886,98.029,
-        98.163,98.29,98.408,98.52,98.625,98.725,98.82,98.91,98.996,99.08,
-        99.161,99.241,99.32,99.4,99.48,99.563,99.649,99.738,99.832,99.932,99.966,100,
-      ];
-      const refCurveRecovery = [
-
-        0,0.023333333,0.046333333,0.069,0.136333333,0.201333333,0.264,0.323333333,0.381666667,0.439,0.493666667,
-        0.548,0.602,0.654666667,0.707666667,0.761,0.813666667,0.867333333,0.922,0.977333333,1.034,
-        1.092,1.152,1.213333333,1.276,1.342666667,1.411,1.481,1.555666667,1.632666667,1.712,
-        1.796,1.882666667,1.972,2.067333333,2.165666667,2.267,2.375,2.486,2.6,2.721333333,
-        2.846333333,2.975,3.111666667,3.251666667,3.395,3.547,3.703,3.863,4.031666667,4.204666667,
-        4.382,4.568,4.758333333,4.953,5.156333333,5.364666667,5.578,5.800666667,6.027666667,6.259,
-        6.500333333,6.746333333,6.997,7.257666667,7.523333333,7.794,8.074,8.358666667,8.648,8.948,
-        9.252666667,9.562,9.881333333,10.20566667,10.535,10.87433333,11.21833333,11.567,11.92566667,12.289,
-        12.657,13.035,13.41766667,13.805,14.20166667,14.60333333,15.01,15.42533333,15.84533333,16.27,
-        16.704,17.14233333,17.585,18.037,18.493,18.953,19.42233333,19.89566667,20.373,20.85833333,
-        21.348,21.842,22.34333333,22.84866667,23.358,23.87466667,24.395,24.919,25.45033333,25.985,
-        26.523,27.06833333,27.61666667,28.168,28.72533333,29.286,29.85,30.41933333,30.99166667,31.567,
-        32.14766667,32.731,33.317,33.90766667,34.50033333,35.095,35.695,36.29666667,36.9,37.508,
-        38.11733333,38.728,39.34266667,39.95866667,40.576,41.19666667,41.81833333,42.441,43.06566667,43.69166667,
-        44.319,44.94766667,45.577,46.207,46.83833333,47.47,48.102,48.73466667,49.36733333,50,
-        50.63333333,51.26633333,51.899,52.531,53.16233333,53.793,54.42366667,55.05333333,55.682,56.30866667,
-        56.93466667,57.56,58.18266667,58.804,59.424,60.042,60.658,61.272,61.88333333,62.49266667,
-        63.1,63.704,64.30566667,64.905,65.50033333,66.09333333,66.684,67.26933333,67.85233333,68.433,
-        69.00833333,69.581,70.151,70.71433333,71.275,71.833,72.38433333,72.93233333,73.477,74.01566667,
-        74.55066667,75.082,75.606,76.12633333,76.643,77.15233333,77.65766667,78.159,78.653,79.14266667,
-        79.628,80.10533333,80.57833333,81.047,81.50766667,81.96366667,82.415,82.85833333,83.29666667,83.73,
-        84.15533333,84.57566667,84.991,85.39766667,85.79933333,86.196,86.58333333,86.966,87.344,87.712,
-        88.07533333,88.434,88.78266667,89.12666667,89.466,89.79533333,90.11966667,90.439,90.74833333,91.05266667,
-        91.352,91.642,91.927,92.207,92.47766667,92.74333333,93.004,93.25466667,93.50066667,93.742,
-        93.97333333,94.20033333,94.423,94.63633333,94.84466667,95.048,95.24266667,95.433,95.619,95.79633333,
-        95.96933333,96.138,96.298,96.454,96.606,96.75,96.89,97.026,97.15466667,97.27966667,
-        97.401,97.51566667,97.62666667,97.734,97.83533333,97.93366667,98.029,98.11833333,98.20533333,98.29,98.36866667,
-        98.44533333,98.52,98.59,98.65833333,98.725,98.78833333,98.85,98.91,98.96733333,99.024,
-        99.08,99.134,99.18766667,99.241,99.29366667,99.34666667,99.4,99.45333333,99.50766667,
-        99.563,99.62033333,99.67866667,99.738,99.80066667,99.86533333,99.932,99.95466667,99.97733333,100
-      ];
-
       // shall be loaded and stored when connect to welcome page
       //boats: {0: 1, 5: 1.2, 15: 1.5, 50: 2}
     
@@ -711,7 +654,8 @@ var controller = function () {
         theme:drawTheme,type:"data",rstTimer:rstTimer,gameSize:gameSize}
 	}
     function computeEnergyPenalitiesFactor(stamina) {
-        return stamina * -0.015 + 2;
+        let coeff = stamina * -0.015 + 2;
+        return coeff<0.5?0.5:coeff;
     }
     function makeRaceStatusHTML() {
         function makeRaceStatusLine(pair) {
@@ -909,11 +853,11 @@ var controller = function () {
                 var staminaLoose = computeEnergyLoose(r); 
 
                 var tack = "<p>-" +  penalties.tack.dist + "nm | " + penalties.tack.time + "s</p>"; 
-                tack  +=  "<p>-" + staminaLoose.tack + "% | " + computeEnergyRecovery(staminaLoose.tack,r.curr.tws) + "min</p>";
+                tack  +=  "<p>-" + staminaLoose.tack + "% | " + computeEnergyRecovery(staminaLoose.tack,r.curr.tws,r.curr.options) + "min</p>";
                 var gybe =  "<p>-" + penalties.gybe.dist + "nm | " + penalties.gybe.time + "s</p>" 
-                gybe += "<p>-"+staminaLoose.gybe + "% | " + computeEnergyRecovery(staminaLoose.gybe,r.curr.tws) + "min</p>";
+                gybe += "<p>-"+staminaLoose.gybe + "% | " + computeEnergyRecovery(staminaLoose.gybe,r.curr.tws,r.curr.options) + "min</p>";
                 var sail =  "<p>-" + penalties.sail.dist + "nm | " + penalties.sail.time + "s</p>" 
-                sail += "<p>-"+staminaLoose.sail + "% | " + computeEnergyRecovery(staminaLoose.sail,r.curr.tws) + "min</p>";    
+                sail += "<p>-"+staminaLoose.sail + "% | " + computeEnergyRecovery(staminaLoose.sail,r.curr.tws,r.curr.options) + "min</p>";    
                 var staminaStyle = "";
                 var staminaTxt = "-";
                 if(r.curr.stamina)
@@ -979,10 +923,8 @@ var controller = function () {
                 "tack" : "-",
                 "sail" : "-"
                 };
-            function computeStaminaLoose(tws,basePt,boatId)
+            function computeStaminaLoose(tws,basePt,boatId,type="M")
             {
-                //take in account boat stamina
-                var boatStamina = -1;
                 function getBoatCoefficient(boatWeight) {
                     if(!paramStamina.consumption.boats) return -1;
                     let i = 0;
@@ -994,7 +936,45 @@ var controller = function () {
                     }
                     return paramStamina.consumption.boats[rangeList[i]];
                 }
+                function getWindConsumptionFactor(windSpeed) {
+                    const winds = paramStamina.consumption.winds;
                 
+                    const windKeys = Object.keys(winds).map(Number).sort((a, b) => a - b);
+                    if (windSpeed <= windKeys[0]) return winds[windKeys[0]];
+                    if (windSpeed >= windKeys[windKeys.length - 1]) {
+                        if(r.curr.options.includes('vrtexJacket')) 
+                          return winds[windKeys[windKeys.length - 1]]*0.8;
+                        else
+                          return winds[windKeys[windKeys.length - 1]];
+                    }
+                
+                    let lowerBound = windKeys[0];
+                    let upperBound = windKeys[0];
+                    for (let i = 0; i < windKeys.length; i++) {
+                        if (windSpeed >= windKeys[i]) {
+                            lowerBound = windKeys[i];
+                        }
+                        if (windSpeed < windKeys[i]) {
+                            upperBound = windKeys[i];
+                            break;
+                        }
+                    }
+
+                    let factorLow = winds[lowerBound];
+                    let factorHigh = winds[upperBound];
+
+                    if(r.curr.options.includes('vrtexJacket')) {
+                        factorLow *= 0.8;
+                        if(factorLow<winds[windKeys[0]]) factorLow = winds[windKeys[0]];
+                        factorHigh *= 0.8;
+                        if(factorHigh<winds[windKeys[0]]) factorHigh = winds[windKeys[0]];  
+                    }
+
+                    const ratio = (windSpeed - lowerBound) / (upperBound - lowerBound);  
+                    return factorLow + ratio * (factorHigh - factorLow);
+                }
+
+                var boatStamina = -1;
                 if(r.legdata && r.legdata.boat && r.legdata.boat.stats)
                 {
                     boatStamina = getBoatCoefficient(r.legdata.boat.stats.weight/1000);
@@ -1005,52 +985,33 @@ var controller = function () {
                     else boatStamina = 1;
                 }
                 basePt *= boatStamina;
-                /* 0 - 10 nds 0.02*v + 1
-                    10 - 20 nds 0.03*v + 0.9
-                    20 - 30 nds 0.05*v + 0.5 */
-                let a = 0;
-                let b = 0;         
-                if(tws<10) {
-                    a = 0.02;
-                    b = 1;
-                } else if(tws<20) {
-                    a = 0.03;
-                    b = 0.9;
-                } else if(tws<30) {
-                    a = 0.05;
-                    b = .5;           
-                } else {
-                    a = 0;
-                    b = 2;
-                }         
-                return ((a *tws + b)*basePt).toFixed(2);
+                if(type=="S" && r.curr.options.includes('magicFurler')) basePt *= 0.8;
+                return (getWindConsumptionFactor(tws)*basePt).toFixed(2);
             }
-            var tws = r.curr.tws;
-            
             return {
-                "gybe" : computeStaminaLoose(tws, paramStamina.consumption.points.gybe, r.curr.boat.polar_id),
-                "tack" : computeStaminaLoose(tws, paramStamina.consumption.points.tack, r.curr.boat.polar_id),
-                "sail" : computeStaminaLoose(tws, paramStamina.consumption.points.sail, r.curr.boat.polar_id)
+                "gybe" : computeStaminaLoose(r.curr.tws, paramStamina.consumption.points.gybe, r.curr.boat.polar_id),
+                "tack" : computeStaminaLoose(r.curr.tws, paramStamina.consumption.points.tack, r.curr.boat.polar_id),
+                "sail" : computeStaminaLoose(r.curr.tws, paramStamina.consumption.points.sail, r.curr.boat.polar_id,"S")
             };
         }
 
-        function computeEnergyRecovery(pts,tws) {
+        function computeEnergyRecovery(pts,tws,options) {
             if(!tws) return "-";
-            tws = tws.toFixed(1)*10;
-            var ltws = paramStamina.recovery.loWind*10;
-            var htws = paramStamina.recovery.hiWind*10;
+            var ltws = paramStamina.recovery.loWind;
+            var htws = paramStamina.recovery.hiWind;
             var lRecovery = paramStamina.recovery.loTime*60;
             var hRecovery = paramStamina.recovery.hiTime*60;
-            var recoveryGap = hRecovery-lRecovery;  
             var minByPt = 1;
             if(tws<=ltws) {
                 minByPt = lRecovery;
             } else  if(tws>=htws) {
                 minByPt = hRecovery;
             } else {
-                minByPt = (recoveryGap*refCurveRecovery[tws-ltws]/100)+lRecovery;
+                let aFactor = (hRecovery+lRecovery)/2;
+                let bFactor = (hRecovery-lRecovery)/2;
+                minByPt = aFactor-Math.cos((tws-ltws)/(htws-ltws)*Math.PI)*bFactor;
             }
-
+            if (options.includes('comfortLoungePug')) minByPt *= 0.8;
             return ((pts / Number(paramStamina.recovery.points)*minByPt)/60).toFixed(0); 
         }        
         
@@ -1063,7 +1024,7 @@ var controller = function () {
                     "sail" : "-",
                     "staminaFactor" :""
                     };
-            function penalty (speed, options, fraction, spec,boatcoeff) {
+            function penalty (speed, options, fraction, spec,boatcoeff,type="M") {
                 if(!polars || !polars[record.curr.boat.polar_id])
                 {
                     return {
@@ -1077,6 +1038,11 @@ var controller = function () {
                     spec = spec.std;
                 }
                 var time = (spec.lw.timer + (spec.hw.timer - spec.lw.timer) * fraction)*boatcoeff;
+                if(type=="S") {
+                    if (options.indexOf("magicFurler") >= 0) {
+                        time *= 0.8;
+                    }
+                }
                 var dist = speed * time / 3600;
                 return {
                     "time" : time.toFixed(),
@@ -1090,7 +1056,7 @@ var controller = function () {
            //take account of penalities
             var fraction;
             if  ((winch.lws <= tws) && (tws <= winch.hws)) {
-              fraction = refCurvePena[((tws-winch.lws)*10).toFixed(0)] /100;
+                fraction = 0.5-Math.cos((tws-winch.lws)/(winch.hws-winch.lws)*Math.PI)*0.5;
             } else if (tws < winch.lws) {
                 fraction = 0;
             } else {
@@ -1105,7 +1071,7 @@ var controller = function () {
             return {
                 "gybe" : penalty(speed, options, fraction, winch.gybe,boatCoeff),
                 "tack" : penalty(speed, options, fraction, winch.tack,boatCoeff),
-                "sail" : penalty(speed, options, fraction, winch.sailChange,boatCoeff),
+                "sail" : penalty(speed, options, fraction, winch.sailChange,boatCoeff,"S"),
                 "staminaFactor" : (record.curr.stamina?boatCoeff:"")
             };
         }
@@ -1386,7 +1352,10 @@ var controller = function () {
                             xOptionsTxt = xOptionsTxt.replace("heavy","H");
                             xOptionsTxt = xOptionsTxt.replace("winch","W");
                             xOptionsTxt = xOptionsTxt.replace("foil","F");
-                            xOptionsTxt = xOptionsTxt.replace("hull","H");
+                            xOptionsTxt = xOptionsTxt.replace("hull","h");
+                            xOptionsTxt = xOptionsTxt.replace("magicFurler","M");
+                            xOptionsTxt = xOptionsTxt.replace("vrtexJacket","J");
+                            xOptionsTxt = xOptionsTxt.replace("comfortLoungePug","C");
 
                         } 
                     }
@@ -1972,7 +1941,7 @@ var controller = function () {
             {
                 var optionsList = [];
                 if(storedPlayerOption == "Full Pack" || storedPlayerOption =="All Options") {
-                    optionsList = ["foil","winch","radio","skin","hull","reach","heavy","light"];
+                    optionsList = ["foil","winch","radio","skin","hull","reach","heavy","light","magicFurler","vrtexJacket","comfortLoungePug"];
                 } else
                 {
                     var optionsType = storedPlayerOption.split(" ");
@@ -2076,18 +2045,7 @@ var controller = function () {
         message.tsRecord = message.lastCalcDate || Date.now();
     }
 
-    function initFoils (boatData) {
-        if (boatData.options && boatData.options!="?") {
-            for (const feature of boatData.options) {
-                if (feature == "foil") {
-                    return "0%";
-                }
-            }
-            return "no";
-        } else {
-            return "?";
-        }
-    }
+
 
     function determineRankingCategory(savedOptions)
     {
@@ -2115,41 +2073,33 @@ var controller = function () {
             } else{
                 optionsList = savedOptions;
             }
-            var categoryIndicator = 0;
-            for (const opt of optionsList) {
-                switch(opt)
-                {
-                    case "reach":
-                        case "R":
-                        categoryIndicator += 204819277;
-                        break;
-                    case "light":
-                    case "L":
-                        categoryIndicator += 180722892;
-                        break;          
-
-                    case "heavy":
-                    case "H":
-                        categoryIndicator += 144578313;
-                        break;           
-
-                    case "winch":
-                    case "W":
-                        categoryIndicator += 120481928;
-                        break;
-                    case "foil":
-                    case "F":
-                        categoryIndicator += 265060241;
-                        break;        
-                    case "hull":
-                    case "h":
-                        categoryIndicator += 84337349;
-                        break;
-                    default :
-                        break;
-                }        
+            var optionBits = {
+                "hull":  1,
+                "winch": 2,
+                "foil":  4,
+                "light": 8,
+                "reach": 16,
+                "heavy": 32,
+                "h"    : 1,
+                "W":     2,
+                "F":     4,
+                "L":     8,
+                "R":     16,
+                "H":     32
+            };
+            let optDetected = 0;
+            for (const option of optionsList) {
+                if (optionBits[option]) {
+                    optDetected |= optionBits[option];
+                }
             }
-
+            var categoryIndicator = 0;
+            if(optDetected&1)  categoryIndicator += 84337349;
+            if(optDetected&2)  categoryIndicator += 120481928;
+            if(optDetected&4)  categoryIndicator += 265060241;
+            if(optDetected&8)  categoryIndicator += 180722892;
+            if(optDetected&16) categoryIndicator += 204819277;
+            if(optDetected&32) categoryIndicator += 144578313;
             if(categoryIndicator <= 240963855)
                 return "PDD";        
             else if(categoryIndicator <= 500000000)
@@ -2169,36 +2119,40 @@ var controller = function () {
 
     function explainPlayerOptions(info)
     {
-        info.xoption_foils = initFoils(info);
         info.xoption_sailOverlayer = "0%";
         info.xoption_options = "?";
         info.savedOption = "?";
-        
+        info.xoption_foils = "?";
+
         if (info.fullOptions === true) {
             info.xoption_options = "Full Pack";
             info.savedOption = "Full Pack";
             info.rankingCategory  = "Full Pack";
+            info.xoption_foils = "0%";
         } else if (info.options && info.options!="-") {
             if (info.options.length == 8) {
                 info.xoption_options = "All Options";
                 info.savedOption = "All Options";
                 info.rankingCategory  = "Full Pack";
+                info.xoption_foils = "0%";
             } else {
                 var opt_sail = "[";
                 var opt_perf = "[";
                 var opt_sail_found = false;
                 var opt_perf_found = false;
                 
-                for (const opt of info.options.sort()) {
-                    if (opt == "reach" || opt == "light" || opt == "heavy") {
-                        opt_sail += opt + ",";
-                        opt_sail_found = true;
-                    }
-                    if (opt == "winch" || opt == "foil" || opt == "hull" ){
-                        opt_perf += opt + ",";
-                        opt_perf_found = true;
-                    }
-                }
+                if (info.options.includes('reach')) {opt_sail += "reach,";opt_sail_found = true;}
+                if (info.options.includes('light')) {opt_sail += "light,";opt_sail_found = true;}
+                if (info.options.includes('heavy')) {opt_sail += "heavy,";opt_sail_found = true;}
+                if (info.options.includes('winch')) {opt_perf += "winch,";opt_perf_found = true;}
+                if (info.options.includes('foil'))  {opt_perf += "foil,"; info.xoption_foils = "0%";opt_perf_found = true;}
+                else info.xoption_foils = "no";
+                if (info.options.includes('hull'))  {opt_perf += "hull,";opt_perf_found = true;}
+                if (info.options.includes('magicFurler'))  {opt_perf += "magicFurler,";opt_perf_found = true;}
+                if (info.options.includes('vrtexJacket'))  {opt_perf += "vrtexJacket,";opt_perf_found = true;}
+                if (info.options.includes('comfortLoungePug'))  {opt_perf += "comfortLoungePug,";opt_perf_found = true;}
+                
+        
                 opt_sail = opt_sail.substring(0,opt_sail.length-1);
                 opt_perf = opt_perf.substring(0,opt_perf.length-1);
                 if (opt_sail.length != "") opt_sail += "]";
@@ -2208,12 +2162,10 @@ var controller = function () {
                 {
                     info.xoption_options = opt_sail + " " + opt_perf;
                     info.savedOption = opt_sail + " " + opt_perf;
-                    info.xoption_foils = "no";
                 } else if(opt_sail_found && !opt_perf_found)
                 {
                     info.xoption_options = opt_sail;
                     info.savedOption = opt_sail;
-                    info.xoption_foils = "no";
                 } else if(!opt_sail_found && opt_perf_found)
                 {
                     info.xoption_options = opt_perf;
@@ -2222,7 +2174,6 @@ var controller = function () {
                 { // get only skin or radio
                     info.xoption_options = "-";
                     info.savedOption = "-";
-                    info.xoption_foils = "no";
                 }
                 
                 
@@ -3452,14 +3403,15 @@ var controller = function () {
             } else {
                 var opt_sail = "[";
                 var opt_perf = "[";
-                for (const opt of r.curr.options.sort()) {
-                    if (opt == "reach" || opt == "light" || opt == "heavy") {
-                        opt_sail += opt + ",";
-                    }
-                    if (opt == "winch" || opt == "foil" || opt == "hull" ){
-                        opt_perf += opt + ",";
-                    }
-                }
+                if (r.curr.options.includes('reach')) opt_sail += "R,";
+                if (r.curr.options.includes('light')) opt_sail += "L,";
+                if (r.curr.options.includes('heavy')) opt_sail += "H,";
+                if (r.curr.options.includes('winch')) opt_perf += "W,";
+                if (r.curr.options.includes('foil'))  opt_perf += "F,";
+                if (r.curr.options.includes('hull')) opt_perf += "h,";
+                if (r.curr.options.includes('magicFurler')) opt_perf += "M,";
+                if (r.curr.options.includes('vrtexJacket')) opt_perf += "J,";
+                if (r.curr.options.includes('comfortLoungePug')) opt_perf += "C,";
                 opt_sail = opt_sail.substring(0,opt_sail.length-1);
                 opt_perf = opt_perf.substring(0,opt_perf.length-1);
                 if (opt_sail.length != "") opt_sail += "]";
@@ -3467,13 +3419,6 @@ var controller = function () {
                 options = opt_sail + " " + opt_perf;
             }
         }
-
-        options = options.replace("reach","R");
-        options = options.replace("light","L");
-        options = options.replace("heavy","H");
-        options = options.replace("winch","W");
-        options = options.replace("foil","F");
-        options = options.replace("hull","h");
 
         //build url
         var url = baseUrl+"&s="+sailNames[r.curr.sail % 10];
@@ -3942,7 +3887,7 @@ async function initializeMap(race) {
               var cp_name = "invsible";
               if (cp.display != "none") cp_name = cp.display;
     
-              if (cp.display == "none") {
+              if (cp.display == "none" ||  (race.gatecnt && race.gatecnt[cp.group - 1])) {
                 continue;
               }
     
@@ -5005,7 +4950,22 @@ async function initializeMap(race) {
         }
     
     }
+    async function handleRace_SelectorData(response) {
 
+        /* store polar */
+        const boatPolar = response.scriptData.extendsData.boatPolar; 
+        polars[boatPolar._id] = boatPolar;
+        await itycPolarSync(boatPolar._id);
+        var savedData = "";    
+        Object.keys(polars).forEach(function (race) {
+            savedData += "/**/"+JSON.stringify(polars[race]);
+    
+        });
+        localStorage["polars"] = savedData;
+
+        console.info("Stored polars " + boatPolar.label);     
+
+    }
     async function handleMetaGetPolar (response) {
         
         // Always overwrite cached data...
@@ -5303,6 +5263,8 @@ async function initializeMap(race) {
                         handleLegGetListResponse(body);
                     } else if (eventKey == 'Meta_GetPolar') {
                         handleMetaGetPolar(body);
+                    } else if (eventKey == 'Race_SelectorData') {
+                        handleRace_SelectorData(body);
                     } else if (eventKey == 'Game_AddBoatAction' ) {
                         handleGameAddBoatAction(postData, body);
                     } else if (eventKey == "Game_GetGhostTrack") {

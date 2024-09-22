@@ -43,6 +43,9 @@ function addOptInfo(uid,uinfo)
         xOptionsTxt = xOptionsTxt.replace("winch","W");
         xOptionsTxt = xOptionsTxt.replace("foil","F");
         xOptionsTxt = xOptionsTxt.replace("hull","h");
+        xOptionsTxt = xOptionsTxt.replace("magicFurler","M");
+        xOptionsTxt = xOptionsTxt.replace("vrtexJacket","J");
+        xOptionsTxt = xOptionsTxt.replace("comfortLoungePug","C");
         
     }
     var playerData = DM.getPlayerInfos(uid);

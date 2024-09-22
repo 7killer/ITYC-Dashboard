@@ -112,7 +112,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     const scripts = [{
       id: 'listener',
       js: ['listener.js'],
-      matches: ['https://www.virtualregatta.com/*/offshore-*/*',"https://www.virtualregatta.com/*/offshore-*-iframe/*"],
+      matches: ['https://www.virtualregatta.com/*/offshore-*/*',"https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"],
       runAt: 'document_start',
       world: 'MAIN',
     }];

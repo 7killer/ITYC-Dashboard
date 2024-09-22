@@ -276,12 +276,6 @@ export function generateFleetCSV(fleet,raceId)
 
 
     }
-
-   
-
-    
-
-   
 }
 export function exportGraphData(race,csvSep)
 {
@@ -365,6 +359,73 @@ export function exportStamina(paramStamina)
   let blobData = new Blob([ExportedData], {type: "text/plain"});
   let url = window.URL.createObjectURL(blobData);
   saveFile('stamina.json',url);  
+}
+
+if (!String.prototype.format) {
+    String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+        return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+        ;
+    });
+    };
+}
+
+export function exportRestrictedZones()
+{
+    function coordPrinter(lat,lon)
+    {
+        return "["+Util.roundTo(lat, 5)+" , "+ Util.roundTo(lon, 5)+"]";
+    }
+
+    let fileContent =
+'{\r\n\
+"type": "FeatureCollection",\r\n\
+"features": [\r\n';
+
+    var race = races.get(selRace.value);
+    if(race && race.legdata && race.legdata.restrictedZones && race.legdata.restrictedZones.length) {
+        let featureHeader =
+'    {\r\n\
+ "type": "Feature",\r\n';
+        let featureSep =
+'     "properties": {},\r\n\
+ "geometry": {\r\n\
+   "type": "Polygon",\r\n\
+   "coordinates": [\r\n\
+      [\r\n';
+        let featureEnd = 
+'          ]\r\n\
+    ]\r\n\
+  }\r\n\
+}';
+        let firstZone = true;
+        race.legdata.restrictedZones.forEach(restrictedZone => {
+            let bbox = restrictedZone.bbox;
+            if(!firstZone)
+                fileContent += ",\r\n";
+            firstZone = false;
+            fileContent += featureHeader;
+            fileContent += '     "bbox": [' + bbox[0] +',' + bbox[1] +',' + bbox[2] +',' + bbox[3] +'],\r\n';
+            fileContent += featureSep;
+
+            let firstPt = restrictedZone.vertices[0];
+            restrictedZone.vertices.forEach(zone => {
+                fileContent += '           ' + coordPrinter(zone.lat,zone.lon)+",\r\n";
+            });
+            fileContent += '           ' + coordPrinter(firstPt.lat,firstPt.lon)+"\r\n";
+            fileContent += featureEnd ;
+        });
+        fileContent +=  
+'\r\n  ]\r\n\
+}';
+        let blobData = new Blob([fileContent], {type: "text/plain"});
+        let url = window.URL.createObjectURL(blobData);
+        let fileName = "restrictedZones_race_"+race.legdata._id.race_id+"_"+race.legdata._id.num;
+        saveFile(fileName,url);
+    }   
 }
 
 
