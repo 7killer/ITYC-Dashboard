@@ -1285,7 +1285,7 @@ function updateMapFleet(race,raceFleetMap) {
 
                     race.lMap.refPoints.push(pos2[1]);
                     if(displayFilter & 0x200) {
-                        if ((i > 0) && ((key == currentId)
+                        if ((i > 0) && ((key != currentId)
                                         || elem.isFollowed
                                         || elem.followed))
                         {
