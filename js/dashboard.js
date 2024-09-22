@@ -1684,7 +1684,7 @@ var controller = function () {
         var commandLines = document.querySelectorAll('tr.commandLine');
         commandLines.forEach(function(line, index) {
             if (document.getElementById("hideCommandsLines").checked) {
-                if ( index > 2) {
+                if ( index > 4) {
                     line.style.display = 'none';
                 }
             } else {
@@ -5541,7 +5541,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
 
             document.getElementById("t_config_l").innerHTML = "Journal";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 3 dernières)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 5 dernières)";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
             document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
@@ -5656,7 +5656,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
             document.getElementById("t_config_l").innerHTML = "Race Log";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 3)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 5)";
             
             document.getElementById("t_config_m").innerHTML = "Map";
             document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
