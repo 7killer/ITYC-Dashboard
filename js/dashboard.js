@@ -3636,18 +3636,19 @@ function buildlogBookHTML(race) {
         return bookLine;
     }
     function highlightOptionsAlreadyTaken(opt) {
-        if (race.curr.options.includes(opt)) return 'style="color:limegreen"';
+        if (race.curr && race.curr.options.includes(opt)) return 'style="color:limegreen"';
     }
     function totalCreditsForOptionsAlreadyTaken() {
         let total = 0;
-        if (race.curr.options.includes('foil')) total += race.legdata.optionPrices.foil;
-        if (race.curr.options.includes('winch')) total += race.legdata.optionPrices.winch;
-        if (race.curr.options.includes('hull')) total += race.legdata.optionPrices.hull;
-        if (race.curr.options.includes('light')) total += race.legdata.optionPrices.light;
-        if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
-        if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
-        if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
-        if (race.curr.options.includes('skin')) total += race.legdata.optionPrices.skin;
+        if (race && race.curr) {
+            if (race.curr.options.includes('foil')) total += race.legdata.optionPrices.foil;
+            if (race.curr.options.includes('winch')) total += race.legdata.optionPrices.winch;
+            if (race.curr.options.includes('hull')) total += race.legdata.optionPrices.hull;
+            if (race.curr.options.includes('light')) total += race.legdata.optionPrices.light;
+            if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
+            if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
+            if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
+        }
         return total;
     }
 
