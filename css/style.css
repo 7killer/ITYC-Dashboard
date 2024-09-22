@@ -1242,6 +1242,9 @@ input[type="checkbox"] {
 .leaflet-control-custom {
     font-size: 14px;
 }
+.leaflet-popup-content {
+    margin: 13px 22px 11px 18px !important;
+}
 .textMini {
     font-size: 11px !important;
     line-height: 1.4;
