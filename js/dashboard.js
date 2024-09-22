@@ -322,12 +322,12 @@ var controller = function () {
         var retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
         if(r.curr.bestVmg.sailTWSMax != 0)
         {
-            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts | </div>';
+            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts</div>';
         }
         retVal += '<div>'+sailInfo+'</div>';
         if(r.curr.bestVmg.sailTWAMax != 0)
         {
-            retVal +='<div class="textMini"> | '+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
+            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
         }
         retVal +="</td>";
         return   retVal; 
@@ -549,8 +549,8 @@ var controller = function () {
 
         if(lang ==  "fr") {
             raceStatusHeader += '<th title="Temps restant changement de voile">' + "Voile" + '</th>'
-            + '<th title="Temps restant empannage">' + "Empannage" + '</th>'
-            + '<th title="Temps restant virement">' + "Virement" + '</th>';       
+            + '<th title="Temps restant empannage">' + "Emp." + '</th>'
+            + '<th title="Temps restant virement">' + "Vir." + '</th>';
         } else
         {
             raceStatusHeader += '<th title="Time remaining sail change">' + "Sail" + '</th>'
