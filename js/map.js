@@ -1068,16 +1068,8 @@ function updateMapMe(race, track) {
                 }
             }
         }
-        var cpath;
-
-        if (race.curr && race.curr.pos) {
-            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);
-        } else
-        {
-            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);    
-        }
-    
-        buildTrace(cpath,race.lMap.meLayer,race,"#b86dff",1.5,1);
+        var cpath = buildPath(track, undefined, undefined, race.curr.pos.lat, race.curr.pos.lon);
+        buildTrace(cpath, race.lMap.meLayer, race, "#b86dff", 1.5, 1);
     }        
     
     // boat
