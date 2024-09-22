@@ -1164,7 +1164,7 @@ var controller = function () {
             var race = races.get(selRace.value);
             return '<tr>'
                 + Util.genth("th_rt", "RT", "Call Router", undefined)
-                + Util.genth("th_lu", "Date" + dateUTC(), undefined)
+                + Util.genth("th_lu", "Date" + dateUTC(), undefined, Util.sortField == "lastCalcDate", Util.currentSortOrder)
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
                 + Util.genth("th_rank", "Rank", undefined, Util.sortField == "rank", Util.currentSortOrder)
@@ -2476,7 +2476,7 @@ var controller = function () {
         }
         var str = new Intl.DateTimeFormat("lookup", options).format(new Date());
         var res = str.substring(5);
-        return  '<span id="small">&nbsp;(' + res + ')</span>';
+        return '<span class="small">&nbsp;(' + res + ')</span>';
     }
 
     // Ajout - Affichage Heure locale / Heure UTC

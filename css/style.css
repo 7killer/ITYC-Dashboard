@@ -260,7 +260,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
+#th_lu, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }
 
@@ -304,7 +304,7 @@ td.tdc {
     width: 100px;
 }
 #th_lu {
-    width: 82px;
+    width: 85px;
 }
 #th_rl_foils {
     width: 80px;
@@ -544,7 +544,7 @@ fieldset {
     color: #F5F5F5;
 }
 #sel_skippers, #sel_export {
-    margin-left:5em;
+    margin-left:1em;
     visibility: visible;
     margin-top: 0.1em;
     float: left;
@@ -687,8 +687,8 @@ thead.sticky th {
     outline-offset: -1px; 
 }
 
-#small {
-    font-size: 85%;
+.small, #small {
+    font-size: 10px;
 }
 
 
