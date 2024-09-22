@@ -261,8 +261,11 @@ function createContainer() {
 
     },
     Tick: function() {
-      //On actualise la valeur affichée du nombre de secondes
         //On actualise la valeur affichée du nombre de secondes
+        if(document.getElementById("dashIntegTime")) {
+          if (this.secondsPass > 65) document.getElementById("dashIntegTime").innerHTML = '<span style="color:red">+ '+ ++this.secondsPass + 's</span>';
+          else document.getElementById("dashIntegTime").innerHTML = '+ '+ ++this.secondsPass + 's';
+        }
     },
  
     Stop: function() {
