@@ -268,20 +268,21 @@ var controller = function () {
         var lastCommand = "";
         lcActions.map(function (action) {
             if (action.type == "heading") {
-                lastCommand += (action.autoTwa ? " TWA" : " HDG") + "=" + Util.roundTo(action.value, 3+nbdigits) + " | ";
+                lastCommand += "<span class='lastCommandOrder'>" + (action.autoTwa ? " TWA" : " HDG") + " " + Util.roundTo(action.value, 0) + "°</span> • ";
             } else if (action.type == "sail") {
-                lastCommand += " Sail=" + sailNames[action.value];
+                lastCommand += " Sail <span class='lastCommandOrder'>" + sailNames[action.value] + "</span>";
             } else if (action.type == "prog") {
                 action.values.map(function (progCmd) {
-                    var progTime = formatDateUTC(progCmd.ts);
-                    lastCommand += (progCmd.autoTwa ? " TWA" : " HDG") + "=" + Util.roundTo(progCmd.heading, 3+nbdigits) + " @ " + progTime + " | ";
+                    var progTime = formatDateUTC(progCmd.ts, 1);
+                    lastCommand += "<span class='lastCommandOrder'>" + (progCmd.autoTwa ? " TWA" : " HDG") + " " + Util.roundTo(progCmd.heading, 0) + "°</span> @ " + progTime + " • ";
                 });
             } else if (action.type == "wp") {
                 action.values.map(function (waypoint) {
-                    lastCommand += " WP: " + Util.formatPosition(waypoint.lat, waypoint.lon) + " | ";
+                    lastCommand += " WP <span class='lastCommandOrder'>" + Util.formatPosition(waypoint.lat, waypoint.lon) + "</span> • ";
                 });
             }
         });
+        lastCommand = lastCommand.replace(/ \•([^•]*)$/, "");
         return lastCommand;
     }
 
@@ -1485,8 +1486,8 @@ var controller = function () {
             if(!cinfo.action) return"";
             return '<tr class="commandLine hovred">'
             + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
-            + '<td colspan="3">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts))
-            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '<td colspan="19"><b>Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent, 2) : formatDateUTC(cinfo.ts))
+            + '</b> • <b>Actions</b> → ' + printLastCommand(cinfo.action) + '</td>'
             + '</tr>';
         }
         function makeRaceLineLog(rinfo)
@@ -2498,6 +2499,15 @@ var controller = function () {
                 day: "numeric",
                 hour: "numeric",
                 minute: "numeric",
+                hour12: false
+            };
+        }
+        else if (format == 2) {
+            // Format: HH:MM:SS
+            tsOptions = {
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
                 hour12: false
             };
         }
