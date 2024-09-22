@@ -40,6 +40,7 @@ var controller = function () {
     const sailColors = ["#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF", "#FF66FF", "#FFC44D", 8, 9,
     // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
                     "#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF;", "#FF66FF", "#FFC44D"];
+    const creditsMaxAwardedByPriceLevel = [8600, 7150, 5700, 4300, 2850, 1425];
     
                     
 
@@ -168,6 +169,8 @@ var controller = function () {
     var cbFriends, cbOpponents, cbCertified, cbTeam, cbTop, cbReals, cbSponsors,cbTrackinfos, cbWithLastCmd,cbSelect, cbInRace, cbRouter, cbReuseTab, cbLocalTime, cbRawLog, cbNMEAOutput;
     var lbBoatname, lbTeamname, lbCycle;
     var currentCycle;
+
+    var lbCredits;
 
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
@@ -3665,6 +3668,11 @@ function buildlogBookHTML(race) {
     if (race.gfsWinds) gfsWinds = race.gfsWinds;
     else if (race.legdata.fineWinds !== undefined && race.legdata.fineWinds === true) gfsWinds = '0.25';
 
+    let creditsAwardedByPriceLevel = '-';
+    if (race && race.curr && race.curr.rank > 0) {
+        creditsAwardedByPriceLevel = Math.round(creditsMaxAwardedByPriceLevel[race.curr.priceLevel-1]/(Math.pow(race.curr.rank, 0.4)))
+    }
+
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
         + '<tr><td width="142px" class="centered" rowspan="3"><img src="https://static.virtualregatta.com/offshore/leg/' + race.id.replace('.', '_') + '.jpg" style="height:85px;padding: 0px;"></td><th colspan="6" height="40px">Race Details</th></tr>'
@@ -3675,23 +3683,29 @@ function buildlogBookHTML(race) {
         + '<table id="raceidTable2">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan="9">Credits <span style="color:limegreen">(Option équipée)</span></th>'
+        + '<th colspan="12" height="40px">Credits <span style="color:limegreen">(Option équipée)</span></th>'
         + '</tr>' 
         + '<tr>'
-        + '<th>Free Credits</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
+        + '<th width="9%">Game Credits</th>'
+        + '<th width="9%">Race Credits</th>'
+        + '<th width="19%">Current Race Credits <span style="color:tomato">(Total Options)</span></th>'
+        + '<th width="6%">Gains</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
+        + '<th width="8%" ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
         + '</tr>' 
         + '</thead>'
         + '<tbody>'
         + '<tr>'
-        + '<td>'+ race.legdata.freeCredits +'</td>'
+        + '<td>'+ lbCredits.innerHTML +'</td>'
+        + '<td>'+ race.legdata.freeCredits + '</td>'
+        + '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>'
+        + '<td>'+ creditsAwardedByPriceLevel + '</td>'
         + '<td>'+ race.legdata.optionPrices.foil + '</td>'
         + '<td>'+ race.legdata.optionPrices.winch + '</td>'
         + '<td>'+ race.legdata.optionPrices.hull + '</td>'
@@ -3699,7 +3713,7 @@ function buildlogBookHTML(race) {
         + '<td>'+ race.legdata.optionPrices.reach + '</td>'
         + '<td>'+ race.legdata.optionPrices.heavy + '</td>'
         + '<td>'+ race.legdata.optionPrices.radio + '</td>'
-        + '<td>'+ race.legdata.optionPrices.skin + '</td>'
+        + '<td width="126px"><i style="font-size:11px">variable (0-999)</i></td>'
         + '</tr>'
         + '</tbody>'
         + '</table>';
@@ -4386,6 +4400,7 @@ async function initializeMap(race) {
         document.getElementById("lb_version").innerHTML = manifest.version;
 
         lbBoatname = document.getElementById("lb_boatname");
+        lbCredits = document.getElementById("lb_credits");
         lbTeamname = document.getElementById("lb_teamname");
         selRace = document.getElementById("sel_race");
         lbCycle = document.getElementById("lb_cycle");
@@ -4545,6 +4560,7 @@ async function initializeMap(race) {
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
+                        lbCredits.innerHTML = message.bs.currency1;
                         //todo save vsr rank                
                         lMap.set_currentId(currentUserId);
                         rt.set_currentId(currentUserId);
@@ -5181,6 +5197,7 @@ async function initializeMap(race) {
         rt.set_currentId(currentUserId);
         welcomePage = true;
         lbBoatname.innerHTML = response.displayName;
+        lbCredits.innerHTML = response.currency1;
         currentUserName = response.displayName;
         if(response.scriptData)
         {
