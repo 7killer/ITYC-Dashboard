@@ -3651,11 +3651,15 @@ function buildlogBookHTML(race) {
     let playerOption = "-";
     if(race.curr && race.curr.options) playerOption = race.curr.options;
 
+    let gfsWinds = '1.0';
+    if (race.gfsWinds) gfsWinds = race.gfsWinds;
+    else if (race.legdata.fineWinds !== undefined && race.legdata.fineWinds === true) gfsWinds = '0.25';
+
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
-        + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') • VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' • ' + race.legdata.boat.name + ' • ' + determineRankingCategory(playerOption) + ' • GFS ' + race.gfsWinds + '</th>'
-        + '</tr>' 
+        + '<tr><td width="142px" class="centered" rowspan="3"><img src="https://static.virtualregatta.com/offshore/leg/' + race.id.replace('.', '_') + '.jpg" style="height:85px;padding: 0px;"></td><th colspan="6" height="40px">Race Details</th></tr>'
+        + '<tr><th>Race Name (Id)</th><th>Boat Name</th><th>Wind Model</th><th>VSR Level</th><th>Price</th><th>Category</th></tr>'
+        + '<tr><td class="centered">' + race.legdata.name + ' (' + race.id + ')</td><td class="centered">' + race.legdata.boat.name + '</td><td class="centered">GFS ' + gfsWinds + '°</td><td class="centered">VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + '</td><td class="centered">Cat. ' + race.legdata.priceLevel + '</td><td class="centered">' + determineRankingCategory(playerOption) + '</td></tr>'
         + '</thead>'
         + '</table>'
         + '<table id="raceidTable2">'
