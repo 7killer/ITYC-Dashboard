@@ -3400,8 +3400,18 @@ var controller = function () {
 
         var url = baseURL + "&tws=" + tws + "&twa=" + twa;
 
+        let optionsList = ["reach", "hull", "light", "heavy", "foil"];
         for (const option of race.curr.options) {
-            url += "&" + race.curr.options[option] + "=true";
+            if (option !== "skin" && option !== "winch" && option !== "radio") {
+                const optionIndex = optionsList.indexOf(option);
+                if (optionIndex !== -1) {
+                    optionsList.splice(optionIndex, 1);
+                }
+                url += `&${option}=true`;
+            }
+        }
+        for (const option of optionsList) {
+            url += `&${option}=false`;
         }
 
         url += "&utm_source=VRDashboard";
