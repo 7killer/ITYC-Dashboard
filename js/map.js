@@ -71,6 +71,7 @@ function boatinfo(uid, uinfo) {
         speed: uinfo.speed,
         heading: uinfo.heading,
         tws: uinfo.tws,
+        twd: uinfo.twd,
         twa: Math.abs(uinfo.twa),
         twaStyle: 'style="color: ' + ((uinfo.twa < 0) ? "red" : "green") + ';"',
         sail: sailNames[uinfo.sail] || "-",
@@ -799,14 +800,15 @@ async function initialize(race,raceFleetMap)
              });
             lMapInfos = race.lMap;
         }
-        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map);
+        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map, race.id);
     }
 }
 
-function initButtonToCenterViewMap(lat, lon, map) {
-    let recenterButton = document.getElementById('recenterButton');
+function initButtonToCenterViewMap(lat, lon, map, raceId) {
+    raceId = raceId.replace(/\./g, "\\.");
+    let recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
     if (recenterButton) {
-        updateCoordinatesToCenterViewMap(lat, lon);
+        updateCoordinatesToCenterViewMap(lat, lon, raceId);
     }
     else {
         // HTML
@@ -814,9 +816,9 @@ function initButtonToCenterViewMap(lat, lon, map) {
         <div id="lMapControls" class="leaflet-control-custom leaflet-control leaflet-bar">
             <a id="recenterButton" title="Centrer" href="#">🎯</a>
         </div>`;
-        let mapContainer = document.querySelector(".leaflet-top.leaflet-left");
+        let mapContainer = document.querySelector("#lMap" + raceId + " .leaflet-top.leaflet-left");
         mapContainer.insertAdjacentHTML('afterbegin', buttonHTML);
-        recenterButton = document.getElementById('recenterButton');
+        recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
         recenterButton.setAttribute('data-lat', lat);
         recenterButton.setAttribute('data-lon', lon);
         // Control
@@ -830,8 +832,8 @@ function initButtonToCenterViewMap(lat, lon, map) {
         });
     }
 }
-function updateCoordinatesToCenterViewMap(lat, lon) {
-    let recenterButton = document.getElementById('recenterButton');
+function updateCoordinatesToCenterViewMap(lat, lon, raceId) {
+    let recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
     if (recenterButton) {
         recenterButton.setAttribute('data-lat', lat);
         recenterButton.setAttribute('data-lon', lon);
@@ -1059,23 +1061,15 @@ function updateMapMe(race, track) {
                     var deltaD =  Util.gcDistance(track[i-1], segment);
                     var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                     var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                    var title =  "Me " + "<br><b>" + timeStamp + "</b><br>Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
+                    var title =  "Me " + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts<br>" + Util.formatPosition(segment.lat, segment.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
                     var trackcolor = "#b86dff";
                     buildCircle(pos, race.lMap.meLayerMarkers,trackcolor, 1.5 ,1, title);
                     race.lMap.refPoints.push(pos[1]);
                 }
             }
         }
-        var cpath;
-
-        if (race.curr && race.curr.pos) {
-            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);
-        } else
-        {
-            cpath = buildPath(track,undefined, undefined,race.curr.pos.lat, race.curr.pos.lon);    
-        }
-    
-        buildTrace(cpath,race.lMap.meLayer,race,"#b86dff",1.5,1);
+        var cpath = buildPath(track, undefined, undefined, race.curr.pos.lat, race.curr.pos.lon);
+        buildTrace(cpath, race.lMap.meLayer, race, "#b86dff", 1.5, 1);
     }        
     
     // boat
@@ -1087,7 +1081,8 @@ function updateMapMe(race, track) {
         race.lMap.meBoatLayer  = L.layerGroup();
         var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 2 + nbdigits) + "°</b>"
                     + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2 + nbdigits) + "°</b>"
-                    + "<br>Speed: " + Util.roundTo(race.curr.speed, 2 + nbdigits) + " kts";
+                    + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 2 + nbdigits) + " kts"
+                    + "<br>TWS: " + Util.roundTo(race.curr.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(race.curr.twd, 2 + nbdigits) + "°";
 
         buildMarker(pos, race.lMap.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading);
      }
@@ -1274,7 +1269,7 @@ function updateMapFleet(race,raceFleetMap) {
             }
             
             var nbdigits = (document.getElementById("2digits").checked?1:0);
-            var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts";
+            var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
             }
@@ -1290,7 +1285,7 @@ function updateMapFleet(race,raceFleetMap) {
 
                     race.lMap.refPoints.push(pos2[1]);
                     if(displayFilter & 0x200) {
-                        if ((i > 0) && ((key == currentId)
+                        if ((i > 0) && ((key != currentId)
                                         || elem.isFollowed
                                         || elem.followed))
                         {
@@ -1298,7 +1293,7 @@ function updateMapFleet(race,raceFleetMap) {
                                 var deltaD =  Util.gcDistance(elem.track[i-1], segment);
                                 var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                                 var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                                var title =  elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
+                                var title = elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + "<br>" + Util.formatPosition(elem.pos.lat, elem.pos.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
 
                                 buildCircle(pos2,race.lMap.fleetLayerMarkers,bi.bcolor, 1.5,1,title);
                         }

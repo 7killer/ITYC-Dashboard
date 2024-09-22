@@ -14,7 +14,9 @@ const routeInfosmodel =
     twa : "",
     twd : "",
     sail : "",
-    speed : ""
+    speed : "",
+    stamina : "",
+    boost : ""
 }
 
 var myRoute = [];
@@ -217,6 +219,8 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.twd = "";
         routeData.sail = "";
         routeData.speed = "";
+        routeData.stamina = "";
+        routeData.boost = "";
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
 
     });
@@ -250,7 +254,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
         poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
 
 
-        var isoDate, hdg,tws,twa,twd,sail,stw,lat,lon,splitDate, heure,date;
+        var isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
 
         if(mode == 1)
         {//VRZen
@@ -283,6 +287,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             sail =  poi[14];
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
             twd = Util.roundTo(poi[10], 1+nbdigits)+ "°"; 
+            stamina = Util.roundTo(poi[23], 1+nbdigits);
+            boost = Util.roundTo(poi[15], 1+nbdigits);
         } else
         { //default Mode Avalon
             const isNumber = n => (typeof(n) === 'number' || n instanceof Number ||
@@ -320,6 +326,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
                 sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
             else
                 sail = poi[5]; //new version give sail name
+            stamina = Util.roundTo(poi[9], 1+nbdigits);
+            boost = Util.roundTo(poi[10], 1+nbdigits);
             
         }
         
@@ -336,6 +344,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
         routeData.twd = twd;
         routeData.sail = sail;
         routeData.speed = stw;
+        routeData.stamina = stamina;
+        routeData.boost = boost;
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
         
     }
@@ -638,7 +648,7 @@ function buildPlayerOption(type)
             optFound = true;
             option += "reach";
         }
-        if(optFound) option += "]";
+        if(optFound) option += "] ";
         
         if(getCheckbox("opt_foils_"+type)) {
             optFound2 = true;
@@ -897,17 +907,21 @@ function buildMarkerTitle(point)
     var textTWD = point.twd ? "TWD: " + point.twd.replace(/&deg;/g, "°") : "";
     var textTWS = point.tws ? "TWS: " + point.tws + "<br>" : "";
     var textSail = point.sail ? "Sail: " + point.sail : "";
+    if (point.boost && point.boost > 0) textSail += "⚠️";
     var textSpeed = point.speed ? "Speed: " + point.speed : "";
     // Data visual separator
     textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
     textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
     textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+    let textStamina = '';
+    if (point.stamina && point.stamina > 0) textStamina = "🔋 " + point.stamina + "%";
 
     var title = "<b>" + newDate + "</b> (" + Util.formatDHMS(ttw) + ")<br>"
         + position + "<br>"
         + textTWA + textHDG
         + textTWD + textTWS
-        + textSail + textSpeed;
+        + textSail + textSpeed + "<br>"
+        + textStamina;
 
     return title;
 

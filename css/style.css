@@ -123,6 +123,10 @@ html, body {
     display: none;
 }
 
+.centered {
+    text-align: center;
+}
+
 label, input {
     vertical-align: middle;
     font-size: 10.5px;
@@ -256,7 +260,7 @@ td.tdc {
     padding-bottom: 0px;
 }
 
-#th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
+#th_lu, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }
 
@@ -265,6 +269,10 @@ td.tdc {
 }
 #th_eRT, #th_avgS, #th_sd, #th_rankcategory, #th_flag, #lb_boatvip {
     cursor: pointer;
+}
+
+.lastCommandOrder {
+    background-color:#111215;
 }
 
 #th_remove {
@@ -300,7 +308,7 @@ td.tdc {
     width: 100px;
 }
 #th_lu {
-    width: 82px;
+    width: 85px;
 }
 #th_rl_foils {
     width: 80px;
@@ -540,7 +548,7 @@ fieldset {
     color: #F5F5F5;
 }
 #sel_skippers, #sel_export {
-    margin-left:5em;
+    margin-left:1em;
     visibility: visible;
     margin-top: 0.1em;
     float: left;
@@ -683,8 +691,8 @@ thead.sticky th {
     outline-offset: -1px; 
 }
 
-#small {
-    font-size: 85%;
+.small, #small {
+    font-size: 10px;
 }
 
 
@@ -1047,7 +1055,7 @@ thead.sticky th {
     width: 80%;
 }
 .rt_lst_color {
-    height:25px;
+    /*height:25px;*/
     width: 10%;
 
 }
@@ -1098,7 +1106,8 @@ input[type="color"]::-webkit-color-swatch {
     position: absolute;
 }
 #bt_rt_addLmap{
-    float:right;
+    float:left;
+    margin-left: 6px;
 }
 
 .popupCloseBt{
@@ -1161,10 +1170,10 @@ a:active {
 }
 
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
-    margin-bottom: 1.5em;
+    margin-bottom: 2em;
 }
 #raceStatusTable {
-    margin-bottom: 0.2em;
+    margin-bottom: 2em;
 
 
 }
@@ -1183,6 +1192,7 @@ table#raceidTable2>tbody>tr>td {
 }
 
 .td-graph>div {
+    padding-bottom: 20px;
     height : 200px;/*300px;*/
 
 }
@@ -1241,4 +1251,11 @@ input[type="checkbox"] {
 }
 .leaflet-control-custom {
     font-size: 14px;
+}
+.leaflet-popup-content {
+    margin: 13px 22px 11px 18px !important;
+}
+.textMini {
+    font-size: 11px !important;
+    line-height: 1.4;
 }
