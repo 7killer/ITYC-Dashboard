@@ -3652,9 +3652,11 @@ function buildlogBookHTML(race) {
         + '<tbody>'
         + '<tr>'
         + '<td>'+ lbCredits.innerHTML +'</td>'
-        + '<td>'+ race.legdata.freeCredits + '</td>'
-        + '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>'
-        + '<td>'+ creditsAwardedByPriceLevel + '</td>'
+        + '<td>'+ race.legdata.freeCredits + '</td>';
+        if(race.curr && race.curr.credits) raceIdentification += '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
+        else 
+            raceIdentification += '<td>??? <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
+         raceIdentification += '<td>'+ creditsAwardedByPriceLevel + '</td>'
         + '<td>'+ race.legdata.optionPrices.foil + '</td>'
         + '<td>'+ race.legdata.optionPrices.winch + '</td>'
         + '<td>'+ race.legdata.optionPrices.hull + '</td>'
