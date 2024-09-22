@@ -1125,8 +1125,8 @@ var controller = function () {
             + '<th>' + "Best speed" + '</th>'
             + '<th title="Stamina">' + "Stamina" + '</th>';
         if(lang ==  "fr") {
-            raceStatusHeader += '<th title="Temps de manoeuvre théorique">' + "Empannage" + '</th>'
-                            + '<th title="Temps de manoeuvre théorique">' + "Virement" + '</th>'
+            raceStatusHeader += '<th title="Temps de manoeuvre théorique">' + "Virement" + '</th>'
+                            + '<th title="Temps de manoeuvre théorique">' + "Empannage" + '</th>'
                             + '<th title="Temps de manoeuvre théorique">' + "Voile" + '</th>';
         } else
         {
