@@ -1061,7 +1061,7 @@ function updateMapMe(race, track) {
                     var deltaD =  Util.gcDistance(track[i-1], segment);
                     var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                     var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                    var title =  "Me " + "<br><b>" + timeStamp + "</b><br>Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
+                    var title =  "Me " + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts<br>" + Util.formatPosition(segment.lat, segment.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
                     var trackcolor = "#b86dff";
                     buildCircle(pos, race.lMap.meLayerMarkers,trackcolor, 1.5 ,1, title);
                     race.lMap.refPoints.push(pos[1]);
@@ -1293,7 +1293,7 @@ function updateMapFleet(race,raceFleetMap) {
                                 var deltaD =  Util.gcDistance(elem.track[i-1], segment);
                                 var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
                                 var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                                var title =  elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + (segment.tag ? "<br>" + segment.tag : "");
+                                var title = elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + "<br>" + Util.formatPosition(elem.pos.lat, elem.pos.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
 
                                 buildCircle(pos2,race.lMap.fleetLayerMarkers,bi.bcolor, 1.5,1,title);
                         }

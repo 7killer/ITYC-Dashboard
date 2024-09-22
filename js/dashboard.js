@@ -3723,7 +3723,7 @@ function buildlogBookHTML(race) {
         + '</table>';
         
     var raceStatusHeader = '<tr>'
-    + '<th colspan="10">Race Stages</th>'
+    + '<th colspan="10" height="40px">Race Stages</th>'
     + '</tr><tr>'
     + '<th title="Type">' + "Type" + '</th>'
     + '<th title="Name">' + "Name" + '</th>'
@@ -3838,7 +3838,7 @@ function buildlogBookHTML(race) {
     var racerestrictedZonesTable = ""; 
     if (race.legdata.restrictedZones && race.legdata.restrictedZones.length != 0) {
             var racerestrictedZonesHeader = '<tr>'
-            + '<th title="Restricted Zones" colspan="2">' + "Zones interdites" + '</th>'
+            + '<th title="Restricted Zones" colspan="2" height="40px">' + "Zones interdites" + '</th>'
             + '</tr>'
             + '<tr>'
             + '<th title="Name">' + "Nom" + '</th>'

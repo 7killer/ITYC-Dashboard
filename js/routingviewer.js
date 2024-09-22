@@ -919,7 +919,7 @@ function buildMarkerTitle(point)
     var title = "<b>" + newDate + "</b> (" + Util.formatDHMS(ttw) + ")<br>"
         + position + "<br>"
         + textTWA + textHDG
-        + textTWS + textTWD
+        + textTWD + textTWS
         + textSail + textSpeed + "<br>"
         + textStamina;
 
