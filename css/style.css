@@ -1170,10 +1170,10 @@ a:active {
 }
 
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
-    margin-bottom: 1.5em;
+    margin-bottom: 2em;
 }
 #raceStatusTable {
-    margin-bottom: 0.2em;
+    margin-bottom: 2em;
 
 
 }
