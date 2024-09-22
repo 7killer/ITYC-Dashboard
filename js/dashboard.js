@@ -3062,7 +3062,7 @@ var controller = function () {
         var boatPolars = polars[message.boat.polar_id];
         if (boatPolars == undefined || message.options == undefined || message.tws == undefined) {
         } else {
-            r.curr.speedT = theoreticalSpeed(message.tws, message.twa, message.options, boatPolars);
+            r.curr.speedT = theoreticalSpeed(message);
         }
         if (r.prev != undefined) {
             var d = Util.gcDistance(r.prev.pos, r.curr.pos);
