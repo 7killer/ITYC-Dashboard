@@ -648,7 +648,7 @@ function buildPlayerOption(type)
             optFound = true;
             option += "reach";
         }
-        if(optFound) option += "]";
+        if(optFound) option += "] ";
         
         if(getCheckbox("opt_foils_"+type)) {
             optFound2 = true;
