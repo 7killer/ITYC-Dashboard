@@ -4481,6 +4481,7 @@ async function initializeMap(race) {
 
         drawTheme = document.documentElement.getAttribute("data-theme");
         switchAddOnMode();
+        display_selbox("hidden");
 
        // var t = await chrome.storage.local.get();
        // console.log(t);
