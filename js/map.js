@@ -800,14 +800,15 @@ async function initialize(race,raceFleetMap)
              });
             lMapInfos = race.lMap;
         }
-        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map);
+        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map, race.id);
     }
 }
 
-function initButtonToCenterViewMap(lat, lon, map) {
-    let recenterButton = document.getElementById('recenterButton');
+function initButtonToCenterViewMap(lat, lon, map, raceId) {
+    raceId = raceId.replace(/\./g, "\\.");
+    let recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
     if (recenterButton) {
-        updateCoordinatesToCenterViewMap(lat, lon);
+        updateCoordinatesToCenterViewMap(lat, lon, raceId);
     }
     else {
         // HTML
@@ -815,9 +816,9 @@ function initButtonToCenterViewMap(lat, lon, map) {
         <div id="lMapControls" class="leaflet-control-custom leaflet-control leaflet-bar">
             <a id="recenterButton" title="Centrer" href="#">🎯</a>
         </div>`;
-        let mapContainer = document.querySelector(".leaflet-top.leaflet-left");
+        let mapContainer = document.querySelector("#lMap" + raceId + " .leaflet-top.leaflet-left");
         mapContainer.insertAdjacentHTML('afterbegin', buttonHTML);
-        recenterButton = document.getElementById('recenterButton');
+        recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
         recenterButton.setAttribute('data-lat', lat);
         recenterButton.setAttribute('data-lon', lon);
         // Control
@@ -831,8 +832,8 @@ function initButtonToCenterViewMap(lat, lon, map) {
         });
     }
 }
-function updateCoordinatesToCenterViewMap(lat, lon) {
-    let recenterButton = document.getElementById('recenterButton');
+function updateCoordinatesToCenterViewMap(lat, lon, raceId) {
+    let recenterButton = document.querySelector("#lMap" + raceId + " #recenterButton");
     if (recenterButton) {
         recenterButton.setAttribute('data-lat', lat);
         recenterButton.setAttribute('data-lon', lon);
