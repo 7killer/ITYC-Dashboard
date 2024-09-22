@@ -40,6 +40,7 @@ var controller = function () {
     const sailColors = ["#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF", "#FF66FF", "#FFC44D", 8, 9,
     // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
                     "#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF;", "#FF66FF", "#FFC44D"];
+    const creditsMaxAwardedByPriceLevel = [8600, 7150, 5700, 4300, 2850, 1425];
     
                     
 
@@ -169,6 +170,8 @@ var controller = function () {
     var lbBoatname, lbTeamname, lbCycle;
     var currentCycle;
 
+    var lbCredits;
+
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
     var cb2digits;
@@ -268,20 +271,21 @@ var controller = function () {
         var lastCommand = "";
         lcActions.map(function (action) {
             if (action.type == "heading") {
-                lastCommand += (action.autoTwa ? " TWA" : " HDG") + "=" + Util.roundTo(action.value, 3+nbdigits) + " | ";
+                lastCommand += "<span class='lastCommandOrder'>" + (action.autoTwa ? " TWA" : " HDG") + " " + Util.roundTo(action.value, 0) + "°</span> • ";
             } else if (action.type == "sail") {
-                lastCommand += " Sail=" + sailNames[action.value];
+                lastCommand += " Sail <span class='lastCommandOrder'>" + sailNames[action.value] + "</span>";
             } else if (action.type == "prog") {
                 action.values.map(function (progCmd) {
-                    var progTime = formatDateUTC(progCmd.ts);
-                    lastCommand += (progCmd.autoTwa ? " TWA" : " HDG") + "=" + Util.roundTo(progCmd.heading, 3+nbdigits) + " @ " + progTime + " | ";
+                    var progTime = formatDateUTC(progCmd.ts, 1);
+                    lastCommand += "<span class='lastCommandOrder'>" + (progCmd.autoTwa ? " TWA" : " HDG") + " " + Util.roundTo(progCmd.heading, 0) + "°</span> @ " + progTime + " • ";
                 });
             } else if (action.type == "wp") {
                 action.values.map(function (waypoint) {
-                    lastCommand += " WP: " + Util.formatPosition(waypoint.lat, waypoint.lon) + " | ";
+                    lastCommand += " WP <span class='lastCommandOrder'>" + Util.formatPosition(waypoint.lat, waypoint.lon) + "</span> • ";
                 });
             }
         });
+        lastCommand = lastCommand.replace(/ \•([^•]*)$/, "");
         return lastCommand;
     }
 
@@ -318,12 +322,12 @@ var controller = function () {
         var retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
         if(r.curr.bestVmg.sailTWSMax != 0)
         {
-            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts | </div>';
+            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts</div>';
         }
         retVal += '<div>'+sailInfo+'</div>';
         if(r.curr.bestVmg.sailTWAMax != 0)
         {
-            retVal +='<div class="textMini"> | '+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
+            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
         }
         retVal +="</td>";
         return   retVal; 
@@ -545,8 +549,8 @@ var controller = function () {
 
         if(lang ==  "fr") {
             raceStatusHeader += '<th title="Temps restant changement de voile">' + "Voile" + '</th>'
-            + '<th title="Temps restant empannage">' + "Empannage" + '</th>'
-            + '<th title="Temps restant virement">' + "Virement" + '</th>';       
+            + '<th title="Temps restant empannage">' + "Emp." + '</th>'
+            + '<th title="Temps restant virement">' + "Vir." + '</th>';
         } else
         {
             raceStatusHeader += '<th title="Time remaining sail change">' + "Sail" + '</th>'
@@ -580,7 +584,7 @@ var controller = function () {
             var bestTwa = r.curr.bestVmg;
             var bestVMGString = bestTwa.twaUp + '<span class="textMini">°</span> | ' + bestTwa.twaDown + '<span class="textMini">°</span>';
             var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
-            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + bestTwa.btwa + '<span class="textMini">°</span>';
+            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + bestTwa.btwa + '<span class="textMini">°</span>';
     
             var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
             var lastCalcStyle = ""
@@ -889,9 +893,9 @@ var controller = function () {
                 
                 var best = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options,r.curr.sail % 10,r.curr.twa);
                 r.curr.bestVmg = best;
-                var bestVMGString = best.twaUp + " | " + best.twaDown;
-                var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + "kts | " + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + "kts";
-                var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + "kts | " + best.btwa;
+                var bestVMGString = best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>';
+                var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
+                var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>';
     
                 // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
                 var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
@@ -1121,8 +1125,8 @@ var controller = function () {
             + '<th>' + "Best speed" + '</th>'
             + '<th title="Stamina">' + "Stamina" + '</th>';
         if(lang ==  "fr") {
-            raceStatusHeader += '<th title="Temps de manoeuvre théorique">' + "Empannage" + '</th>'
-                            + '<th title="Temps de manoeuvre théorique">' + "Virement" + '</th>'
+            raceStatusHeader += '<th title="Temps de manoeuvre théorique">' + "Virement" + '</th>'
+                            + '<th title="Temps de manoeuvre théorique">' + "Empannage" + '</th>'
                             + '<th title="Temps de manoeuvre théorique">' + "Voile" + '</th>';
         } else
         {
@@ -1164,7 +1168,7 @@ var controller = function () {
             var race = races.get(selRace.value);
             return '<tr>'
                 + Util.genth("th_rt", "RT", "Call Router", undefined)
-                + Util.genth("th_lu", "Date" + dateUTC(), undefined)
+                + Util.genth("th_lu", "Date" + dateUTC(), undefined, Util.sortField == "lastCalcDate", Util.currentSortOrder)
                 + Util.genth("th_name", "Skipper", undefined, Util.sortField == "displayName", Util.currentSortOrder)
                 + Util.genth("th_teamname", "Team", undefined, Util.sortField == "teamname", Util.currentSortOrder)
                 + Util.genth("th_rank", "Rank", undefined, Util.sortField == "rank", Util.currentSortOrder)
@@ -1485,8 +1489,8 @@ var controller = function () {
             if(!cinfo.action) return"";
             return '<tr class="commandLine hovred">'
             + '<td class="time">' + formatDateUTC(cinfo.ts, 1) + '</td>'
-            + '<td colspan="3">Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent) : formatDateUTC(cinfo.ts))
-            + '<td colspan="16">Actions:' + printLastCommand(cinfo.action) + '</td>'
+            + '<td colspan="19"><b>Command @ ' + (cinfo.ts_order_sent ? formatDateUTC(cinfo.ts_order_sent, 2) : formatDateUTC(cinfo.ts))
+            + '</b> • <b>Actions</b> → ' + printLastCommand(cinfo.action) + '</td>'
             + '</tr>';
         }
         function makeRaceLineLog(rinfo)
@@ -1680,7 +1684,7 @@ var controller = function () {
         var commandLines = document.querySelectorAll('tr.commandLine');
         commandLines.forEach(function(line, index) {
             if (document.getElementById("hideCommandsLines").checked) {
-                if ( index > 2) {
+                if ( index > 4) {
                     line.style.display = 'none';
                 }
             } else {
@@ -2476,7 +2480,7 @@ var controller = function () {
         }
         var str = new Intl.DateTimeFormat("lookup", options).format(new Date());
         var res = str.substring(5);
-        return  '<span id="small">&nbsp;(' + res + ')</span>';
+        return '<span class="small">&nbsp;(' + res + ')</span>';
     }
 
     // Ajout - Affichage Heure locale / Heure UTC
@@ -2498,6 +2502,15 @@ var controller = function () {
                 day: "numeric",
                 hour: "numeric",
                 minute: "numeric",
+                hour12: false
+            };
+        }
+        else if (format == 2) {
+            // Format: HH:MM:SS
+            tsOptions = {
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
                 hour12: false
             };
         }
@@ -2949,11 +2962,6 @@ var controller = function () {
                 // Skippers-Choice
                 if(ev_lbl == "sel_ExportFleet") {onFleetInCpyClipBoard();return;}
                 changeState(ev_lbl);
-                var tabClick = originClick; 
-                if (tabClick == 2 || tabClick == 4 || tabClick == 5) {
-                    //updateFleetHTML(raceFleetMap.get(selRace.value));
-                    //lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
-                }
             } else if (call_wi) callWindy(rmatch, 0); // weather
             else if (call_rt) callRouter(rmatch, currentUserId, false,"zezo");
             else if (call_pl) callPolars(rmatch);
@@ -2981,8 +2989,6 @@ var controller = function () {
                 selectedcbx.checked = true;
             }
         }
-        updateUserConfig();
-        
     }
 
     function display_selbox(state) {
@@ -3056,7 +3062,7 @@ var controller = function () {
         var boatPolars = polars[message.boat.polar_id];
         if (boatPolars == undefined || message.options == undefined || message.tws == undefined) {
         } else {
-            r.curr.speedT = theoreticalSpeed(message.tws, message.twa, message.options, boatPolars);
+            r.curr.speedT = theoreticalSpeed(message);
         }
         if (r.prev != undefined) {
             var d = Util.gcDistance(r.prev.pos, r.curr.pos);
@@ -3394,8 +3400,18 @@ var controller = function () {
 
         var url = baseURL + "&tws=" + tws + "&twa=" + twa;
 
+        let optionsList = ["reach", "hull", "light", "heavy", "foil"];
         for (const option of race.curr.options) {
-            url += "&" + race.curr.options[option] + "=true";
+            if (option !== "skin" && option !== "winch" && option !== "radio") {
+                const optionIndex = optionsList.indexOf(option);
+                if (optionIndex !== -1) {
+                    optionsList.splice(optionIndex, 1);
+                }
+                url += `&${option}=true`;
+            }
+        }
+        for (const option of optionsList) {
+            url += `&${option}=false`;
         }
 
         url += "&utm_source=VRDashboard";
@@ -3620,18 +3636,19 @@ function buildlogBookHTML(race) {
         return bookLine;
     }
     function highlightOptionsAlreadyTaken(opt) {
-        if (race.curr.options.includes(opt)) return 'style="color:limegreen"';
+        if (race.curr && race.curr.options.includes(opt)) return 'style="color:limegreen"';
     }
     function totalCreditsForOptionsAlreadyTaken() {
         let total = 0;
-        if (race.curr.options.includes('foil')) total += race.legdata.optionPrices.foil;
-        if (race.curr.options.includes('winch')) total += race.legdata.optionPrices.winch;
-        if (race.curr.options.includes('hull')) total += race.legdata.optionPrices.hull;
-        if (race.curr.options.includes('light')) total += race.legdata.optionPrices.light;
-        if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
-        if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
-        if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
-        if (race.curr.options.includes('skin')) total += race.legdata.optionPrices.skin;
+        if (race && race.curr) {
+            if (race.curr.options.includes('foil')) total += race.legdata.optionPrices.foil;
+            if (race.curr.options.includes('winch')) total += race.legdata.optionPrices.winch;
+            if (race.curr.options.includes('hull')) total += race.legdata.optionPrices.hull;
+            if (race.curr.options.includes('light')) total += race.legdata.optionPrices.light;
+            if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
+            if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
+            if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
+        }
         return total;
     }
 
@@ -3651,33 +3668,48 @@ function buildlogBookHTML(race) {
     let playerOption = "-";
     if(race.curr && race.curr.options) playerOption = race.curr.options;
 
+    let gfsWinds = '1.0';
+    if (race.gfsWinds) gfsWinds = race.gfsWinds;
+    else if (race.legdata.fineWinds !== undefined && race.legdata.fineWinds === true) gfsWinds = '0.25';
+
+    let creditsAwardedByPriceLevel = '-';
+    if (race && race.curr && race.curr.rank > 0) {
+        creditsAwardedByPriceLevel = Math.round(creditsMaxAwardedByPriceLevel[race.curr.priceLevel-1]/(Math.pow(race.curr.rank, 0.4)))
+    }
+
     var raceIdentification = '<table id="raceidTable">'
         + '<thead>'
-        + '<tr>'
-        + '<th colspan = 8>' + race.legdata.name + ' (' + race.id + ') • VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + ' • ' + race.legdata.boat.name + ' • ' + determineRankingCategory(playerOption) + ' • GFS ' + race.gfsWinds + '</th>'
-        + '</tr>' 
+        + '<tr><td width="142px" class="centered" rowspan="3"><img src="https://static.virtualregatta.com/offshore/leg/' + race.id.replace('.', '_') + '.jpg" style="height:85px;padding: 0px;"></td><th colspan="6" height="40px">Race Details</th></tr>'
+        + '<tr><th>Race Name (Id)</th><th>Boat Name</th><th>Wind Model</th><th>VSR Level</th><th>Price</th><th>Category</th></tr>'
+        + '<tr><td class="centered">' + race.legdata.name + ' (' + race.id + ')</td><td class="centered">' + race.legdata.boat.name + '</td><td class="centered">GFS ' + gfsWinds + '°</td><td class="centered">VSR' + race.legdata.vsrLevel/*race.legdata.priceLevel*/ + '</td><td class="centered">Cat. ' + race.legdata.priceLevel + '</td><td class="centered">' + determineRankingCategory(playerOption) + '</td></tr>'
         + '</thead>'
         + '</table>'
         + '<table id="raceidTable2">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan="9">Credits <span style="color:limegreen">(Option équipée)</span></th>'
+        + '<th colspan="12" height="40px">Credits <span style="color:limegreen">(Option équipée)</span></th>'
         + '</tr>' 
         + '<tr>'
-        + '<th>Free Credits</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
-        + '<th ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
+        + '<th width="9%">Game Credits</th>'
+        + '<th width="9%">Race Credits</th>'
+        + '<th width="19%">Current Race Credits <span style="color:tomato">(Total Options)</span></th>'
+        + '<th width="6%">Gains</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
+        + '<th width="8%" ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
         + '</tr>' 
         + '</thead>'
         + '<tbody>'
         + '<tr>'
-        + '<td>'+ race.legdata.freeCredits +'</td>'
+        + '<td>'+ lbCredits.innerHTML +'</td>'
+        + '<td>'+ race.legdata.freeCredits + '</td>'
+        + '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>'
+        + '<td>'+ creditsAwardedByPriceLevel + '</td>'
         + '<td>'+ race.legdata.optionPrices.foil + '</td>'
         + '<td>'+ race.legdata.optionPrices.winch + '</td>'
         + '<td>'+ race.legdata.optionPrices.hull + '</td>'
@@ -3685,13 +3717,13 @@ function buildlogBookHTML(race) {
         + '<td>'+ race.legdata.optionPrices.reach + '</td>'
         + '<td>'+ race.legdata.optionPrices.heavy + '</td>'
         + '<td>'+ race.legdata.optionPrices.radio + '</td>'
-        + '<td>'+ race.legdata.optionPrices.skin + '</td>'
+        + '<td width="126px"><i style="font-size:11px">variable (0-999)</i></td>'
         + '</tr>'
         + '</tbody>'
         + '</table>';
         
     var raceStatusHeader = '<tr>'
-    + '<th colspan="10">Race Stages</th>'
+    + '<th colspan="10" height="40px">Race Stages</th>'
     + '</tr><tr>'
     + '<th title="Type">' + "Type" + '</th>'
     + '<th title="Name">' + "Name" + '</th>'
@@ -3806,7 +3838,7 @@ function buildlogBookHTML(race) {
     var racerestrictedZonesTable = ""; 
     if (race.legdata.restrictedZones && race.legdata.restrictedZones.length != 0) {
             var racerestrictedZonesHeader = '<tr>'
-            + '<th title="Restricted Zones" colspan="2">' + "Zones interdites" + '</th>'
+            + '<th title="Restricted Zones" colspan="2" height="40px">' + "Zones interdites" + '</th>'
             + '</tr>'
             + '<tr>'
             + '<th title="Name">' + "Nom" + '</th>'
@@ -4372,6 +4404,7 @@ async function initializeMap(race) {
         document.getElementById("lb_version").innerHTML = manifest.version;
 
         lbBoatname = document.getElementById("lb_boatname");
+        lbCredits = document.getElementById("lb_credits");
         lbTeamname = document.getElementById("lb_teamname");
         selRace = document.getElementById("sel_race");
         lbCycle = document.getElementById("lb_cycle");
@@ -4448,6 +4481,7 @@ async function initializeMap(race) {
 
         drawTheme = document.documentElement.getAttribute("data-theme");
         switchAddOnMode();
+        display_selbox("hidden");
 
        // var t = await chrome.storage.local.get();
        // console.log(t);
@@ -4531,6 +4565,7 @@ async function initializeMap(race) {
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
+                        lbCredits.innerHTML = message.bs.currency1;
                         //todo save vsr rank                
                         lMap.set_currentId(currentUserId);
                         rt.set_currentId(currentUserId);
@@ -4595,8 +4630,10 @@ async function initializeMap(race) {
                     if (message.track._id.user_id == currentUserId) {
                         handleOwnTrackInfo(message.track);
                     } else {
-                        mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
-                        lMap.updateMapFleet(race,raceFleetMap);
+                        if (message.bs) {
+                            mergeBoatTrackInfo(raceId, message.bs._id.user_id, message.track);
+                            lMap.updateMapFleet(race,raceFleetMap);
+                        }
                         // Ignore track info.
                         // There is currently no function to update a single competitor track.
                     }
@@ -4783,9 +4820,6 @@ async function initializeMap(race) {
         
         mergeBoatInfo(raceId, "usercard", userId, message);
 
-
-        rt.updateFleet(race,raceFleetMap);
-        
         var fleet = raceFleetMap.get(raceId);
 
         if(fleet && fleet.uinfo[userId])
@@ -5167,6 +5201,7 @@ async function initializeMap(race) {
         rt.set_currentId(currentUserId);
         welcomePage = true;
         lbBoatname.innerHTML = response.displayName;
+        lbCredits.innerHTML = response.currency1;
         currentUserName = response.displayName;
         if(response.scriptData)
         {
@@ -5510,7 +5545,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
 
             document.getElementById("t_config_l").innerHTML = "Journal";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 3 dernières)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 5 dernières)";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
             document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
@@ -5625,7 +5660,7 @@ async function initializeMap(race) {
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
             document.getElementById("t_config_l").innerHTML = "Race Log";
-            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 3)";
+            document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 5)";
             
             document.getElementById("t_config_m").innerHTML = "Map";
             document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
@@ -5741,7 +5776,6 @@ window.addEventListener("load", async function () {
 
     document.getElementById("bt_router").addEventListener("click", controller.callRouter);
     document.getElementById("sel_race").addEventListener("change", controller.changeRace);
-    document.getElementById("sel_skippers").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_friends").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_opponents").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_team").addEventListener("change", controller.updateFleetFilter);
