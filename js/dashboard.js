@@ -936,17 +936,19 @@ var controller = function () {
                     }
                     return paramStamina.consumption.boats[rangeList[i]];
                 }
-                function getWindConsumptionFactor(windSpeed) {
-                    const winds = paramStamina.consumption.winds;
-                
+                function getWindConsumptionFactor(windSpeed) {      
+                    const vrJacketwinds = {// hard coded by VR
+                        "0": 1,
+                        "10": 1,
+                        "20": 1.2,
+                        "30": 1.8
+                    };
+                    let winds = stamina.consumption.winds;
+                    if(r.curr.options.includes('vrtexJacket')) winds = vrJacketwinds;
                     const windKeys = Object.keys(winds).map(Number).sort((a, b) => a - b);
+                    const vrJacketKey = [1,1,1.2,1.8]; // hard coded by VR
                     if (windSpeed <= windKeys[0]) return winds[windKeys[0]];
-                    if (windSpeed >= windKeys[windKeys.length - 1]) {
-                        if(r.curr.options.includes('vrtexJacket')) 
-                          return winds[windKeys[windKeys.length - 1]]*0.8;
-                        else
-                          return winds[windKeys[windKeys.length - 1]];
-                    }
+                    if (windSpeed >= windKeys[windKeys.length - 1]) return winds[windKeys[windKeys.length - 1]];
                 
                     let lowerBound = windKeys[0];
                     let upperBound = windKeys[0];
@@ -959,19 +961,8 @@ var controller = function () {
                             break;
                         }
                     }
-
-                    let factorLow = winds[lowerBound];
-                    let factorHigh = winds[upperBound];
-
-                    if(r.curr.options.includes('vrtexJacket')) {
-                        factorLow *= 0.8;
-                        if(factorLow<winds[windKeys[0]]) factorLow = winds[windKeys[0]];
-                        factorHigh *= 0.8;
-                        if(factorHigh<winds[windKeys[0]]) factorHigh = winds[windKeys[0]];  
-                    }
-
                     const ratio = (windSpeed - lowerBound) / (upperBound - lowerBound);  
-                    return factorLow + ratio * (factorHigh - factorLow);
+                    return winds[lowerBound] + ratio * (winds[upperBound] - winds[lowerBound]);
                 }
 
                 var boatStamina = -1;
