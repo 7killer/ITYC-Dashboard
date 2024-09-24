@@ -3593,6 +3593,9 @@ function buildlogBookHTML(race) {
             if (race.curr.options.includes('reach')) total += race.legdata.optionPrices.reach;
             if (race.curr.options.includes('heavy')) total += race.legdata.optionPrices.heavy;
             if (race.curr.options.includes('radio')) total += race.legdata.optionPrices.radio;
+            if (race.curr.options.includes('magicFurler')) total += race.legdata.optionPrices.magicFurler;
+            if (race.curr.options.includes('comfortLoungePug')) total += race.legdata.optionPrices.comfortLoungePug;
+            if (race.curr.options.includes('vrtexJacket')) total += race.legdata.optionPrices.vrtexJacket;
         }
         return total;
     }
@@ -3632,21 +3635,23 @@ function buildlogBookHTML(race) {
         + '<table id="raceidTable2">'
         + '<thead>'
         + '<tr>'
-        + '<th colspan="12" height="40px">Credits <span style="color:limegreen">(Option équipée)</span></th>'
+        + '<th colspan="15" height="40px">Credits <span style="color:limegreen">(Option équipée)</span></th>'
         + '</tr>' 
         + '<tr>'
-        + '<th width="9%">Game Credits</th>'
-        + '<th width="9%">Race Credits</th>'
-        + '<th width="19%">Current Race Credits <span style="color:tomato">(Total Options)</span></th>'
+        + '<th width="7%">Game Credits</th>'
+        + '<th width="7%">Race Credits</th>'
+        + '<th width="17%">Current Race Credits <span style="color:tomato">(Total Options)</span></th>'
         + '<th width="6%">Gains</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
-        + '<th width="7%" ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
-        + '<th width="8%" ' + highlightOptionsAlreadyTaken('skin') + '>Skin</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('hull') + '>Hull</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('light') + '>Light</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('reach') + '>Reach</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('heavy') + '>Heavy</th>'
+        + '<th width="6%" ' + highlightOptionsAlreadyTaken('radio') + '>Radio</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('magicFurler') + '>Magic Furler</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('comfortLoungePug') + '>Comfort Lounge</th>'
+        + '<th width="7%" ' + highlightOptionsAlreadyTaken('vrtexJacket') + '>VRTex Jacket</th>'
         + '</tr>' 
         + '</thead>'
         + '<tbody>'
@@ -3664,7 +3669,9 @@ function buildlogBookHTML(race) {
         + '<td>'+ race.legdata.optionPrices.reach + '</td>'
         + '<td>'+ race.legdata.optionPrices.heavy + '</td>'
         + '<td>'+ race.legdata.optionPrices.radio + '</td>'
-        + '<td width="126px"><i style="font-size:11px">variable (0-999)</i></td>'
+        + '<td>'+ race.legdata.optionPrices.magicFurler + '</td>'
+        + '<td>'+ race.legdata.optionPrices.comfortLoungePug + '</td>'
+        + '<td>'+ race.legdata.optionPrices.vrtexJacket + '</td>'
         + '</tr>'
         + '</tbody>'
         + '</table>';
