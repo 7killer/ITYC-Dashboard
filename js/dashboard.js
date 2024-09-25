@@ -943,7 +943,7 @@ var controller = function () {
                         "20": 1.2,
                         "30": 1.8
                     };
-                    let winds = stamina.consumption.winds;
+                    let winds = paramStamina.consumption.winds;
                     if(r.curr.options.includes('vrtexJacket')) winds = vrJacketwinds;
                     const windKeys = Object.keys(winds).map(Number).sort((a, b) => a - b);
                     const vrJacketKey = [1,1,1.2,1.8]; // hard coded by VR
