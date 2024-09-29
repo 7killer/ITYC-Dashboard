@@ -946,7 +946,6 @@ var controller = function () {
                     let winds = paramStamina.consumption.winds;
                     if(r.curr.options.includes('vrtexJacket')) winds = vrJacketwinds;
                     const windKeys = Object.keys(winds).map(Number).sort((a, b) => a - b);
-                    const vrJacketKey = [1,1,1.2,1.8]; // hard coded by VR
                     if (windSpeed <= windKeys[0]) return winds[windKeys[0]];
                     if (windSpeed >= windKeys[windKeys.length - 1]) return winds[windKeys[windKeys.length - 1]];
                 
@@ -2553,7 +2552,7 @@ var controller = function () {
             isRegulated : r.curr.isRegulated,
             twa : r.curr.twa,
             bestVmg : r.curr.bestVmg,
-            rank : r.rank,
+            rank : r.curr.rank,
             distanceToEnd : r.curr.distanceToEnd,
             bestDTF : r.bestDTF,
             twd : r.curr.twd,
