@@ -242,6 +242,7 @@ function formatRPM (m) {
     // $IIRPM Revolutions used to send stamina
     var s = "IIRPM";
     var stamina = m.stamina || 0;
+    if(stamina > 100) stamina = 100;
 // Shaft number for sailset
     var sailid = m.sail % 10; 
     s += ",E,";
