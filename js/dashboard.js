@@ -3267,9 +3267,9 @@ var controller = function () {
         var hdg = uinfo.heading;
         var voile = uinfo.sail % 10;
         var sta = uinfo.stamina;
-        var lat = Util.roundTo(pos.lat, 6)
-        var lon = Util.roundTo(pos.lon, 6)
-        
+        if(sta && sta > 100) sta = 100;
+        var lat = Util.roundTo(pos.lat, 6);
+        var lon = Util.roundTo(pos.lon, 6);
         let retVal = baseURL 
             + "/" + lat.replace(".",",")
             + "/" + lon.replace(".",",")
