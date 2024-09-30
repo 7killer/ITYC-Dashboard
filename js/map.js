@@ -466,61 +466,119 @@ function buildPt2(lat,lon)
     return ret;
 }
 
-function buildPath(path,initLat,initLng,finishLat,finshLng)
+function buildPath(pathEntry,initLat,initLng,finishLat,finshLng)
 {
 
     var cpath = [];
     var cpathNum = 0;
     cpath[cpathNum] = [];
     var pos;
-    if(!path )    return cpath;
+    if(!pathEntry )    return cpath;
+    let path = [];
     if(initLat && initLng)
     {
-        pos= buildPt(initLat, initLng);
-        cpath[cpathNum].push(pos);   
+        path.push({lat:initLat,lon:initLng});
     }
-    pos= buildPt(path[0].lat, (path[0].lon?path[0].lon:path[0].lng));
+    
+    for(const pts of pathEntry)
+    {
+        path.push(pts);
+    }
+    if(finishLat && finshLng)
+    {
+        path.push({lat:finishLat,lon:finshLng});
+    }
+    var i, lat, lon, points;
+    points = [];
+    var paths = convertLng0To360(path);
+    pos= buildPt(paths[0].lat, (paths[0].lon?paths[0].lon:paths[0].lng));
+    cpath[cpathNum].push(pos);
+
+    if(paths.length >1)
+        for (var i = 1; i < paths.length; i++) {
+            var lon = (paths[i].lon?paths[i].lon:paths[i].lng);
+            var lat = paths[i].lat;
+            pos = buildPt(lat, lon);
+            cpath[cpathNum].push(pos);
+        }
+    return cpath;
+}
+
+const convertLng0To360 = (coordinates) => {
+    const coordinatesWithOffset = [];
+    let offset = 0;
+  
+    for (const point of coordinates) {
+      const previousPoint =
+        coordinatesWithOffset[coordinatesWithOffset.length - 1];
+      const lon = point.lon?point.lon:point.lng;
+      const lonp = previousPoint?(previousPoint.lon?previousPoint.lon:previousPoint.lng):null;
+      
+      if (previousPoint && lon > 90 && lonp < -90) {
+        offset = -360;
+      } else if (previousPoint && lonp > 90 && lon < -90) {
+        offset = 360;
+      }
+      if(point.lon) point.lon += offset; else point.lng += offset;
+      coordinatesWithOffset.push(point);
+    }
+  
+    return coordinatesWithOffset;
+  };
+
+function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
+ {
+
+    var cpath = [];
+    var cpathNum = 0;
+    cpath[cpathNum] = [];
+    var pos;
+    if(!pathEntry )    return cpath;
+    let path = [];
+    if(initLat && initLng)
+    {
+        path.push({lat:initLat,lon:initLng});
+    }
+    for(const pts of pathEntry)
+    {
+        path.push(pts);
+    }
+    if(finishLat && finshLng)
+    {
+        path.push({lat:finishLat,lon:finshLng});
+    }
+    var i, t, ax, ay, bx, by, cx, cy, dx, dy, lat, lon, points;
+    points = [];
+    var paths = convertLng0To360(path);
+
+    pos= buildPt(paths[0].lat, (paths[0].lon?paths[0].lon:paths[0].lng));
     cpath[cpathNum].push(pos);
 
     if(path.length >1)
-        for (var i = 1; i < path.length; i++) {
-            var lon = (path[i].lon?path[i].lon:path[i].lng);
-            var lonP = (path[i-1].lon?path[i-1].lon:path[i-1].lng);
-            var lat = path[i].lat;
-            var latP = path[i-1].lat;
-            if(lon==0 && lonP < 0)lon = -0.000001;
-            else  if(lon==0 && lonP > 0)lon = 0.000001;
-            if(lon==180 && lonP < 180)lon = 179.999999;
-            else  if(lon==180 && lonP > 180)lon = 180.000001;
-            if(lon==-180 && lonP < -180)lon = -180.000001;
-            else  if(lon==-180 && lonP > -180)lon = -179.999999;
-            if((lonP > 0 && lon < 0)
-            || (lon > 0 && lonP < 0))
-            {//meridian or antimeridian crossing
-            /*    cpathNum++;
-                cpath[cpathNum] = [];
-                continue; //best is build the 2 parts path to track gap
-            */
-                var latM = (lat+latP) /2
-                //First finish the actual line
-            //    pos = buildPt(latM, lon);
-            //    cpath[cpathNum].push(pos);
-                //then start new one
-                cpathNum++;
-                cpath[cpathNum] = [];
-                
-            }
-
-            pos = buildPt(path[i].lat, lon);
-            cpath[cpathNum].push(pos);
-        }
-    if(finishLat && finshLng)
     {
-        pos= buildPt(finishLat, finshLng);
-        cpath[cpathNum].push(pos);   
-    }    
+        for (let i = 2; i < paths.length - 1; i++) {
+            for (let t = 0; t < 1; t += 0.1) {
+                ax = (-paths[i - 2].lat + 3 * paths[i - 1].lat - 3 * paths[i].lat + paths[i + 1].lat) / 6;
+                ay = (-paths[i - 2].lon + 3 * paths[i - 1].lon - 3 * paths[i].lon + paths[i + 1].lon) / 6;
+                bx = (paths[i - 2].lat - 2 * paths[i - 1].lat + paths[i].lat) / 2;
+                by = (paths[i - 2].lon - 2 * paths[i - 1].lon + paths[i].lon) / 2;
+                cx = (-paths[i - 2].lat + paths[i].lat) / 2;
+                cy = (-paths[i - 2].lon + paths[i].lon) / 2;
+                dx = (paths[i - 2].lat + 4 * paths[i - 1].lat + paths[i].lat) / 6;
+                dy = (paths[i - 2].lon + 4 * paths[i - 1].lon + paths[i].lon) / 6;
+                lat = ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx;
+                lon = ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy;
+
+    
+                pos = buildPt(lat, lon);
+                cpath[cpathNum].push(pos);
+
+            }
+        }
+    }
     return cpath;
 }
+
 
 async function initialize(race,raceFleetMap)
 {
@@ -688,9 +746,7 @@ async function initialize(race,raceFleetMap)
                 
                 
             // course
-
-
-            var cpath = buildPath(race.legdata.course);
+            var cpath = buildPath_bspline(race.legdata.course,race.legdata.start.lat,race.legdata.start.lon,race.legdata.end.lat,race.legdata.end.lon);
             var raceLine = buildTrace(cpath,race.lMap.refLayer,race,"white",1,0.5);
             for(var i=0;i<raceLine.length;i++) 
             {
