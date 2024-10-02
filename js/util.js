@@ -71,7 +71,7 @@ function formatHHMMSSSS (d) {
     return s;
 }
     
-function formatHMS (seconds) {
+function formatHM (seconds) {
     if (seconds === undefined || isNaN(seconds) || seconds < 0) {
         return "-";
     }
@@ -84,7 +84,15 @@ function formatHMS (seconds) {
     var minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
 
-    return pad0(hours) + "h" + pad0(minutes) + "m"; // + seconds + "s";
+    let ret;
+    if(hours!=0)
+    {
+        ret = pad0(hours,1)+ "h" + pad0(minutes) + "m";
+    } else
+    {
+        ret = pad0(minutes,1) + "m";    
+    }
+    return ret;
 }
 
 
@@ -551,7 +559,7 @@ export { angle,
          formatDDMMYY,
          formatDHMS,
          formatHHMMSSSS,
-         formatHMS,
+         formatHM,
          formatPosition,formatPosition2l,
          gcAngle,
          gcDistance,
