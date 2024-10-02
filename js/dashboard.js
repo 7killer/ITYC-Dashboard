@@ -243,7 +243,7 @@ var controller = function () {
             sailInfo =  '<span ' + 'style="color:' + sailColors[r.curr.sail] + '" padding: 0px 0px 0px 2px;"' + '>&#x25e2&#x25e3  </span>'+ sailNames[r.curr.sail % 10];
         var isAutoSail = r.curr.hasPermanentAutoSails ||
             (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0);
-        var autoSailTime = r.curr.hasPermanentAutoSails ? '∞' : Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
+        var autoSailTime = r.curr.hasPermanentAutoSails ? '∞' : Util.formatHM(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
         if (isAutoSail) {
             sailInfo = sailInfo + " <span title='Auto Sails' class='cursorHelp'>&#x24B6;</span> " + autoSailTime;
         } else {
@@ -567,8 +567,70 @@ var controller = function () {
                 else 
                     staminaStyle = 'style="color:green"';   
                 staminaTxt = Util.roundTo(r.curr.stamina , 2) + "%";
+            }
+
+            let totalBoost= 0;
+            let firstExp = Date.now()+24*60*60*1000;
+            let fullStamina = '<td class="stamina" ';
+
+            if(r.curr.stats)
+            {
+                
+                fullStamina += '><div class="textMini">';
+                for (const choco of r.curr.stats.staminaTemp) {    
+                    if(choco.value > 0 && choco.exp > Date.now())
+                    {
+                        totalBoost += choco.value;
+                        if(choco.exp < firstExp) firstExp = choco.exp;
+                    }
+                }
+                if(totalBoost > 0)
+                {
+                    fullStamina += '🍫+'+ Util.roundTo(totalBoost, 2)+'%';
+                    fullStamina += ' ⌚'+ Util.formatHM(firstExp-Date.now());
+
+                    const realStamina = r.curr.stamina + totalBoost;
+                    if (realStamina < paramStamina.tiredness[0]) 
+                        staminaStyle = 'style="color:red"';
+                    else if (realStamina < paramStamina.tiredness[1]) 
+                        staminaStyle = 'style="color:orange"';
+                    else 
+                        staminaStyle = 'style="color:green"';   
+                }
+                fullStamina += '</div>';
+                r.curr.realStamina = (r.curr.stamina + totalBoost)>100?100:(r.curr.stamina + totalBoost);
+                    
+                staminaTxt += " (x" + Util.roundTo(computeEnergyPenalitiesFactor(r.curr.realStamina) , 2)+")" ;
+                
+                fullStamina += '<div ' + staminaStyle +'>';
+                fullStamina += staminaTxt;
+                fullStamina += '</div>';
+                fullStamina += '<div class="textMini">';
+
+                totalBoost= 0;
+                firstExp = Date.now()+24*60*60*1000;
+                for (const coffee of r.curr.stats.staminaMaxEffects) {    
+                    if(coffee.value > 0 && coffee.exp > Date.now())
+                    {
+                        totalBoost += coffee.value;
+                        if(coffee.exp < firstExp) firstExp = coffee.exp;
+                    }
+                }
+                if(totalBoost > 0)
+                {
+                    fullStamina += '☕+'+ Util.roundTo(totalBoost, 2)+'%';
+                    fullStamina += ' ⌚'+ Util.formatHM(firstExp-Date.now());
+                }
+                fullStamina += '</div>';
+                fullStamina += '</td>';
+            
+                //🍴
+            } else
+            {
                 staminaTxt += " (x" + Util.roundTo(computeEnergyPenalitiesFactor(r.curr.stamina) , 2)+")" ;
-            };
+                fullStamina += staminaStyle + '>' + staminaTxt  + '</td>';
+            }
+            
 
             var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
 
@@ -591,7 +653,7 @@ var controller = function () {
                 raceLine += '<p>(' + bestVMGTilte + ')</p>';
             raceLine += '</td>'
                 + '<td class="bspeed">' + bspeedTitle +'</td>'
-                + '<td class="stamina" '+ staminaStyle+ '>' + staminaTxt  + '</td>';
+                + fullStamina;
             if(!p)
             { 
                 raceLine += '<td class="xfactor"> - </td>'
@@ -873,6 +935,64 @@ var controller = function () {
                     staminaTxt += " (x" + Util.roundTo(penalties.staminaFactor , 2)+")" ;
                 }
 
+                let totalBoost= 0;
+                let firstExp = Date.now()+24*60*60*1000;
+                let fullStamina = '<td class="stamina" ';
+
+                if(r.curr.stats)
+                {
+                    
+                    fullStamina += '><div class="textMini">';
+                    for (const choco of r.curr.stats.staminaTemp) {    
+                        if(choco.value > 0 && choco.exp > Date.now())
+                        {
+                            totalBoost += choco.value;
+                            if(choco.exp < firstExp) firstExp = choco.exp;
+                        }
+                    }
+                    if(totalBoost > 0)
+                    {
+                        fullStamina += '🍫+'+ Util.roundTo(totalBoost, 2)+'%';
+                        fullStamina += ' ⌚'+ Util.formatHM(firstExp-Date.now());
+
+                        const realStamina = r.curr.stamina + totalBoost;
+                        if (realStamina < paramStamina.tiredness[0]) 
+                            staminaStyle = 'style="color:red"';
+                        else if (realStamina < paramStamina.tiredness[1]) 
+                            staminaStyle = 'style="color:orange"';
+                        else 
+                            staminaStyle = 'style="color:green"';   
+                    }
+                    fullStamina += '</div>';
+
+                    fullStamina += '<div ' + staminaStyle +'>';
+                    fullStamina += staminaTxt;
+                    fullStamina += '</div>';
+                    fullStamina += '<div class="textMini">';
+
+                    totalBoost= 0;
+                    firstExp = Date.now()+24*60*60*1000;
+                    for (const coffee of r.curr.stats.staminaMaxEffects) {    
+                        if(coffee.value > 0 && coffee.exp > Date.now())
+                        {
+                            totalBoost += coffee.value;
+                            if(coffee.exp < firstExp) firstExp = coffee.exp;
+                        }
+                    }
+                    if(totalBoost > 0)
+                    {
+                        fullStamina += '☕+'+ Util.roundTo(totalBoost, 2)+'%';
+                        fullStamina += ' ⌚'+ Util.formatHM(firstExp-Date.now());
+                    }
+                    fullStamina += '</div>';
+                    fullStamina += '</td>';
+                
+                    //🍴
+                } else
+                {
+                    fullStamina += staminaStyle + '>' + staminaTxt  + '</td>';
+                }
+
                 let itycLedColor = "LightGrey";
                 if(document.getElementById("ITYC_record").checked)
                 {
@@ -898,7 +1018,7 @@ var controller = function () {
                         returnVal += '<p>(' + bestVMGTilte + ')</p>';
                     returnVal += '</td>'
                     + '<td class="bspeed">' + bspeedTitle +'</td>'
-                    + '<td class="stamina" ' + staminaStyle + '>' + staminaTxt  + '</td>'
+                    + fullStamina
                     + '<td class="tack">' + tack + '</td>'
                     + '<td class="gybe">' + gybe + '</td>'
                     + '<td class="sailPenalties">' + sail + '</td>'
@@ -1055,8 +1175,13 @@ var controller = function () {
 
             //take in account stamina, coeff is coming from impact value
             var boatCoeff = 1.0;
-            if(record.curr.stamina) boatCoeff = computeEnergyPenalitiesFactor(record.curr.stamina);
-            
+            if(record.curr.stamina)
+            {
+                if(record.curr.realStamina)
+                    boatCoeff = computeEnergyPenalitiesFactor(record.curr.realStamina);
+                else
+                    boatCoeff = computeEnergyPenalitiesFactor(record.curr.stamina);
+            } 
 
             return {
                 "gybe" : penalty(speed, options, fraction, winch.gybe,boatCoeff),
@@ -2563,7 +2688,7 @@ var controller = function () {
             sail : r.curr.sail,
             isAutoSail : ( r.curr.hasPermanentAutoSails ||
                 (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0)),
-            autoSailTime :( r.curr.hasPermanentAutoSails ? '∞' : Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate)),
+            autoSailTime :( r.curr.hasPermanentAutoSails ? '∞' : Util.formatHM(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate)),
             badSail : r.curr.badSail,
 
             /*factor*/
@@ -3834,7 +3959,7 @@ async function initializeMap(race) {
             var sailCompasInfo = sailInfo;
     
             var isAutoSail = r.curr.hasPermanentAutoSails || (r.curr.tsEndOfAutoSail &&(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate) > 0);
-            var autoSailTime = r.curr.hasPermanentAutoSails?'∞':Util.formatHMS(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
+            var autoSailTime = r.curr.hasPermanentAutoSails?'∞':Util.formatHM(r.curr.tsEndOfAutoSail - r.curr.lastCalcDate);
             if (isAutoSail) {
                 sailInfo = sailInfo + " (A " + autoSailTime + ")";
                 sailCompasInfo = sailCompasInfo + "<BR><font style='font-size: 10px;'>(A " + autoSailTime + ")</font>";
