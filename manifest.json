@@ -34,23 +34,26 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"],
-      "js": ["./js/addResume2.js"],
-      "run_at": "document_start"
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
+      "js": ["listener.js","./js/addResume2.js"],
+      "run_at": "document_start",
+      "all_frames": true
     },
     {
-      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"],
+      "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
       "run_at": "document_end",
-      "css":["./css/content.css"]
+      "css":["./css/content.css"],
+      "all_frames": true
     }
   ],
   "manifest_version": 3,
   "web_accessible_resources": [{
-    "resources": ["listener.js"],
+    "resources": ["listener.js","./js/addResume2.js"],
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*"
+    "ids": ["*"],
+    "matches": ["https://www.virtualregatta.com/*/offshore-*/*","https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"
     ]
   }
 }
