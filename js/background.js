@@ -112,13 +112,14 @@ chrome.runtime.onInstalled.addListener(async () => {
     const scripts = [{
       id: 'listener',
       js: ['listener.js'],
-      matches: ['https://www.virtualregatta.com/*/offshore-*/*',"https://www.virtualregatta.com/*/offshore-*-iframe/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
+      matches: ["https://play.offshore.virtualregatta.com/"],
       runAt: 'document_start',
       world: 'MAIN',
+      allFrames: true,
     }];
     const ids = scripts.map(s => s.id);
     await chrome.scripting.unregisterContentScripts({ids}).catch(() => {});
-    await chrome.scripting.registerContentScripts(scripts).catch(() => {});
+    await chrome.scripting.registerContentScripts(scripts).catch((error) => {console.log(error);});
     
     try { const panelWindowInfo = chrome.windows.create({
         url: chrome.runtime.getURL("popup.html"),
