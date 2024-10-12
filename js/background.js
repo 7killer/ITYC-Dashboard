@@ -107,16 +107,22 @@ chrome.declarativeContent.onPageChanged.removeRules(async () => {
     ctx.drawImage(img, 0, 0, w, h);
     return ctx.getImageData(0, 0, w, h);
   }
-
+  
 chrome.runtime.onInstalled.addListener(async () => {
     const scripts = [{
-      id: 'listener',
-      js: ['listener.js'],
-      matches: ["https://play.offshore.virtualregatta.com/"],
+      id: 'listenerIframe',
+      js: ['listenerIframe.js'],
+      matches: ["https://beta.virtualregatta.com/","https://play.offshore.virtualregatta.com/"],
       runAt: 'document_start',
       world: 'MAIN',
       allFrames: true,
-    }];
+    },{
+        id: 'listener',
+        js: ['listener.js'],
+        matches: ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*"],
+        runAt: 'document_start',
+        world: 'MAIN'
+      }];
     const ids = scripts.map(s => s.id);
     await chrome.scripting.unregisterContentScripts({ids}).catch(() => {});
     await chrome.scripting.registerContentScripts(scripts).catch((error) => {console.log(error);});
