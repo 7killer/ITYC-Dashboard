@@ -32,7 +32,9 @@
 
   }
   [data-theme="dark"] {
-    --bg_body_color: #202124;
+  /*  --bg_body_color: #202124;*/
+    --bg_body_color: rgb(3,38,63);
+    
     --body_color: #FFFFFF;
     
     --th_color :    #ededed;
@@ -65,6 +67,14 @@
     --popup_bg_img :linear-gradient(180deg, #202124, #252930 40%, #293034)
     
   }
+  body {
+     background-color: var(--bg_body_color)!important;
+     color: var(--body_color)!important;
+     background-image: var(--bg_image)!important;
+     background-position: center!important;
+     background-repeat: no-repeat!important;
+     background-size: contain!important;
+ }
 
   .webgl-content, #gameContainer {
     display:block!important;
@@ -136,6 +146,7 @@ td {
     background-color: var(--td_bg_color);
     color: var(--td_color);
 }
+
 
 span {
     white-space:nowrap;

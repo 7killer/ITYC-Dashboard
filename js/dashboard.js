@@ -509,9 +509,9 @@ var controller = function () {
 
         if(!currentUserId ) {
             if(lang ==  "fr") {
-                raceLine ="<tr><td colspan='22'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com'>Relancer</a>)</td></tr>";
+                raceLine ="<tr><td colspan='22'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com/offshore-game/'>Relancer</a>)</td></tr>";
             } else {
-                raceLine ="<tr><td colspan='22'>❌ Player not detected (<a href='https://www.virtualregatta.com'>Reload</a>)</td></tr>";    
+                raceLine ="<tr><td colspan='22'>❌ Player not detected (<a href='https://www.virtualregatta.com/offshore-game/'>Reload</a>)</td></tr>";    
             }
         } else if(r == undefined || r.curr == undefined ||((welcomePage))) {
             if(lang ==  "fr") {

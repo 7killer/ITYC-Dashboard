@@ -112,7 +112,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     const scripts = [{
       id: 'listenerIframe',
       js: ['listenerIframe.js'],
-      matches: ["https://beta.virtualregatta.com/","https://play.offshore.virtualregatta.com/"],
+      matches: ["https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
       runAt: 'document_start',
       world: 'MAIN',
       allFrames: true,
