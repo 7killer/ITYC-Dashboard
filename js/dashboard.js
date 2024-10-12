@@ -4011,7 +4011,7 @@ async function initializeMap(race) {
               var cp_name = "invsible";
               if (cp.display != "none") cp_name = cp.display;
     
-              if (cp.display == "none" ||  (race.gatecnt && race.gatecnt[cp.group - 1])) {
+              if (cp.display == "none" ||  (r.gatecnt && r.gatecnt[cp.group - 1])) {
                 continue;
               }
     
