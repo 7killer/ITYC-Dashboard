@@ -708,7 +708,6 @@ var controller = function () {
 
         let gameSize = document.getElementById("fullScreen_Size").value;
         if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;
-
         return {order: "update",
         content:outputTable,
         newTab:cbReuseTab.checked,
