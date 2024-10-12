@@ -42,12 +42,8 @@ function manageFullScreen(e) {
   if(!ourDiv) return;
   const iframeHeight = window.innerHeight;
   const iframeWidth = window.innerWidth;
-
-  console.log("iframe " + iframeWidth + " x " + iframeHeight);
-
   let canvaSizeOriginW =  0;
   let canvaSizeOriginH =  0;
-//
   
   let spacer =  0;
   let dashRowH =  0;
@@ -83,18 +79,14 @@ function manageFullScreen(e) {
             {
               originalGameWidth = canvaSizeOriginW;
               originalGameHeight = canvaSizeOriginH;
-              console.log("original game size : " +originalGameWidth + " x "+ originalGameHeight);
-              console.log("screen size : " +screenWidth + " x "+ screenHeight);
   
               let maxGameWidth = Math.ceil(screenWidth*gameSize/100);
               let maxGameHeight = Math.ceil(maxGameWidth*originalRatio);
-              console.log("max game size : " +maxGameWidth + " x "+ maxGameHeight);
   
               if((maxGameHeight + offsetDash) > screenHeight)
               {
                 maxGameHeight = Math.ceil(screenHeight-offsetDash);
                 maxGameWidth = Math.ceil(maxGameHeight/originalRatio);
-                console.log("max size corr: " +maxGameWidth + " x "+ maxGameHeight);
               }
               canvaSizeOriginW = maxGameWidth;
               canvaSizeOriginH = maxGameHeight;
@@ -118,9 +110,6 @@ function manageFullScreen(e) {
             }
           }        
         }
-  
-        console.log("game size : " +canvaSizeOriginW + " x "+ canvaSizeOriginH);
-        console.log("iframe size " + iframeWidth + " x " + iframeHeight);
 
         if(iframeHeight > window.innerHeight && window.parent == window)
         {// acces by iframe page most of the times

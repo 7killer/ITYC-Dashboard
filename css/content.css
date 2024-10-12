@@ -32,7 +32,7 @@
 
   }
   [data-theme="dark"] {
-    --bg_body_color: #202124;
+    --bg_body_color: rgb(3,38,63);
     --body_color: #FFFFFF;
     
     --th_color :    #ededed;
