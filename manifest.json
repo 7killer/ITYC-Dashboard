@@ -2,15 +2,14 @@
     "name": "VR Dashboard I.T.Y.C.",
     "short_name": "VR Dashboard I.T.Y.C.",
     "description": "Monitor boat position & call virtual sailor weather router",
-    "version": "1.4.1",
+    "version": "1.4.2",
   "permissions": [
     "tabs",
     "storage",
     "activeTab",
     "scripting",
     "declarativeContent",
-    "unlimitedStorage",
-    "sidePanel"
+    "unlimitedStorage"
 	],
 	"host_permissions" : [
 	"*://*.virtualregatta.com/*",
@@ -36,12 +35,12 @@
   "content_scripts": [
     {
       "matches": ["https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
-      "js": ["listenerIframe.js","./js/addResume2.js"],
+      "js": ["listenerIframeItyc.js","./js/addResume2.js"],
       "run_at": "document_start",
       "all_frames": true
     },    {
       "matches": ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*"],
-      "js": ["listener.js","./js/addResume2.js"],
+      "js": ["listenerItyc.js","./js/addResume2.js"],
       "run_at": "document_start"
     },
     {
@@ -58,7 +57,7 @@
   ],
   "manifest_version": 3,
   "web_accessible_resources": [{
-    "resources": ["listener.js","./js/addResume2.js","listenerIframe.js","panel.html"],
+    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","panel.html"],
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {

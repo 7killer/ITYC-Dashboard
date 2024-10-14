@@ -110,23 +110,28 @@ chrome.declarativeContent.onPageChanged.removeRules(async () => {
   
 chrome.runtime.onInstalled.addListener(async () => {
     const scripts = [{
-      id: 'listenerIframe',
-      js: ['listenerIframe.js'],
+      id: 'listenerIframeItyc',
+      js: ['listenerIframeItyc.js'],
       matches: ["https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
       runAt: 'document_start',
       world: 'MAIN',
       allFrames: true,
     },{
-        id: 'listener',
-        js: ['listener.js'],
+        id: 'listenerItyc',
+        js: ['listenerItyc.js'],
         matches: ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*"],
         runAt: 'document_start',
         world: 'MAIN'
       }];
-    const ids = scripts.map(s => s.id);
-    await chrome.scripting.unregisterContentScripts({ids}).catch(() => {});
+    let ids = scripts.map(s => s.id);
+    /*to ensure proper uninstall of previous script version*/
+    ids.push('listener','listenerIframe');
+    ids.forEach(async function (id) {
+        try {
+            await chrome.scripting.unregisterContentScripts(id);
+        } catch(error) {console.log(id);console.log(error);}
+    });
     await chrome.scripting.registerContentScripts(scripts).catch((error) => {console.log(error);});
-    
     try { const panelWindowInfo = chrome.windows.create({
         url: chrome.runtime.getURL("popup.html"),
         type:"popup",
