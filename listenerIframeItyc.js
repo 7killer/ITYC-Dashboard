@@ -1,174 +1,40 @@
 let drawTheme = "dark";
 let gameSize = -1;
-let gameSizeApply = 0;
-let screenWidth = 0;
-let screenHeight = 0;
-let originalGameWidth = 0;
-let originalGameHeight = 0;
-let originalRatio = 0;
 
+let originGameWidth = 0;
+let originGameHeight = 0;
+let maxScreenWidth = 0;
+let maxScreenHeight = 0;
+var manifestVersion = "0.0.0";
 
+let fullScreenVR = false;
 let readVal = window.localStorage.getItem('addOnTheme');
 if(readVal) drawTheme = readVal;
 
 readVal = window.localStorage.getItem('addOnGameSize');
 if(readVal) gameSize = readVal;
 
-let fullScreenState = false;
-let dashStateDetected = false;
+let dashState = "notInstall";
 
 window.addEventListener("load", function () {
-    document.documentElement.setAttribute("data-theme", drawTheme);
-    drawDashBoardInstalled();
-    originalRatio = window.innerHeight/window.innerWidth;
-    sendAlive();
-});
+  let idC = document.getElementById('itycDashId');
+  if(idC)  manifestVersion = idC.getAttribute('ver');   
 
-
-window.onmessage = function(e) {
-  if(e.data && e.data.winWidth && e.data.winHeight)
-  {
-    screenWidth = e.data.winWidth;
-    screenHeight = e.data.winHeight;
-  }
-};
-
-
-function manageFullScreen(e) {
-  // iframe height
-
-
-  let ourDiv = document.getElementById('dashInteg');
-  if(!ourDiv) return;
-  const iframeHeight = window.innerHeight;
-  const iframeWidth = window.innerWidth;
-  let canvaSizeOriginW =  0;
-  let canvaSizeOriginH =  0;
-  
   let spacer =  0;
-  let dashRowH =  0;
-  let idC = document.getElementById("gameCanvas");
-  if(idC)
-  {
-    canvaSizeOriginW = Math.ceil(Number(document.defaultView.getComputedStyle(idC).width.replace('px', '')));
-    canvaSizeOriginH = Math.ceil(Number(document.defaultView.getComputedStyle(idC).height.replace('px', '')));
-  }
-  idC = document.getElementsByClassName('fullscreen VR')[0];
+  document.documentElement.setAttribute("data-theme", drawTheme);
+  idC =  document.getElementsByClassName('fullscreen VR')[0];
   if(idC && window.parent != window) spacer = Number(idC.style.height.replace('px', ''));
   idC = document.getElementsByClassName('footer')[0];;
-  if(idC) spacer += Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''))*2;
-  idC = document.getElementById("dashIntegRow");
-  if(idC) dashRowH = Number(document.defaultView.getComputedStyle(idC).height.replace('px', ''));
-  let offsetDash = spacer + dashRowH + 10;
+  if(idC) spacer += Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''));
+  let offsetOrigin = spacer + 5;
 
-  
- 
-   let vrLogo = document.getElementsByClassName('logo VR')[0];
-  if(document.defaultView.getComputedStyle(vrLogo).display == 'none')
-  {
-    if(canvaSizeOriginH && canvaSizeOriginW != "" && canvaSizeOriginW !=0)
-    {
-      // game is loaded
-      try {
-        let iframeHeight = canvaSizeOriginH + offsetDash;
-        let iframeWidth = canvaSizeOriginW;
-        console.log("original iframe size : " +iframeWidth + " x "+ iframeHeight);
-        if(gameSize != 0) {
-          if(!fullScreenState || gameSizeApply != gameSize) {
-            if(screenWidth !=0 && screenHeight !=0 && originalRatio  !=0)
-            {
-              originalGameWidth = canvaSizeOriginW;
-              originalGameHeight = canvaSizeOriginH;
-  
-              let maxGameWidth = Math.ceil(screenWidth*gameSize/100);
-              let maxGameHeight = Math.ceil(maxGameWidth*originalRatio);
-  
-              if((maxGameHeight + offsetDash) > screenHeight)
-              {
-                maxGameHeight = Math.ceil(screenHeight-offsetDash);
-                maxGameWidth = Math.ceil(maxGameHeight/originalRatio);
-              }
-              canvaSizeOriginW = maxGameWidth;
-              canvaSizeOriginH = maxGameHeight;
-              if(maxGameWidth > iframeWidth) { iframeWidth = maxGameWidth;iframeHeight = maxGameHeight+offsetDash; }
-              fullScreenState =  true;
-              gameSizeApply = gameSize;
-            }
-          }
-        } else
-        {
-          if(fullScreenState || gameSizeApply != gameSize) {
-  
-            if(screenWidth !=0 && screenHeight !=0 && originalRatio  !=0)
-            {
-              canvaSizeOriginW = originalGameWidth;
-              iframeWidth = canvaSizeOriginW;
-              canvaSizeOriginH = originalGameHeight;
-              iframeHeight = originalGameHeight + offsetDash;
-              fullScreenState =  false;
-              gameSizeApply = gameSize;
-            }
-          }        
-        }
-
-        if(iframeHeight > window.innerHeight && window.parent == window)
-        {// acces by iframe page most of the times
-          iframeHeight = window.innerHeight;
-          canvaSizeOriginH = Math.ceil(iframeHeight -  offsetDash);
-          canvaSizeOriginW = Math.ceil(canvaSizeOriginH/originalRatio);
-        }
+  originGameWidth = window.innerWidth;
+  originGameHeight = window.innerHeight-offsetOrigin;
+  sendAlive();
+  dashState = "notInstall";
 
 
-        idC = document.getElementById("gameCanvas"); 
-        idC.style.height = canvaSizeOriginH+"px";
-        idC.style.width = canvaSizeOriginW+"px";
-        idC = document.getElementById("dashIntegRow");
-        idC.setAttribute("data-theme", drawTheme); 
-        idC.style.maxWidth = canvaSizeOriginW+"px";
-  
-        if(window.parent != window) 
-        {
-        
-            window.top.postMessage({iframeHeight : iframeHeight,
-                                    iframeWidth : iframeWidth,
-                                    drawTheme:drawTheme,
-                                    gameSize:gameSize}, '*');                                                   
-        }  else
-        {
-          idC.style.setProperty('max-width', window.innerWidth+"px", 'important');
-          idC = document.getElementById("gameContainer"); 
-          idC.style.setProperty('height','auto', 'important');
-          idC = document.getElementsByClassName('webgl-content')[0];
-          idC.style.setProperty('height','auto', 'important');
-          
-        }
-  
-  
-      } catch {}
-    } 
-  } else
-  {
-    try {
-      let tempGameW = Math.ceil(Number(document.defaultView.getComputedStyle(vrLogo).width.replace('px', '')));
-      let tempGameH = Math.ceil(Number(document.defaultView.getComputedStyle(vrLogo).height.replace('px', '')));
-      iframeWidth = tempGameW
-      iframeHeight = tempGameH+offsetDash;
-      if(window.parent != window) 
-      {
-          window.top.postMessage({iframeHeight : iframeHeight,
-                                  iframeWidth : iframeWidth,
-                                  drawTheme:drawTheme,
-                                  gameSize:gameSize}, '*'); 
-                                                          
-      }        
-      idC = document.getElementById("dashIntegRow"); 
-      idC.style.maxWidth = tempGameW+"px";
-    } catch {}
-
-
-  }
-  
-}
+});
 
 
 function callRouterZezo() { 
@@ -327,10 +193,12 @@ function createContainer() {
     ourDiv = document.createElement( 'div' );
     ourDiv.id = 'dashIntegRow';
     
-    if(!fullScreenState) 
+    if(gameSize!=0) 
       ourDiv.style.maxWidth="1080px";
     else
       ourDiv.style.maxWidth="none";
+    ourDiv.style.userSelect='none';
+    ourDiv.style.zIndex="1";
     let ourDiv2 = document.createElement( 'div' );
     ourDiv2.id = 'dashInteg';
   
@@ -400,7 +268,7 @@ function manageAnswer(msg) {
       if(msg.rstTimer)
         chrono.Start();
     }
-    if(!dashStateDetected) drawDashBoardDetected();
+    if(dashState == "detectedNotDrawn") drawDashBoardDetected();
     manageUI(msg);
 
 }
@@ -416,7 +284,9 @@ function manageUI(msg)
   {
     gameSize = msg.gameSize;
     window.localStorage.setItem('addOnGameSize', msg.gameSize);
-    manageFullScreen();
+//    manageFullScreen(null);
+    manageFullScreen2();
+    sendParameter2Top(drawTheme,gameSize);
   }
 }
 
@@ -438,28 +308,18 @@ function manageGameInfos(msg) {
     if(!msg) return;
     fillDashContainer(msg.content);
     if(msg.rid !="") {
-        document.getElementById('rt:' + msg.rid).addEventListener("click", callRouterZezo);
-        document.getElementById('vrz:' + msg.rid).addEventListener("click", callRouterVrZen);
-        document.getElementById('pl:' + msg.rid).addEventListener("click", callRouterToxxct);
-        document.getElementById('ityc:' + msg.rid).addEventListener("click", callItyc);
+        let div = document.getElementById('rt:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterZezo);
+        div = document.getElementById('vrz:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterVrZen);
+        div = document.getElementById('pl:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterToxxct);
+        div = document.getElementById('ityc:' + msg.rid);
+        if(div) div.addEventListener("click", callItyc);
     }
-    dashStateDetected = true;
+    dashState = "detected";
 }
-function drawDashBoardInstalled()
-{
-    let outputTable =  '<table id="raceStatusTable">'
-    + '<thead>'
-    + '<tr><th>ITYC Dashboard</th></tr>'
-    + '</thead>'
-    + '<tbody>'
-    + '<tr><td>❌ Pas de dashboard détectée / No dashboard detected</td></tr>'
-    + '</tbody>'
-    + '</table>';
 
-    fillDashContainer(outputTable);
-    dashStateDetected = false;
-    manageFullScreen();
-}
 function drawDashBoardDetected()
 {
     let outputTable =  '<table id="raceStatusTable">'
@@ -472,6 +332,154 @@ function drawDashBoardDetected()
     + '</table>';
    
     fillDashContainer(outputTable);
-    dashStateDetected = true;
-    manageFullScreen();
+    dashState = "detectedNotDrawn";
+}
+
+/************************** */
+
+
+
+window.onmessage = function(e) {
+  let msg = e.data;
+    if(msg && msg.port && msg.port==("VR2Iframe" + manifestVersion)) {
+      
+      if (msg.order === "maxSize") {
+          maxScreenWidth = msg.screenW;
+          maxScreenHeight = msg.screenH;
+          manageFullScreen2();
+      } else if (msg.order === "fullScreenVR") {
+        fullScreenVR = msg.fullScreenVR;
+      }
+    }
+};
+
+function sendSize2Top(w,h)
+{
+  window.top.postMessage(
+    { port:"ItycIframe2VR" + manifestVersion,
+      order: "resize",
+        w : w,
+        h : h
+    },'*');
+}
+
+function sendParameter2Top(theme,gameSize)
+{
+  let paramReceived = false;
+  if(originGameWidth == 0 || originGameHeight== 0)
+    console.log("warn original size not loaded");
+  
+  if(originGameWidth == 0 || originGameHeight== 0
+    || maxScreenWidth == 0 || maxScreenHeight== 0)
+    paramReceived = 1;
+  window.top.postMessage(
+    { port:"ItycIframe2VR" + manifestVersion,
+      order: "param",
+      theme : theme,
+      gameSize : gameSize,
+      state : dashState,
+      paramReceived : paramReceived
+    },'*');
+}
+
+
+function manageFullScreen2() {
+  // iframe height
+  let ourDiv = document.getElementById('dashInteg');
+  if(!ourDiv) return;
+  
+  let spacer =  0;
+  let dashRowH =  0;
+  let idC =  document.getElementsByClassName('fullscreen VR')[0];
+  if(idC && window.parent != window) spacer = Number(idC.style.height.replace('px', ''));
+  idC = document.getElementsByClassName('footer')[0];;
+  if(idC) spacer += Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''))*2;
+  idC = document.getElementById("dashIntegRow");
+  if(idC) dashRowH = Number(document.defaultView.getComputedStyle(idC).height.replace('px', ''));
+  let offsetDash = spacer + dashRowH + 10;
+
+
+
+  if(window.parent == window)
+  {
+    maxScreenWidth = window.innerWidth;
+    maxScreenHeight = window.innerHeight;
+    offsetDash = spacer/2+dashRowH+5;
+    let fullScreenBt = document.getElementsByClassName('footer')[0];
+    if(fullScreenBt) fullScreenBt.style.display = 'none';
+  }
+  if(originGameWidth == 0 || originGameHeight == 0
+    || maxScreenWidth == 0 || maxScreenHeight == 0)
+   return;
+
+  try {
+    let sendSize = false;
+    let adjustedSizeW = originGameWidth;
+    let adjustedSizeH = originGameHeight;
+    const gameRatio = originGameWidth/originGameHeight;
+    let vrLogo = document.getElementsByClassName('logo VR')[0];
+    if(document.defaultView.getComputedStyle(vrLogo).display == 'none')
+    {// game is loaded
+      if(fullScreenVR == true)
+      {
+
+      } else
+      {
+        if(gameSize!=0 && window.parent != window)
+        {
+          adjustedSizeW = Math.ceil(maxScreenWidth*(gameSize==0?1:gameSize/100));
+          adjustedSizeH = Math.ceil(adjustedSizeW/gameRatio);
+        }
+
+
+        if((adjustedSizeH + offsetDash) > maxScreenHeight)
+        {
+          adjustedSizeH = Math.ceil(maxScreenHeight-offsetDash);
+          adjustedSizeW = Math.ceil(adjustedSizeH*gameRatio);
+        }
+        sendSize = true;
+      }
+    } else
+    {
+      if(dashState == "detectedNotDrawn") {
+        idC = document.getElementById("gameCanvas"); 
+        let tempGameW = Math.ceil(Number(document.defaultView.getComputedStyle(idC).width.replace('px', '')));
+        let tempGameH = Math.ceil(Number(document.defaultView.getComputedStyle(idC).height.replace('px', '')));
+        adjustedSizeW = tempGameW;
+        adjustedSizeH = tempGameH+offsetDash;
+        sendSize = true;
+        dashState == "detected";
+
+      }
+    }  
+        
+    if(window.parent == window && adjustedSizeH > window.innerHeight)
+    {// acces by iframe page most of the times
+      adjustedSizeH = Math.ceil(window.innerHeight -  offsetDash);
+      adjustedSizeW = Math.ceil(adjustedSizeH/gameRatio);
+      sendSize = true;
+      idC = document.getElementsByClassName('webgl-content')[0];
+    }
+    if(sendSize) {
+      idC = document.getElementById("gameCanvas"); 
+      idC.style.height = adjustedSizeH + "px";
+      idC.style.width = adjustedSizeW + "px";
+      idC = document.getElementById("dashIntegRow");
+      idC.setAttribute("data-theme", drawTheme); 
+      idC.style.maxWidth = adjustedSizeW+"px";
+      if(window.parent != window) 
+      { 
+        sendSize2Top(adjustedSizeW,adjustedSizeH+offsetDash)                                            
+      }  else
+      {
+        idC = document.getElementById("dashIntegRow");
+        idC.style.setProperty('max-width', window.innerWidth+"px", 'important');
+        idC = document.getElementById("gameContainer"); 
+        idC.style.setProperty('height','auto', 'important');
+        idC = document.getElementsByClassName('webgl-content')[0];
+        idC.style.setProperty('height','auto', 'important');
+        
+      }
+    }
+  } catch (error){ console.log(error);}
 }
