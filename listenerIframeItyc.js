@@ -168,12 +168,20 @@ function callRouterVrZen() {
 })();
 
 function checkUrl(url) {
-    return url.startsWith("https://prod.vro.sparks.virtualregatta.com")
-      || url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
-      || url.startsWith("https://vro-api-client.prod.virtualregatta.com")
-      || url.startsWith("https://dev.vro.sparks.virtualregatta.com")
-      || url.startsWith("https://vro-api-ranking.devel.virtualregatta.com")
-      || url.startsWith("https://vro-api-client.devel.virtualregatta.com")
+  if(!url) return false;
+  url = url ? url.toLowerCase() : url;
+          
+  if(url &&
+  (url.startsWith("https://prod.vro.sparks.virtualregatta.com")
+  || url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
+  || url.startsWith("https://vro-api-client.prod.virtualregatta.com"))
+  || url.startsWith("https://dev.vro.sparks.virtualregatta.com")
+  || url.startsWith("https://vro-api-ranking.devel.virtualregatta.com")
+  || url.startsWith("https://vro-api-client.devel.virtualregatta.com")) 
+      return true;
+  else
+      return false;
+
 }
 
 function sanitizeBody(body) {
@@ -181,9 +189,10 @@ function sanitizeBody(body) {
   // to transit through the extension
   delete body.password
   delete body.username
-
-  return body
+return body
 }
+
+
 
 function createContainer() {
     //search for existing div
@@ -218,6 +227,7 @@ function createContainer() {
     Start: function() {
         //Initialisation du nombre de secondes selon la valeur passée en paramètre
         this.secondsPass = 0;
+        if(document.getElementById("dashIntegTime")) document.getElementById("dashIntegTime").innerHTML = '+ '+ 0 + 's';
         //Démarrage du chrono
         if(this.timer ) clearInterval(this.timer);
         this.timer = setInterval(this.Tick.bind(this), 1000);
@@ -284,7 +294,6 @@ function manageUI(msg)
   {
     gameSize = msg.gameSize;
     window.localStorage.setItem('addOnGameSize', msg.gameSize);
-//    manageFullScreen(null);
     manageFullScreen2();
     sendParameter2Top(drawTheme,gameSize);
   }
@@ -292,20 +301,24 @@ function manageUI(msg)
 
 function fillDashContainer(content)
 {
-
   let idC = document.getElementById("gameCanvas"); 
+  let ret = false;
   if(idC) {
     let ourDiv = document.getElementById('dashInteg');
     if(!ourDiv) { //page has been refresh but not dashboard tab
         ourDiv = createContainer();
     }
     ourDiv.innerHTML = content;
+    ret = true;
   }
+  return ret;
 }
 
 function manageGameInfos(msg) {
 
     if(!msg) return;
+    dashStateDetected = true;
+    dashStateInstalled = true;
     fillDashContainer(msg.content);
     if(msg.rid !="") {
         let div = document.getElementById('rt:' + msg.rid);
@@ -327,17 +340,12 @@ function drawDashBoardDetected()
     + '<tr><th>ITYC Dashboard</th></tr>'
     + '</thead>'
     + '<tbody>'
-    + '<tr><td>Dashboard détectée /Dashboard detected</td></tr>'
+    + '<tr><td>Dashboard détectée / Dashboard detected</td></tr>'
     + '</tbody>'
     + '</table>';
-   
     fillDashContainer(outputTable);
     dashState = "detectedNotDrawn";
 }
-
-/************************** */
-
-
 
 window.onmessage = function(e) {
   let msg = e.data;
@@ -389,16 +397,15 @@ function manageFullScreen2() {
   if(!ourDiv) return;
   
   let spacer =  0;
+  let fullScreenVRLogo =  0;
   let dashRowH =  0;
   let idC =  document.getElementsByClassName('fullscreen VR')[0];
-  if(idC && window.parent != window) spacer = Number(idC.style.height.replace('px', ''));
-  idC = document.getElementsByClassName('footer')[0];;
-  if(idC) spacer += Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''))*2;
+  if(idC && window.parent != window) fullScreenVRLogo = Number(idC.style.height.replace('px', ''));
+  idc = document.getElementsByClassName('footer')[0];;
+  if(idC) spacer = Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''));
   idC = document.getElementById("dashIntegRow");
   if(idC) dashRowH = Number(document.defaultView.getComputedStyle(idC).height.replace('px', ''));
-  let offsetDash = spacer + dashRowH + 10;
-
-
+  let offsetDash = spacer*2 + fullScreenVRLogo + dashRowH + 10;
 
   if(window.parent == window)
   {
@@ -428,15 +435,13 @@ function manageFullScreen2() {
         if(gameSize!=0 && window.parent != window)
         {
           adjustedSizeW = Math.ceil(maxScreenWidth*(gameSize==0?1:gameSize/100));
-          adjustedSizeH = Math.ceil(adjustedSizeW/gameRatio);
+          adjustedSizeH = Math.ceil(maxScreenHeight*(gameSize==0?1:gameSize/100));
         }
-
-
         if((adjustedSizeH + offsetDash) > maxScreenHeight)
         {
           adjustedSizeH = Math.ceil(maxScreenHeight-offsetDash);
-          adjustedSizeW = Math.ceil(adjustedSizeH*gameRatio);
         }
+        if(adjustedSizeW > maxScreenWidth) adjustedSizeW = maxScreenWidth; 
         sendSize = true;
       }
     } else
@@ -449,14 +454,13 @@ function manageFullScreen2() {
         adjustedSizeH = tempGameH+offsetDash;
         sendSize = true;
         dashState == "detected";
-
       }
     }  
         
-    if(window.parent == window && adjustedSizeH > window.innerHeight)
+    if(window.parent == window && (adjustedSizeH+offsetDash+10) > window.innerHeight)
     {// acces by iframe page most of the times
-      adjustedSizeH = Math.ceil(window.innerHeight -  offsetDash);
-      adjustedSizeW = Math.ceil(adjustedSizeH/gameRatio);
+      adjustedSizeH = Math.ceil(window.innerHeight -  offsetDash-spacer-10);
+      adjustedSizeW = window.innerWidth;
       sendSize = true;
       idC = document.getElementsByClassName('webgl-content')[0];
     }
@@ -469,7 +473,9 @@ function manageFullScreen2() {
       idC.style.maxWidth = adjustedSizeW+"px";
       if(window.parent != window) 
       { 
-        sendSize2Top(adjustedSizeW,adjustedSizeH+offsetDash)                                            
+        let h = adjustedSizeH + offsetDash + spacer + fullScreenVRLogo;
+        sendSize2Top(adjustedSizeW,h);
+        //console.log("normalized iframe"+ adjustedSizeW +"X " + h);                                      
       }  else
       {
         idC = document.getElementById("dashIntegRow");

@@ -14,6 +14,8 @@ let dashState = "notInstall";
 var manifestVersion = "0.0.0";
 let originIframeWidth = 0;
 let originIframeHeight = 0;
+let currentIframeWidth = 0;
+let currentIframeHeight = 0;
 let originalSize;
 
 
@@ -89,6 +91,8 @@ window.onmessage = function(e) {
         {
           detectIframeSize(targetIframe);
         }
+        currentIframeWidth = msg.w;
+        currentIframeHeight = msg.h;
         targetIframe.setAttribute("height", msg.h);
         targetIframe.setAttribute("width", msg.w );
       }
@@ -119,13 +123,13 @@ function sendMaxSize(iframe)
 {
   let winHeight = window.innerHeight;
   let winWidth = window.innerWidth;
-  const screenRatio = winWidth/winHeight;
         
+  /* remove padding-left and right */
+  winWidth  -= 40;
+  winHeight  -= 20;
   iframe.contentWindow.postMessage(
     { port:"VR2Iframe" + manifestVersion,
       order: "maxSize",
-//      originSizeW : originIframeWidth,
- //     originSizeH : originIframeHeight,
       screenW : winWidth,
       screenH : winHeight
     }, '*');
@@ -166,9 +170,11 @@ function manageFullScreen2() {
           ourDiv.id = 'dashIntegRow';
           
           if(gameSize == 0) 
-            ourDiv.style.maxWidth="none";
+            ourDiv.style.setProperty('max_width', 'none');
           else
-            ourDiv.style.maxWidth="1080px";
+            ourDiv.style.setProperty('max_width', '1080px');
+          ourDiv.style.setProperty('margin_left', 'auto');
+          ourDiv.style.setProperty('margin_right', 'auto');
           ourDiv.style.userSelect='none';
           ourDiv.style.zIndex="1";
           let ourDiv2 = document.createElement( 'div' );
@@ -190,6 +196,10 @@ function manageFullScreen2() {
         let ourDiv = document.getElementById('dashIntegRow');
         if(ourDiv) ourDiv.remove();        
       }
+	  const targetElement = document.querySelector('[data-colibri-id="1752-c14"]');     
+      if (targetElement) {
+        targetElement.style.setProperty('text-align', 'center'); 
+      }
 
       if(gameSize != 0) {
           let div = document.getElementById('hero');
@@ -205,7 +215,12 @@ function manageFullScreen2() {
             originalSize = document.defaultView.getComputedStyle(el).getPropertyValue('max-width');
             el.style.setProperty('max-width', '100%', 'important');
           });
-          window.scrollTo(0, 0);
+
+          const targetIframe = foundVRIframe();
+          if (targetIframe) {
+            targetIframe.style.setProperty('margin-left', '20px', 'important');
+            targetIframe.style.setProperty('margin-right', '20px', 'important');
+          }
       } else
       {
           let div =document.getElementById('hero');
@@ -223,21 +238,8 @@ function manageFullScreen2() {
           if(div)
           {
             div.style.removeProperty('display');
-            const targetElement = document.querySelector('[data-colibri-id="1752-c12"]');
-            if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: 'smooth',  // Défilement fluide
-                block: 'center'      // Aligne l'iframe au centre de la fenêtre
-            });
-            /* let topPosition = targetElement.getBoundingClientRect().top ;//+ window.scrollY;
-              window.scrollTo({
-                top: topPosition,
-                behavior: 'smooth'
-              });*/
-            }
           }
           fullScreenState =  false;
-          gameSizeApply = gameSize;
       }
       reduceLangFlag();
     }  catch(error) {console.log(error);}

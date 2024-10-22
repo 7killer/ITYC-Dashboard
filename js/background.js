@@ -131,7 +131,9 @@ chrome.runtime.onInstalled.addListener(async () => {
             await chrome.scripting.unregisterContentScripts(id);
         } catch(error) {console.log(id);console.log(error);}
     });
-    await chrome.scripting.registerContentScripts(scripts).catch((error) => {console.log(error);});
+    await chrome.scripting.registerContentScripts(scripts)
+    .then(() => console.log("registration complete "))
+    .catch((err) => console.warn("unexpected error", err));
     try { const panelWindowInfo = chrome.windows.create({
         url: chrome.runtime.getURL("popup.html"),
         type:"popup",
