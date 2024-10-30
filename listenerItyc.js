@@ -36,6 +36,9 @@ window.addEventListener("load", function () {
   }
   
   manageFullScreen2();
+
+
+
 });
 
 function detectIframeSize(targetIframe) {
@@ -116,8 +119,23 @@ window.onmessage = function(e) {
     
     manageFullScreen2();
   }
+  return true;
 };
 
+//message from BackGround
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    let msg = request;
+    if(msg && msg.type && msg.type =="openDebugger"){
+      chrome.debugger.attach({tabId:msg.tabId}, version, onAttach.bind(null, msg.tabId));
+      
+  
+    }  
+  }
+);
 
 function sendMaxSize(iframe)
 {

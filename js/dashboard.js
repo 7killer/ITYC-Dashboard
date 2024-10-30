@@ -12,7 +12,11 @@ import * as gr from './graph.js';
 import * as nf from './notif.js'
 import * as exp from './exportTool.js'
 
+
 var controller = function () {
+
+    
+    var tabId = parseInt(window.location.search.substring(1));
 
     const LightRed = '#FFA0A0';
 
@@ -32,7 +36,7 @@ var controller = function () {
     var drawTheme = "dark";
     var CompasWin;
     var csvSep = ";";
-    
+    var debuggerMode = false;
 
     const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
                      // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
@@ -117,8 +121,7 @@ var controller = function () {
 
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
-    var cb2digits;
-    var nbdigits = 0;
+    var nbdigits = 1;
     var nbTabs = 9;
     
     var lang = "fr";
@@ -164,7 +167,6 @@ var controller = function () {
                 json.races[i].source = "zezo";
                 initRace(json.races[i], true);
             }
-            nbdigits=(cb2digits.checked?1:0);
             rt.set_nbdigit(nbdigits);
             rt.updateRaces(races);
             makeRaceStatusHTML();
@@ -192,7 +194,6 @@ var controller = function () {
                 initRace(raceInfo, true);
             }       
         });
-        nbdigits=(cb2digits.checked?1:0);
         rt.set_nbdigit(nbdigits);
         rt.updateRaces(races);
         makeRaceStatusHTML();
@@ -1658,7 +1659,6 @@ var controller = function () {
             }
             if(!rinfo.tws) return"";
     
-            nbdigits=(cb2digits.checked?1:0);
             rt.set_nbdigit(nbdigits);
             var speedCStyle = "";
             var speedTStyle = "";
@@ -2721,7 +2721,6 @@ var controller = function () {
 
 
     function updateFleetFilter(race) {
-        nbdigits=(cb2digits.checked?1:0);
         rt.set_nbdigit(nbdigits);
 
         updateFleetHTML(raceFleetMap.get(selRace.value));
@@ -4251,7 +4250,7 @@ async function initializeMap(race) {
         await getOption("reuse_tab",true);
         await getOption("local_time",true);
         await getOption("nmea_output",false);
-        await getOption("2digits",true);
+        await getOption("debuggerMode_c",false);
         await getOption("color_theme",true);
         await getOption("track_infos",false);
         await getOption("with_LastCommand",false);
@@ -4372,7 +4371,7 @@ async function initializeMap(race) {
         document.getElementById("reuse_tab").addEventListener("change", saveOption);
         document.getElementById("local_time").addEventListener("change", saveOption);
         document.getElementById("nmea_output").addEventListener("change", saveOption);
-        document.getElementById("2digits").addEventListener("change", saveOption);
+        document.getElementById("debuggerMode_c").addEventListener("change", saveOption);
 
         document.getElementById("sel_friends").addEventListener("change", updateUserConfig);
         document.getElementById("sel_team").addEventListener("change", updateUserConfig);
@@ -4499,7 +4498,6 @@ async function initializeMap(race) {
         makeTableHTMLProcess();
         cbRawLog = document.getElementById("cb_rawlog");
         divRawLog = document.getElementById("rawlog");
-        cb2digits = document.getElementById("2digits");
         
         nf.initialize(lang);
 
@@ -4551,6 +4549,21 @@ async function initializeMap(race) {
         switchAddOnMode();
         display_selbox("hidden");
 
+        if(document.getElementById("debuggerMode_c").checked) 
+        {
+ /*            chrome.debugger.sendCommand({
+                tabId: tabId
+            }, "Network.enable", function () {
+                // just close the dashboard window if debugger attach fails
+                // wodks on session restore too
+                
+               if (chrome.runtime.lastError) {
+                    window.close();
+                    return;
+                }
+            });
+            chrome.debugger.onEvent.addListener(onEvent);*/
+        }
        // var t = await chrome.storage.local.get();
        // console.log(t);
    }
@@ -5364,8 +5377,158 @@ async function initializeMap(race) {
         "Game_GetOpponents",
         "Social_GetPlayers"
         ]; //1
+        // Helper function: Invoke debugger command
+    function sendDebuggerCommand (debuggeeId, params, command, callback) {
+        try {
+            chrome.debugger.sendCommand({ tabId: debuggeeId.tabId }, command, { requestId: params.requestId }, callback);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function handleResponseReceived (debuggeeId, params) {
+        try {
+            sendDebuggerCommand(debuggeeId, params, "Network.getRequestPostData", (response) => {
+                let postData = response.postData;
+                sendDebuggerCommand(debuggeeId, params, "Network.getResponseBody", (response) => {_handleResponseReceived(xhrMap.get(params.requestId), response, postData)});
+            });
+        } catch (e) {
+            sendDebuggerCommand(debuggeeId, params, "Network.getResponseBody", (response) => {_handleResponseReceived(xhrMap.get(params.requestId), response)});
+        }
+    }
+    function handleWebSocketFrameSent (params) {
+        // Append message to raw log
+        if (cbRawLog.checked) {
+            divRawLog.innerHTML = divRawLog.innerHTML + "\n" + ">>> " + params.response.payloadData;
+        }
+        
+        // Map to request type via requestId
+        var request = JSON.parse(params.response.payloadData);
+        requests.set(request.requestId, request);
+        
+        if (request.eventKey == "Game_StartAttempt") {
+            var raceId = getRaceLegId(request);
+            var race = races.get(raceId);
+            if (race) {
+                race.prev = undefined;
+                race.curr = undefined;
+            }
+        }
+    }
+    function onEvent (debuggeeId, message, params) {
+        if ( tabId != debuggeeId.tabId ) return;
+
+        if ( message == "Network.requestWillBeSent" && params && params.request && params.request.url) {
+            if  ( params.request.method == "POST" &&
+                    ( params.request.url.startsWith("https://prod.vro.sparks.virtualregatta.com")
+                    || params.request.url.startsWith("https://vro-api-ranking.prod.virtualregatta.com")
+                    || params.request.url.startsWith("https://vro-api-client.prod.virtualregatta.com"))
+                ) {
+                if (cbRawLog.checked && params) {
+                    divRawLog.innerHTML = divRawLog.innerHTML + "\n" + ">>> " + JSON.stringify(params.request);
+                }
+                xhrMap.set(params.requestId, params.request);
+            } else if ( params.request.url.substring(0, 45) == "https://static.virtualregatta.com/winds/live/" ) {
+                noticeGFSCycle(params);
+            }
+        } else if (message == "Network.responseReceived") {
+            var request = xhrMap.get(params.requestId);
+            if (request) {
+                handleResponseReceived(debuggeeId, params);
+            }
+        } else if (message == "Network.webSocketFrameSent") {
+            handleWebSocketFrameSent(params);
+        } else if (message == "Network.webSocketFrameReceived") {
+            handleWebSocketFrameReceived(params);
+        }
+    }
+
+    function handleWebSocketFrameReceived (params) {
+        // Append message to raw log
+        if (cbRawLog.checked) {
+            divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + params.response.payloadData;
+        }
+        // Work around broken message
+        var jsonString = params.response.payloadData.replace(/\bNaN\b|\bInfinity\b/g, "null");
+        var response = JSON.parse(jsonString);
+        if (response == undefined) {
+            console.log("Invalid JSON in payload");
+        } else {
+            // Get the matching request and Dispatch on request type
+            let request = requests.get(response.requestId);
+            response.eventKey = request?request.eventKey:undefined;
+            ingestMsg(undefined,request,response);
+        }
+    }
 
     
+    function _handleResponseReceived(request, response, postData) {
+        if (cbRawLog.checked) {
+            divRawLog.innerHTML = divRawLog.innerHTML + "\n" + "<<< " + JSON.stringify(response);
+        }
+        
+        var postData2 = postData?JSON.parse(postData):undefined;
+        var body = response.body?JSON.parse(response.body.replace(/\bNaN\b|\bInfinity\b/g, "null")):undefined;
+        var url = request.url?request.url.substring(request.url.lastIndexOf('/') + 1):undefined;
+
+        ingestMsg(url,body,postData2);
+    }
+
+    function ingestMsg(url,body,postData)
+    {
+        let rstTimer = false;
+    
+        var eventClass = postData?postData['@class']:undefined;
+
+        if (eventClass == 'AccountDetailsRequest') {        //O
+            handleAccountDetailsResponse(body);
+        } else if (eventClass == 'LeaderboardDataRequest') {
+        //    handleLeaderboardDataResponse(postData, body);
+        } else if (eventClass == 'LogEventRequest') {
+            var eventKey = postData.eventKey;
+            if (eventKey == 'Leg_GetList') {
+                handleLegGetListResponse(body);             //O
+            } else if (eventKey == 'Meta_GetPolar') {
+                handleMetaGetPolar(body);                   //O
+            } else if (eventKey == 'Race_SelectorData') {
+                handleRace_SelectorData(body);
+            } else if (eventKey == 'Game_AddBoatAction' ) {
+                handleGameAddBoatAction(postData, body);    //O
+            } else if (eventKey == "Game_GetGhostTrack") {
+                handleGameGetGhostTrack(postData, body);    //O
+            } else if (eventKey == "User_GetCard") {
+                handleUserGetCard(postData, body);          //O
+            }  else if (eventKey == "Game_GetSettings") {
+                handleGameGetSettings(body);
+            } else if (eventKey == "Team_Get") {
+                handleTeamGet(body);
+            } else if (eventKey == "Team_GetList") {
+                handleTeamGetList(body);  
+            } else if (eventKey == "Game_GetFollowedBoats") {
+                handleGameGetFollowedBoats(postData, body);
+            } else if (eventKey == "Game_GetOpponents") {
+                handleGameGetOpponents(postData, body);
+            } else if (eventKey == "Social_GetPlayers") {
+                handleSocialGetPlayers( body);
+            } else if (ignoredMessages.includes(eventKey)) {
+                if(cbRawLog.checked) console.info("Ignored eventKey " + eventKey);
+            } else {
+                if(cbRawLog.checked)console.info("Unhandled logEvent " + JSON.stringify(postData) + " with eventKey " + eventKey);
+            }
+        } else {
+            if (url == 'getboatinfos') {
+                rstTimer = handleBoatInfo(postData, body.res);
+            } else if (url == 'getfleet') {
+                handleFleet(postData, body.res);
+            } else if (url == 'getlegranks') {
+                handleLegRank(postData, body.res);
+            } else{
+                if(cbRawLog.checked)console.info("Unhandled request " + url + "with response" + JSON.stringify(postData));
+            }
+        }
+        return rstTimer;
+    }
+            
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             var msg = request;
@@ -5373,57 +5536,13 @@ async function initializeMap(race) {
             let sendResp = true;
             if(msg.type=="data") {
                 if(msg.req.Accept) {sendResponse({type:"dummy"}); return;}  //json ranking request not supported
-                var postData = JSON.parse(msg.req);
-                var eventClass = postData['@class'];
-                var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
-                if (eventClass == 'AccountDetailsRequest') {
-                    handleAccountDetailsResponse(body);
-                } else if (eventClass == 'LeaderboardDataRequest') {
-                //    handleLeaderboardDataResponse(postData, body);
-                } else if (eventClass == 'LogEventRequest') {
-                    var eventKey = postData.eventKey;
-                    if (eventKey == 'Leg_GetList') {
-                        handleLegGetListResponse(body);
-                    } else if (eventKey == 'Meta_GetPolar') {
-                        handleMetaGetPolar(body);
-                    } else if (eventKey == 'Race_SelectorData') {
-                        handleRace_SelectorData(body);
-                    } else if (eventKey == 'Game_AddBoatAction' ) {
-                        handleGameAddBoatAction(postData, body);
-                    } else if (eventKey == "Game_GetGhostTrack") {
-                        handleGameGetGhostTrack(postData, body);
-                    } else if (eventKey == "User_GetCard") {
-                        handleUserGetCard(postData, body);   
-                    }  else if (eventKey == "Game_GetSettings") {
-                        handleGameGetSettings(body);
-                    } else if (eventKey == "Team_Get") {
-                        handleTeamGet(body);
-                    } else if (eventKey == "Team_GetList") {
-                        handleTeamGetList(body);  
-                    } else if (eventKey == "Game_GetFollowedBoats") {
-                        handleGameGetFollowedBoats(postData, body);
-                    } else if (eventKey == "Game_GetOpponents") {
-                        handleGameGetOpponents(postData, body);
-                    } else if (eventKey == "Social_GetPlayers") {
-                        handleSocialGetPlayers( body);
-                    } else if (ignoredMessages.includes(eventKey)) {
-                        if(cbRawLog.checked) console.info("Ignored eventKey " + eventKey);
-                    } else {
-                        if(cbRawLog.checked)console.info("Unhandled logEvent " + JSON.stringify(msg.resp) + " with eventKey " + eventKey);
-                    }
-                }
-                else {
-                    var event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
-                    if (event == 'getboatinfos') {
-                        rstTimer = handleBoatInfo(postData, body.res);
-                    } else if (event == 'getfleet') {
-                        handleFleet(postData, body.res);
-                    } else if (event == 'getlegranks') {
-                        handleLegRank(postData, body.res);
-                    } else{
-                        if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
-                    }
-                }
+
+                var postData = msg.req?JSON.parse(msg.req):undefined;
+                var body = msg.resp?JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null")):undefined;
+                var url = msg.url.substring(msg.url.lastIndexOf('/') + 1);
+                
+                rstTimer = ingestMsg(url,body,postData);
+                
                 sendResponse(makeIntegratedHTML(rstTimer));
                 sendResp = false;
             }  else if(msg.type=="wndCycle") {
@@ -5617,7 +5736,7 @@ async function initializeMap(race) {
             
             document.getElementById("t_config_g").innerHTML = "Général";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
-            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_debuggerMode").innerHTML = "Avec debugger (win7)";
             document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
             document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
@@ -5732,7 +5851,7 @@ async function initializeMap(race) {
             
             document.getElementById("t_config_g").innerHTML = "General";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
-            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_debuggerMode").innerHTML = "Wih debugger (win7)";
             document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
             document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
@@ -5801,7 +5920,15 @@ async function initializeMap(race) {
         await saveLocal('cb_sel_Seperator',val) ;
 
     }
+
+    function sendListenMode()
+    {
+        let debugModeActivated = false;
+        if(document.getElementById("debuggerMode_c").checked) debugModeActivated = true;
+       chrome.runtime.sendMessage(chrome.runtime.id, {type:"listenMode", mode:debugModeActivated},
+        function (response) {})
     
+    }    
 
     return {    
         // The only point of initialize is to wait until the document is constructed.
@@ -5839,8 +5966,9 @@ async function initializeMap(race) {
         selectSeparator:selectSeparator,
         onBorderColorChange:onBorderColorChange,
         onProjectionColorChange:onProjectionColorChange,
-        onProjectionSizeChange:onProjectionSizeChange
+        onProjectionSizeChange:onProjectionSizeChange,
 
+        sendListenMode:sendListenMode
         // Fin ajout -----------------
     }
 }();
@@ -5848,7 +5976,6 @@ async function initializeMap(race) {
 var expanded = false;
 
       
-var tabId = parseInt(window.location.search.substring(1));
 
 
 window.addEventListener("load", async function () {
@@ -5870,7 +5997,7 @@ window.addEventListener("load", async function () {
     document.getElementById("sel_certified").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_inrace").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_selected").addEventListener("change", controller.updateFleetFilter);
-    document.getElementById("2digits").addEventListener("change", controller.updateFleetFilter);
+    document.getElementById("debuggerMode_c").addEventListener("change", controller.sendListenMode);
     document.getElementById("local_time").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
