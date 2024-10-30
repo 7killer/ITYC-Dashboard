@@ -261,8 +261,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             lat = Number(poi[3]);
             lon = Number(poi[4]);
             hdg = poi[5]+ "°";
-            tws = Util.roundTo(poi[11], 1+nbdigits)+ " kts";
-            stw = Util.roundTo(poi[9], 1+nbdigits) + " kts";
+            tws = Util.roundTo(poi[12], 1+nbdigits)+ " kts";
+            stw = Util.roundTo(poi[10], 1+nbdigits) + " kts";
     
             splitDate = poi[0].split(" ");
             heure = splitDate[1];
@@ -286,9 +286,9 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
             sail =  poi[14];
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
-            twd = Util.roundTo(poi[10], 1+nbdigits)+ "°"; 
-            stamina = Util.roundTo(poi[23], 1+nbdigits);
-            boost = Util.roundTo(poi[15], 1+nbdigits);
+            twd = Util.roundTo(poi[11], 1+nbdigits)+ "°"; 
+            stamina = Util.roundTo(poi[24], 1+nbdigits);
+            boost = Util.roundTo(poi[16], 1+nbdigits);
         } else
         { //default Mode Avalon
             const isNumber = n => (typeof(n) === 'number' || n instanceof Number ||
