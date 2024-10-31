@@ -166,7 +166,115 @@ function callRouterVrZen() {
     )
   };
 })();
+(() => {
+  // Should be useless
+  if (!Window.fetch) return;
 
+  const oldFetch = Window.fetch;
+  const responseProxy = (response, text) => {
+
+    const proxy = new Proxy(response, {
+      get(obj, prop) {
+
+        if(prop === 'text'){
+          return () => Promise.resolve(text);
+        }
+        if(prop === "body"){
+          return new ReadableStream({
+            start(controller){
+                controller.enqueue(new TextEncoder().encode(text));
+                controller.close();
+            }
+        });
+        }
+
+        return obj[prop];
+      }
+    })
+
+    return proxy;
+  };
+
+  const handleResponse = async (extId, url, response, body) => {
+    const text = await response.text().catch(() => {});
+
+    if (text) {
+      chrome.runtime.sendMessage(
+        extId,
+        {
+          url,
+          req: JSON.stringify(body),
+          resp: text,
+          type: "data",
+        },
+        function (response) {manageAnswer(response);});
+    }
+    
+    return text ? responseProxy(response, text) : response
+  };
+
+  Window.fetch = async function (...fetchArgs) {
+    const idC = document.getElementById("itycDashId");
+    const extId = idC?.getAttribute?.('extId')
+    let init
+    let url
+
+    try {
+      if (fetchArgs.length === 2) {
+        url = fetchArgs[0].toString()
+        init = fetchArgs[1]
+      } else {
+        url = fetchArgs[0].url.toString()
+        init = fetchArgs[0]
+      }
+    } catch {}
+
+    if (!extId || !url) {
+      return oldFetch(...fetchArgs)
+    }
+
+    if (
+      url.startsWith("https://static.virtualregatta.com/winds/live/") &&
+      url.endsWith("wnd")
+    ) {
+      chrome.runtime.sendMessage(
+        extId,
+        { url: url,type: "wndCycle" },
+        function (response) {manageAnswer(response);}
+      );
+      
+    }
+
+    if (!checkUrl(url)) {
+      return oldFetch(...fetchArgs)
+    }
+    
+    let body
+    
+    try {
+      if (init.body instanceof Blob) {
+        // Blob to text to object
+        body = sanitizeBody(JSON.parse(await init.body.text()));
+      } else if (Object.getPrototypeOf(init.body) === Object.prototype) {
+        // Object
+        body = init.body
+      } else if (typeof body === 'string') {
+        // Attempt to convert string to object
+        body = JSON.parse(init.body)
+      }
+    } catch {}
+
+    if (!body) {
+      return oldFetch(...fetchArgs)
+    }
+
+    return oldFetch(...fetchArgs).then(response => 
+      response.ok
+        ? handleResponse(extId, url, response, body)
+        : response
+    )
+  };
+})();
 function checkUrl(url) {
   if(!url) return false;
   url = url ? url.toLowerCase() : url;
@@ -256,29 +364,34 @@ function createContainer() {
 };
 
 var comTimer ;
-
+var aliveTimeout = 1000;
 function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
     var idC = document.getElementById('itycDashId');
     if(idC) {
       chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},
       function (response) {manageAnswer(response);})
+      console.log('VR alive send');
     }
-    comTimer = setTimeout(sendAlive, 5000);
+    comTimer = setTimeout(sendAlive, aliveTimeout);
 } 
                     
 function manageAnswer(msg) {
     if(!msg) return;      
-    if(comTimer) {
-        clearTimeout(comTimer);
-    }
-    comTimer = setTimeout(sendAlive, 5000);
+
+    if(dashState == "detectedNotDrawn") drawDashBoardDetected();
     if(msg.type=="data") {
     	manageGameInfos(msg);
       if(msg.rstTimer)
         chrono.Start();
+      aliveTimeout = 5000;
     }
-    if(dashState == "detectedNotDrawn") drawDashBoardDetected();
+    
+    if(comTimer) {
+      clearTimeout(comTimer);
+    }
+    comTimer = setTimeout(sendAlive, aliveTimeout);
+
     manageUI(msg);
 
 }
@@ -317,8 +430,6 @@ function fillDashContainer(content)
 function manageGameInfos(msg) {
 
     if(!msg) return;
-    dashStateDetected = true;
-    dashStateInstalled = true;
     fillDashContainer(msg.content);
     if(msg.rid !="") {
         let div = document.getElementById('rt:' + msg.rid);
@@ -347,18 +458,21 @@ function drawDashBoardDetected()
     dashState = "detectedNotDrawn";
 }
 
+
+
 window.onmessage = function(e) {
   let msg = e.data;
-    if(msg && msg.port && msg.port==("VR2Iframe" + manifestVersion)) {
-      
-      if (msg.order === "maxSize") {
-          maxScreenWidth = msg.screenW;
-          maxScreenHeight = msg.screenH;
-          manageFullScreen2();
-      } else if (msg.order === "fullScreenVR") {
-        fullScreenVR = msg.fullScreenVR;
-      }
+  if(msg && msg.port && msg.port==("VR2Iframe" + manifestVersion)) {
+    
+    if (msg.order === "maxSize") {
+        maxScreenWidth = msg.screenW;
+        maxScreenHeight = msg.screenH;
+        manageFullScreen2();
+    } else if (msg.order === "fullScreenVR") {
+      fullScreenVR = msg.fullScreenVR;
     }
+  }
+  return true;
 };
 
 function sendSize2Top(w,h)

@@ -81,41 +81,45 @@ function reduceLangFlag() {
 
 }
 
+
 window.onmessage = function(e) {
   let msg = e.data;
-  if(msg && msg.port && msg.port==("ItycIframe2VR" + manifestVersion)) {
-    if (msg.order === "resize") {
-      const targetIframe = foundVRIframe();
-      if (targetIframe) {
-        if(originIframeWidth == 0 || originIframeHeight == 0 )
-        {
-          detectIframeSize(targetIframe);
+  if(msg && msg.port ) {
+    if(msg.port==("ItycIframe2VR" + manifestVersion)) {
+      if (msg.order === "resize") {
+        const targetIframe = foundVRIframe();
+        if (targetIframe) {
+          if(originIframeWidth == 0 || originIframeHeight == 0 )
+          {
+            detectIframeSize(targetIframe);
+          }
+          currentIframeWidth = msg.w;
+          currentIframeHeight = msg.h;
+          targetIframe.setAttribute("height", msg.h);
+          targetIframe.setAttribute("width", msg.w );
         }
-        currentIframeWidth = msg.w;
-        currentIframeHeight = msg.h;
-        targetIframe.setAttribute("height", msg.h);
-        targetIframe.setAttribute("width", msg.w );
-      }
-    } else if (msg.order === "param") {
-      drawTheme = msg.theme;
-      window.localStorage.setItem('addOnTheme', drawTheme);
-      document.documentElement.setAttribute("data-theme", drawTheme);
+      } else if (msg.order === "param") {
+        drawTheme = msg.theme;
+        window.localStorage.setItem('addOnTheme', drawTheme);
+        document.documentElement.setAttribute("data-theme", drawTheme);
 
-      gameSize = msg.gameSize;
-      window.localStorage.setItem('addOnGameSize', gameSize);
-      
-      dashState = msg.state;
-      
-      
-      if(!msg.paramReceived )
-      {  const targetIframe = foundVRIframe();
-         if(targetIframe) 
-          sendMaxSize(targetIframe);
+        gameSize = msg.gameSize;
+        window.localStorage.setItem('addOnGameSize', gameSize);
+        
+        dashState = msg.state;
+        
+        
+        if(!msg.paramReceived )
+        {  const targetIframe = foundVRIframe();
+          if(targetIframe) 
+            sendMaxSize(targetIframe);
+        }
       }
+      manageFullScreen2();
     }
     
-    manageFullScreen2();
   }
+  return true;
 };
 
 

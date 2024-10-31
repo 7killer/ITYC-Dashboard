@@ -122,7 +122,7 @@ var controller = function () {
     var nbTabs = 9;
     
     var lang = "fr";
-
+    var tabId = 0;
     
     // ---------------------------------------------------------------------------    
 
@@ -4551,6 +4551,7 @@ async function initializeMap(race) {
         switchAddOnMode();
         display_selbox("hidden");
 
+        tabId = parseInt(window.location.search.substring(1));
        // var t = await chrome.storage.local.get();
        // console.log(t);
    }
@@ -5365,95 +5366,97 @@ async function initializeMap(race) {
         "Social_GetPlayers"
         ]; //1
 
+    function msgRcv(request, sender, sendResponse) {
+        var msg = request;
+        let rstTimer = false;
+        let sendResp = true;
+        if(msg.type=="data") {
+            if(msg.req.Accept) {sendResponse({type:"dummy"}); return;}  //json ranking request not supported
+            var postData = JSON.parse(msg.req);
+            var eventClass = postData['@class'];
+            var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
+            if (eventClass == 'AccountDetailsRequest') {
+                handleAccountDetailsResponse(body);
+            } else if (eventClass == 'LeaderboardDataRequest') {
+            //    handleLeaderboardDataResponse(postData, body);
+            } else if (eventClass == 'LogEventRequest') {
+                var eventKey = postData.eventKey;
+                if (eventKey == 'Leg_GetList') {
+                    handleLegGetListResponse(body);
+                } else if (eventKey == 'Meta_GetPolar') {
+                    handleMetaGetPolar(body);
+                } else if (eventKey == 'Race_SelectorData') {
+                    handleRace_SelectorData(body);
+                } else if (eventKey == 'Game_AddBoatAction' ) {
+                    handleGameAddBoatAction(postData, body);
+                } else if (eventKey == "Game_GetGhostTrack") {
+                    handleGameGetGhostTrack(postData, body);
+                } else if (eventKey == "User_GetCard") {
+                    handleUserGetCard(postData, body);   
+                }  else if (eventKey == "Game_GetSettings") {
+                    handleGameGetSettings(body);
+                } else if (eventKey == "Team_Get") {
+                    handleTeamGet(body);
+                } else if (eventKey == "Team_GetList") {
+                    handleTeamGetList(body);  
+                } else if (eventKey == "Game_GetFollowedBoats") {
+                    handleGameGetFollowedBoats(postData, body);
+                } else if (eventKey == "Game_GetOpponents") {
+                    handleGameGetOpponents(postData, body);
+                } else if (eventKey == "Social_GetPlayers") {
+                    handleSocialGetPlayers( body);
+                } else if (ignoredMessages.includes(eventKey)) {
+                    if(cbRawLog.checked) console.info("Ignored eventKey " + eventKey);
+                } else {
+                    if(cbRawLog.checked)console.info("Unhandled logEvent " + JSON.stringify(msg.resp) + " with eventKey " + eventKey);
+                }
+            }
+            else {
+                var event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
+                if (event == 'getboatinfos') {
+                    rstTimer = handleBoatInfo(postData, body.res);
+                } else if (event == 'getfleet') {
+                    handleFleet(postData, body.res);
+                } else if (event == 'getlegranks') {
+                    handleLegRank(postData, body.res);
+                } else{
+                    if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
+                }
+            }
+            sendResponse(makeIntegratedHTML(rstTimer));
+            sendResp = false;
+        }  else if(msg.type=="wndCycle") {
+            var cycleString = msg.url.substring(45, 56);
+            var d = parseInt(cycleString.substring(0, 8));
+            var c = parseInt(cycleString.substring(9, 11));
+            var cycle = d * 100 + c;
+            
+            if (!currentCycle || (cycle > currentCycle)) {
+                currentCycle = cycle;
+                lbCycle.innerHTML = "(Cycle : "+cycleString+")";
+            }
+        } else if(msg.type=="openZezo") {
+            callRouter(selRace.value, currentUserId, false,"zezo");  
+        } else if(msg.type=="openVrzen") {
+            callRouter(selRace.value, currentUserId, false,"vrzen"); 
+        } else if(msg.type=="openItyc") {
+            callPolarAnalysis("ityc"); 
+        } else if(msg.type=="openToxxct") {
+            callPolarAnalysis("toxxct");
+        }
+        if(sendResp) 
+        {
+            let gameSize = document.getElementById("fullScreen_Size").value;
+            if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;   
+            sendResponse({type:"alive",rstTimer:false,theme:drawTheme,gameSize:gameSize});
+        }
     
+    }
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
-            var msg = request;
-            let rstTimer = false;
-            let sendResp = true;
-            if(msg.type=="data") {
-                if(msg.req.Accept) {sendResponse({type:"dummy"}); return;}  //json ranking request not supported
-                var postData = JSON.parse(msg.req);
-                var eventClass = postData['@class'];
-                var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
-                if (eventClass == 'AccountDetailsRequest') {
-                    handleAccountDetailsResponse(body);
-                } else if (eventClass == 'LeaderboardDataRequest') {
-                //    handleLeaderboardDataResponse(postData, body);
-                } else if (eventClass == 'LogEventRequest') {
-                    var eventKey = postData.eventKey;
-                    if (eventKey == 'Leg_GetList') {
-                        handleLegGetListResponse(body);
-                    } else if (eventKey == 'Meta_GetPolar') {
-                        handleMetaGetPolar(body);
-                    } else if (eventKey == 'Race_SelectorData') {
-                        handleRace_SelectorData(body);
-                    } else if (eventKey == 'Game_AddBoatAction' ) {
-                        handleGameAddBoatAction(postData, body);
-                    } else if (eventKey == "Game_GetGhostTrack") {
-                        handleGameGetGhostTrack(postData, body);
-                    } else if (eventKey == "User_GetCard") {
-                        handleUserGetCard(postData, body);   
-                    }  else if (eventKey == "Game_GetSettings") {
-                        handleGameGetSettings(body);
-                    } else if (eventKey == "Team_Get") {
-                        handleTeamGet(body);
-                    } else if (eventKey == "Team_GetList") {
-                        handleTeamGetList(body);  
-                    } else if (eventKey == "Game_GetFollowedBoats") {
-                        handleGameGetFollowedBoats(postData, body);
-                    } else if (eventKey == "Game_GetOpponents") {
-                        handleGameGetOpponents(postData, body);
-                    } else if (eventKey == "Social_GetPlayers") {
-                        handleSocialGetPlayers( body);
-                    } else if (ignoredMessages.includes(eventKey)) {
-                        if(cbRawLog.checked) console.info("Ignored eventKey " + eventKey);
-                    } else {
-                        if(cbRawLog.checked)console.info("Unhandled logEvent " + JSON.stringify(msg.resp) + " with eventKey " + eventKey);
-                    }
-                }
-                else {
-                    var event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
-                    if (event == 'getboatinfos') {
-                        rstTimer = handleBoatInfo(postData, body.res);
-                    } else if (event == 'getfleet') {
-                        handleFleet(postData, body.res);
-                    } else if (event == 'getlegranks') {
-                        handleLegRank(postData, body.res);
-                    } else{
-                        if(cbRawLog.checked)console.info("Unhandled request " + msg.url + "with response" + JSON.stringify(msg.resp));
-                    }
-                }
-                sendResponse(makeIntegratedHTML(rstTimer));
-                sendResp = false;
-            }  else if(msg.type=="wndCycle") {
-                var cycleString = msg.url.substring(45, 56);
-                var d = parseInt(cycleString.substring(0, 8));
-                var c = parseInt(cycleString.substring(9, 11));
-                var cycle = d * 100 + c;
-                
-                if (!currentCycle || (cycle > currentCycle)) {
-                    currentCycle = cycle;
-                    lbCycle.innerHTML = "(Cycle : "+cycleString+")";
-                }
-            } else if(msg.type=="openZezo") {
-                callRouter(selRace.value, currentUserId, false,"zezo");  
-            } else if(msg.type=="openVrzen") {
-                callRouter(selRace.value, currentUserId, false,"vrzen"); 
-            } else if(msg.type=="openItyc") {
-                callPolarAnalysis("ityc"); 
-            } else if(msg.type=="openToxxct") {
-                callPolarAnalysis("toxxct");
-            }
-            if(sendResp) 
-            {
-                let gameSize = document.getElementById("fullScreen_Size").value;
-                if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;   
-                sendResponse({type:"alive",rstTimer:false,theme:drawTheme,gameSize:gameSize});
-            }
+            msgRcv(request, sender, sendResponse);
         }
     );
-
 
     function onRouteListClick(ev)
     {
@@ -5848,7 +5851,6 @@ async function initializeMap(race) {
 var expanded = false;
 
       
-var tabId = parseInt(window.location.search.substring(1));
 
 
 window.addEventListener("load", async function () {

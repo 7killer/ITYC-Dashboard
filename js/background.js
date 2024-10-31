@@ -108,39 +108,38 @@ chrome.declarativeContent.onPageChanged.removeRules(async () => {
     return ctx.getImageData(0, 0, w, h);
   }
   
-chrome.runtime.onInstalled.addListener(async () => {
-    const scripts = [{
-      id: 'listenerIframeItyc',
-      js: ['listenerIframeItyc.js'],
-      matches: ["https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
-      runAt: 'document_start',
-      world: 'MAIN',
-      allFrames: true,
-    },{
-        id: 'listenerItyc',
-        js: ['listenerItyc.js'],
-        matches: ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*"],
-        runAt: 'document_start',
-        world: 'MAIN'
-      }];
-    let ids = scripts.map(s => s.id);
-    /*to ensure proper uninstall of previous script version*/
-    ids.push('listener','listenerIframe');
-    ids.forEach(async function (id) {
-        try {
-            await chrome.scripting.unregisterContentScripts(id);
-        } catch(error) {console.log(id);console.log(error);}
-    });
-    await chrome.scripting.registerContentScripts(scripts)
-    .then(() => console.log("registration complete "))
-    .catch((err) => console.warn("unexpected error", err));
-    try { const panelWindowInfo = chrome.windows.create({
-        url: chrome.runtime.getURL("popup.html"),
-        type:"popup",
-        height: 150,
-        width: 300, });
-    } catch (error) { console.log(error); }
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+    if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        try { const panelWindowInfo = chrome.windows.create({
+            url: chrome.runtime.getURL("popup.html"),
+            type:"popup",
+            height: 150,
+            width: 300, });
+        } catch (error) { console.log(error); }
+    }
   });
 
+  /*to listen from VR page in bg future usage*/
+  /*
+  chrome.runtime.onMessageExternal.addListener(
+    function(request, sender, sendResponse) {
+        var msg = request;
+        let rstTimer = false;
+        let sendResp = true;
+        console.log("bg R " + msg.type);
+        void chrome.runtime.getPlatformInfo();
+        sendResponse({type:"alive",rstTimer:false});
+    }
+);
 
-
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        var msg = request;
+        let rstTimer = false;
+        let sendResp = true;
+        console.log("bg2 R " + msg.type);
+        void chrome.runtime.getPlatformInfo();
+        sendResponse({type:"alive",rstTimer:false});
+    }
+);*/
+  
