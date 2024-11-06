@@ -284,7 +284,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             } else 
                 isoDate = poi[0]+" GMT";
 
-            sail =  poi[14];
+            sail =  poi[15];
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
             twd = Util.roundTo(poi[11], 1+nbdigits)+ "°"; 
             stamina = Util.roundTo(poi[24], 1+nbdigits);
