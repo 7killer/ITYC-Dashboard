@@ -284,7 +284,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             } else 
                 isoDate = poi[0]+" GMT";
 
-            sail =  poi[14];
+            sail =  poi[15];
             twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
             twd = Util.roundTo(poi[11], 1+nbdigits)+ "°"; 
             stamina = Util.roundTo(poi[24], 1+nbdigits);
@@ -301,7 +301,6 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
                 lon = Number(poi[2]);    
             } else //new avalon format pos in xx°xx'xxss
             {
-                
                let posDec =  Util.convertDMS2Dec(poi[1],poi[2]);
                lat = posDec.lat;
                lon = posDec.lon
@@ -664,6 +663,21 @@ function buildPlayerOption(type)
             optFound2 = true;
             option2 += "winch";
         }
+/*        if(getCheckbox("opt_magicFurler_"+type)) {
+            if(optFound2) option2+=","; else option2 = "[";
+            optFound2 = true;
+            option2 += "magicFurler";
+        }
+        if(getCheckbox("opt_vrtexJacket_"+type)) {
+            if(optFound2) option2+=","; else option2 = "[";
+            optFound2 = true;
+            option2 += "vrtexJacket";
+        }
+        if(getCheckbox("opt_comfortLoungePug_"+type)) {
+            if(optFound2) option2+=","; else option2 = "[";
+            optFound2 = true;
+            option2 += "comfortLoungePug";
+        }*/
         if(optFound2) option2 += "] ";
 
     }
@@ -767,6 +781,9 @@ function onSkipperSelectedChange(type)
                 upDateCheckbox("opt_hull_"+type,true);
                 upDateCheckbox("opt_foils_"+type,true);
                 upDateCheckbox("opt_winch_"+type,true);
+//                upDateCheckbox("opt_magicFurler_"+type,true);
+//               upDateCheckbox("opt_vrtexJacket_"+type,true);
+//                upDateCheckbox("opt_comfortLoungePug_"+type,true);
                 upDateCheckbox("opt_c0_"+type,true);
                 upDateCheckbox("opt_ljg_"+type,true);
                 upDateCheckbox("opt_hgss_"+type,true);
@@ -777,6 +794,9 @@ function onSkipperSelectedChange(type)
                 upDateCheckbox("opt_hull_"+type,false);
                 upDateCheckbox("opt_foils_"+type,false);
                 upDateCheckbox("opt_winch_"+type,false);
+//                upDateCheckbox("opt_magicFurler_"+type,false);
+//                upDateCheckbox("opt_vrtexJacket_"+type,false);
+//                upDateCheckbox("opt_comfortLoungePug_"+type,false);
                 upDateCheckbox("opt_c0_"+type,false);
                 upDateCheckbox("opt_ljg_"+type,false);
                 upDateCheckbox("opt_hgss_"+type,false);
@@ -791,6 +811,9 @@ function onSkipperSelectedChange(type)
                 if(currentUinfo.options.indexOf("reach") == -1) upDateCheckbox("opt_c0_"+type,false); else upDateCheckbox("opt_c0_"+type,true);
                 if(currentUinfo.options.indexOf("light") == -1) upDateCheckbox("opt_ljg_"+type,false); else upDateCheckbox("opt_ljg_"+type,true);
                 if(currentUinfo.options.indexOf("heavy") == -1) upDateCheckbox("opt_hgss_"+type,false); else upDateCheckbox("opt_hgss_"+type,true);
+//                if(currentUinfo.options.indexOf("magicFurler") == -1) upDateCheckbox("opt_magicFurler_"+type,false); else upDateCheckbox("opt_magicFurler_"+type,true);
+//                if(currentUinfo.options.indexOf("vrtexJacket") == -1) upDateCheckbox("opt_vrtexJacket_"+type,false); else upDateCheckbox("opt_vrtexJacket_"+type,true);
+//                if(currentUinfo.options.indexOf("comfortLoungePug") == -1) upDateCheckbox("opt_comfortLoungePug_"+type,false); else upDateCheckbox("opt_comfortLoungePug_"+type,true);
             }
         } else{
             upDateCheckbox("opt_FP_"+type,false);
@@ -799,6 +822,9 @@ function onSkipperSelectedChange(type)
             upDateCheckbox("opt_c0_"+type,false);
             upDateCheckbox("opt_ljg_"+type,false);
             upDateCheckbox("opt_hgss_"+type,false);
+//            upDateCheckbox("opt_magicFurler_"+type,false);
+//            upDateCheckbox("opt_vrtexJacket_"+type,false);
+//            upDateCheckbox("opt_comfortLoungePug_"+type,false);
         }
     }
 }
@@ -958,8 +984,12 @@ function displayMapTrace(race,routeName)
 
 // Help for import
 function help(){
-    var msg = "Affichage des traits de côtes :\n" +
-        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Attendez quelques instants. Ils apparaissent automatiquement en bleu.\nLa couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\nSi vous souhaitez afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n\n" + 
+    var msg = "Affichage des trait de cotes :\n" +
+        "- zoomer sur la zone de la carte où vous souhaitez afficher les traits de cotes\n" +
+        "- Attendez quelques instants \n" +
+        "- La couleur des traits de cotes peut être personnalisé (Selection couleur côtes)\n" + 
+        " - Si vous souhaitez afficher une zone différente\n" +
+        " - Dézoomez et zommez à l endroit désiré\n\n" +
         "Import Zezo :\n" +
         "- Importer la route en cours suggéré par Zezo.\n" +
         "- Si vous modifiez le paramétrage de votre route Zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne \"RT\" avant d'importer.\n\n" +
