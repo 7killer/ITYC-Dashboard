@@ -119,10 +119,10 @@ async function sendAIS (races, raceFleetMap, isDisplay) {
                     }
                     // Send position report data (Type1)
                     var aivdm = formatAIVDM_AIS_msg1(info.mmsi, info);
-                    if(!err) err = await sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
+                    sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
                     // Send static and voyage related data (Type5)
                     aivdm = formatAIVDM_AIS_msg5(info.mmsi, info);
-                    if(!err) err = await sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
+                    sendSentence(r.id, "!" + aivdm + "*" + nmeaChecksum(aivdm));
                 }
             });
         }
