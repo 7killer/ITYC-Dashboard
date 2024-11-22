@@ -265,12 +265,12 @@ var controller = function () {
         var retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
         if(r.curr.bestVmg.sailTWSMax != 0)
         {
-            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts</div>';
+            retVal +='<div class="">'+ r.curr.bestVmg.sailTWSMin +' - '+ r.curr.bestVmg.sailTWSMax+' kts</div>';
         }
         retVal += '<div>'+sailInfo+'</div>';
         if(r.curr.bestVmg.sailTWAMax != 0)
         {
-            retVal +='<div class="textMini">'+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
+            retVal +='<div class="">'+ r.curr.bestVmg.sailTWAMin +' - '+ r.curr.bestVmg.sailTWAMax+'°</div>';
         }
         retVal +="</td>";
         return   retVal; 
