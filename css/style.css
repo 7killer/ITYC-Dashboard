@@ -273,6 +273,7 @@ td.tdc {
 
 .lastCommandOrder {
     background-color:#111215;
+    color: var(--th_color);
 }
 
 #th_remove {

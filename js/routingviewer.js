@@ -489,6 +489,7 @@ function onPopupOpenLmap()
         document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
         document.getElementById("route_colorLmap").value = actualZezoColor;
         loadRacingSkipperList("sel_rt_skipperLmap");
+        onChangeRouteTypeLmap();
     }
 }
 
