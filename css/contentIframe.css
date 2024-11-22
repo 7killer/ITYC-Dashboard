@@ -188,28 +188,28 @@ td.dtf {
 
 td.twd {
     background-color: var(--td_twd_color);
-    text-align: right;
+    text-align: center;
 }
 td.tws {
     background-color: var(--td_tws_color);
-    text-align: right;
+    text-align: center;
 }
 
 td.twa {
     background-color: var(--td_twa_color);
-    text-align: right;
+    text-align: center;
 }
 
 
 
 td.speed1 {
     background-color: var(--td_speed1_color);
-    text-align: right;
+    text-align: center;
 }
 
 td.speed2 {
     background-color: var(--td_speed2_color);
-    text-align: right;
+    text-align: center;
 }
 
 td.bvmg {
@@ -226,14 +226,14 @@ td.stamina {
 }
 
 td.sail {
-    text-align: left;
+    text-align: center;
     white-space: nowrap;
 }
 
 td.hdg {
     background-color: var(--td_hdg_color); 
     color: var(--td_hdg_txt_color);
-    text-align: right;
+    text-align: center;
 }
 
 
@@ -413,7 +413,7 @@ td.position>p {
 }
 
 td.position p {
-    font-size: 11px !important;
+    font-size: 13px !important;
     line-height: 16px !important;
 }
 .entry-content tr td {
@@ -423,4 +423,14 @@ td.position p {
 .textMini {
     font-size: 11px !important;
     line-height: 1.4;
+}
+.zezoIcon {
+    font-size:1.9em;
+}
+
+.foilImg {
+    padding: 0em;
+    margin-right: 0.2em;
+    margin-bottom: -0.2em;
+    width: 2em;
 }

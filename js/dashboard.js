@@ -329,7 +329,22 @@ var controller = function () {
             + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 2+nbdigits) + '</td>'
     }
 
-    
+    function getxFactorStyle(uinfo)
+{
+    let xfactorStyle = 'style="color:' + ((uinfo.xplained) ? ((drawTheme =='dark')?"#a5A5A5" :"black") : "red") + ';"'
+    if(!uinfo.speed  )
+        xfactorStyle = 'style="color:' + (drawTheme =='dark')?"#a5A5A5" :"black" + ';"';
+
+    if(uinfo.xoption_sailOverlayer != "0%" && uinfo.xplained) {
+        let x = uinfo.xoption_sailOverlayer.replace('%','');
+        x = Number(x);
+        if(x > 1.2 || (x<0 && Math.abs(x)<0.98))
+            xfactorStyle = 'style="color:red;"';
+        else if(x > 0)
+            xfactorStyle = 'style="color:orange ;"';
+    }
+    return xfactorStyle;
+}
 
     
     function boatinfo(uid, uinfo) {
@@ -343,7 +358,7 @@ var controller = function () {
             sail: sailNames[uinfo.sail] || "-",
             sSail : sailNames[uinfo.sail%10],
             aSail : (uinfo.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : ""),
-            xfactorStyle: 'style="color:' + ((uinfo.xplained) ? ((drawTheme =='dark')?"#a5A5A5" :"black") : "red") + ';"',
+            xfactorStyle: getxFactorStyle(uinfo),
             nameStyle: uinfo.nameStyle,
             bcolor: uinfo.bcolor,
             bbcolor: uinfo.bbcolor,
@@ -354,21 +369,6 @@ var controller = function () {
             res.staminaStyle = "";
         else if (uinfo.stamina < paramStamina.tiredness[1]) 
             res.staminaStyle = 'style="color:orange"';
-
-        if(!uinfo.speed  )
-            res.xfactorStyle = 'style="color:' + (drawTheme =='dark')?"#a5A5A5" :"black" + ';"';
-
-        //if(uinfo.xoption_sailOverlayer != "0%")
-        //    res.xfactorStyle = 'style="color:red;"';
-        
-        if(uinfo.xoption_sailOverlayer != "0%" && uinfo.xplained) {
-            let x = uinfo.xoption_sailOverlayer.replace('%','');
-            x = Number(x);
-            if(x > 1.2 || (x<0 && Math.abs(x)<98))
-                res.xfactorStyle = 'style="color:red;"';
-            else if(x > 0)
-                res.xfactorStyle = 'style="color:orange ;"';
-        }
 
         res.nameClass = "";
 
@@ -471,9 +471,8 @@ var controller = function () {
         
 
         var raceStatusHeader = '<tr>'
-        + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
+        + '<th title="Call Router">' + "RT" + '</th>'
         + '<th title="Call Polars">' + "PL" + '</th>'
-        + '<th title="Call ITYC">' + "ITYC" + '</th>'
         + '<th>' + "Time" + '</th>'
         + '<th title="True Wind Direction">' + "TWD" + '</th>'
         + '<th title="True Wind Speed">' + "TWS" + '</th>'
@@ -485,8 +484,6 @@ var controller = function () {
         + '<th title="Best VMG Up | Dw">' + "Best VMG" + '</th>' 
         + '<th title="Best Speed spd | TWA">' + "Best speed" + '</th>'
         + '<th title="Stamina">' + "Stamina" + '</th>'
-        + '<th title=""Speed factor over no-options boat">' + "Factor" + '</th>'       
-        + '<th title="Boat assumed to have Foils. Unknown if no foiling conditions">' + "Foils" + '</th>'
         + '<th title="Position">' + "Position" + '</th>';
 
 
@@ -509,26 +506,70 @@ var controller = function () {
 
         if(!currentUserId ) {
             if(lang ==  "fr") {
-                raceLine ="<tr><td colspan='22'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com/offshore-game/'>Relancer</a>)</td></tr>";
+                raceLine ="<tr><td colspan='17'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com/offshore-game/'>Relancer</a>)</td></tr>";
             } else {
-                raceLine ="<tr><td colspan='22'>❌ Player not detected (<a href='https://www.virtualregatta.com/offshore-game/'>Reload</a>)</td></tr>";    
+                raceLine ="<tr><td colspan='17'>❌ Player not detected (<a href='https://www.virtualregatta.com/en/offshore-game/'>Reload</a>)</td></tr>";    
             }
         } else if(r == undefined || r.curr == undefined ||((welcomePage))) {
             if(lang ==  "fr") {
-                raceLine ='<tr><td colspan="22">❌ Aucune course chargée (Joueur détecté: '+ currentUserName +')</td></tr>';
+                raceLine ='<tr><td colspan="17">❌ Aucune course chargée (Joueur détecté: '+ currentUserName +')</td></tr>';
             } else
             {
-                raceLine ='<tr><td colspan="22">❌ No race loaded (Player detected: '+ currentUserName +')</td></tr>';            
+                raceLine ='<tr><td colspan="17">❌ No race loaded (Player detected: '+ currentUserName +')</td></tr>';            
             }
         } else  {
             let p=  raceFleetMap.get(r.id).uinfo[currentUserId];
 
             raceId = r.id;
             var bestTwa = r.curr.bestVmg;
-            var bestVMGString = bestTwa.twaUp + '<span class="textMini">°</span> | ' + bestTwa.twaDown + '<span class="textMini">°</span>';
-            var bestVMGTilte = Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(bestTwa.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
-            var bspeedTitle = Util.roundTo(bestTwa.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + bestTwa.btwa + '<span class="textMini">°</span>';
+
+            let bVmgCell = '<td class="bvmg">';
+            let bSpeedCell = '<td class="bspeed">';
+            if(bestTwa)
+            {
+                bVmgCell += "<div>" + '\u2197 ' + bestTwa.twaUp;
+                bVmgCell += ' ('+sailNames[bestTwa.sailUp % 10]+')';
+                if(document.getElementById("showBVMGSpeed").checked) 
+                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + 'kts )';
+                bVmgCell += '</div>';
+                bVmgCell += "<div>" + '\u2198 ' + bestTwa.twaDown;
+                bVmgCell += ' ('+sailNames[bestTwa.sailDown % 10]+')';
+                if(document.getElementById("showBVMGSpeed").checked) 
+                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgDown, 2+nbdigits) + 'kts )';
+                bVmgCell += '</div>';
     
+
+                bSpeedCell += "<div>" + bestTwa.btwa + '° (' + sailNames[bestTwa.sailBSpeed % 10]+') </div>';
+                bSpeedCell += "<div>" + Util.roundTo(bestTwa.bspeed, 2+nbdigits) + 'kts</div>';
+
+            } else
+            {
+                 bVmgCell += '-';
+                 bSpeedCell += '-';
+            }
+            bVmgCell += '</td>';
+            bSpeedCell += '</td>';
+
+            let speedCell = '<td class="speed1"'+ (r.curr.aground ?('style="background-color:' + agroundBG + ';">'):'>');
+            speedCell +='<div>'+ Util.roundTo(r.curr.speed, 2+nbdigits) + '</div>';
+            if(!p)
+            { 
+                speedCell += '<div class="xfactor"> - </div>'
+                    + '<div class="foil"> - </div>';
+            } else {
+                let xfactorTxt = Util.roundTo(p.xfactor, 4);
+                if(p.xoption_sailOverlayer != "0%" && p.xplained) {
+                    xfactorTxt += " " + p.xoption_sailOverlayer;
+                }
+                speedCell += '<div class="xfactor"' + getxFactorStyle(p) + '>' + xfactorTxt + '</div>';
+                speedCell += '<div class="foil">'
+                    speedCell += '<img " class="foilImg" src="'+ chrome.runtime.getURL('./img/foil.png') +'" >'
+                    speedCell += (p.xoption_foils || "?");
+                speedCell += '</div>';
+            }  
+            speedCell += '</td>';
+
+
             var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
             var lastCalcStyle = ""
             if(lastCalcDelta > 900000) {
@@ -556,6 +597,7 @@ var controller = function () {
             	var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
         	else
             	var agroundBG = r.curr.aground ? LightRed : "lightgreen"; 
+
             var staminaStyle = "";
             var staminaTxt = "-"
             if(r.curr.stamina)
@@ -630,47 +672,6 @@ var controller = function () {
                 staminaTxt += " (x" + Util.roundTo(computeEnergyPenalitiesFactor(r.curr.stamina) , 2)+")" ;
                 fullStamina += staminaStyle + '>' + staminaTxt  + '</td>';
             }
-            
-
-            var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
-
-            raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
-            raceLine += (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
-            raceLine += '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
-            
-            raceLine += '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
-            raceLine += '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'         
-                + '<td class="time" ' + lastCalcStyle + '>' +  timeLine + '</td>'
-                + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
-                + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
-                + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
-                + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 2+nbdigits) + '</td>'
-                + '<td class="speed1"'+ (r.curr.aground ?('style="background-color:' + agroundBG + ';">'):'>') + Util.roundTo(r.curr.speed, 2+nbdigits) + '</td>'
-                + infoSail(r,true)
-                + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 2+nbdigits) + '</td>'
-                + '<td class="bvmg"><p>' + bestVMGString +'</p>';
-            if(document.getElementById("showBVMGSpeed").checked) 
-                raceLine += '<p>(' + bestVMGTilte + ')</p>';
-            raceLine += '</td>'
-                + '<td class="bspeed">' + bspeedTitle +'</td>'
-                + fullStamina;
-            if(!p)
-            { 
-                raceLine += '<td class="xfactor"> - </td>'
-                    + '<td class="foil"> - </td>'
-                    + '<td class="position"> - </td>';
-
-            } else {
-                var bi = boatinfo(currentUserId, p);
-                var xfactorTxt = Util.roundTo(p.xfactor, 4);
-                if(p.xoption_sailOverlayer != "0%" && p.xplained) {
-                    xfactorTxt += " " + p.xoption_sailOverlayer;
-                } 
-
-                raceLine += '<td class="xfactor"' + bi.xfactorStyle + '>' + xfactorTxt + '</td>'
-                + '<td class="foil">' + (p.xoption_foils || "?") + '</td>'
-                + '<td class="position">' + (p.pos ? Util.formatPosition2l(p.pos.lat, p.pos.lon) : "-") + '</td>';
-            }  
             function isCurrent(timestamp) {
                 return (timestamp && r.prev && r.prev.lastCalcDate && (timestamp > r.prev.lastCalcDate));
             }
@@ -678,19 +679,74 @@ var controller = function () {
             function getBG(timestamp) {
                 return isCurrent(timestamp) ? ('style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"') : "";
             }
+            let penalties = r.curr.penalties;
 
+            let sailPenaCell = '<td class="tack">';
+            if(penalties) 
+                sailPenaCell += '<div>-' +  penalties.sail.dist + 'nm | ' + penalties.sail.time + 's</div>'
+            else
+                sailPenaCell += '<div>-</div>';
             if(r.curr.tsEndOfSailChange)
-                raceLine += '<td class="sailPenalties" ' + getBG(r.curr.tsEndOfSailChange) + '>' + formatSeconds(r.curr.tsEndOfSailChange - r.curr.lastCalcDate) + '</td>';
+                sailPenaCell += '<div ' + getBG(r.curr.tsEndOfSailChange) + '>' + formatSeconds(r.curr.tsEndOfSailChange - r.curr.lastCalcDate) + '</div>';
             else
-                raceLine += '<td class="sailPenalties"> - </td>';
-            if(r.curr.tsEndOfGybe)
-                raceLine += '<td class="gybe" ' + getBG(r.curr.tsEndOfGybe) + '>' + formatSeconds(r.curr.tsEndOfGybe - r.curr.lastCalcDate) + '</td>';
+                sailPenaCell += '<div> - </div>';
+            sailPenaCell += '</td>';
+
+            let tackPenaCell = '<td class="tack">';
+            if(penalties) 
+                tackPenaCell += '<div>-' +  penalties.tack.dist + 'nm | ' + penalties.tack.time + 's</div>'
             else
-                raceLine += '<td class="gybe"> - </td>';
+                tackPenaCell += '<div>-</div>';
             if(r.curr.tsEndOfTack)
-                raceLine += '<td class="tack" ' + getBG(r.curr.tsEndOfTack) + '>' + formatSeconds(r.curr.tsEndOfTack - r.curr.lastCalcDate) + '</td>';
+                tackPenaCell += '<div ' + getBG(r.curr.tsEndOfTack) + '>' + formatSeconds(r.curr.tsEndOfTack - r.curr.lastCalcDate) + '</div>';
             else
-                raceLine += '<td class="tack"> - </td>';
+                tackPenaCell += '<div> - </div>';
+            tackPenaCell += '</td>';
+
+            let gybePenaCell = '<td class="tack">';
+            if(penalties) 
+                gybePenaCell += '<div>-' +  penalties.gybe.dist + 'nm | ' + penalties.gybe.time + 's</div>'
+            else
+                gybePenaCell += '<div>-</div>';
+            if(r.curr.tsEndOfGybe)
+                gybePenaCell += '<div ' + getBG(r.curr.tsEndOfGybe) + '>' + formatSeconds(r.curr.tsEndOfGybe - r.curr.lastCalcDate) + '</div>';
+            else
+                gybePenaCell += '<div> - </div>';
+            gybePenaCell += '</td>';                        
+
+            var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
+
+            raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
+            raceLine += '<td class="tdc"><div>';
+            raceLine += '<span id="vrz:' + r.id + '">&#x262F;</span>';
+            raceLine += '</div><div>';
+            raceLine += (r.url ? ('<span class="zezoIcon" id="rt:' + r.id + '">&#x2388;</span>') : '&nbsp;');
+            raceLine += '</div></td>';
+            raceLine += '<td class="tdc"><div>';
+            raceLine += '<span id="pl:' + r.id + '">&#x26F5;</span>';
+            raceLine += '</div><div>';
+            raceLine += '<span id="ityc:' + r.id + '">&#x2620;</span>';
+            raceLine += '</div></td>';
+        
+            raceLine += '<td class="time" ' + lastCalcStyle + '>' +  timeLine + '</td>'
+                + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
+                + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
+                + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
+                + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 2+nbdigits) + '</td>'
+                + speedCell
+                + infoSail(r,true)
+                + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 2+nbdigits) + '</td>'
+                + bVmgCell
+                + bSpeedCell
+                + fullStamina;
+            if(!p)
+                raceLine += '<td class="position"> - </td>';
+            else
+                raceLine += '<td class="position">' + (p.pos ? Util.formatPosition2l(p.pos.lat, p.pos.lon) : "-") + '</td>'; 
+
+                raceLine += sailPenaCell
+                    +    gybePenaCell
+                    +    tackPenaCell;   
 
             raceLine += '</tr>';
 
