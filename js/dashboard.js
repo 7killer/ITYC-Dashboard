@@ -967,7 +967,9 @@ var controller = function () {
                     lastCalcStyle += (drawTheme =='dark')?' color:black;"':'"';
                 }
                 var penalties = manoeuveringPenalities(r);
-                var staminaLoose = computeEnergyLoose(r); 
+                var staminaLoose = computeEnergyLoose(r);
+                r.curr.penalties = penalties;
+                r.curr.staminaLoose = staminaLoose; 
 
                 var tack = "<p>-" +  penalties.tack.dist + "nm | " + penalties.tack.time + "s</p>"; 
                 tack  +=  "<p>-" + staminaLoose.tack + "% | " + computeEnergyRecovery(staminaLoose.tack,r.curr.tws,r.curr.options) + "min</p>";
