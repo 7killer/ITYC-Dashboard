@@ -765,13 +765,19 @@ async function initialize(race,raceFleetMap)
                 iceLimit[1] = []
                 iceLimit[2] = []
                 var iceData = race.legdata.ice_limits.south;
+                var iceDataMiddleIndex = Math.ceil(iceData.length / 2);
+                var iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
+                var iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
+                if (Util.isOdd(iceData.length)) var iceDataJunctionFirstAndSecondHalf = [iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]];
                 if(!(iceData.length == 5 
                     && iceData[0].lat == -90 && iceData[0].lon == -180
                     && iceData[2].lat == -90 && iceData[2].lon == 0
                     && iceData[4].lat == -90 && iceData[4].lon == 180
                     )) //is not a dummy ice limits ;)
                 {
-                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    buildTrace(buildPath(iceDataFirstHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    buildTrace(buildPath(iceDataSecondHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    if (Util.isOdd(iceData.length)) buildTrace(buildPath(iceDataJunctionFirstAndSecondHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
                 }
             }
 
