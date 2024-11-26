@@ -1324,8 +1324,24 @@ function updateMapFleet(race,raceFleetMap) {
                 zi = 44;    // Real   // Opponent
             }
             
+            // Add names to real skippers if data exists
+            var nameAddSkipperName = '';
+            if (elem.extendedInfos && elem.extendedInfos.skipperName) nameAddSkipperName = elem.extendedInfos.boatName + '</span><br><b>' + elem.extendedInfos.skipperName + '</b>';
+
+            if (nameAddSkipperName != '') bi.name = '<span class="txtUpper">' + nameAddSkipperName;
+            else bi.name = bi.name;
+
             var nbdigits = (document.getElementById("2digits").checked?1:0);
-            var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            if (elem.type == 'real') {
+                var info = bi.name + "<br>HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b> | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts";
+                if (bi.twa > 0) info += "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b>";
+                if (bi.sail != "-") info += " | Sail: " + bi.sail;
+                if (bi.tws > 0) info += "<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts";
+                if (bi.twd > 0) info += " | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            }
+            else {
+                var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            }
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
             }
