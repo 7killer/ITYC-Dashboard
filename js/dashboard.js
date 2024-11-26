@@ -527,7 +527,7 @@ var controller = function () {
             let bSpeedCell = '<td class="bspeed">';
             if(bestTwa)
             {
-                bVmgCell += "<div>" + '\u2197 ' + bestTwa.twaUp;
+                bVmgCell += "<div>" + '\u2197  ' + bestTwa.twaUp;
                 bVmgCell += ' ('+sailNames[bestTwa.sailUp % 10]+')';
                 if(document.getElementById("showBVMGSpeed").checked) 
                     bVmgCell += ' (' + Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + 'kts )';
