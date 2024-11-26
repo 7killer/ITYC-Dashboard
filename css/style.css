@@ -520,7 +520,7 @@ fieldset {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1.2em;
     padding-right: 1em;
     color: var(--filter_color);
 
@@ -528,7 +528,7 @@ fieldset {
 
 .tab3 .tab>label::before {
     content: "☒"; /* Symbole pour non coché */
-    font-size: 1.1em;
+    font-size: 1.3em;
     margin-right: 0.1em;
 }
 
