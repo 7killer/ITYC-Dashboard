@@ -915,16 +915,21 @@ var controller = function () {
             if (r.curr == undefined) {
                 return "";
             } else {
-                if(drawTheme =='dark')
-                    var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
-                else
-                    var agroundBG = r.curr.aground ? LightRed : "lightgreen";  
-
                 var manoeuvering = (r.curr.tsEndOfSailChange > r.curr.lastCalcDate)
                     || (r.curr.tsEndOfGybe > r.curr.lastCalcDate)
                     || (r.curr.tsEndOfTack > r.curr.lastCalcDate);
                 var lastCommand = "-";
                 var lastCommandBG = "";
+
+                if(drawTheme =='dark') {
+                    var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
+                    var mnvrBG = manoeuvering ? "darkred" : "darkgreen";
+                }
+                else {
+                    var agroundBG = r.curr.aground ? LightRed : "lightgreen";
+                    var mnvrBG = manoeuvering ? LightRed : "lightgreen";
+                }
+
                 if (r.lastCommand != undefined) {
                     // ToDo: error handling; multiple commands; expiring?
                     var lcTime = formatTime(r.lastCommand.request.ts);
@@ -1080,7 +1085,7 @@ var controller = function () {
                     + '<td class="gybe">' + gybe + '</td>'
                     + '<td class="sailPenalties">' + sail + '</td>'
                     + '<td class="agrd" style="background-color:' + agroundBG + ';">' + (r.curr.aground ? "AGROUND" : "No") + '</td>'
-                    + '<td class="man">' + (manoeuvering ? "Yes" : "No") + '</td>';
+                    + '<td class="man" style="background-color:' + mnvrBG + ';">' + (manoeuvering ? "Yes" : "No") + '</td>';
                 
                 if(cbWithLastCmd.checked)   
                     returnVal += '<td ' + lastCommandBG + '">' + lastCommand + '</td>';
