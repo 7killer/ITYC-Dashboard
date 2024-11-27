@@ -497,7 +497,10 @@ fieldset {
     float: left;
     display: block;
     margin: 0 2px;
-/*    padding: 0 2px 3px 2px;*/
+}
+
+.tab2 .tab {
+    padding: 0 2px 3px 2px;
 }
 
 .tab2 .tab>input[type="checkbox"] {
@@ -506,7 +509,7 @@ fieldset {
 }
 
 
-.tab2 .tab>label>span , .tab3 .tab>span {
+.tab2 .tab>span , .tab3 .tab>span {
     display: block;
     padding: 1px 10px;
     font-size: 13px;
@@ -558,7 +561,7 @@ fieldset {
 
 .tab2 .tab>label:active {
     display: block;
- /*   padding: 1px 10px;*/
+    padding: 1px 10px;
     font-size: 11px;
     cursor: pointer;
     position: relative;

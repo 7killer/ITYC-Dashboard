@@ -117,8 +117,6 @@ var controller = function () {
 
     var divRaceStatus, divRecordLog, divFriendList, divRawLog;
 
-    var cb2digits;
-    var nbdigits = 0;
     var nbTabs = 9;
     
     var lang = "fr";
@@ -164,8 +162,6 @@ var controller = function () {
                 json.races[i].source = "zezo";
                 initRace(json.races[i], true);
             }
-            nbdigits=(cb2digits.checked?1:0);
-            rt.set_nbdigit(nbdigits);
             rt.updateRaces(races);
             makeRaceStatusHTML();
             zezoRaceListAnswer = true;
@@ -192,8 +188,7 @@ var controller = function () {
                 initRace(raceInfo, true);
             }       
         });
-        nbdigits=(cb2digits.checked?1:0);
-        rt.set_nbdigit(nbdigits);
+
         rt.updateRaces(races);
         makeRaceStatusHTML();
     }
@@ -321,12 +316,12 @@ var controller = function () {
             hdgFG = isTWAMode ? "white" : "darkcyan"; 
         
         return Util.gentdRacelog("rank", "rank", null, "Rank", (r.rank ? r.rank : "-"))
-            + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 2+nbdigits))
-            + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(r.curr.distanceToEnd, 2+nbdigits))
-            + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
-            + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
-            + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
-            + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 2+nbdigits) + '</td>'
+            + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(r.curr.distanceToEnd - r.bestDTF, 3))
+            + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(r.curr.distanceToEnd, 3))
+            + '<td class="twd">' + Util.roundTo(r.curr.twd, 3) + '</td>'
+            + '<td class="tws">' + Util.roundTo(r.curr.tws, 3) + '</td>'
+            + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 3) + '</td>'
+            + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 3) + '</td>'
     }
 
     function getxFactorStyle(uinfo)
@@ -530,17 +525,17 @@ var controller = function () {
                 bVmgCell += "<div>" + '\u2197  ' + bestTwa.twaUp;
                 bVmgCell += ' ('+sailNames[bestTwa.sailUp % 10]+')';
                 if(document.getElementById("showBVMGSpeed").checked) 
-                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgUp, 2+nbdigits) + 'kts )';
+                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgUp, 3) + 'kts )';
                 bVmgCell += '</div>';
                 bVmgCell += "<div>" + '\u2198 ' + bestTwa.twaDown;
                 bVmgCell += ' ('+sailNames[bestTwa.sailDown % 10]+')';
                 if(document.getElementById("showBVMGSpeed").checked) 
-                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgDown, 2+nbdigits) + 'kts )';
+                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgDown, 3) + 'kts )';
                 bVmgCell += '</div>';
     
 
                 bSpeedCell += "<div>" + bestTwa.btwa + '° (' + sailNames[bestTwa.sailBSpeed % 10]+') </div>';
-                bSpeedCell += "<div>" + Util.roundTo(bestTwa.bspeed, 2+nbdigits) + 'kts</div>';
+                bSpeedCell += "<div>" + Util.roundTo(bestTwa.bspeed, 3) + 'kts</div>';
 
             } else
             {
@@ -551,7 +546,7 @@ var controller = function () {
             bSpeedCell += '</td>';
 
             let speedCell = '<td class="speed1"'+ (r.curr.aground ?('style="background-color:' + agroundBG + ';">'):'>');
-            speedCell +='<div>'+ Util.roundTo(r.curr.speed, 2+nbdigits) + '</div>';
+            speedCell +='<div>'+ Util.roundTo(r.curr.speed, 3) + '</div>';
             if(!p)
             { 
                 speedCell += '<div class="xfactor"> - </div>'
@@ -729,13 +724,13 @@ var controller = function () {
             raceLine += '</div></td>';
         
             raceLine += '<td class="time" ' + lastCalcStyle + '>' +  timeLine + '</td>'
-                + '<td class="twd">' + Util.roundTo(r.curr.twd, 2+nbdigits) + '</td>'
-                + '<td class="tws">' + Util.roundTo(r.curr.tws, 2+nbdigits) + '</td>'
-                + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 2+nbdigits) + '</td>'
-                + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 2+nbdigits) + '</td>'
+                + '<td class="twd">' + Util.roundTo(r.curr.twd, 3) + '</td>'
+                + '<td class="tws">' + Util.roundTo(r.curr.tws, 3) + '</td>'
+                + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(r.curr.twa), 3) + '</td>'
+                + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(r.curr.heading, 3) + '</td>'
                 + speedCell
                 + infoSail(r,true)
-                + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 2+nbdigits) + '</td>'
+                + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 3) + '</td>'
                 + bVmgCell
                 + bSpeedCell
                 + fullStamina;
@@ -960,8 +955,8 @@ var controller = function () {
                 var best = bestVMG(r.curr.tws, polars[r.curr.boat.polar_id], r.curr.options,r.curr.sail % 10,r.curr.twa);
                 r.curr.bestVmg = best;
                 var bestVMGString = best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>';
-                var bestVMGTilte = Util.roundTo(best.vmgUp, 2+nbdigits) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(best.vmgDown), 2+nbdigits) + '<span class="textMini"> kts</span>';
-                var bspeedTitle = Util.roundTo(best.bspeed, 2+nbdigits) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>';
+                var bestVMGTilte = Util.roundTo(best.vmgUp, 3) + '<span class="textMini"> kts</span> | ' + Util.roundTo(Math.abs(best.vmgDown), 3) + '<span class="textMini"> kts</span>';
+                var bspeedTitle = Util.roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>';
     
                 // ... so we can tell if lastCalcDate was outdated (by more than 15min) already when we received it.
                 var lastCalcDelta = r.curr.receivedTS - r.curr.lastCalcDate; 
@@ -1073,8 +1068,8 @@ var controller = function () {
                     +'<td class="time" ' + lastCalcStyle + '>' + Util.formatTimeNotif(r.curr.lastCalcDate) + '</td>'
                     + commonTableLines(r,best)
                     + infoSail(r,false)
-                    + '<td class="speed1">' + Util.roundTo(r.curr.speed, 2+nbdigits) + '</td>'
-                    + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 2+nbdigits) + '</td>'
+                    + '<td class="speed1">' + Util.roundTo(r.curr.speed, 3) + '</td>'
+                    + '<td class="speed2">' + Util.roundTo(vmg(r.curr.speed, r.curr.twa), 3) + '</td>'
                     + '<td class="bvmg"><p>' + bestVMGString + '</p>';
                     if(document.getElementById("showBVMGSpeed").checked) 
                         returnVal += '<p>(' + bestVMGTilte + ')</p>';
@@ -1369,11 +1364,11 @@ var controller = function () {
                             r.eRT = e.toString();
                         }
                         var t ;
-                        if(r.eRT) t = '<td class="eRT" title= "End : ' + Util.formatShortDate(r.eRT,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(r.eRT, 1+nbdigits) + '</td>';
+                        if(r.eRT) t = '<td class="eRT" title= "End : ' + Util.formatShortDate(r.eRT,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(r.eRT, 2) + '</td>';
                         else t = '<td class="eRT" title= "End : unknow"></td>';
                         return '<td class="eRT" title= "Start : ' + Util.formatShortDate(r.startDate,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(raceTime) + '</td>'  // Modif Class
                             + t
-                            + '<td class="avg">' + Util.roundTo(r.avgSpeed, 1+nbdigits) + '</td>';
+                            + '<td class="avg">' + Util.roundTo(r.avgSpeed, 2) + '</td>';
                     } else {
                         if(r.startDate && r.state === "racing" && r.startDate!="-") {
                             //r.dtf can replace 
@@ -1387,8 +1382,8 @@ var controller = function () {
                                 var eTtF = (r.dtf / estimatedSpeed) * 3600000;
                                 r.avgSpeed = estimatedSpeed;
                                 r.eRT = raceTime + eTtF;
-                                retVal += '<td class="eRT" title= "End : ' + Util.formatShortDate(r.eRT,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(r.eRT, 1+nbdigits) + '</td>'
-                                + '<td class="avg">' + Util.roundTo(r.avgSpeed, 1+nbdigits) + '</td>';                            
+                                retVal += '<td class="eRT" title= "End : ' + Util.formatShortDate(r.eRT,undefined,cbLocalTime.checked) + '">' + Util.formatDHMS(r.eRT, 2) + '</td>'
+                                + '<td class="avg">' + Util.roundTo(r.avgSpeed, 2) + '</td>';                            
                             } else*/
                              retVal += '<td class="eRT"> - </td>'
                                     + '<td class="avg"> - </td>'; 
@@ -1557,15 +1552,15 @@ var controller = function () {
                         + Util.gentd("Team","",null, r.teamname )
                         + Util.gentd("Rank","",null, (r.rank ? r.rank : "-"))
                         + ((race.type !== "record")?Util.gentd("RaceTime","",null, (r.raceTime ? Util.formatDHMS(r.raceTime) : "-")):"")
-                        + Util.gentd("DTU","",null, (r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits) : '-') )
-                        + Util.gentd("DTF","",null, ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) )
-                        + Util.gentd("TWD","",null, Util.roundTo(r.twd, 2+nbdigits) )
-                        + Util.gentd("TWS","",null, Util.roundTo(bi.tws, 2+nbdigits) )
-                        + Util.gentd("TWA", bi.twaStyle,null, Util.roundTo(bi.twa, 2+nbdigits) )
+                        + Util.gentd("DTU","",null, (r.distanceToUs ? Util.roundTo(r.distanceToUs, 3) : '-') )
+                        + Util.gentd("DTF","",null, ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,3) + ")":Util.roundTo(r.dtf,3)) )
+                        + Util.gentd("TWD","",null, Util.roundTo(r.twd, 3) )
+                        + Util.gentd("TWS","",null, Util.roundTo(bi.tws, 3) )
+                        + Util.gentd("TWA", bi.twaStyle,null, Util.roundTo(bi.twa, 3) )
                         + Util.gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock)
-                        + Util.gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold ,null, Util.roundTo(bi.heading, 2+nbdigits) )
-                        + Util.gentd("Speed","",null, Util.roundTo(bi.speed, 2+nbdigits) )
-                        + Util.gentd("VMG","",null, Util.roundTo(r.vmg, 2+nbdigits))
+                        + Util.gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold ,null, Util.roundTo(bi.heading, 3) )
+                        + Util.gentd("Speed","",null, Util.roundTo(bi.speed, 3) )
+                        + Util.gentd("VMG","",null, Util.roundTo(r.vmg, 3))
 //                        + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sail )
                         + Util.gentd("Sail","",null, '<span ' + bi.sailStyle + '>&#x25e2&#x25e3  </span>' + bi.sSail )
                         + Util.gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, bi.aSail)
@@ -1712,20 +1707,18 @@ var controller = function () {
                     hdgFG = isTWAMode ? "white" : "darkcyan"; 
                 
                 return Util.gentdRacelog("rank", "rank", null, "Rank", (rinfo.rank ? rinfo.rank : "-"))
-                    + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 2+nbdigits))
-                    + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(rinfo.distanceToEnd, 2+nbdigits))
-                    + '<td class="twd">' + Util.roundTo(rinfo.twd, 2+nbdigits) + '</td>'
-                    + '<td class="tws">' + Util.roundTo(rinfo.tws, 2+nbdigits) + '</td>'
-                    + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(rinfo.twa), 2+nbdigits) + '</td>'
-                    + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(rinfo.heading, 2+nbdigits) + '</td>'
+                    + Util.gentdRacelog("dtl", "dtl", null, "DTL", Util.roundTo(rinfo.distanceToEnd - rinfo.bestDTF, 3))
+                    + Util.gentdRacelog("dtf", "dtf", null, "DTF", Util.roundTo(rinfo.distanceToEnd, 3))
+                    + '<td class="twd">' + Util.roundTo(rinfo.twd, 3) + '</td>'
+                    + '<td class="tws">' + Util.roundTo(rinfo.tws, 3) + '</td>'
+                    + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + Util.roundTo(Math.abs(rinfo.twa), 3) + '</td>'
+                    + '<td  class="hdg" style="color:' + hdgFG + ";" + hdgBold + '">' + Util.roundTo(rinfo.heading, 3) + '</td>'
             }
             if(!rinfo.tws) return"";
     
-            nbdigits=(cb2digits.checked?1:0);
-            rt.set_nbdigit(nbdigits);
             var speedCStyle = "";
             var speedTStyle = "";
-            var deltaDist = Util.roundTo(rinfo.deltaD, 2+nbdigits);
+            var deltaDist = Util.roundTo(rinfo.deltaD, 3);
     
             if (isPenalty()) {
                 speedCStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
@@ -1736,7 +1729,7 @@ var controller = function () {
             } else if (rinfo.speedT && isDifferingSpeed(rinfo.speedT.speed)) {
                 // Speed differs but not due to penalty - assume "Bad Sail" and display theoretical delta
                 speedTStyle = 'style="background-color: ' + ((drawTheme =='dark')?"darkred":LightRed) + ';"';
-                deltaDist = deltaDist + " (" + Util.roundTo(rinfo.deltaD_T, 2+nbdigits) + ")";
+                deltaDist = deltaDist + " (" + Util.roundTo(rinfo.deltaD_T, 3) + ")";
             }
     
             var sailChange = formatSeconds(rinfo.sailTime - rinfo.lastCalcDate);
@@ -1773,8 +1766,8 @@ var controller = function () {
                 + Util.gentdRacelog("time", "time", null, "Time", formatDateUTC(rinfo.lastCalcDate, 1))
                 + commonTableLinesRl(rinfo,rinfo.bestVmg)
                 + infoSailRl(rinfo,false)
-                + Util.gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", Util.roundTo(rinfo.speed, 2+nbdigits))
-                + Util.gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (Util.roundTo(rinfo.speedC, 2+nbdigits) + " (" + sailNames[(rinfo.sail % 10)] + ")"))
+                + Util.gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", Util.roundTo(rinfo.speed, 3))
+                + Util.gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (Util.roundTo(rinfo.speedC, 3) + " (" + sailNames[(rinfo.sail % 10)] + ")"))
                 + Util.gentdRacelog("foils", "foils", null, "Foils", (rinfo.speedT ? (Util.roundTo(rinfo.speedT.foiling, 0) + "%") : "-"))
                 + Util.gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt)
                 + Util.gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", (rinfo.stamina ? Util.roundTo(rinfo.stamina , 2) + "%": "-"))
@@ -2529,10 +2522,10 @@ var controller = function () {
             line += bi.name + csvSep;
             line += formatTime(r.lastCalcDate)  + csvSep;
             line += (r.rank ? r.rank : "-") + csvSep;
-            var data = ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,2+nbdigits) + ")":Util.roundTo(r.dtf,2+nbdigits)) + csvSep;
+            var data = ((r.dtf==r.dtfC)?"(" + Util.roundTo(r.dtfC,3) + ")":Util.roundTo(r.dtf,3)) + csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
-            data =(r.distanceToUs ? Util.roundTo(r.distanceToUs, 2+nbdigits):"-" )+ csvSep;
+            data =(r.distanceToUs ? Util.roundTo(r.distanceToUs, 3):"-" )+ csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
             line += "-" + csvSep;
@@ -2540,16 +2533,16 @@ var controller = function () {
             line += pState + csvSep;
             line += ((race.type !== "record")?(r.raceTime ? Util.formatDHMS(r.raceTime) : "-"):"") + csvSep;
             line += (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-")  + csvSep;
-            data =Util.roundTo(bi.heading, 2+nbdigits) + csvSep;
+            data =Util.roundTo(bi.heading, 3) + csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
-            data =Util.roundTo(bi.twa, 2+nbdigits)  + csvSep;
+            data =Util.roundTo(bi.twa, 3)  + csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
-            data = Util.roundTo(bi.tws, 2+nbdigits)  + csvSep;
+            data = Util.roundTo(bi.tws, 3)  + csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
-            data = Util.roundTo(bi.speed, 2+nbdigits) + csvSep;
+            data = Util.roundTo(bi.speed, 3) + csvSep;
             if(csvSep!=',') data.replace(".",",");
             line += data;
             data = Util.roundTo(r.xfactor, 4) + csvSep;
@@ -2784,9 +2777,6 @@ var controller = function () {
 
 
     function updateFleetFilter(race) {
-        nbdigits=(cb2digits.checked?1:0);
-        rt.set_nbdigit(nbdigits);
-
         updateFleetHTML(raceFleetMap.get(selRace.value));
     }
 
@@ -3208,7 +3198,7 @@ var controller = function () {
             } else {
                 r.curr.deltaD = d;
             }
-            r.curr.speedC = Math.abs(Util.roundTo(r.curr.deltaD / r.curr.deltaT * 3600, 2+nbdigits));
+            r.curr.speedC = Math.abs(Util.roundTo(r.curr.deltaD / r.curr.deltaT * 3600, 3));
             // deltaD_T = Delta distance computed from speedT is only displayed when it deviates
             if (r.curr.speedT) {
                 r.curr.deltaD_T = r.curr.deltaD / r.curr.speedC * r.curr.speedT.speed;
@@ -3246,7 +3236,7 @@ var controller = function () {
             var twaLookup = fractionStep(twa, boatPolars.twa);
             var speed = maxSpeed(options, twsLookup, twaLookup, boatPolars.sail);
             return {
-                "speed": Util.roundTo(speed.speed * foil * hull * ratio, 2+nbdigits),
+                "speed": Util.roundTo(speed.speed * foil * hull * ratio, 3),
                 "sail": sailNames[speed.sail],
                 "foiling": foiling
             };
@@ -4314,7 +4304,7 @@ async function initializeMap(race) {
         await getOption("reuse_tab",true);
         await getOption("local_time",true);
         await getOption("nmea_output",false);
-        await getOption("2digits",true);
+        await getOption("uiFilterMode",true);
         await getOption("color_theme",true);
         await getOption("track_infos",false);
         await getOption("with_LastCommand",false);
@@ -4435,7 +4425,7 @@ async function initializeMap(race) {
         document.getElementById("reuse_tab").addEventListener("change", saveOption);
         document.getElementById("local_time").addEventListener("change", saveOption);
         document.getElementById("nmea_output").addEventListener("change", saveOption);
-        document.getElementById("2digits").addEventListener("change", saveOption);
+        document.getElementById("uiFilterMode").addEventListener("change", saveOption);
 
         document.getElementById("sel_friends").addEventListener("change", updateUserConfig);
         document.getElementById("sel_team").addEventListener("change", updateUserConfig);
@@ -4562,7 +4552,6 @@ async function initializeMap(race) {
         makeTableHTMLProcess();
         cbRawLog = document.getElementById("cb_rawlog");
         divRawLog = document.getElementById("rawlog");
-        cb2digits = document.getElementById("2digits");
         
         nf.initialize(lang);
 
@@ -5683,7 +5672,7 @@ async function initializeMap(race) {
             
             document.getElementById("t_config_g").innerHTML = "Général";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
-            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_uiFilterMode").innerHTML = "Affichage alternative filtres";
             document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
             document.getElementById("t_local_time").innerHTML = "Heure locale";
             document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
@@ -5798,7 +5787,7 @@ async function initializeMap(race) {
             
             document.getElementById("t_config_g").innerHTML = "General";
             document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
-            document.getElementById("t_2digits").innerHTML = "+1 digit";
+            document.getElementById("t_uiFilterMode").innerHTML = "Alternate Filters UI";
             document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
             document.getElementById("t_local_time").innerHTML = "Local time";
             document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
@@ -5867,7 +5856,13 @@ async function initializeMap(race) {
         await saveLocal('cb_sel_Seperator',val) ;
 
     }
-    
+    function changeFilterUI()
+    {
+        if(document.getElementById("uiFilterMode").checked)
+            document.getElementById('fleetFilterList').className = 'tab3';
+        else
+            document.getElementById('fleetFilterList').className = 'tab2';
+    }
 
     return {    
         // The only point of initialize is to wait until the document is constructed.
@@ -5897,6 +5892,8 @@ async function initializeMap(race) {
         exportFleet:exportFleet,
         exportGraphData:exportGraphData,
         graphCleanData:graphCleanData,
+
+        changeFilterUI:changeFilterUI,
 
         selectLgFR:selectLgFR,
         selectLgEN:selectLgEN,
@@ -5935,7 +5932,7 @@ window.addEventListener("load", async function () {
     document.getElementById("sel_certified").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_inrace").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("sel_selected").addEventListener("change", controller.updateFleetFilter);
-    document.getElementById("2digits").addEventListener("change", controller.updateFleetFilter);
+    document.getElementById("uiFilterMode").addEventListener("change", controller.changeFilterUI);
     document.getElementById("local_time").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);

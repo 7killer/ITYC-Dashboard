@@ -1136,15 +1136,14 @@ function updateMapMe(race, track) {
     
     // boat
     if (race.curr && race.curr.pos) {
-        var nbdigits = (document.getElementById("2digits").checked?1:0);
         var pos = buildPt2(race.curr.pos.lat, race.curr.pos.lon);
 
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
-        var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 2 + nbdigits) + "°</b>"
-                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2 + nbdigits) + "°</b>"
-                    + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 2 + nbdigits) + " kts"
-                    + "<br>TWS: " + Util.roundTo(race.curr.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(race.curr.twd, 2 + nbdigits) + "°";
+        var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 3) + "°</b>"
+                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 3) + "°</b>"
+                    + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 3) + " kts"
+                    + "<br>TWS: " + Util.roundTo(race.curr.tws, 3) + " kts | TWD: " + Util.roundTo(race.curr.twd, 3) + "°";
 
         buildMarker(pos, race.lMap.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading);
      }
@@ -1337,16 +1336,15 @@ function updateMapFleet(race,raceFleetMap) {
             if (nameAddSkipperName != '') bi.name = '<span class="txtUpper">' + nameAddSkipperName;
             else bi.name = bi.name;
 
-            var nbdigits = (document.getElementById("2digits").checked?1:0);
             if (elem.type == 'real') {
-                var info = bi.name + "<br>HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b> | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts";
-                if (bi.twa > 0) info += "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b>";
+                var info = bi.name + "<br>HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b> | Speed: " + Util.roundTo(bi.speed, 3) + " kts";
+                if (bi.twa > 0) info += "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b>";
                 if (bi.sail != "-") info += " | Sail: " + bi.sail;
-                if (bi.tws > 0) info += "<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts";
-                if (bi.twd > 0) info += " | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+                if (bi.tws > 0) info += "<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts";
+                if (bi.twd > 0) info += " | TWD: " + Util.roundTo(bi.twd, 3) + "°";
             }
             else {
-                var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+                var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 3) + " kts<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts | TWD: " + Util.roundTo(bi.twd, 3) + "°";
             }
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);

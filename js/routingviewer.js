@@ -20,7 +20,6 @@ const routeInfosmodel =
 }
 
 var myRoute = [];
-var nbdigits = 0;
 var markersState = true;
 var displayFilter = 0;
 var currentId = 0;
@@ -61,10 +60,7 @@ String.prototype.cleanSpecial = function() {
     return str;
 }
 
-function set_nbdigit(value)
-{
-   nbdigits = value;
-}
+
 
 function set_displayFilter(value)
 {
@@ -261,8 +257,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             lat = Number(poi[3]);
             lon = Number(poi[4]);
             hdg = poi[5]+ "°";
-            tws = Util.roundTo(poi[12], 1+nbdigits)+ " kts";
-            stw = Util.roundTo(poi[10], 1+nbdigits) + " kts";
+            tws = Util.roundTo(poi[12], 2)+ " kts";
+            stw = Util.roundTo(poi[10], 2) + " kts";
     
             splitDate = poi[0].split(" ");
             heure = splitDate[1];
@@ -285,10 +281,10 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
                 isoDate = poi[0]+" GMT";
 
             sail =  poi[15];
-            twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
-            twd = Util.roundTo(poi[11], 1+nbdigits)+ "°"; 
-            stamina = Util.roundTo(poi[24], 1+nbdigits);
-            boost = Util.roundTo(poi[16], 1+nbdigits);
+            twa = Util.roundTo(poi[6], 2)+ "°";
+            twd = Util.roundTo(poi[11], 2)+ "°"; 
+            stamina = Util.roundTo(poi[24], 2);
+            boost = Util.roundTo(poi[16], 2);
         } else
         { //default Mode Avalon
             const isNumber = n => (typeof(n) === 'number' || n instanceof Number ||
@@ -306,8 +302,8 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
                lon = posDec.lon
             }
             hdg = poi[3]+ "°";
-            tws = Util.roundTo(poi[8], 1+nbdigits)+ " kts";
-            stw = Util.roundTo(poi[4], 1+nbdigits) + " kts";
+            tws = Util.roundTo(poi[8], 2)+ " kts";
+            stw = Util.roundTo(poi[4], 2) + " kts";
     
             
             splitDate = poi[0].split(" ");
@@ -319,14 +315,14 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
             isoDate = currentYear+"-"+ date[1]+"-"+date[0]+ " " + heure;
             if(poi[6]>180) poi[6] -=360;
-            twa = Util.roundTo(poi[6], 1+nbdigits)+ "°";
-            twd = Util.roundTo(poi[7], 1+nbdigits) + "°";
+            twa = Util.roundTo(poi[6], 2)+ "°";
+            twd = Util.roundTo(poi[7], 2) + "°";
             if(isNumber(poi[5]))
                 sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
             else
                 sail = poi[5]; //new version give sail name
-            stamina = Util.roundTo(poi[9], 1+nbdigits);
-            boost = Util.roundTo(poi[10], 1+nbdigits);
+            stamina = Util.roundTo(poi[9], 2);
+            boost = Util.roundTo(poi[10], 2);
             
         }
         
@@ -1003,7 +999,7 @@ function help(){
 export {
     initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
     myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
-    initializeWebInterface,updateFleet,updateRaces,set_nbdigit,set_displayFilter,set_currentId,
+    initializeWebInterface,updateFleet,updateRaces,set_displayFilter,set_currentId,
     darkenColor,onSkipperSelectedChange
 
 };
