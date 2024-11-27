@@ -263,7 +263,7 @@ function sendAlive() {
     if(idC) {
       chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},
       function (response) {manageAnswer(response);})
-      console.log('VR alive send');
+      //console.log('VR alive send');
     }
     comTimer = setTimeout(sendAlive, aliveTimeout);
 } 
