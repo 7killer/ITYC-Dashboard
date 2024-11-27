@@ -3835,7 +3835,7 @@ function buildlogBookHTML(race) {
         + '<tr>'
         + '<td>'+ lbCredits.innerHTML +'</td>'
         + '<td>'+ race.legdata.freeCredits + '</td>';
-        if(race.curr && race.curr.credits) raceIdentification += '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
+        if(race.curr && (race.curr.credits || race.curr.credits == 0)) raceIdentification += '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
         else 
             raceIdentification += '<td>??? <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
          raceIdentification += '<td>'+ creditsAwardedByPriceLevel + '</td>'
