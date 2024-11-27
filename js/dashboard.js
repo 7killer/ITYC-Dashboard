@@ -915,16 +915,21 @@ var controller = function () {
             if (r.curr == undefined) {
                 return "";
             } else {
-                if(drawTheme =='dark')
-                    var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
-                else
-                    var agroundBG = r.curr.aground ? LightRed : "lightgreen";  
-
                 var manoeuvering = (r.curr.tsEndOfSailChange > r.curr.lastCalcDate)
                     || (r.curr.tsEndOfGybe > r.curr.lastCalcDate)
                     || (r.curr.tsEndOfTack > r.curr.lastCalcDate);
                 var lastCommand = "-";
                 var lastCommandBG = "";
+
+                if(drawTheme =='dark') {
+                    var agroundBG = r.curr.aground ? "darkred" : "darkgreen";
+                    var mnvrBG = manoeuvering ? "darkred" : "darkgreen";
+                }
+                else {
+                    var agroundBG = r.curr.aground ? LightRed : "lightgreen";
+                    var mnvrBG = manoeuvering ? LightRed : "lightgreen";
+                }
+
                 if (r.lastCommand != undefined) {
                     // ToDo: error handling; multiple commands; expiring?
                     var lcTime = formatTime(r.lastCommand.request.ts);
@@ -1080,7 +1085,7 @@ var controller = function () {
                     + '<td class="gybe">' + gybe + '</td>'
                     + '<td class="sailPenalties">' + sail + '</td>'
                     + '<td class="agrd" style="background-color:' + agroundBG + ';">' + (r.curr.aground ? "AGROUND" : "No") + '</td>'
-                    + '<td class="man">' + (manoeuvering ? "Yes" : "No") + '</td>';
+                    + '<td class="man" style="background-color:' + mnvrBG + ';">' + (manoeuvering ? "Yes" : "No") + '</td>';
                 
                 if(cbWithLastCmd.checked)   
                     returnVal += '<td ' + lastCommandBG + '">' + lastCommand + '</td>';
@@ -3810,9 +3815,9 @@ function buildlogBookHTML(race) {
         + '<th colspan="15" height="40px">Credits <span style="color:limegreen">(Option équipée)</span></th>'
         + '</tr>' 
         + '<tr>'
-        + '<th width="7%">Game Credits</th>'
-        + '<th width="7%">Race Credits</th>'
-        + '<th width="17%">Current Race Credits <span style="color:tomato">(Total Options)</span></th>'
+        + '<th width="8%">Game Credits</th>'
+        + '<th width="8%">Free Credits</th>'
+        + '<th width="15%">Race Credits <span style="color:tomato">(Total Options)</span></th>'
         + '<th width="6%">Gains</th>'
         + '<th width="6%" ' + highlightOptionsAlreadyTaken('foil') + '>Foils</th>'
         + '<th width="6%" ' + highlightOptionsAlreadyTaken('winch') + '>Winch</th>'
@@ -3830,7 +3835,7 @@ function buildlogBookHTML(race) {
         + '<tr>'
         + '<td>'+ lbCredits.innerHTML +'</td>'
         + '<td>'+ race.legdata.freeCredits + '</td>';
-        if(race.curr && race.curr.credits) raceIdentification += '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
+        if(race.curr && (race.curr.credits || race.curr.credits == 0)) raceIdentification += '<td>'+ race.curr.credits + ' <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
         else 
             raceIdentification += '<td>??? <span style="color:tomato">(-' + totalCreditsForOptionsAlreadyTaken() + ')</span></td>';
          raceIdentification += '<td>'+ creditsAwardedByPriceLevel + '</td>'

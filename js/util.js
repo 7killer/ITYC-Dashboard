@@ -553,6 +553,10 @@ var createRingBuffer = function(length){
           }
       });
   }
+
+function isOdd(number) {
+    return number % 2 !== 0;
+}
   
 export { angle,
          courseAngle,
@@ -572,6 +576,7 @@ export { angle,
          genth,gentd,formatDateTable,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
          formatShortDate,readTextFile,callCopyValue,sailId2Color,
-         genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,openTab
+         genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,openTab,
+         isOdd
        };
 

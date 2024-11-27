@@ -109,7 +109,7 @@ async function sendAIS (races, raceFleetMap, isDisplay) {
             
             // For each opponent
             var err = false;
-            await Object.keys(fleet.uinfo).forEach(async function (uid) {
+            Object.keys(fleet.uinfo).forEach(async function (uid) {
                 var info = fleet.uinfo[uid];
                 
                 if (isDisplay(info, uid) && (info.displayName != r.curr.displayName)) {

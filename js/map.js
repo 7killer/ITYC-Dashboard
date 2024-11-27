@@ -765,13 +765,19 @@ async function initialize(race,raceFleetMap)
                 iceLimit[1] = []
                 iceLimit[2] = []
                 var iceData = race.legdata.ice_limits.south;
+                var iceDataMiddleIndex = Math.ceil(iceData.length / 2);
+                var iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
+                var iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
+                if (Util.isOdd(iceData.length)) var iceDataJunctionFirstAndSecondHalf = [iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]];
                 if(!(iceData.length == 5 
                     && iceData[0].lat == -90 && iceData[0].lon == -180
                     && iceData[2].lat == -90 && iceData[2].lon == 0
                     && iceData[4].lat == -90 && iceData[4].lon == 180
                     )) //is not a dummy ice limits ;)
                 {
-                    buildTrace(buildPath(iceData),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    buildTrace(buildPath(iceDataFirstHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    buildTrace(buildPath(iceDataSecondHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
+                    if (Util.isOdd(iceData.length)) buildTrace(buildPath(iceDataJunctionFirstAndSecondHalf),race.lMap.refLayer,race,"#FF0000",1.5,0.5,false);
                 }
             }
 
@@ -1324,8 +1330,24 @@ function updateMapFleet(race,raceFleetMap) {
                 zi = 44;    // Real   // Opponent
             }
             
+            // Add names to real skippers if data exists
+            var nameAddSkipperName = '';
+            if (elem.extendedInfos && elem.extendedInfos.skipperName) nameAddSkipperName = elem.extendedInfos.boatName + '</span><br><b>' + elem.extendedInfos.skipperName + '</b>';
+
+            if (nameAddSkipperName != '') bi.name = '<span class="txtUpper">' + nameAddSkipperName;
+            else bi.name = bi.name;
+
             var nbdigits = (document.getElementById("2digits").checked?1:0);
-            var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            if (elem.type == 'real') {
+                var info = bi.name + "<br>HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b> | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts";
+                if (bi.twa > 0) info += "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b>";
+                if (bi.sail != "-") info += " | Sail: " + bi.sail;
+                if (bi.tws > 0) info += "<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts";
+                if (bi.twd > 0) info += " | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            }
+            else {
+                var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 2+nbdigits) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 1+nbdigits) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 2 + nbdigits) + " kts<br>TWS: " + Util.roundTo(bi.tws, 2 + nbdigits) + " kts | TWD: " + Util.roundTo(bi.twd, 2 + nbdigits) + "°";
+            }
             if (elem.startDate && race.type == "record") {
                 info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
             }
