@@ -5504,11 +5504,18 @@ async function initializeMap(race) {
         }
     
     }
+
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             msgRcv(request, sender, sendResponse);
         }
     );
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if(message && message.message) {
+            msgRcv(message.message, sender, sendResponse);
+
+        }
+  });
 
     function onRouteListClick(ev)
     {

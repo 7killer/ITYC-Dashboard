@@ -78,35 +78,6 @@ function onAttach (tabId) {
 }
 
 
-
-chrome.declarativeContent.onPageChanged.removeRules(async () => {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      conditions: [
-        new chrome.declarativeContent.PageStateMatcher({
-          pageUrl: { hostPrefix: 'www.virtualregatta.',pathContains: '/offshore-' },
-        }),
-      ],
-      actions: [
-        new chrome.declarativeContent.SetIcon({
-          imageData: {
-            128: await loadImageData('./icon.png')
-          },
-        }),
-        chrome.declarativeContent.ShowAction
-          ? new chrome.declarativeContent.ShowAction()
-          : new chrome.declarativeContent.ShowPageAction(),
-      ],
-    }]);
-  });
-  
-  async function loadImageData(url) {
-    const img = await createImageBitmap(await (await fetch(chrome.runtime.getURL(url))).blob());
-    const {width: w, height: h} = img;
-    const canvas = new OffscreenCanvas(w, h);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, w, h);
-    return ctx.getImageData(0, 0, w, h);
-  }
   
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -120,26 +91,24 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   });
 
   /*to listen from VR page in bg future usage*/
-  /*
-  chrome.runtime.onMessageExternal.addListener(
+  
+ /* chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         var msg = request;
         let rstTimer = false;
         let sendResp = true;
-        console.log("bg R " + msg.type);
+        console.log("bg R " + msg);
         void chrome.runtime.getPlatformInfo();
         sendResponse({type:"alive",rstTimer:false});
     }
 );
+chrome.runtime.onMessage.addListener((message) => {
+        if (message && message.message && message.message.type && (message.message.type == "FROM_PAGE")) {
+            console.log("Content script receivedb   : " + message.message.text);
+//               chrome.runtime.sendMessage({hello: 1});
+          } 
 
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        var msg = request;
-        let rstTimer = false;
-        let sendResp = true;
-        console.log("bg2 R " + msg.type);
-        void chrome.runtime.getPlatformInfo();
-        sendResponse({type:"alive",rstTimer:false});
-    }
-);*/
+  });
+*/
+
   

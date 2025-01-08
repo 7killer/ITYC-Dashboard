@@ -3,12 +3,16 @@
     "short_name": "VR Dashboard I.T.Y.C.",
     "description": "Monitor boat position & call virtual sailor weather router",
     "version": "1.4.5",
+    "browser_specific_settings": {
+    "gecko": {
+      "id": "VRDasboard@ityc.com"
+    }
+  },
   "permissions": [
     "tabs",
     "storage",
     "activeTab",
     "scripting",
-    "declarativeContent",
     "unlimitedStorage"
 	],
 	"host_permissions" : [
@@ -26,7 +30,7 @@
 
   
   "background": {
-      "service_worker": "./js/background.js"
+      "scripts": ["./js/background.js"]
   },
   "action": {
       "default_icon": {"128": "icon_grey.png"},
@@ -59,10 +63,5 @@
   "web_accessible_resources": [{
     "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png"],
     "matches": ["<all_urls>"]
-  }],
-  "externally_connectable": {
-    "ids": ["*"],
-    "matches": ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"
-    ]
-  }
+  }]
 }

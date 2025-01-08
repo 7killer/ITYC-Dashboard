@@ -16,6 +16,7 @@ if(readVal) gameSize = readVal;
 
 let dashState = "notInstall";
 
+var responseTimer;
 window.addEventListener("load", function () {
   let idC = document.getElementById('itycDashId');
   if(idC)  manifestVersion = idC.getAttribute('ver');   
@@ -32,28 +33,29 @@ window.addEventListener("load", function () {
   originGameHeight = window.innerHeight-offsetOrigin;
   sendAlive();
   dashState = "notInstall";
-
+  if(responseTimer) clearTimeout(responseTimer);
+  responseTimer = setTimeout(popMsg, 100);
 
 });
 
 
 function callRouterZezo() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openZezo" });             
+  if(idC)  window.notify({type:"openZezo" });            
 }
 
 function callRouterToxxct() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openToxxct" });  
+  if(idC)  window.notify({type:"openToxxct" });
 }
 
 function callItyc() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openItyc" });  
+  if(idC)  window.notify({type:"openItyc" });  
 }
 function callRouterVrZen() { 
-  var idC = document.getElementById('itycDashId');
-  if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
+  var idC = document.getElementById('itycDashId'); 
+  if(idC)  window.notify({type:"openVrzen" });
 }
 
 
@@ -90,15 +92,13 @@ function callRouterVrZen() {
     const text = await response.text().catch(() => {});
 
     if (text) {
-      chrome.runtime.sendMessage(
-        extId,
-        {
+      window.notify(
+      {
           url,
           req: JSON.stringify(body),
           resp: text,
           type: "data",
-        },
-        function (response) {manageAnswer(response);});
+        })//..then(manageAnswer);
     }
     
     return text ? responseProxy(response, text) : response
@@ -128,12 +128,9 @@ function callRouterVrZen() {
       url.startsWith("https://static.virtualregatta.com/winds/live/") &&
       url.endsWith("wnd")
     ) {
-      chrome.runtime.sendMessage(
-        extId,
-        { url: url,type: "wndCycle" },
-        function (response) {manageAnswer(response);}
-      );
       
+      window.notify( { url: url,type: "wndCycle" })//..then(manageAnswer);
+     
     }
 
     if (!checkUrl(url)) {
@@ -257,16 +254,33 @@ function createContainer() {
 
 var comTimer ;
 var aliveTimeout = 1000;
+
 function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
     var idC = document.getElementById('itycDashId');
     if(idC) {
-      chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},
-      function (response) {manageAnswer(response);})
-      //console.log('VR alive send');
+      window.notify({type:"alive"});//.then(manageAnswer);
     }
     comTimer = setTimeout(sendAlive, aliveTimeout);
+
+
+    
 } 
+
+function popMsg() {
+  if(responseTimer) clearTimeout(responseTimer);
+  var msg = window.messageList.pop();
+  let lastId = msg?msg.rcvId:undefined;
+
+  while(msg)
+  {
+    if(msg.rcvId>lastId) lastId = msg.rcvId;
+    manageAnswer(msg);
+    msg = window.messageList.pop();
+  }
+  window.setLastId(lastId);
+  responseTimer = setTimeout(popMsg, 100);
+}
                     
 function manageAnswer(msg) {
     if(!msg) return;      

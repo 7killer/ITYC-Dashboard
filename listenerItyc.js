@@ -84,6 +84,10 @@ function reduceLangFlag() {
 
 window.onmessage = function(e) {
   let msg = e.data;
+  if (e.data.type && (e.data.type == "FROM_PAGE")) {
+    console.log("Content script received listener main: " + e.data.text);
+  //  chrome.runtime.sendMessage({hello: 1});
+  }
   if(msg && msg.port ) {
     if(msg.port==("ItycIframe2VR" + manifestVersion)) {
       if (msg.order === "resize") {
