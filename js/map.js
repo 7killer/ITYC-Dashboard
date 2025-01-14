@@ -863,6 +863,7 @@ async function initialize(race,raceFleetMap)
             lMapInfos = race.lMap;
         }
         initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map, race.id);
+        enableCoordinateCopyingWithShortcut();
     }
 }
 
@@ -1581,6 +1582,33 @@ const getLocal = (k) => {
         });
     });
 }
+
+function enableCoordinateCopyingWithShortcut() {
+    const coordinatesDisplay = document.querySelector(".leaflet-control-coordinates");
+
+    if (coordinatesDisplay) {
+        document.addEventListener("keydown", function (event) {
+            const isCtrlOrCmd = event.ctrlKey || event.metaKey; // Ctrl (Windows) ou Cmd (Mac)
+            const isKeyC = event.key === "b" || event.key === "B"; // "b/B" on keyboard
+
+            if (isCtrlOrCmd && isKeyC) {
+                event.preventDefault();
+                const coordinatesText = coordinatesDisplay.innerText.trim();
+
+                if (coordinatesText) {
+                    navigator.clipboard.writeText(coordinatesText)
+                        .then(() => {
+                            //console.log("Copied", coordinatesText);
+                        })
+                        .catch(err => {
+                            //console.error("Error", err);
+                        });
+                }
+            }
+        });
+    }
+}
+
 export {
     initialize,updateMapCheckpoints,updateMapFleet,cleanMap,set_displayFilter,set_currentId,set_currentTeam,
     updateMapWaypoints,updateMapMe,updateMapLeader,
