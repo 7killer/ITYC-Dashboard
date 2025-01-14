@@ -1205,7 +1205,9 @@ a:active {
 #raceStatusTable {
     margin-bottom: 1em;
 }
-
+#raceStatusTable tr th {
+    cursor: help;
+}
 
 table#raceidTable2>tbody>tr>td {
     text-align: center;

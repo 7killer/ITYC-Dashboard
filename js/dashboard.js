@@ -473,11 +473,11 @@ var controller = function () {
         + '<th title="True Wind Speed">' + "TWS" + '</th>'
         + '<th title="True Wind Angle">' + "TWA" + '</th>'
         + '<th title="Heading">' + "HDG" + '</th>'
-        + '<th title="Boat speed">' + "Speed" + '</th>'
+        + '<th title="Boat speed / Speed factor / Foils usage">' + "Speed" + '</th>'
         + '<th title="Auto Sail time remaining">' + "aSail" + '</th>' 
         + '<th title="Boat VMG">' + "VMG" + '</th>'       
-        + '<th title="Best VMG Up | Dw">' + "Best VMG" + '</th>' 
-        + '<th title="Best Speed spd | TWA">' + "Best speed" + '</th>'
+        + '<th title="Best VMG Up / Down">' + "Best VMG" + '</th>'
+        + '<th title="Best speed angle (Sail) / Best speed">' + "Best speed" + '</th>'
         + '<th title="Stamina">' + "Stamina" + '</th>'
         + '<th title="Position">' + "Position" + '</th>';
 
