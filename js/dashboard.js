@@ -2159,6 +2159,7 @@ var controller = function () {
         }
         // Ajout - Calcul TWD
         if (storedInfo.twa !== 0) {
+            if (storedInfo.heading === undefined) storedInfo.heading = 0;
             storedInfo.twd = storedInfo.twa + storedInfo.heading;
             if (storedInfo.twd < 0) {
                 storedInfo.twd += 360;
