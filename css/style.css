@@ -1152,11 +1152,13 @@ input[type="color"]::-webkit-color-swatch {
 #rt_close_popup, #rt_close_popupLmap{
     width : 5%;
     height: 5%;
-    padding-left: 67%;
+    cursor: pointer;
 
 }
 #rt_popupHeader, #rt_popupHeaderLmap{
     display :flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .extraMapSep {
     border-bottom: var(--th_border);
@@ -1203,7 +1205,9 @@ a:active {
 #raceStatusTable {
     margin-bottom: 1em;
 }
-
+#raceStatusTable tr th {
+    cursor: help;
+}
 
 table#raceidTable2>tbody>tr>td {
     text-align: center;

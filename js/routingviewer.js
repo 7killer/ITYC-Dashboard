@@ -982,16 +982,14 @@ function displayMapTrace(race,routeName)
 // Help for import
 function help(){
     var msg = "Affichage des traits de côtes :\n" +
-        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Attendez quelques instants. Ils apparaissent automatiquement en bleu.\nLa couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\nSi vous souhaitez afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n\n" + 
-        "Import Zezo :\n" +
-        "- Importer la route en cours suggéré par Zezo.\n" +
-        "- Si vous modifiez le paramétrage de votre route Zezo (destination, profondeur des prévisions...), cliquez sur la roue de la colonne \"RT\" avant d'importer.\n\n" +
-        "Import Avalon :\n" +
-        "- Depuis votre logiciel Avalon, exportez votre route au format CSV et importez le.\n\n" +
-        "Import VRZen :\n" +
-        "- Depuis le routeur VRZen, exportez votre route au format CSV et importez le.\n\n" +
-        "Import GPX :\n" +
-        "- Importez le !";
+        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Ils apparaissent automatiquement en bleu après quelques instants. Pour afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n- La couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\n\n" + 
+        "Importer un routage :\n" +
+        "- Zezo : importer automatiquement la route suggérée par Zezo en cliquant sur 'Import'.\n" +
+        "- Avalon : depuis votre logiciel Avalon, exportez votre route au format CSV et importez le fichier.\n" +
+        "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
+        "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
+        "Copier les coordonnées pointées par la souris :\n" +
+        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).";
         
     alert(msg);
 }
