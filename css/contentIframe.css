@@ -434,3 +434,6 @@ td.position p {
     margin-bottom: -0.2em;
     width: 2em;
 }
+#raceStatusTable tr th {
+    cursor: help;
+}
