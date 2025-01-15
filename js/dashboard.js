@@ -3490,7 +3490,7 @@ var controller = function () {
         if (uinfo) pos = uinfo.pos;
         var url = baseURL + "/?gfs," + pos.lat + "," + pos.lon + ",6,i:pressure,d:picker";
         
-        Util.openTab(url, r.url,cbReuseTab.checked);
+        Util.openTab(url, baseURL,cbReuseTab.checked);
     }
     function preparePolarBaseUrl()
     {
