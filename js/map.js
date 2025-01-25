@@ -1142,7 +1142,7 @@ function updateMapMe(race, track) {
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
         var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 3) + "°</b>"
-                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 3) + "°</b>"
+                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2) + "°</b>"
                     + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 3) + " kts"
                     + "<br>TWS: " + Util.roundTo(race.curr.tws, 3) + " kts | TWD: " + Util.roundTo(race.curr.twd, 3) + "°";
 
