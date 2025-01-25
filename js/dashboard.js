@@ -532,7 +532,7 @@ var controller = function () {
                 bVmgCell += "<div>" + '\u2198 ' + bestTwa.twaDown;
                 bVmgCell += ' ('+sailNames[bestTwa.sailDown % 10]+')';
                 if(document.getElementById("showBVMGSpeed").checked) 
-                    bVmgCell += ' (' + Util.roundTo(bestTwa.vmgDown, 3) + 'kts )';
+                    bVmgCell += ' (' + Util.roundTo(Math.abs(bestTwa.vmgDown), 3) + 'kts )';
                 bVmgCell += '</div>';
     
 
