@@ -23,6 +23,8 @@ var controller = function () {
     // Polars and other game parameters, indexed by polar._id
     var polars = [];
 
+    var ownBoatTrack;
+
     var races = new Map();
     var raceFleetMap = new Map();
 
@@ -2488,6 +2490,10 @@ var controller = function () {
     {
         exp.exportPolar(polars)
     }
+    function exportOwnBoatTrack()
+    {
+        exp.exportOwnBoatTrack(ownBoatTrack)
+    }
 
     function exportGraphData()
     {
@@ -4926,6 +4932,7 @@ async function initializeMap(race) {
         var raceId = getRaceLegId(message._id);
         var race = races.get(raceId);
         lMap.updateMapMe(race, message.track);
+        ownBoatTrack = message.track;
     }
 
     function getUserId(message) {
@@ -5728,6 +5735,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportPolar").innerHTML = "Exporter Polaires";
             document.getElementById("bt_exportStamina").innerHTML = "Exporter Stamina";
             document.getElementById("bt_exportFleet").innerHTML = "Exporter FleetInfos";
+            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Exporter Trace bateau";
             
             document.getElementById("t_credit_all").innerHTML = "Tous les contributeurs inconnus !";
             document.getElementById("t_credit_me").innerHTML = "Votre serviteur !";
@@ -5843,6 +5851,7 @@ async function initializeMap(race) {
             document.getElementById("bt_exportPolar").innerHTML = "Export Polars";
             document.getElementById("bt_exportStamina").innerHTML = "Export Stamina";
             document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
+            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Export Boat Track";
             
             document.getElementById("t_credit_all").innerHTML = "All unknows contributors !";
             document.getElementById("t_credit_me").innerHTML = "Myself !";
@@ -5898,6 +5907,7 @@ async function initializeMap(race) {
         exportPolar:exportPolar,
         exportStamina:exportStamina,
         exportFleet:exportFleet,
+        exportOwnBoatTrack:exportOwnBoatTrack,
         exportGraphData:exportGraphData,
         graphCleanData:graphCleanData,
 
@@ -5946,6 +5956,7 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
     document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
+    document.getElementById("bt_exportOwnBoatTrack").addEventListener("click", controller.exportOwnBoatTrack);
     
     
     document.getElementById("bt_cleanGraph").addEventListener("click", controller.graphCleanData);

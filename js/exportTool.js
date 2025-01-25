@@ -373,6 +373,36 @@ if (!String.prototype.format) {
     };
 }
 
+export function exportOwnBoatTrack(track)
+{
+    if(!track) return;
+    let trackGPX = generateGPX(track);
+    let blobData = new Blob([trackGPX], {type: 'application/gpx+xml'});
+    let url = window.URL.createObjectURL(blobData);
+    saveFile('boatTrack.gpx', url);
+}
+
+function generateGPX(data) {
+    let gpxContent = `<?xml version="1.0" encoding="UTF-8" ?><gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="ITYC"><metadata><link href="https://ityc.fr/"><text>ITYC</text></link><time>${new Date().toISOString()}</time></metadata>`;
+    data.forEach(point => {
+        if (point.lon > 180) point.lon = point.lon - 360;
+        gpxContent += `<wpt lat="${point.lat}" lon="${point.lon}">
+        <time>${Util.formatTimestampToISO(point.ts)}</time>
+        <name>${Util.formatTimestampToReadableDate(point.ts)}</name>
+        <desc>Latitude : ${point.lat.toFixed(2)} - Longitude : ${point.lon.toFixed(2)}</desc>
+        </wpt>`;
+    });
+    gpxContent += `<trk><name>Track of my boat on Vendée Globe with ITYC</name><trkseg>`;
+    data.forEach(point => {
+        if (point.lon > 180) point.lon = point.lon - 360;
+        gpxContent += `<trkpt lat="${point.lat}" lon="${point.lon}">
+        <time>${Util.formatTimestampToISO(point.ts)}</time>
+        </trkpt>`;
+    });
+    gpxContent += `</trkseg></trk></gpx>`;
+    return gpxContent;
+}
+
 export function exportRestrictedZones()
 {
     function coordPrinter(lat,lon)
