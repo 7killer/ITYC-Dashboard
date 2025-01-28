@@ -882,6 +882,7 @@ const raceOptionPlayerModel = {
     playerId : "",
     time : "-",
     options : "?",
+    guessOptions : 0,
     startRaceTime :"-"             //For record
 };
 
@@ -1008,6 +1009,10 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
     } else if(raceOptPlayer.options) {
         raceOptPlayer.opt =raceOptPlayer.options ;
     }
+    if(!raceOptPlayer.guessOptions) {
+        if(raceOptPlayer.guessOpt !== undefined) raceOptPlayer.guessOptions = raceOptPlayer.guessOpt;
+        else raceOptPlayer.guessOptions = 0;
+    }
     if(!raceOptPlayer.stTs)
         raceOptPlayer.stTs = raceOptPlayer.startRaceTime;
     
@@ -1022,12 +1027,14 @@ function mergeRaceOptionsList(rid,raceOptPlayer) {
                 playerOption.startRaceTime = Number(raceOptPlayer.stTs);                            
             } 
         }
+        playerOption.guessOptions = playerOption.guessOptions | raceOptPlayer.guessOptions;
     } else
     {
         playerOption = Object.create(raceOptionPlayerModel);
         playerOption.playerId = raceOptPlayer.playerId;
         playerOption.time = raceOptPlayer.update;
         playerOption.options = raceOptPlayer.opt;
+        playerOption.guessOptions = raceOptPlayer.guessOptions;
         if(raceOptPlayer.stTs == 0 || raceOptPlayer.stTs =="0" ||  raceOptPlayer.stTs =="-") playerOption.startRaceTime = "-";
         else {
             playerOption.startRaceTime = Number(raceOptPlayer.stTs);                            
@@ -1046,11 +1053,14 @@ async function saveRaceOptionsList(rid) {
     await saveLocal("RPO_"+rid,t);
 }
 
-async function addRaceOptionsList(raceId,raceOptionPlayer)
+async function createRaceOptionsContainer(raceId)
 {
     if (raceId=="") return;
-
     await createRaceOptionPartition(raceId);
+}
+
+async function addRaceOptionsList(raceId,raceOptionPlayer)
+{
 
     if(raceOptionPlayer.playerId && raceOptionPlayer.playerId != raceOptionPlayerModel.playerId)
     {//
@@ -1059,6 +1069,7 @@ async function addRaceOptionsList(raceId,raceOptionPlayer)
             if(raceOptionPlayer.time != raceOptionPlayerModel.time) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].time = raceOptionPlayer.time;
             if(raceOptionPlayer.options != raceOptionPlayerModel.options) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].options = raceOptionPlayer.options;
             if(raceOptionPlayer.startRaceTime != raceOptionPlayerModel.startRaceTime) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].startRaceTime = raceOptionPlayer.startRaceTime;
+            if(raceOptionPlayer.guessOptions != raceOptionPlayerModel.guessOptions) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].guessOptions = raceOptionPlayer.guessOptions;
         } else
         {
             raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId] = raceOptionPlayer;   
@@ -1083,6 +1094,17 @@ function getRaceOptionsPlayer(raceId, playerId)
                 options = raceOptionsList.race[raceId].uinfo[playerId].options ;
     } 
     return options;
+}
+function getRaceGuessOptionsPlayer(raceId, playerId)
+{
+    var guessOptions = "?";
+    if(raceOptionsList.race[raceId])
+    {
+        if(raceOptionsList.race[raceId].uinfo)
+            if(raceOptionsList.race[raceId].uinfo[playerId])
+                guessOptions = raceOptionsList.race[raceId].uinfo[playerId].guessOptions ;
+    } 
+    return guessOptions;
 }
 function getStartRaceTimePlayer(raceId, playerId)
 {
@@ -1121,7 +1143,7 @@ function getRacePlayerInfos(raceId, playerId)
         getPlayerList,savePlayerList,addPlayerInfo,makePlayerTable,
         getPlayerInfos,
         raceInfosModel,raceList,
-        getRaceList,saveRaceList,addRaceInfo,makeRaceTable,getRaceListInfos,
+        getRaceList,saveRaceList,addRaceInfo,makeRaceTable,getRaceListInfos,getRaceGuessOptionsPlayer,createRaceOptionsContainer,
         getRaceInfos,
         raceOptionPlayerModel,raceOptionsList,
         getRaceOptionsList,saveRaceOptionsList,addRaceOptionsList,

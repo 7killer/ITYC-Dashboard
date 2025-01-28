@@ -17,6 +17,23 @@ var currentSortOrder = 0;
 // Earth radius in nm, 360*60/(2*Pi);
 var radius = 3437.74683;
 
+var guessOptionBits = {
+    "hull":  1,
+    "winch": 2,
+    "foil":  4,
+    "light": 8,
+    "reach": 16,
+    "heavy": 32,
+    "hullDetected":64,
+    "foilDetected":128,
+    "winchDetected":256,
+    3:32, //stay
+    4:8,  //LJ
+    5:16,  //C0
+    6:32,  //HG
+    7:8,  //LG
+};
+
 function angle(h0, h1) {
     return Math.abs(Math.PI - Math.abs(h1 - h0));
 }
@@ -567,6 +584,13 @@ function isOdd(number) {
     return number % 2 !== 0;
 }
   
+function isBitSet(num, mask){
+    let a = num&mask;
+    if(a===0)
+        return false;
+    else
+        return true;
+}
 export { angle,
          courseAngle,
          formatDDMMYY,
@@ -587,6 +611,6 @@ export { angle,
          formatShortDate,readTextFile,callCopyValue,sailId2Color,
          genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,openTab,
          formatTimestampToISO,formatTimestampToReadableDate,
-         isOdd
+         isOdd,guessOptionBits,isBitSet
        };
 
