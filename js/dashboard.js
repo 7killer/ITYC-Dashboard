@@ -1513,10 +1513,68 @@ var controller = function () {
 
                     var xOptionsTxt = "?";
                     var xOptionsTitle = null;
+                    var xOptionsStyle = "";
                     
-                    if(r.xoption_options)
+                    if(r.xoption_options && r.xoption_options != "?")
                     {
                         xOptionsTxt = r.xoption_options;
+                        xOptionsTitle = r.xoption_options;
+                    
+                    } else {
+                        if(r.guessOptions && r.guessOptions != 0)
+                        {
+                            let opt_sail ="[";
+                            let opt_sail_found = false;
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["reach"])) {
+                                opt_sail_found = true;opt_sail += "reach,";
+                            }
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["light"])) {
+                                opt_sail_found = true;opt_sail += "light,";
+                            }
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["heavy"])) {
+                                opt_sail_found = true;opt_sail += "heavy,";
+                            }
+                            opt_sail = opt_sail.substring(0,opt_sail.length-1);
+                            if (opt_sail.length != "") opt_sail += "]";
+
+                            let opt_perf ="[";
+                            let opt_perf_found = false;
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["winchDetected"])
+                            && Util.isBitSet(r.guessOptions,Util.guessOptionBits["winch"])) {
+                                opt_perf_found = true;opt_perf += "winch,";
+                            }
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["foilDetected"])
+                                && Util.isBitSet(r.guessOptions,Util.guessOptionBits["foil"])) {
+                                opt_perf_found = true;opt_perf += "foil,";
+                            }
+                            if(Util.isBitSet(r.guessOptions,Util.guessOptionBits["hullDetected"])
+                                && Util.isBitSet(r.guessOptions,Util.guessOptionBits["hull"])) {
+                                opt_perf_found = true;opt_perf += "hull,";
+                            }
+
+                            opt_perf = opt_perf.substring(0,opt_perf.length-1);
+                            if (opt_perf.length != "") opt_perf += "]";                
+                          
+                            if(opt_sail_found && opt_perf_found)
+                            {
+                                xOptionsStyle = 'style="font-style: italic;"';
+                                xOptionsTxt = opt_sail + " " + opt_perf ;
+                                xOptionsTitle = opt_sail + " " + opt_perf;
+                            } else if(opt_sail_found && !opt_perf_found)
+                            {
+                                xOptionsStyle = 'style="font-style: italic;"';
+                                xOptionsTxt = opt_sail;
+                                xOptionsTitle = opt_sail;
+                            } else if(!opt_sail_found && opt_perf_found)
+                            {
+                                xOptionsStyle = 'style="font-style: italic;"';
+                                xOptionsTxt =  opt_perf;
+                                xOptionsTitle = opt_perf;
+                            }
+                        }
+                    }
+                    if(xOptionsTxt != "?")
+                    {
                         if(document.getElementById("abbreviatedOption").checked) {
                             xOptionsTitle = r.xoption_options;
                             xOptionsTxt = xOptionsTxt.replace("All Options","AO");
@@ -1531,7 +1589,10 @@ var controller = function () {
                             xOptionsTxt = xOptionsTxt.replace("vrtexJacket","J");
                             xOptionsTxt = xOptionsTxt.replace("comfortLoungePug","C");
 
-                        } 
+                        }else 
+                        {
+                            xOptionsTitle = null;   
+                        }
                     }
                     
 
@@ -1570,7 +1631,7 @@ var controller = function () {
                         + Util.gentd("Foils", "", null, (r.xoption_foils || "?"))
                         + recordRaceFields(race, r)
                         + Util.gentd("Position","",null, (r.pos ? Util.formatPosition(r.pos.lat, r.pos.lon) : "-") )
-                        + Util.gentd("Options","",xOptionsTitle, xOptionsTxt)
+                        + Util.gentd("Options",xOptionsStyle,xOptionsTitle, xOptionsTxt)
                         + Util.gentd("State", "", txtTitle, iconState)
                         + Util.gentd("Remove", "", null, (r.choice && uid != currentUserId ? '<span class="removeSelectedBoat" data-id="' + uid + '" title="Remove this boat: ' + bi.name + '">❌</span>' : ""))
                         + '</tr>';
@@ -1938,10 +1999,11 @@ var controller = function () {
                    ];
 
     function mergeBoatInfo(rid, mode, uid, data) {
+        let retOptChanged = false;
         var fleet = raceFleetMap.get(rid);
         if (!fleet) {
             console.log("raceInfo not initialized");
-            return;
+            return retOptChanged;
         }
         var race = races.get(rid);
         var storedInfo = fleet.uinfo[uid];
@@ -2104,7 +2166,11 @@ var controller = function () {
         }
 
         if(uid==currentUserId) explainPlayerOptions(storedInfo); /* options are now transmit only for current user */
-        else initPlayerOptions(storedInfo);
+        else{
+            initPlayerOptions(storedInfo);
+            if(!storedInfo.guessOptions) storedInfo.guessOptions = 0;
+            storedInfo.guessOptions = storedInfo.guessOptions|DM.getRaceGuessOptionsPlayer(rid,uid);
+        }
 
         if(storedInfo.xoption_options == "---" || storedInfo.xoption_options == "?")
         {
@@ -2148,6 +2214,17 @@ var controller = function () {
 
                 // Explain storedInfo.speed from plain speed and speedup factors
                 explain(storedInfo, foilFactor, hullFactor, speedT);
+                const actualGuestOptions = storedInfo.guessOptions?storedInfo.guessOptions:0;
+                guessPlayerOptions(storedInfo, foilFactor, hullFactor, speedT);
+                if(actualGuestOptions!=storedInfo.guessOptions) 
+                {        
+                    var playerOptionsData = Object.create(DM.raceOptionPlayerModel);
+                    playerOptionsData.playerId = uid;
+                    playerOptionsData.time = storedInfo.lastCalcDate;
+                    playerOptionsData.guessOptions = storedInfo.guessOptions;
+                    DM.addRaceOptionsList(rid,playerOptionsData);
+                    retOptChanged =true;
+                }
             }
         } else {
             storedInfo.xplained = true;
@@ -2184,6 +2261,7 @@ var controller = function () {
         }
 
         if(document.getElementById("ITYC_record").checked) tr.addInfoFleet(uid,storedInfo,race.type);
+        return retOptChanged;
     }
 
     function mergeBoatTrackInfo(rid, uid, data) {
@@ -2358,6 +2436,90 @@ var controller = function () {
             info.xoption_foils = "no";
         }        
     }
+    
+    function guessPlayerOptions(info, foilFactor, hullFactor, speedT) {
+
+
+        if(!info.guessOptions)info.guessOptions = 0;
+
+        //Sail
+        if(Util.guessOptionBits[info.sail % 10]) info.guessOptions |= Util.guessOptionBits[info.sail % 10];
+
+
+
+        function epsEqual(a, b) {
+            return Math.abs(b - a) < 0.00001;
+        }
+
+        function aroundV(a, b) {
+            return Math.abs(b - a) < 0.01;
+        }
+        if (epsEqual(info.xfactor, 1.0)) {
+            // Speed agrees with "plain" speed.
+            // Explanation: 1. no hull and 2. foiling condition => no foils.
+            info.guessOptions |= Util.guessOptionBits["hullDetected"];
+            info.guessOptions &= ~Util.guessOptionBits["hull"];
+            if (foilFactor > 1.0) {
+                info.guessOptions |= Util.guessOptionBits["foilDetected"];
+                info.guessOptions &= ~Util.guessOptionBits["foil"];
+            }
+        } else {
+            // Speed does not agree with plain speed.
+            // Check if hull, foil or hull+foil can explain the observed speed.
+            if (epsEqual(info.speed, speedT * hullFactor)) {
+                if (epsEqual(hullFactor, foilFactor)) {
+                    // Both hull and foil match.
+                    info.guessOptions |= Util.guessOptionBits["foilDetected"];
+                    info.guessOptions |= Util.guessOptionBits["foil"];
+                } else {
+                    info.guessOptions |= Util.guessOptionBits["hullDetected"];
+                    info.guessOptions |= Util.guessOptionBits["hull"];
+                }
+            } else if (epsEqual(info.speed, speedT * foilFactor)) {
+                info.guessOptions |= Util.guessOptionBits["foilDetected"];
+                info.guessOptions |= Util.guessOptionBits["foil"];
+            } else if (epsEqual(info.speed, speedT * foilFactor * hullFactor)) {
+                info.guessOptions |= Util.guessOptionBits["hullDetected"];
+                info.guessOptions |= Util.guessOptionBits["hull"];
+                info.guessOptions |= Util.guessOptionBits["foilDetected"];
+                info.guessOptions |= Util.guessOptionBits["foil"];
+            } else {
+                if(Util.isBitSet(info.guessOptions,Util.guessOptionBits["foilDetected"]) 
+                    && Util.isBitSet(info.guessOptions,Util.guessOptionBits["hullDetected"]))
+                {
+                    var foils = ((foilFactor - 1) * 100) / 4 * 100;
+                    if(!info.xplained && Util.isBitSet(info.guessOptions,Util.guessOptionBits["foil"])) info.xoption_foils = Util.roundTo(foils, 0) + "%";
+
+                    var sf = 1.0;
+                    if(Util.isBitSet(info.guessOptions,Util.guessOptionBits["foil"]) 
+                    && Util.isBitSet(info.guessOptions,Util.guessOptionBits["hull"]))
+                        sf = info.speed / (speedT * foilFactor * hullFactor);
+                    else if(Util.isBitSet(info.guessOptions,Util.guessOptionBits["foil"]))
+                        sf = info.speed / (speedT * foilFactor);
+                    else if(Util.isBitSet(info.guessOptions,Util.guessOptionBits["hull"]))
+                        sf = info.speed / (speedT * hullFactor);
+                    else
+                        sf = info.speed / (speedT );
+
+                    if(sf >1.0 && sf <= 1.14) {
+                        if(!info.xplained) info.xoption_sailOverlayer = "+"+Util.roundTo((sf-1.0)*100, 2) + "%";
+                    } else if(sf < 1.0) {
+                        let c = (1.0-sf)*100;
+                        if(!info.xplained) info.xoption_sailOverlayer = "-"+Util.roundTo(c, 2) + "%";
+                        if(aroundV(c,75) || aroundV(c,50))
+                        {
+                            info.guessOptions |= Util.guessOptionBits["winchDetected"];
+                            info.guessOptions &= ~Util.guessOptionBits["winch"];
+                        } else if(aroundV(c,30) || aroundV(c,51)) {
+                            info.guessOptions |= Util.guessOptionBits["winchDetected"];
+                            info.guessOptions |= Util.guessOptionBits["winch"];
+                        }
+                    }
+                    info.xplained = true;
+                }
+            }
+        }
+    }
 
     function explain(info, foilFactor, hullFactor, speedT) {
         function epsEqual(a, b) {
@@ -2403,7 +2565,10 @@ var controller = function () {
             } else {
                 if(!info.options) return;
                 info.xplained = true;
-                info.xoption_foils = Util.roundTo(foils, 0) + "%";
+                if(info.options.includes("foil"))
+                    info.xoption_foils = Util.roundTo(foils, 0) + "%";
+                else
+                    info.xoption_foils = "no";
                 //here check for overspeed due to sail
                 //spd = speedT *ff* hf *sf
                 //sf = spd /  speedT *ff* hf
@@ -2416,7 +2581,7 @@ var controller = function () {
                 else if(info.options.includes("hull"))
                     sf = info.speed / (speedT * hullFactor);
                 else
-                    sf = info.speed / (speedT * hullFactor);
+                    sf = info.speed / (speedT);
 
                 if(sf >1.0 && sf <= 1.14) {
                     info.xoption_sailOverlayer = "+"+Util.roundTo((sf-1.0)*100, 2) + "%";
@@ -2428,7 +2593,7 @@ var controller = function () {
     }
 
 
-    function updateFleet(rid, mode, data) {
+    async function updateFleet(rid, mode, data) {
         var fleet = raceFleetMap.get(rid);
 
         if(!fleet || !fleet.uinfo) return;
@@ -2443,10 +2608,13 @@ var controller = function () {
             }
             tr.initMessage("fleet",rid,name,currentUserId,type);
         }  
-        
+        let saveOptions = false;
+        await DM.createRaceOptionsContainer(rid);
         data.forEach(function (message) {
-            mergeBoatInfo(rid, mode, message.userId, message);
+            saveOptions = mergeBoatInfo(rid, mode, message.userId, message);
         });
+        if(saveOptions)
+            await DM.saveRaceOptionsList(rid);
 
         if(document.getElementById("ITYC_record").checked) tr.sendInfo("fleet");
 
@@ -4786,7 +4954,7 @@ async function initializeMap(race) {
                 var raceId = getRaceLegId(requestData);
                 var race = races.get(raceId);
 
-                updateFleet(raceId, "fleet", message);
+                await updateFleet(raceId, "fleet", message);
 
                 var idx = message.length;
                 for (var i = 0; i< idx; i++) {
@@ -4908,7 +5076,8 @@ async function initializeMap(race) {
                     if (race.type && race.type === "record" && fleet.uinfo[userId].startDate) {
                         playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
                     }
-                    await DM.addRaceOptionsList(raceId,playerOptionsData);
+                    await DM.createRaceOptionsContainer(raceId);
+                    DM.addRaceOptionsList(raceId,playerOptionsData);
                     await DM.saveRaceOptionsList(raceId);
                     if(document.getElementById("ITYC_record").checked && isFirstBoatInfo)
                     {
@@ -4984,7 +5153,8 @@ async function initializeMap(race) {
                 playerOptionsData.playerId = userId;
                 playerOptionsData.time = fleet.uinfo[userId].lastCalcDate;
                 playerOptionsData.startRaceTime = fleet.uinfo[userId].startDate;
-                await DM.addRaceOptionsList(raceId,playerOptionsData);
+                await DM.createRaceOptionsContainer(raceId);
+                DM.addRaceOptionsList(raceId,playerOptionsData);
                 await DM.saveRaceOptionsList(raceId);
             }
 
@@ -5287,10 +5457,10 @@ async function initializeMap(race) {
         await DM.saveTeamList();
     }
 
-    function handleGameGetFollowedBoats (request, response) {
+    async function handleGameGetFollowedBoats (request, response) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
-        updateFleet(raceId, "followed", response.scriptData.res);
+        await updateFleet(raceId, "followed", response.scriptData.res);
         //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);
@@ -5299,10 +5469,10 @@ async function initializeMap(race) {
         }
     }
 
-    function handleGameGetOpponents (request, response) {
+    async function handleGameGetOpponents (request, response) {
         var raceId = getRaceLegId(request);
         var race = races.get(raceId);
-        updateFleet(raceId, "opponents", response.scriptData.res);
+        await updateFleet(raceId, "opponents", response.scriptData.res);
         //updateMapFleet(race);
         lMap.updateMapFleet(race,raceFleetMap);
         rt.updateFleet(race,raceFleetMap);

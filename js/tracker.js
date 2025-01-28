@@ -117,7 +117,8 @@ function addInfoFleet(uid,uinfo) {
         state : uinfo.state,
         rank : (uinfo.rank ?  uinfo.rank : "-"),
         stamina: (uinfo.stamina ? uinfo.stamina : "-"), 
-        dist: (uinfo.dtf ? uinfo.dtf : 99999999999.0)
+        dist: (uinfo.dtf ? uinfo.dtf : 99999999999.0),
+        guessOpt:(uinfo.guessOptions?uinfo.guessOptions:0)
     };
 
 //foils
