@@ -106,6 +106,15 @@ function formatTimeNotif(ts) {
     return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
 }
 
+function formatTimestampToISO(ts) {
+    const date = new Date(ts);
+    return date.toISOString(); // return '2025-01-16T15:30:00.000Z'
+}
+
+function formatTimestampToReadableDate(ts) {
+    const date = new Date(ts);
+    return date.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }); // return 'Sunday, November 10, 2024 at 2:22 PM'
+}
 
 function formatPosition(lat, lon) {
     var latDMS = toDMS(lat);
@@ -577,6 +586,7 @@ export { angle,
          sortFriends,sortField,currentSortOrder,set_sortField,set_currentSortOrder,formatTimeNotif,
          formatShortDate,readTextFile,callCopyValue,sailId2Color,
          genthRacelog,gentdRacelog,createRingBuffer,PositionOpenPopup,openTab,
+         formatTimestampToISO,formatTimestampToReadableDate,
          isOdd
        };
 
