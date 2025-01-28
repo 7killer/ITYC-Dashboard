@@ -335,7 +335,7 @@ var controller = function () {
     if(uinfo.xoption_sailOverlayer != "0%" && uinfo.xplained) {
         let x = uinfo.xoption_sailOverlayer.replace('%','');
         x = Number(x);
-        if(x > 1.2 || (x<0 && Math.abs(x)<0.98))
+        if(x > 1.2 || (x<0 && Math.abs(x)<98))
             xfactorStyle = 'style="color:red;"';
         else if(x > 0)
             xfactorStyle = 'style="color:orange ;"';
