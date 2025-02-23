@@ -1347,10 +1347,15 @@ function updateMapFleet(race,raceFleetMap) {
             else {
                 var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 3) + " kts<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts | TWD: " + Util.roundTo(bi.twd, 3) + "°";
             }
-            if (elem.startDate && race.type == "record") {
-                info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
+            if (race.type == "record") {
+                if (key == currentId && elem.tsRecord && race.curr.startDate) {
+                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - race.curr.startDate);
+                }
+                else if (elem.startDate && elem.tsRecord) {
+                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - elem.startDate);
+                }
             }
-              
+
             buildMarker(pos, race.lMap.fleetLayer,buildBoatIcon(bi.bcolor,bi.bbcolor,0.8), info,  zi, 0.8,elem.heading);
                 
             // track
