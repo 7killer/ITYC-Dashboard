@@ -392,7 +392,7 @@ function generateGPX(data) {
         <desc>Latitude : ${point.lat.toFixed(2)} - Longitude : ${point.lon.toFixed(2)}</desc>
         </wpt>`;
     });
-    gpxContent += `<trk><name>Track of my boat on Vendée Globe with ITYC</name><trkseg>`;
+    gpxContent += `<trk><name>Boat tracking with ITYC</name><trkseg>`;
     data.forEach(point => {
         if (point.lon > 180) point.lon = point.lon - 360;
         gpxContent += `<trkpt lat="${point.lat}" lon="${point.lon}">
