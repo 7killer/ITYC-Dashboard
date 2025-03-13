@@ -193,13 +193,17 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     let gpx = new gpxParser(); //Create gpxParser Object
     gpx.parse(gpxFile); //parse gpx file from string data
 
-    if(!gpx || !gpx.routes || !gpx.routes[0].points)return "" ;//File not available
+    let gpxPoints;
+    if (!gpx || (!gpx.routes && !gpx.tracks&& !gpx.waypoints)) return "" ; //File not available
+    if (Array.isArray(gpx.routes) && gpx.routes[0]?.points) gpxPoints = gpx.routes[0].points;
+    else if (Array.isArray(gpx.tracks) && gpx.tracks[0]?.points) gpxPoints = gpx.tracks[0].points;
+    else if (Array.isArray(gpx.waypoints)) gpxPoints = gpx.waypoints;
+    else return "";
 
     var routeName = routerName + " " + skipperName;
     createEmptyRoute(race.id,routeName.cleanSpecial(),skipperName,color,routeName);
-    
 
-    gpx.routes[0].points.forEach(function (pt) {
+    gpxPoints.forEach(function (pt) {
         
         var lat = Number(pt.lat);
         var lon = Number(pt.lon);
