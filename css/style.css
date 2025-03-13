@@ -1196,7 +1196,7 @@ a:active {
 }
 
 #raceBook {
-    margin :2em;
+    padding: 1em;
 }
 
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{

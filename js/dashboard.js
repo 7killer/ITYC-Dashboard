@@ -1639,7 +1639,7 @@ var controller = function () {
             }
         }
         if (rf === undefined || rf.table.length==0) {
-            divFriendList.innerHTML = "No friend positions received yet";
+            divFriendList.innerHTML = '<table id="raceidTable"><thead><tr><th>No friend positions received yet. Please enter a race.</th></tr></thead></table>';
         } else {
             if (originClick == 2) {
                 Util.sortFriends(rf,originClick);
@@ -3943,14 +3943,7 @@ function buildlogBookHTML(race) {
     }
 
     if(!race || !race.legdata) {
-        var raceIdentification = '<table id="raceidTable">'
-        + '<thead>'
-        + '<tr>'
-        + '<th colspan = 8>No data available</th>'
-        + '</tr>' 
-        + '</thead>'
-        + '</table>'
-        
+        var raceIdentification = '<table id="raceidTable"><thead><tr><th>No data available. Please enter a race.</th></tr></thead></table>';
         document.getElementById("raceBook").innerHTML = raceIdentification;
         return;
     }
