@@ -248,7 +248,12 @@ function convertDMS2Dec(lat,lon)
 
 }
 function genth(id, content, title, sortfield, sortmark) {
-    var checkboxId = "fleet_" + content.toLowerCase();
+    var checkboxId = '';
+    if (!content) {
+        var contentAlt = id.split("_")[1];
+        checkboxId = "fleet_" + contentAlt.toLowerCase();
+    }
+    else checkboxId = "fleet_" + content.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
     if ((! checkBox ) || checkBox.checked ) {
         if (sortfield && sortmark != undefined) {

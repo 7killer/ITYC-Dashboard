@@ -4497,6 +4497,7 @@ async function initializeMap(race) {
         await getOption("fleet_position",true);
         await getOption("fleet_options",true );
         await getOption("fleet_state",true );
+        await getOption("fleet_remove",true );
         await getOption("ITYC_record",true);
         await getOption("auto_clean",true);
         await getOptionN("auto_cleanInterval",5);
@@ -4632,6 +4633,7 @@ async function initializeMap(race) {
         document.getElementById("fleet_position" ).addEventListener("change", saveOption);
         document.getElementById("fleet_options" ).addEventListener("change", saveOption);
         document.getElementById("fleet_state" ).addEventListener("change", saveOption);
+        document.getElementById("fleet_remove" ).addEventListener("change", saveOption);
         document.getElementById("ITYC_record" ).addEventListener("change", saveOption);
         document.getElementById("auto_clean" ).addEventListener("change", saveOption);
         document.getElementById("auto_cleanInterval" ).addEventListener("change", saveOptionN);   
@@ -5877,6 +5879,7 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "État";
+            document.getElementById("t_fleet_remove").innerHTML = "Sélection";
 
             document.getElementById("t_racelog_position").innerHTML = "Position";
             document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
@@ -5993,6 +5996,7 @@ async function initializeMap(race) {
             document.getElementById("t_fleet_position").innerHTML = "Position";
             document.getElementById("t_fleet_options").innerHTML = "Options";
             document.getElementById("t_fleet_state").innerHTML = "State";
+            document.getElementById("t_fleet_remove").innerHTML = "Selected";
 
             document.getElementById("t_racelog_position").innerHTML = "Position";
             document.getElementById("t_racelog_stamina").innerHTML = "Stamina";
