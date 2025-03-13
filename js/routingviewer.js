@@ -284,7 +284,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             } else 
                 isoDate = poi[0]+" GMT";
 
-            sail =  poi[15];
+            sail = renameSailFromRoutes(poi[15]);
             twa = Util.roundTo(poi[6], 2)+ "°";
             twd = Util.roundTo(poi[11], 2)+ "°"; 
             stamina = Util.roundTo(poi[24], 2);
@@ -324,7 +324,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             if(isNumber(poi[5]))
                 sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
             else
-                sail = poi[5]; //new version give sail name
+                sail = renameSailFromRoutes(poi[5]);
             stamina = Util.roundTo(poi[9], 2);
             boost = Util.roundTo(poi[10], 2);
             
@@ -352,6 +352,18 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
 }
 
+function renameSailFromRoutes(sailName) {
+    if (sailName && sailName !== undefined) {
+        if (sailName == '"HeavyGnk-foils"' || sailName == '"HeavyGnk"' || sailName == 'Spi lourd' || sailName == '"HEAVY_GNK"' || sailName == '"HEAVY_GNK-foils"') sailName = 'HG';
+        else if (sailName == '"LightGnk-foils"' || sailName == '"LightGnk"' || sailName == 'Spi leger' || sailName == '"LIGHT_GNK"' || sailName == '"LIGHT_GNK-foils"') sailName = 'LG';
+        else if (sailName == '"Code0-foils"' || sailName == '"Code0"' || sailName == 'Code 0' || sailName == '"CODE_0"' || sailName == '"CODE_0-foils"') sailName = 'C0';
+        else if (sailName == '"Jib-foils"' || sailName == '"Jib"' || sailName == '"JIB"') sailName = 'Jib';
+        else if (sailName == '"Spi-foils"' || sailName == '"Spi"' || sailName == '"SPI"') sailName = 'Spi';
+        else if (sailName == '"Staysail-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
+        else if (sailName == '"LightJib-foils"' || sailName == '"LightJib"' || sailName == 'Genois leger' || sailName == '"LIGHT_JIB"' || sailName == '"LIGHT_JIB-foils"') sailName = 'LJ';
+    }
+    return sailName;
+}
 
 function getOption(name) {
     var z = "cb_" + name;
