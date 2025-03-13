@@ -3,7 +3,7 @@ const labelsChartWinds = [5 , 10 , 15 ,20 , 25, 30,35,40,45,50,55,60,65,70,80];
 const labelsChartTWA = [0 , 10  ,20 , 30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180];
 const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
                      // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
-                     "Auto", "Jib A", "Spi A", "Stay A", "LJ A", "C0 A", "HG A", "LG A"];
+                     "Auto", "Jib Ⓐ", "Spi Ⓐ", "Stay Ⓐ", "LJ Ⓐ", "C0 Ⓐ", "HG Ⓐ", "LG Ⓐ"];
 
 var twsChart = undefined;
 var twaChart = undefined;
