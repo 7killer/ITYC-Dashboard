@@ -1059,22 +1059,24 @@ async function createRaceOptionsContainer(raceId)
     await createRaceOptionPartition(raceId);
 }
 
-async function addRaceOptionsList(raceId,raceOptionPlayer)
-{
-
-    if(raceOptionPlayer.playerId && raceOptionPlayer.playerId != raceOptionPlayerModel.playerId)
-    {//
-        if(raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId])
-        {
-            if(raceOptionPlayer.time != raceOptionPlayerModel.time) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].time = raceOptionPlayer.time;
-            if(raceOptionPlayer.options != raceOptionPlayerModel.options) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].options = raceOptionPlayer.options;
-            if(raceOptionPlayer.startRaceTime != raceOptionPlayerModel.startRaceTime) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].startRaceTime = raceOptionPlayer.startRaceTime;
-            if(raceOptionPlayer.guessOptions != raceOptionPlayerModel.guessOptions) raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].guessOptions = raceOptionPlayer.guessOptions;
-        } else
-        {
-            raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId] = raceOptionPlayer;   
+async function addRaceOptionsList(raceId,raceOptionPlayer) {
+    if(raceOptionPlayer.playerId && raceOptionPlayer.playerId != raceOptionPlayerModel.playerId) {
+        if (raceOptionsList?.race[raceId]?.uinfo) {
+            if(raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId]) {
+                if(raceOptionPlayer.time != raceOptionPlayerModel.time)
+                    raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].time = raceOptionPlayer.time;
+                if(raceOptionPlayer.options != raceOptionPlayerModel.options)
+                    raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].options = raceOptionPlayer.options;
+                if(raceOptionPlayer.startRaceTime != raceOptionPlayerModel.startRaceTime)
+                    raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].startRaceTime = raceOptionPlayer.startRaceTime;
+                if(raceOptionPlayer.guessOptions != raceOptionPlayerModel.guessOptions)
+                    raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId].guessOptions = raceOptionPlayer.guessOptions;
+            }
+            else {
+                raceOptionsList.race[raceId].uinfo[raceOptionPlayer.playerId] = raceOptionPlayer;
+            }
         }
-    } 
+    }
 }
 
 function getRaceOptions(raceId)
