@@ -537,6 +537,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value = actualAvalon06Color;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
@@ -546,6 +547,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualVRZenColor;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
@@ -555,6 +557,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualgpxColor;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
