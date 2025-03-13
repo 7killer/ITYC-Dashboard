@@ -672,9 +672,19 @@ async function initialize(race,raceFleetMap)
 
             L.control.coordinates({
                 useDMS:true,
-                labelTemplateLat:"N {y}",
-                labelTemplateLng:"E {x}",
-                useLatLngOrder:true
+                labelTemplateLat:"Lat: {y}",
+                labelTemplateLng:" Lng: {x}",
+                useLatLngOrder:true,
+                labelFormatterLat: function(lat) {
+                    let latFormatted = L.NumberFormatter.toDMS(lat);
+                    latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
+                    return latFormatted.replace(/^-/, '');
+                },
+                labelFormatterLng: function(lng) {
+                    let lngFormatted = L.NumberFormatter.toDMS(lng);
+                    lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
+                    return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
+                },
             }).addTo(map);
         /*  handleError = function (err) {
                 console.log('handleError...');
@@ -1598,17 +1608,10 @@ function enableCoordinateCopyingWithShortcut() {
 
             if (isCtrlOrCmd && isKeyC) {
                 event.preventDefault();
-                const coordinatesText = coordinatesDisplay.innerText.trim();
+                let coordinatesText = coordinatesDisplay.innerText.trim();
+                coordinatesText = coordinatesText.replace(/\s+/g, '').replace(/([NS])(?=\d)/, '$1 ');
 
-                if (coordinatesText) {
-                    navigator.clipboard.writeText(coordinatesText)
-                        .then(() => {
-                            //console.log("Copied", coordinatesText);
-                        })
-                        .catch(err => {
-                            //console.error("Error", err);
-                        });
-                }
+                coordinatesText && navigator.clipboard.writeText(coordinatesText).catch(console.error);
             }
         });
     }
