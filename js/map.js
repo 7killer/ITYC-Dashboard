@@ -951,7 +951,7 @@ function updateMapCheckpoints(race) {
         var c_sb = "green";
         var c_bb = "red";
         var zi = 8;
-        if (cp.display == "none") {
+        if (cp.display == "none" && !document.getElementById('View_InvisibleDoors').checked) {
             continue;
         }
 

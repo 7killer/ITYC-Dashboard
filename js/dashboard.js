@@ -4524,6 +4524,7 @@ async function initializeMap(race) {
         await getOption("sel_inrace",true);
         await getOption("sel_showMarkersLmap",false);
         await getOption("FullScreen_Game",false);
+        await getOption("View_InvisibleDoors", false);
 
         await getOption("sel_polarSite",1);
     
@@ -4655,6 +4656,7 @@ async function initializeMap(race) {
         document.getElementById("sel_polarSite").addEventListener("change", saveOptionN); 
         document.getElementById("fullScreen_Size").addEventListener("change", saveOptionN);
         document.getElementById("FullScreen_Game" ).addEventListener("change", saveOption);
+        document.getElementById("View_InvisibleDoors" ).addEventListener("change", saveOption);
     }
 
     function switchAddOnMode()
@@ -5852,6 +5854,7 @@ async function initializeMap(race) {
             document.getElementById("t_polarSite").innerHTML = "Site polaires";
             document.getElementById("t_FullScreen_Game").innerHTML = "Mode plein Ecran";
             document.getElementById("t_fullScreen_Size").innerHTML = "Taille du jeu";
+            document.getElementById("t_View_InvisibleDoors").innerHTML = "Afficher bouées invisibles (redémarrage dashboard requis)";
 
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
@@ -5969,6 +5972,7 @@ async function initializeMap(race) {
             document.getElementById("t_polarSite").innerHTML = "Polars site";
             document.getElementById("t_FullScreen_Game").innerHTML = "FullScreen Mode";
             document.getElementById("t_fullScreen_Size").innerHTML = "Game Size";
+            document.getElementById("t_View_InvisibleDoors").innerHTML = "Display invisible buoys (dashboard restart needed)";
             
             document.getElementById("t_config_rs").innerHTML = "Race Status";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";
