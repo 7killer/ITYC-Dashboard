@@ -287,6 +287,14 @@ function gentd(name, style,title, value) {
     var checkboxId = "fleet_" + name.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
     if ((! checkBox ) || checkBox.checked ) {
+        if (checkboxId == "fleet_sailicon") {
+            var checkBoxSail = document.getElementById('fleet_sail');
+            if (!checkBoxSail.checked) return "";
+        }
+        else if (checkboxId == "fleet_twaicon") {
+            var checkBoxTWA = document.getElementById('fleet_twa');
+            if (!checkBoxTWA.checked) return "";
+        }
         return '<td class="' + name + '" ' 
                             + style 
                             + (title ? (' title="' + title + '"') : "")
