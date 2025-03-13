@@ -473,9 +473,9 @@ function loadRacingSkipperList(elt)
 
             let optionK = "";
             if(!fleetInfos[fln[key]].options || fleetInfos[fln[key]].options=="?")
-                optionK = "(*) ";
+                optionK = " (*)";
 
-            option.text = optionK+fleetInfos[fln[key]].displayName;
+            option.text = fleetInfos[fln[key]].displayName+optionK;
             option.value = fln[key];
             if(fln[key]==optionsSelect) optionsSelectStillExist = true;
 
