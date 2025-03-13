@@ -5158,10 +5158,6 @@ async function initializeMap(race) {
         }
         makeRaceStatusHTML();
 
-        if(race.recordedData) {
-            gr.upDateGraph(race.recordedData);
-        }
-
         makeTableHTMLProcess(race);
         updateFleetHTML(raceFleetMap.get(selRace.value));
         lMap.updateMapFleet(race,raceFleetMap);

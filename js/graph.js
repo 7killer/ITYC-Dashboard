@@ -938,7 +938,7 @@ function upDateGraph(data, autoUpdate = false) {
   drawStaminaChart(data.ts,data.stamina,data.sail);
 
   if (autoUpdate) {
-    setTimeout(autoUpdateCharts, 1000);
+    setTimeout(autoUpdateCharts, 2000);
   }
 }
 
