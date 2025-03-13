@@ -4858,7 +4858,6 @@ async function initializeMap(race) {
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
-                        lbCredits.innerHTML = message.bs.currency1;
                         //todo save vsr rank                
                         lMap.set_currentId(currentUserId);
                         rt.set_currentId(currentUserId);
