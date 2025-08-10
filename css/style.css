@@ -1196,7 +1196,7 @@ a:active {
 }
 
 #raceBook {
-    margin :2em;
+    padding: 1em;
 }
 
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
@@ -1284,6 +1284,19 @@ input[type="checkbox"] {
 }
 .leaflet-popup-content {
     margin: 13px 22px 11px 18px !important;
+}
+.leaflet-control-coordinates {
+    font-size: 11px !important;
+    padding: 0 5px;
+}
+.leaflet-control-coordinates .uiElement .labelFirst {
+    margin-right: 0px;
+}
+.leaflet-control-coordinates .uiElement .labelGeo {
+    padding-left: 6px;
+}
+.leaflet-control-coordinates .input{
+    padding-bottom: 2px;
 }
 .textMini {
     font-size: 11px !important;

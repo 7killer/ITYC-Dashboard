@@ -672,9 +672,19 @@ async function initialize(race,raceFleetMap)
 
             L.control.coordinates({
                 useDMS:true,
-                labelTemplateLat:"N {y}",
-                labelTemplateLng:"E {x}",
-                useLatLngOrder:true
+                labelTemplateLat:"Lat: {y}",
+                labelTemplateLng:" Lng: {x}",
+                useLatLngOrder:true,
+                labelFormatterLat: function(lat) {
+                    let latFormatted = L.NumberFormatter.toDMS(lat);
+                    latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
+                    return latFormatted.replace(/^-/, '');
+                },
+                labelFormatterLng: function(lng) {
+                    let lngFormatted = L.NumberFormatter.toDMS(lng);
+                    lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
+                    return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
+                },
             }).addTo(map);
         /*  handleError = function (err) {
                 console.log('handleError...');
@@ -1347,10 +1357,15 @@ function updateMapFleet(race,raceFleetMap) {
             else {
                 var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 3) + " kts<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts | TWD: " + Util.roundTo(bi.twd, 3) + "°";
             }
-            if (elem.startDate && race.type == "record") {
-                info += " | Elapsed : " + Util.formatDHMS(elem.ts - elem.startDate);
+            if (race.type == "record") {
+                if (key == currentId && elem.tsRecord && race.curr.startDate) {
+                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - race.curr.startDate);
+                }
+                else if (elem.startDate && elem.tsRecord) {
+                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - elem.startDate);
+                }
             }
-              
+
             buildMarker(pos, race.lMap.fleetLayer,buildBoatIcon(bi.bcolor,bi.bbcolor,0.8), info,  zi, 0.8,elem.heading);
                 
             // track
@@ -1593,17 +1608,10 @@ function enableCoordinateCopyingWithShortcut() {
 
             if (isCtrlOrCmd && isKeyC) {
                 event.preventDefault();
-                const coordinatesText = coordinatesDisplay.innerText.trim();
+                let coordinatesText = coordinatesDisplay.innerText.trim();
+                coordinatesText = coordinatesText.replace(/\s+/g, '').replace(/([NS])(?=\d)/, '$1 ');
 
-                if (coordinatesText) {
-                    navigator.clipboard.writeText(coordinatesText)
-                        .then(() => {
-                            //console.log("Copied", coordinatesText);
-                        })
-                        .catch(err => {
-                            //console.error("Error", err);
-                        });
-                }
+                coordinatesText && navigator.clipboard.writeText(coordinatesText).catch(console.error);
             }
         });
     }

@@ -248,7 +248,12 @@ function convertDMS2Dec(lat,lon)
 
 }
 function genth(id, content, title, sortfield, sortmark) {
-    var checkboxId = "fleet_" + content.toLowerCase();
+    var checkboxId = '';
+    if (!content) {
+        var contentAlt = id.split("_")[1];
+        checkboxId = "fleet_" + contentAlt.toLowerCase();
+    }
+    else checkboxId = "fleet_" + content.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
     if ((! checkBox ) || checkBox.checked ) {
         if (sortfield && sortmark != undefined) {
@@ -282,6 +287,14 @@ function gentd(name, style,title, value) {
     var checkboxId = "fleet_" + name.toLowerCase();
     var checkBox = document.getElementById(checkboxId);
     if ((! checkBox ) || checkBox.checked ) {
+        if (checkboxId == "fleet_sailicon") {
+            var checkBoxSail = document.getElementById('fleet_sail');
+            if (!checkBoxSail.checked) return "";
+        }
+        else if (checkboxId == "fleet_twaicon") {
+            var checkBoxTWA = document.getElementById('fleet_twa');
+            if (!checkBoxTWA.checked) return "";
+        }
         return '<td class="' + name + '" ' 
                             + style 
                             + (title ? (' title="' + title + '"') : "")
