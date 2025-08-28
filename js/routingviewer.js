@@ -221,6 +221,7 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.speed = "";
         routeData.stamina = "";
         routeData.boost = "";
+        routeData.desc = pt.desc;
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
 
     });
@@ -955,6 +956,7 @@ function buildMarkerTitle(point)
     textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
     textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
     textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+    if (point.desc) position += '<br>' + point.desc.replace(/�/g, "°");
     let textStamina = '';
     if (point.stamina && point.stamina > 0) textStamina = "🔋 " + point.stamina + "%";
 
