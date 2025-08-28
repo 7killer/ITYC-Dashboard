@@ -1226,11 +1226,7 @@ table#raceidTable2>tbody>tr>td {
     height : 200px;/*300px;*/
 
 }
-#bt_cleanGraph {
-    margin: 1em;
 
-
-}
 tr.us_line>td>label, tr.us_line2>td>label , tr.us_line>td>input[type="checkbox"], tr.us_line2>td>input[type="checkbox"] {
 
     background-color: var(--bg_body_color);
