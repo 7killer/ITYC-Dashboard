@@ -951,7 +951,7 @@ function updateMapCheckpoints(race) {
         var c_sb = "green";
         var c_bb = "red";
         var zi = 8;
-        if (cp.display == "none" && !document.getElementById('View_InvisibleDoors').checked) {
+        if (cp.display == "none" && !document.getElementById('view_InvisibleDoors').checked) {
             continue;
         }
 
@@ -1359,10 +1359,10 @@ function updateMapFleet(race,raceFleetMap) {
             }
             if (race.type == "record") {
                 if (key == currentId && elem.tsRecord && race.curr.startDate) {
-                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - race.curr.startDate);
+                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - race.curr.startDate) + "</b>";
                 }
                 else if (elem.startDate && elem.tsRecord) {
-                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - elem.startDate);
+                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - elem.startDate) + "</b>";
                 }
             }
 

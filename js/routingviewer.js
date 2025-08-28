@@ -194,7 +194,7 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     gpx.parse(gpxFile); //parse gpx file from string data
 
     let gpxPoints;
-    if (!gpx || (!gpx.routes && !gpx.tracks&& !gpx.waypoints)) return "" ; //File not available
+    if (!gpx || (!gpx.routes && !gpx.tracks && !gpx.waypoints)) return "" ; //File not available
     if (Array.isArray(gpx.routes) && gpx.routes[0]?.points) gpxPoints = gpx.routes[0].points;
     else if (Array.isArray(gpx.tracks) && gpx.tracks[0]?.points) gpxPoints = gpx.tracks[0].points;
     else if (Array.isArray(gpx.waypoints)) gpxPoints = gpx.waypoints;
@@ -359,7 +359,7 @@ function renameSailFromRoutes(sailName) {
         else if (sailName == '"Code0-foils"' || sailName == '"Code0"' || sailName == 'Code 0' || sailName == '"CODE_0"' || sailName == '"CODE_0-foils"') sailName = 'C0';
         else if (sailName == '"Jib-foils"' || sailName == '"Jib"' || sailName == '"JIB"') sailName = 'Jib';
         else if (sailName == '"Spi-foils"' || sailName == '"Spi"' || sailName == '"SPI"') sailName = 'Spi';
-        else if (sailName == '"Staysail-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
+        else if (sailName == '"Staysail-foils"' || sailName == '"STAYSAIL-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
         else if (sailName == '"LightJib-foils"' || sailName == '"LightJib"' || sailName == 'Genois leger' || sailName == '"LIGHT_JIB"' || sailName == '"LIGHT_JIB-foils"') sailName = 'LJ';
     }
     return sailName;
