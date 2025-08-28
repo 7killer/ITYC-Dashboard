@@ -760,7 +760,8 @@ var controller = function () {
 
 
         let gameSize = document.getElementById("fullScreen_Size").value;
-        if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;
+        if(!document.getElementById("fullScreen_Game" ).checked) gameSize = 0;
+
         return {order: "update",
         content:outputTable,
         newTab:cbReuseTab.checked,
@@ -4523,8 +4524,8 @@ async function initializeMap(race) {
         await getOption("sel_selected",true);
         await getOption("sel_inrace",true);
         await getOption("sel_showMarkersLmap",false);
-        await getOption("FullScreen_Game",false);
-        await getOption("View_InvisibleDoors", false);
+        await getOption("fullScreen_Game",false);
+        await getOption("view_InvisibleDoors", false);
 
         await getOption("sel_polarSite",1);
     
@@ -4655,8 +4656,8 @@ async function initializeMap(race) {
         document.getElementById("projectionLine_Size" ).addEventListener("change", saveOptionN);  
         document.getElementById("sel_polarSite").addEventListener("change", saveOptionN); 
         document.getElementById("fullScreen_Size").addEventListener("change", saveOptionN);
-        document.getElementById("FullScreen_Game" ).addEventListener("change", saveOption);
-        document.getElementById("View_InvisibleDoors" ).addEventListener("change", saveOption);
+        document.getElementById("fullScreen_Game" ).addEventListener("change", saveOption);
+        document.getElementById("view_InvisibleDoors" ).addEventListener("change", saveOption);
     }
 
     function switchAddOnMode()
@@ -5669,7 +5670,7 @@ async function initializeMap(race) {
         if(sendResp) 
         {
             let gameSize = document.getElementById("fullScreen_Size").value;
-            if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;   
+            if(!document.getElementById("fullScreen_Game" ).checked) gameSize = 0;
             sendResponse({type:"alive",rstTimer:false,theme:drawTheme,gameSize:gameSize});
         }
     
