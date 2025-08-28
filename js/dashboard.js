@@ -825,7 +825,7 @@ var controller = function () {
                                               sail.speed[iA.index][iS.index - 1],
                                               sail.speed[iA.index-1][iS.index],
                                               sail.speed[iA.index][iS.index]);
-                        var speed = rspeed  * f * h;
+                        var speed = rspeed  * f * h * polars.globalSpeedRatio;
                         var vmg = speed * Math.cos(aTWA / 180 * Math.PI);
                         if (vmg > best.vmgUp) {
                             best.twaUp = aTWA;
@@ -881,7 +881,7 @@ var controller = function () {
                                                   sail.speed[iA.index][iS.index - 1],
                                                   sail.speed[iA.index-1][iS.index],
                                                   sail.speed[iA.index][iS.index]);
-                            var speed = rspeed  * f * h;
+                            var speed = rspeed  * f * h * polars.globalSpeedRatio;
                             if(speed>bestSpd) {
                                 bestSpd = speed;
                                 bestSpdSail = sail.id;
@@ -2207,7 +2207,7 @@ var controller = function () {
                 var iS = fractionStep(data.tws, boatPolars.tws);
 
                 // "Plain" speed
-                var speedT = pSpeed(iA, iS, sailDef.speed);
+                var speedT = pSpeed(iA, iS, sailDef.speed) * boatPolars.globalSpeedRatio;
                 // Speedup factors
                 var foilFactor = foilingFactor(["foil"], data.tws, data.twa, boatPolars.foil);
                 var hullFactor = boatPolars.hull.speedRatio;
