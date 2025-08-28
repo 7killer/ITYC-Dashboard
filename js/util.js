@@ -128,9 +128,16 @@ function formatTimestampToISO(ts) {
     return date.toISOString(); // return '2025-01-16T15:30:00.000Z'
 }
 
-function formatTimestampToReadableDate(ts) {
+function formatTimestampToReadableDate(ts, returnType = 0) {
     const date = new Date(ts);
-    return date.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }); // return 'Sunday, November 10, 2024 at 2:22 PM'
+    if (returnType == 1) return date.toLocaleString('fr-FR', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+        }); // return '02/15/25, 06:33'
+    else return date.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }); // return 'Sunday, November 10, 2024 at 2:22 PM'
 }
 
 function formatPosition(lat, lon) {
