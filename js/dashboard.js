@@ -353,7 +353,7 @@ var controller = function () {
             twa: Math.abs(uinfo.twa),
             twaStyle: 'style="color: ' + ((uinfo.twa < 0) ? "red" : "green") + ';"',
             sail: sailNames[uinfo.sail] || "-",
-            sSail : sailNames[uinfo.sail%10],
+            sSail : sailNames[uinfo.sail%10] || "-",
             aSail : (uinfo.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : ""),
             xfactorStyle: getxFactorStyle(uinfo),
             nameStyle: uinfo.nameStyle,
