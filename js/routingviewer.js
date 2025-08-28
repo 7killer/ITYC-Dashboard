@@ -248,12 +248,13 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
     var currentYear = new Date();
     currentYear = currentYear.getFullYear();
     var previousMonth =0;
-    while (i < lineAvl.length-2) {
-        i = i + 1;
-        //if (i > 54) i = i + 5;
-        if(i > lineAvl.length-2) i = lineAvl.length-2;
-        poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
 
+    var totalLines = lineAvl.length-2;
+    if (mode == 1) totalLines = lineAvl.length-1;
+    while (i < totalLines) {
+        i = i + 1;
+        if (i > totalLines) i = totalLines;
+        poi = lineAvl[i].replace(/\,/g,".").split(";");
 
         var isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
 
