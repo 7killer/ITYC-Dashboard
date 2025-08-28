@@ -670,6 +670,19 @@ async function initialize(race,raceFleetMap)
             layerControl.addTo(map);
             L.control.scale().addTo(map);
 
+            // Ruler
+            var options = {
+                position: 'topleft',
+                maxPoints: 2,
+                lengthUnit: {
+                    factor: 0.539956803, //  from km to nm
+                    display: 'nm',
+                    decimal: 2,
+                    label: 'Distance:'
+                },
+            };
+            L.control.ruler(options).addTo(map);
+
             L.control.coordinates({
                 useDMS:true,
                 labelTemplateLat:"Lat: {y}",

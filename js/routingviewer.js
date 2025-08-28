@@ -1011,7 +1011,10 @@ function help(){
         "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
         "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
         "Copier les coordonnées pointées par la souris :\n" +
-        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).";
+        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).\n\n" +
+        "Outil Règle :\n" +
+        "- Pour l'utiliser, il faut activer l'outil en cliquant sur le bouton. Puis, un premier clic gauche sur un emplacement de la carte début le tracé de mesure, un second clic gauche termine le tracé de mesure et permet de débuter un nouveau tracé de mesure. Les tracés terminés restent affichés tant que l'outil est activé.\n" +
+        "- La touche « Echap » annule le tracé de mesure en cours non terminé. Une deuxième pression sur cette touche désactive l'outil.";
         
     alert(msg);
 }
