@@ -668,7 +668,13 @@ async function initialize(race,raceFleetMap)
             });
             var layerControl = L.control.layers(baseLayers);
             layerControl.addTo(map);
-            L.control.scale().addTo(map);
+
+            // Nautic scale
+            map.addControl(new L.Control.ScaleNautic({
+                metric: true,
+                imperial: false,
+                nautic: true
+            }));
 
             // Ruler
             var options = {
