@@ -668,7 +668,26 @@ async function initialize(race,raceFleetMap)
             });
             var layerControl = L.control.layers(baseLayers);
             layerControl.addTo(map);
-            L.control.scale().addTo(map);
+
+            // Nautic scale
+            map.addControl(new L.Control.ScaleNautic({
+                metric: true,
+                imperial: false,
+                nautic: true
+            }));
+
+            // Ruler
+            var options = {
+                position: 'topleft',
+                maxPoints: 2,
+                lengthUnit: {
+                    factor: 0.539956803, //  from km to nm
+                    display: 'nm',
+                    decimal: 2,
+                    label: 'Distance:'
+                },
+            };
+            L.control.ruler(options).addTo(map);
 
             L.control.coordinates({
                 useDMS:true,
@@ -951,7 +970,7 @@ function updateMapCheckpoints(race) {
         var c_sb = "green";
         var c_bb = "red";
         var zi = 8;
-        if (cp.display == "none") {
+        if (cp.display == "none" && !document.getElementById('view_InvisibleDoors').checked) {
             continue;
         }
 
@@ -1151,7 +1170,8 @@ function updateMapMe(race, track) {
 
         if(race.lMap.meBoatLayer) map.removeLayer(race.lMap.meBoatLayer);
         race.lMap.meBoatLayer  = L.layerGroup();
-        var title = "Me (Last position)<br>TWA: <b>" + Util.roundTo(race.curr.twa, 3) + "°</b>"
+
+        var title = "Me (Last position: " + Util.formatTimestampToReadableDate(race.curr.lastCalcDate, 1) + ")<br>TWA: <b>" + Util.roundTo(race.curr.twa, 3) + "°</b>"
                     + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2) + "°</b>"
                     + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 3) + " kts"
                     + "<br>TWS: " + Util.roundTo(race.curr.tws, 3) + " kts | TWD: " + Util.roundTo(race.curr.twd, 3) + "°";
@@ -1359,10 +1379,10 @@ function updateMapFleet(race,raceFleetMap) {
             }
             if (race.type == "record") {
                 if (key == currentId && elem.tsRecord && race.curr.startDate) {
-                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - race.curr.startDate);
+                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - race.curr.startDate) + "</b>";
                 }
                 else if (elem.startDate && elem.tsRecord) {
-                    info += "<br>Elapsed: " + Util.formatDHMS(elem.tsRecord - elem.startDate);
+                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - elem.startDate) + "</b>";
                 }
             }
 

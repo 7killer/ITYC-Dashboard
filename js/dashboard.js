@@ -353,7 +353,7 @@ var controller = function () {
             twa: Math.abs(uinfo.twa),
             twaStyle: 'style="color: ' + ((uinfo.twa < 0) ? "red" : "green") + ';"',
             sail: sailNames[uinfo.sail] || "-",
-            sSail : sailNames[uinfo.sail%10],
+            sSail : sailNames[uinfo.sail%10] || "-",
             aSail : (uinfo.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : ""),
             xfactorStyle: getxFactorStyle(uinfo),
             nameStyle: uinfo.nameStyle,
@@ -760,7 +760,8 @@ var controller = function () {
 
 
         let gameSize = document.getElementById("fullScreen_Size").value;
-        if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;
+        if(!document.getElementById("fullScreen_Game" ).checked) gameSize = 0;
+
         return {order: "update",
         content:outputTable,
         newTab:cbReuseTab.checked,
@@ -4523,7 +4524,8 @@ async function initializeMap(race) {
         await getOption("sel_selected",true);
         await getOption("sel_inrace",true);
         await getOption("sel_showMarkersLmap",false);
-        await getOption("FullScreen_Game",false);
+        await getOption("fullScreen_Game",false);
+        await getOption("view_InvisibleDoors", false);
 
         await getOption("sel_polarSite",1);
     
@@ -4654,7 +4656,8 @@ async function initializeMap(race) {
         document.getElementById("projectionLine_Size" ).addEventListener("change", saveOptionN);  
         document.getElementById("sel_polarSite").addEventListener("change", saveOptionN); 
         document.getElementById("fullScreen_Size").addEventListener("change", saveOptionN);
-        document.getElementById("FullScreen_Game" ).addEventListener("change", saveOption);
+        document.getElementById("fullScreen_Game" ).addEventListener("change", saveOption);
+        document.getElementById("view_InvisibleDoors" ).addEventListener("change", saveOption);
     }
 
     function switchAddOnMode()
@@ -4856,7 +4859,6 @@ async function initializeMap(race) {
                         currentUserId = message.bs._id.user_id;
                         currentUserName = message.bs.displayName;
                         lbBoatname.innerHTML = message.bs.displayName;
-                        lbCredits.innerHTML = message.bs.currency1;
                         //todo save vsr rank                
                         lMap.set_currentId(currentUserId);
                         rt.set_currentId(currentUserId);
@@ -5155,10 +5157,6 @@ async function initializeMap(race) {
 
         }
         makeRaceStatusHTML();
-
-        if(race.recordedData) {
-            gr.upDateGraph(race.recordedData);
-        }
 
         makeTableHTMLProcess(race);
         updateFleetHTML(raceFleetMap.get(selRace.value));
@@ -5672,7 +5670,7 @@ async function initializeMap(race) {
         if(sendResp) 
         {
             let gameSize = document.getElementById("fullScreen_Size").value;
-            if(!document.getElementById("FullScreen_Game" ).checked) gameSize = 0;   
+            if(!document.getElementById("fullScreen_Game" ).checked) gameSize = 0;
             sendResponse({type:"alive",rstTimer:false,theme:drawTheme,gameSize:gameSize});
         }
     
@@ -5844,24 +5842,25 @@ async function initializeMap(race) {
             
             
             document.getElementById("t_config_g").innerHTML = "Général";
-            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher position sans le séparateur "-" (redémarrage dashboard requis)';
-            document.getElementById("t_uiFilterMode").innerHTML = "Affichage alternative filtres";
-            document.getElementById("t_reuse_tab").innerHTML = "Réutilisation onglet";
+            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Afficher la position sans séparateur "-" <sup><i>(*)</i></sup>';
+            document.getElementById("t_uiFilterMode").innerHTML = "Affichage alternatif filtres";
+            document.getElementById("t_reuse_tab").innerHTML = "Ré-utilisation onglet";
             document.getElementById("t_local_time").innerHTML = "Heure locale";
-            document.getElementById("t_ITYC_record").innerHTML = "Envoi infos ITYC";
+            document.getElementById("t_ITYC_record").innerHTML = "Envoi infos à ITYC";
             document.getElementById("t_polarSite").innerHTML = "Site polaires";
-            document.getElementById("t_FullScreen_Game").innerHTML = "Mode plein Ecran";
+            document.getElementById("t_fullScreen_Game").innerHTML = "Mode plein écran";
             document.getElementById("t_fullScreen_Size").innerHTML = "Taille du jeu";
-
-            document.getElementById("t_config_rs").innerHTML = "Race Status";
-            document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher Vitesse du bateau à la VMG";
+            document.getElementById("t_view_InvisibleDoors").innerHTML = "Afficher bouées invisibles <sup><i>(*)</i></sup>";
+            document.getElementById("t_config_rs").innerHTML = "Données Course";
+            document.getElementById("t_showBVMGSpeed").innerHTML = "Afficher vitesse du bateau à la VMG";
             document.getElementById("t_with_LastCommand").innerHTML = "Afficher derniers ordres";
 
             document.getElementById("t_config_l").innerHTML = "Journal";
             document.getElementById("t_hideCommandsLines").innerHTML = "Cacher les lignes correspondantes aux actions/commandes (sauf les 5 dernières)";
             
             document.getElementById("t_config_m").innerHTML = "Carte";
-            document.getElementById("t_track_infos").innerHTML = "Charger infos traces (redémarrage dashboard requis)"		;
+            document.getElementById("t_track_infos").innerHTML = 'Charger données traces <sup><i>(*)</i></sup>';
+            document.getElementById("t_config_d").innerHTML = 'Affichage';
 
             document.getElementById("t_projectionLine_Size").innerHTML = "Longueur ligne de projection";
                 
@@ -5869,7 +5868,9 @@ async function initializeMap(race) {
             document.getElementById("t_abbreviatedOption").innerHTML = "Options abrégées";
             document.getElementById("t_auto_clean").innerHTML = "Nettoyage infos obsolètes";
             
-            document.getElementById("t_config_c").innerHTML = "Colonnes";
+            document.getElementById("t_config_c").innerHTML = "<u>Colonnes</u> <sup><i>(*)</i></sup> :";
+            document.getElementById("t_config_c1").innerHTML = "<u>Colonnes</u> :";
+            document.getElementById("legend_DashboardReload").innerHTML = "<sup><i>(*)</i></sup> => Redémarrage du dashboard requis";
             document.getElementById("t_fleet_team").innerHTML = "Équipe";
             document.getElementById("t_fleet_rank").innerHTML = "Rang";
             document.getElementById("t_fleet_racetime").innerHTML = "Temps de course";
@@ -5891,10 +5892,10 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
-            document.getElementById("bt_exportPolar").innerHTML = "Exporter Polaires";
-            document.getElementById("bt_exportStamina").innerHTML = "Exporter Stamina";
-            document.getElementById("bt_exportFleet").innerHTML = "Exporter FleetInfos";
-            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Exporter Trace bateau";
+            document.getElementById("bt_exportPolar").innerHTML = "Polaires (.json)";
+            document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
+            document.getElementById("bt_exportFleet").innerHTML = "Flotte (.csv)";
+            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Trace bateau (.gpx)";
             
             document.getElementById("t_credit_all").innerHTML = "Tous les contributeurs inconnus !";
             document.getElementById("t_credit_me").innerHTML = "Votre serviteur !";
@@ -5961,16 +5962,16 @@ async function initializeMap(race) {
             
             
             document.getElementById("t_config_g").innerHTML = "General";
-            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Show position without the separator "-" (dashboard restart needed)';
-            document.getElementById("t_uiFilterMode").innerHTML = "Alternate Filters UI";
+            document.getElementById("t_vrzenPositionFormat").innerHTML = 'Display position without separator "-" <sup><i>(*)</i></sup>';
+            document.getElementById("t_uiFilterMode").innerHTML = "Alternate UI filters";
             document.getElementById("t_reuse_tab").innerHTML = "Tab re-use";
             document.getElementById("t_local_time").innerHTML = "Local time";
-            document.getElementById("t_ITYC_record").innerHTML = "Send infos ITYC";
-            document.getElementById("t_polarSite").innerHTML = "Polars site";
-            document.getElementById("t_FullScreen_Game").innerHTML = "FullScreen Mode";
-            document.getElementById("t_fullScreen_Size").innerHTML = "Game Size";
-            
-            document.getElementById("t_config_rs").innerHTML = "Race Status";
+            document.getElementById("t_ITYC_record").innerHTML = "Send data to ITYC";
+            document.getElementById("t_polarSite").innerHTML = "Polars website";
+            document.getElementById("t_fullScreen_Game").innerHTML = "Full-screen mode";
+            document.getElementById("t_fullScreen_Size").innerHTML = "Game size";
+            document.getElementById("t_view_InvisibleDoors").innerHTML = "Display invisible buoys <sup><i>(*)</i></sup>";
+            document.getElementById("t_config_rs").innerHTML = "Race Data";
             document.getElementById("t_showBVMGSpeed").innerHTML = "Show boat speed at VMG";
             document.getElementById("t_with_LastCommand").innerHTML = "Show last commands";
             
@@ -5978,7 +5979,8 @@ async function initializeMap(race) {
             document.getElementById("t_hideCommandsLines").innerHTML = "Hide lines corresponding to actions/commands (except the last 5)";
             
             document.getElementById("t_config_m").innerHTML = "Map";
-            document.getElementById("t_track_infos").innerHTML = "Load track infos (dashboard restart needed)";
+            document.getElementById("t_track_infos").innerHTML = 'Load track data <sup><i>(*)</i></sup>';
+            document.getElementById("t_config_d").innerHTML = 'Display';
             
             document.getElementById("t_projectionLine_Size").innerHTML = "Projection line length";
                 
@@ -5986,10 +5988,12 @@ async function initializeMap(race) {
             document.getElementById("t_abbreviatedOption").innerHTML = "Shorted options";
             document.getElementById("t_auto_clean").innerHTML = "Old data cleaner";
             
-            document.getElementById("t_config_c").innerHTML = "Columns";
+            document.getElementById("t_config_c").innerHTML = "<u>Columns</u> <sup><i>(*)</i></sup> :";
+            document.getElementById("t_config_c1").innerHTML = "<u>Columns</u> :";
+            document.getElementById("legend_DashboardReload").innerHTML = "<sup><i>(*)</i></sup> => Dashboard restart required";
             document.getElementById("t_fleet_team").innerHTML = "Team";
             document.getElementById("t_fleet_rank").innerHTML = "Rank";
-            document.getElementById("t_fleet_racetime").innerHTML = "Race Time";
+            document.getElementById("t_fleet_racetime").innerHTML = "Race time";
             document.getElementById("t_fleet_speed").innerHTML = "Speed";
             document.getElementById("t_fleet_sail").innerHTML = "Sail";
             document.getElementById("t_fleet_factor").innerHTML = "Factor";
@@ -6008,10 +6012,10 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
-            document.getElementById("bt_exportPolar").innerHTML = "Export Polars";
-            document.getElementById("bt_exportStamina").innerHTML = "Export Stamina";
-            document.getElementById("bt_exportFleet").innerHTML = "Export FleetInfos";
-            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Export Boat Track";
+            document.getElementById("bt_exportPolar").innerHTML = "Polars (.json)";
+            document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
+            document.getElementById("bt_exportFleet").innerHTML = "Fleet data (.csv)";
+            document.getElementById("bt_exportOwnBoatTrack").innerHTML = "Boat track (.gpx)";
             
             document.getElementById("t_credit_all").innerHTML = "All unknows contributors !";
             document.getElementById("t_credit_me").innerHTML = "Myself !";

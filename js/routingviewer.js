@@ -194,7 +194,7 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     gpx.parse(gpxFile); //parse gpx file from string data
 
     let gpxPoints;
-    if (!gpx || (!gpx.routes && !gpx.tracks&& !gpx.waypoints)) return "" ; //File not available
+    if (!gpx || (!gpx.routes && !gpx.tracks && !gpx.waypoints)) return "" ; //File not available
     if (Array.isArray(gpx.routes) && gpx.routes[0]?.points) gpxPoints = gpx.routes[0].points;
     else if (Array.isArray(gpx.tracks) && gpx.tracks[0]?.points) gpxPoints = gpx.tracks[0].points;
     else if (Array.isArray(gpx.waypoints)) gpxPoints = gpx.waypoints;
@@ -221,6 +221,7 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.speed = "";
         routeData.stamina = "";
         routeData.boost = "";
+        routeData.desc = pt.desc;
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
 
     });
@@ -247,12 +248,13 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
     var currentYear = new Date();
     currentYear = currentYear.getFullYear();
     var previousMonth =0;
-    while (i < lineAvl.length-2) {
-        i = i + 1;
-        //if (i > 54) i = i + 5;
-        if(i > lineAvl.length-2) i = lineAvl.length-2;
-        poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
 
+    var totalLines = lineAvl.length-2;
+    if (mode == 1) totalLines = lineAvl.length-1;
+    while (i < totalLines) {
+        i = i + 1;
+        if (i > totalLines) i = totalLines;
+        poi = lineAvl[i].replace(/\,/g,".").split(";");
 
         var isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
 
@@ -359,7 +361,7 @@ function renameSailFromRoutes(sailName) {
         else if (sailName == '"Code0-foils"' || sailName == '"Code0"' || sailName == 'Code 0' || sailName == '"CODE_0"' || sailName == '"CODE_0-foils"') sailName = 'C0';
         else if (sailName == '"Jib-foils"' || sailName == '"Jib"' || sailName == '"JIB"') sailName = 'Jib';
         else if (sailName == '"Spi-foils"' || sailName == '"Spi"' || sailName == '"SPI"') sailName = 'Spi';
-        else if (sailName == '"Staysail-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
+        else if (sailName == '"Staysail-foils"' || sailName == '"STAYSAIL-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
         else if (sailName == '"LightJib-foils"' || sailName == '"LightJib"' || sailName == 'Genois leger' || sailName == '"LIGHT_JIB"' || sailName == '"LIGHT_JIB-foils"') sailName = 'LJ';
     }
     return sailName;
@@ -955,6 +957,7 @@ function buildMarkerTitle(point)
     textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
     textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
     textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+    if (point.desc) position += '<br>' + point.desc.replace(/�/g, "°");
     let textStamina = '';
     if (point.stamina && point.stamina > 0) textStamina = "🔋 " + point.stamina + "%";
 
@@ -1008,7 +1011,10 @@ function help(){
         "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
         "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
         "Copier les coordonnées pointées par la souris :\n" +
-        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).";
+        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).\n\n" +
+        "Outil Règle :\n" +
+        "- Pour l'utiliser, il faut activer l'outil en cliquant sur le bouton. Puis, un premier clic gauche sur un emplacement de la carte début le tracé de mesure, un second clic gauche termine le tracé de mesure et permet de débuter un nouveau tracé de mesure. Les tracés terminés restent affichés tant que l'outil est activé.\n" +
+        "- La touche « Echap » annule le tracé de mesure en cours non terminé. Une deuxième pression sur cette touche désactive l'outil.";
         
     alert(msg);
 }
