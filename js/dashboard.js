@@ -187,12 +187,11 @@ var controller = function () {
             if(Number(raceInfo.endDate) + Number(7*24*3600*1000) > Number(Date.now())) // hide race close since more than one week
             {                
                 raceInfo.legId = raceInfo.legId.replace("_",".");
-                renameRace(raceInfo.legId,raceInfo.legName);
-                if(raceInfo.vsr != 0) { 
-                    raceInfo.legId = raceInfo.legId.replace("_",".");
+                if(raceInfo.vsr != 0  && !races.get(raceInfo.legId)) { 
                     raceInfo.id=raceInfo.legId 
                     initRace(raceInfo, true);
                 }
+                renameRace(raceInfo.legId,raceInfo.legName+" ("+raceInfo.legId.split(".")[0]+")");
             }       
         });
 
