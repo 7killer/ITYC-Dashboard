@@ -173,21 +173,26 @@ var controller = function () {
         zezoRaceListAnswer = false;
         
         if(raceListTimeOut) clearTimeout(raceListTimeOut);
-        raceListTimeOut = setTimeout(mergeRaceList, 10000); // let 10 sec to zezo and ITYC to answer.
+        raceListTimeOut = setTimeout(mergeRaceList, 4000); // let few secs to zezo and ITYC to answer.
 
     }
 
     function mergeRaceList() {
-        if(zezoRaceListAnswer) return;
+//        if(zezoRaceListAnswer) return;
         
         if(raceListTimeOut) clearTimeout(raceListTimeOut);
         var raceListItyc = DM.getRaceListInfos();
         Object.keys(raceListItyc.uinfo).forEach(function (key) {
             var raceInfo =raceListItyc.uinfo[key];
-            if(raceInfo.vsr != 0) { 
+            if(Number(raceInfo.endDate) + Number(7*24*3600*1000) > Number(Date.now())) // hide race close since more than one week
+            {                
                 raceInfo.legId = raceInfo.legId.replace("_",".");
-                raceInfo.id=raceInfo.legId 
-                initRace(raceInfo, true);
+                renameRace(raceInfo.legId,raceInfo.legName);
+                if(raceInfo.vsr != 0) { 
+                    raceInfo.legId = raceInfo.legId.replace("_",".");
+                    raceInfo.id=raceInfo.legId 
+                    initRace(raceInfo, true);
+                }
             }       
         });
 
