@@ -8,8 +8,6 @@ const options = {
     lon: -29,
     zoom: 4,
     isKeyValid:false
-    // Put additional console output
-   // verbose: true,
 };
 const category = ["real", "certified", "top", "sponsor", "normal", "pilotBoat", "team"];
 const categoryStyle = [
@@ -48,7 +46,46 @@ var currentTeam = 0;
 var displayFilter = 0;
 var lMapInfos;
 
+window.POLAR = window.POLAR || {
+  enabled: false,
+  crs: null,
+  wmsLayer: null,
+};
 
+function hasProj4Leaflet() {
+  return (
+    typeof window !== 'undefined' &&
+    window.L &&
+    L.Proj &&                              
+    typeof window.proj4 === 'function'     
+  );
+}
+
+function buildPolarCRS() {
+  if (!hasProj4Leaflet()) return null;
+  return new L.Proj.CRS(
+    'EPSG:3413',
+    '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
+    {
+      resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1],
+      origin: [-4194304, 4194304],
+      bounds: L.bounds([-4194304, -4194304], [4194304, 4194304]),
+    }
+  );
+}
+
+function createArcticWMS() {
+  if (!hasProj4Leaflet()) return null;
+  if (!POLAR.crs) POLAR.crs = buildPolarCRS();
+  return L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3413/best/wms.cgi', {
+    layers: 'BlueMarble_ShadedRelief_Bathymetry',
+    format: 'image/png',
+    transparent: false,
+    version: '1.1.1',
+    crs: POLAR.crs,
+    attribution: '&copy; NASA GIBS',
+  });
+}
 
 function set_displayFilter(value)
 {
@@ -651,20 +688,30 @@ async function initialize(race,raceFleetMap)
                 minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 filter: mapTileColorFilterDarkMode                
             });
-        
+            
+            const Arctic_WMS = createArcticWMS();
+
             var baseLayers = {
-                "Carte": OSM_Layer,
-                "Dark": OSM_DarkLayer,
-                "Satellite": Esri_WorldImagery
+              "Carte": OSM_Layer,
+              "Dark": OSM_DarkLayer,
+              "Satellite": Esri_WorldImagery
             };
+            if (Arctic_WMS) {
+              baseLayers["Arctic (EPSG:3413)"] = Arctic_WMS;
+            }
         
             var z = await getLocal("selectBaseMap");
+
             var selectBaseMap = OSM_Layer;
             if(z == "Dark") selectBaseMap = OSM_DarkLayer;
             else if(z == "Satellite") selectBaseMap = Esri_WorldImagery;
+            else if(z == "Arctic (EPSG:3413)" && Arctic_WMS) selectBaseMap = Arctic_WMS;
 
+            const usingPolar = (selectBaseMap === Arctic_WMS) && !!POLAR.crs;
+            POLAR.enabled = usingPolar;
             var map = L.map('lMap'+race.id, {
-                layers: [selectBaseMap]
+              layers: [selectBaseMap],
+              crs: usingPolar ? POLAR.crs : L.CRS.EPSG3857
             });
             var layerControl = L.control.layers(baseLayers);
             layerControl.addTo(map);
@@ -730,15 +777,7 @@ async function initialize(race,raceFleetMap)
             });  
             */
 
-    /*        var map = L.map('lMap');        
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 40,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-    */
-
-
-            map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
+             map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
             
             race.lMap = [];
             race.lMap.map = map;
@@ -876,19 +915,39 @@ async function initialize(race,raceFleetMap)
             set_userCustomZoom(false);
             map.on('zoomend',set_userCustomZoom);
 
+           let mercatorDragHandler = null;
+           function applyBoundsForCurrentMode(map) {
+             if (mercatorDragHandler) {
+               map.off('drag', mercatorDragHandler);
+               mercatorDragHandler = null;
+             }
+             if (!POLAR.enabled) {
+               const bounds = [
+                 [-89.98155760646617, -270],
+                 [ 89.99346179538875,  270]
+               ];
+               map.setMaxBounds(bounds);
+               mercatorDragHandler = function() {
+                 map.panInsideBounds(bounds, { animate: false });
+               };
+               map.on('drag', mercatorDragHandler);
+             } else {
+               map.setMaxBounds(null);
+             }
+           }
 
-           var bounds =
-            [
-                [-89.98155760646617, -270],
-                [89.99346179538875, 270]
-            ];
-            map.setMaxBounds(bounds);
-            map.on('drag', function() {
-                map.panInsideBounds(bounds, { animate: false });
-            });
-            map.on('baselayerchange', async function (e) {
-                await saveLocal("selectBaseMap" , e.name);
-             });
+           applyBoundsForCurrentMode(map);
+           map.on('baselayerchange', async function (e) {
+             await saveLocal("selectBaseMap", e.name);
+             const isArctic = (e.name === 'Arctic (EPSG:3413)');
+             const wasArctic = POLAR.enabled;
+             POLAR.enabled = isArctic;
+             applyBoundsForCurrentMode(map);
+             if (hasProj4Leaflet() && (isArctic !== wasArctic)) {
+               console.info(`[map] Passage ${wasArctic ? 'de Arctic → Mercator' : 'de Mercator → Arctic'} détecté`);
+               console.info('Rechargement recommandé pour appliquer le CRS correct.');
+             }
+           });
             lMapInfos = race.lMap;
         }
         initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map, race.id);
