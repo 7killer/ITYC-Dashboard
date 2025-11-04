@@ -86,6 +86,57 @@ function createArcticWMS() {
     attribution: '&copy; NASA GIBS',
   });
 }
+let mercatorDragHandler = null;
+let mercatorDragHandlerMapId = null;
+
+function applyBoundsForCurrentMode(map) {
+  if (
+    mercatorDragHandler &&
+    mercatorDragHandlerMapId &&
+    map &&
+    map._leaflet_id === mercatorDragHandlerMapId
+  ) {
+    map.off('drag', mercatorDragHandler);
+    mercatorDragHandler = null;
+    mercatorDragHandlerMapId = null;
+  }
+
+  if (!POLAR.enabled) {
+    const bounds = [
+      [-89.98155760646617, -270],
+      [ 89.99346179538875,  270]
+    ];
+    map.setMaxBounds(bounds);
+    mercatorDragHandler = function () {
+      map.panInsideBounds(bounds, { animate: false });
+    };
+    map.on('drag', mercatorDragHandler);
+    mercatorDragHandlerMapId = map._leaflet_id;
+
+  } else {
+    map.setMaxBounds(null);
+  }
+}
+
+function computeComfortView(isArctic, prevCenter, prevZoom) {
+  const prevLat = (prevCenter && Number.isFinite(prevCenter.lat)) ? prevCenter.lat : 0;
+  const prevLng = (prevCenter && Number.isFinite(prevCenter.lng)) ? prevCenter.lng : 0;
+
+  const normLng = ((prevLng + 540) % 360) - 180;
+
+  if (isArctic) {
+    const THRESHOLD_NORTH = 60;
+    const alreadyInArctic = prevLat >= THRESHOLD_NORTH;
+    const targetLat = alreadyInArctic ? prevLat : 85;
+    const targetLng = normLng;
+    const targetZoom = alreadyInArctic ? (prevZoom ?? 3) : 3;
+
+    return { center: L.latLng(targetLat, targetLng), zoom: targetZoom };
+  }
+  const clampedLat = Math.max(-85, Math.min(85, prevLat));
+  return { center: L.latLng(clampedLat, normLng), zoom: prevZoom ?? 3 };
+}
+
 
 function set_displayFilter(value)
 {
@@ -616,6 +667,36 @@ function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
     return cpath;
 }
 
+function ensureLayerControlClickable(ctrl) {
+  const c = ctrl && ctrl._container;
+  if (!c) return;
+  c.style.zIndex = '10050';
+  c.style.pointerEvents = 'auto';
+
+  if (!document.getElementById('leaflet-layercontrol-pointer-patch')) {
+    const style = document.createElement('style');
+    style.id = 'leaflet-layercontrol-pointer-patch';
+    style.textContent = `
+      .leaflet-top.leaflet-right { pointer-events: none; }
+      .leaflet-top.leaflet-right .leaflet-control { pointer-events: auto; }
+      .leaflet-control-layers { z-index: 10050 !important; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  c.addEventListener('click', (ev) => {
+    const label = ev.target.closest('label');
+    if (!label) return;
+    const input = label.querySelector('input.leaflet-control-layers-selector');
+    if (!input) return;
+    if (!input.checked) {
+      input.checked = true;
+      if (typeof ctrl._onInputClick === 'function') {
+        ctrl._onInputClick();
+      }
+    }
+  });
+}
 
 async function initialize(race,raceFleetMap)
 {
@@ -627,7 +708,7 @@ async function initialize(race,raceFleetMap)
         
         if(e && e.target) if(e.target._zoom > 5 ) 
         {
-            var mapcenter = map.getCenter();
+            var mapcenter = race.lMap.map.getCenter();
             var lon = mapcenter.lng; 
             EX.loadBorder(race,mapcenter.lat,lon);
         }
@@ -649,9 +730,6 @@ async function initialize(race,raceFleetMap)
             lMapInfos = race.lMap;
         } else
         {
-
-        
-                //todo save zoom and pos according race
             var savRoute = [];
             if(race.lMap && race.lMap.route)
             {
@@ -689,6 +767,8 @@ async function initialize(race,raceFleetMap)
                 filter: mapTileColorFilterDarkMode                
             });
             
+            // Optionnel : fond polaire WMS en EPSG:3413 (NASA GIBS)
+            // Retourne null si proj4/proj4leaflet absents.
             const Arctic_WMS = createArcticWMS();
 
             var baseLayers = {
@@ -707,14 +787,101 @@ async function initialize(race,raceFleetMap)
             else if(z == "Satellite") selectBaseMap = Esri_WorldImagery;
             else if(z == "Arctic (EPSG:3413)" && Arctic_WMS) selectBaseMap = Arctic_WMS;
 
+            // Choix du CRS en fonction du fond sélectionné
             const usingPolar = (selectBaseMap === Arctic_WMS) && !!POLAR.crs;
             POLAR.enabled = usingPolar;
-            var map = L.map('lMap'+race.id, {
+            let map = L.map('lMap'+race.id, {
               layers: [selectBaseMap],
               crs: usingPolar ? POLAR.crs : L.CRS.EPSG3857
             });
-            var layerControl = L.control.layers(baseLayers);
+
+            var layerControl = L.control.layers(baseLayers, null, { position: 'topright' });
             layerControl.addTo(map);
+            async function onBaseLayerChange(e) {
+              await saveLocal("selectBaseMap", e.name);
+
+              const isArctic = (e.layer === Arctic_WMS);
+              const wasArctic = !!POLAR.enabled;
+
+              if (hasProj4Leaflet() && (isArctic !== wasArctic)) {
+                const center = map.getCenter();
+                const zoom   = map.getZoom();
+
+                map.off('baselayerchange', onBaseLayerChange);
+               map.off('zoomend', set_userCustomZoom);
+                map.remove();
+
+                POLAR.enabled = isArctic;
+
+                const containerId = 'lMap' + race.id;
+
+                const activeBase = isArctic
+                  ? Arctic_WMS
+                  : (e.name === 'Dark'
+                      ? OSM_DarkLayer
+                      : (e.name === 'Satellite' ? Esri_WorldImagery : OSM_Layer));
+
+                const newMap = L.map(containerId, {
+                  crs: isArctic ? (POLAR.crs || buildPolarCRS()) : L.CRS.EPSG3857,
+                  layers: [activeBase],
+                  zoomAnimation: false,
+                  fadeAnimation: false
+                });
+                newMap.once('load', () => newMap.invalidateSize());
+                const comfy = computeComfortView(isArctic, center, zoom);
+                requestAnimationFrame(() => {
+                  newMap.setView(comfy.center, comfy.zoom, { animate: false });
+                  newMap.invalidateSize();
+                  setTimeout(() => newMap.invalidateSize(), 0);
+                });
+
+                const newBaseLayers = {
+                  "Carte": OSM_Layer,
+                  "Dark": OSM_DarkLayer,
+                  "Satellite": Esri_WorldImagery
+                };
+                if (Arctic_WMS) newBaseLayers["Arctic (EPSG:3413)"] = Arctic_WMS;
+                const newLayerControl = L.control.layers(newBaseLayers);
+                newLayerControl.addTo(newMap);
+                ensureLayerControlClickable(newLayerControl);
+
+                newMap.addControl(new L.Control.ScaleNautic({
+                  metric: true,
+                  imperial: false,
+                  nautic: true
+                }));
+
+                if (race.lMap.refLayer) race.lMap.refLayer.addTo(newMap);
+
+                applyBoundsForCurrentMode(newMap);
+
+                newMap.on('zoomend', set_userCustomZoom);
+                newMap.on('baselayerchange', onBaseLayerChange);
+
+                race.lMap.map = newMap;
+                map = newMap;
+                updateBounds(race);
+                updateMapCheckpoints(race);
+                updateMapFleet(race,raceFleetMap);
+
+                Object.keys(race.lMap.route).forEach(function (name) {
+                    var lMapRoute = race.lMap.route[name];
+                    var map = race.lMap.map;
+                    if(lMapRoute.displayed)
+                    {
+                        if(lMapRoute.traceLayer) lMapRoute.traceLayer.addTo(map);
+                        if(lMapRoute.markersLayer && document.getElementById('sel_showMarkersLmap').checked) lMapRoute.markersLayer.addTo(map);
+                    }
+                });
+                
+                lMapInfos = race.lMap;
+                return;
+              }
+
+              POLAR.enabled = isArctic;
+              applyBoundsForCurrentMode(map);
+            }
+            ensureLayerControlClickable(layerControl);
 
             // Nautic scale
             map.addControl(new L.Control.ScaleNautic({
@@ -777,11 +944,11 @@ async function initialize(race,raceFleetMap)
             });  
             */
 
-             map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
+
+            map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
             
             race.lMap = [];
             race.lMap.map = map;
-            //race.lMap.refLayer
             race.lMap.refPoints = [];
             race.lMap.refLayer = L.layerGroup();
             if(savRoute != [])
@@ -914,43 +1081,15 @@ async function initialize(race,raceFleetMap)
 
             set_userCustomZoom(false);
             map.on('zoomend',set_userCustomZoom);
+            applyBoundsForCurrentMode(map);
 
-           let mercatorDragHandler = null;
-           function applyBoundsForCurrentMode(map) {
-             if (mercatorDragHandler) {
-               map.off('drag', mercatorDragHandler);
-               mercatorDragHandler = null;
-             }
-             if (!POLAR.enabled) {
-               const bounds = [
-                 [-89.98155760646617, -270],
-                 [ 89.99346179538875,  270]
-               ];
-               map.setMaxBounds(bounds);
-               mercatorDragHandler = function() {
-                 map.panInsideBounds(bounds, { animate: false });
-               };
-               map.on('drag', mercatorDragHandler);
-             } else {
-               map.setMaxBounds(null);
-             }
-           }
 
-           applyBoundsForCurrentMode(map);
-           map.on('baselayerchange', async function (e) {
-             await saveLocal("selectBaseMap", e.name);
-             const isArctic = (e.name === 'Arctic (EPSG:3413)');
-             const wasArctic = POLAR.enabled;
-             POLAR.enabled = isArctic;
-             applyBoundsForCurrentMode(map);
-             if (hasProj4Leaflet() && (isArctic !== wasArctic)) {
-               console.info(`[map] Passage ${wasArctic ? 'de Arctic → Mercator' : 'de Mercator → Arctic'} détecté`);
-               console.info('Rechargement recommandé pour appliquer le CRS correct.');
-             }
-           });
+            map.on('baselayerchange', onBaseLayerChange);
+
             lMapInfos = race.lMap;
+            race.lMap.map = map;
         }
-        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, map, race.id);
+        initButtonToCenterViewMap(race.curr.pos.lat, race.curr.pos.lon, race.lMap.map, race.id);
         enableCoordinateCopyingWithShortcut();
     }
 }
