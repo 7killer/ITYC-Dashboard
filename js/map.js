@@ -846,10 +846,40 @@ async function initialize(race,raceFleetMap)
                 ensureLayerControlClickable(newLayerControl);
 
                 newMap.addControl(new L.Control.ScaleNautic({
-                  metric: true,
-                  imperial: false,
-                  nautic: true
+                    metric: true,
+                    imperial: false,
+                    nautic: true
                 }));
+
+                // Ruler
+                var options = {
+                    position: 'topleft',
+                    maxPoints: 2,
+                    lengthUnit: {
+                        factor: 0.539956803, //  from km to nm
+                        display: 'nm',
+                        decimal: 2,
+                        label: 'Distance:'
+                    },
+                };
+                L.control.ruler(options).addTo(newMap);
+
+                L.control.coordinates({
+                    useDMS:true,
+                    labelTemplateLat:"Lat: {y}",
+                    labelTemplateLng:" Lng: {x}",
+                    useLatLngOrder:true,
+                    labelFormatterLat: function(lat) {
+                        let latFormatted = L.NumberFormatter.toDMS(lat);
+                        latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
+                        return latFormatted.replace(/^-/, '');
+                    },
+                    labelFormatterLng: function(lng) {
+                        let lngFormatted = L.NumberFormatter.toDMS(lng);
+                        lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
+                        return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
+                    },
+                }).addTo(newMap);
 
                 if (race.lMap.refLayer) race.lMap.refLayer.addTo(newMap);
 
