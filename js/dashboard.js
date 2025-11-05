@@ -5312,7 +5312,7 @@ async function initializeMap(race) {
             savedData += "/**/"+JSON.stringify(polars[race]);
     
         });
-        localStorage["polars"] = savedData;
+        await saveLocal("polars",savedData);
 
         console.info("Stored polars " + boatPolar.label);     
 
