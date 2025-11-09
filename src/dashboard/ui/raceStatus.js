@@ -95,11 +95,11 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
     let lastCommand = "-";
     let lastCommandBG = "";
     let agroundBG = raceIte.aground ? "LightRed" : "lightgreen";
-    let mnvrBG = raceIte.metaDash.manoeuvering ? "LightRed" : "lightgreen";
+    let mnvrBG = raceIte.metaDash?.manoeuvering ? "LightRed" : "lightgreen";
     
     if(userPrefs.theme =='dark') {
         agroundBG = raceIte.aground ? "darkred" : "darkgreen";
-        mnvrBG = raceIte.metaDash.manoeuvering ? "darkred" : "darkgreen";
+        mnvrBG = raceIte.metaDash?.manoeuvering ? "darkred" : "darkgreen";
     }
 
     /* todo handle boat action
@@ -132,18 +132,18 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
     const raceIdFull = getOpenedRaceId();
     if (raceInfo.id === raceIdFull.raceId || raceInfo.legNum === raceIdFull.legNum) trstyle += " sel";
 
-    const best = raceIte.metaDash.bVmg;
+    const best = raceIte.metaDash?.bVmg;
     const bestVMGString = best?(best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>'):'-';
     const bestVMGTilte = best?(roundTo(best.vmgUp, 3) + '<span class="textMini"> kts</span> | ' + roundTo(Math.abs(best.vmgDown), 3) + '<span class="textMini"> kts</span>'):'-';
     const bspeedTitle = best?(roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>'):'-';
 
     let lastCalcStyle = ""
-    if(raceIte.metaDash.deltaReceiveCompute > 900000) {
+    if(raceIte.metaDash?.deltaReceiveCompute > 900000) {
         lastCalcStyle = 'style="background-color: red;'
         lastCalcStyle += (userPrefs.theme =='dark')?' color:black;"':'"';
     }
 
-    const manoeuver = raceIte.metaDash.manoeuver;
+    const manoeuver = raceIte.metaDash?.manoeuver;
     const tack = manoeuver?("<p>-" +  manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p>"
              +  "<p>-" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>"):'-';
     const gybe =  manoeuver?("<p>-" + manoeuver.gybe.pena.dist + "nm | " + manoeuver.gybe.pena.time + "s</p>" 
@@ -153,7 +153,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
     let staminaStyle = "";
     let staminaTxt = "-";
 
-    const stamina = raceIte.metaDash.realStamina;
+    const stamina = raceIte.metaDash?.realStamina;
     const paramStamina = getParamStamina();
     if(stamina)
     {
@@ -206,33 +206,33 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
                     else  itycLedColor = "Red";
                 }
 */
-    const rid = raceInfo.id+"-"+raceInfo.legNum;
+    const rid = raceInfo.raceId+"-"+raceInfo.legNum;
     
     const zezoUrl = raceInfo.zezoUrl?raceInfo.zezoUrl:null; 
     let returnVal = '<tr class="' + trstyle + '" id="rs:' + rid + '">'
-        + (zezoUrl ? ('<td class="tdc"><span id="rt:' + rid + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
-        +  '<td class="tdc"><span id="vrz:' + rid + '">&#x262F;</span></td>'
-        + '<td class="tdc"><span id="pl:' + rid + '">&#x26F5;</span></td>'
-        + '<td class="tdc"><span id="wi:' + rid + '"><img class="icon" src="./img/wind.svg"/></span></td>'
-        + '<td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td>'
-        + '<td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td>'
-        + '<td class="name">' + raceInfo.legName + '</td>'
-        +'<td class="time" ' + lastCalcStyle + '>' + formatTimeNotif(raceIte.iteDate) + '</td>'
-        + raceTableLines(raceIte,best)
-        + infoSail(raceIte,false)
-        + '<td class="speed1">' + roundTo(raceIte.speed, 3) + '</td>'
-        + '<td class="speed2">' + roundTo(raceIte.metaDash.vmg, 3) + '</td>'
-        + '<td class="bvmg"><p>' + bestVMGString + '</p>';
+    returnVal += (zezoUrl ? ('<td class="tdc"><span id="rt:' + rid + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
+    returnVal +=  '<td class="tdc"><span id="vrz:' + rid + '">&#x262F;</span></td>'
+    returnVal += '<td class="tdc"><span id="pl:' + rid + '">&#x26F5;</span></td>'
+    returnVal += '<td class="tdc"><span id="wi:' + rid + '"><img class="icon" src="./img/wind.svg"/></span></td>'
+    returnVal += '<td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td>'
+    returnVal += '<td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td>'
+    returnVal += '<td class="name">' + raceInfo.legName + '</td>'
+    returnVal +='<td class="time" ' + lastCalcStyle + '>' + formatTimeNotif(raceIte.iteDate) + '</td>'
+    returnVal += raceTableLines(raceIte,best)
+    returnVal += infoSail(raceIte,false)
+    returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + '</td>'
+    returnVal += '<td class="speed2">' + (raceIte.metaDash?.vmg?roundTo(raceIte.metaDash.vmg, 3):'-') + '</td>'
+    returnVal += '<td class="bvmg"><p>' + bestVMGString + '</p>';
         if(userPrefs.raceData.VMGSpeed) 
             returnVal += '<p>(' + bestVMGTilte + ')</p>';
-        returnVal += '</td>'
-        + '<td class="bspeed">' + bspeedTitle +'</td>'
-        + fullStamina
-        + '<td class="tack">' + tack + '</td>'
-        + '<td class="gybe">' + gybe + '</td>'
-        + '<td class="sailPenalties">' + sail + '</td>'
-        + '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + '</td>'
-        + '<td class="man" style="background-color:' + mnvrBG + ';">' + (raceIte.metaDash.manoeuvering ? "Yes" : "No") + '</td>';
+    returnVal += '</td>'
+    returnVal += '<td class="bspeed">' + bspeedTitle +'</td>'
+    returnVal += fullStamina
+    returnVal += '<td class="tack">' + tack + '</td>'
+    returnVal += '<td class="gybe">' + gybe + '</td>'
+    returnVal += '<td class="sailPenalties">' + sail + '</td>'
+    returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + '</td>'
+    returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (raceIte.metaDash?.manoeuvering ? "Yes" : "No") + '</td>';
 
     if(userPrefs.raceData.lastCmd)   
         returnVal += '<td ' + lastCommandBG + '">' + lastCommand + '</td>';

@@ -103,6 +103,7 @@ export async function ingestBoatInfos(boatData)
             close: l.close,
             open: l.open,
             polar_id: l.boat?.polar_id,
+            boatName: l.boat?.name,
             pilotBoatCredits: l.pilotBoatCredits,
             priceLevel: l.priceLevel,
             freeCredits: l.freeCredits,
@@ -197,7 +198,7 @@ export async function ingestBoatInfos(boatData)
         rstTimer = true;
         if(bs.fullOptions)
         {
-          bs.options = ["foil","heavy","hull","light","reach",
+          bs.options = ["foil","heavy","hull","light","reach","radio",
                         "winch","comfortLoungePug","magicFurler","vrtexJacket"
           ];
         }
@@ -260,6 +261,8 @@ export async function ingestBoatInfos(boatData)
                     comfortLoungePug: bs.options?.includes("comfortLoungePug") ?? false,
                     magicFurler: bs.options?.includes("magicFurler") ?? false,
                     vrtexJacket: bs.options?.includes("vrtexJacket") ?? false,
+                    radio: bs.options?.includes("radio") ?? false,
+                    
                   },
                   timestamp : bs.lastCalcDate
                 }
@@ -439,6 +442,7 @@ export function ingestEndLegPrep(endLegPrep)
             close: l.close,
             open: l.open,
             polar_id: l.boat?.polar_id,
+            boatName: l.boat?.name,
             pilotBoatCredits: l.pilotBoatCredits,
             priceLevel: l.priceLevel,
             freeCredits: l.freeCredits,
@@ -542,6 +546,7 @@ export function ingestRaceList(legListData) {
           raceType: validated.raceType,
           limitedAccess: validated.limitedAccess,
           polar_id: validated.boat?.polar_id,
+          boatName: validated.boat?.name,
           start: validated.start,
           end: validated.end
         });

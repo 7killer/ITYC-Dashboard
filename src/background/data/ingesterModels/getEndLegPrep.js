@@ -59,8 +59,20 @@ export const legSchema = Yup.object({
   open: Yup.object({
     date: Yup.number().required()
   }).required(),
-  optionPrices: Yup.object().shape({}).required(), // clé dynamique, on valide tout objet
-  pilotBoatCredits: Yup.number().required(),
+ optionPrices: Yup.object({
+    foil: Yup.number().required(),
+    winch: Yup.number().required(),
+    radio: Yup.number().required(),
+    skin: Yup.number().required(),
+    hull: Yup.number().required(),
+    reach: Yup.number().required(),
+    heavy: Yup.number().required(),
+    light: Yup.number().required(),
+    comfortLoungePug: Yup.number().required(),
+    magicFurler: Yup.number().required(),
+    vrtexJacket: Yup.number().required()
+  }).required(),
+   pilotBoatCredits: Yup.number().required(),
   priceLevel: Yup.number().required(),
   race: Yup.object({
     name: Yup.string().required(),

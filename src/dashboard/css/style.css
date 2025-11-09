@@ -1215,10 +1215,6 @@ a:active {
     color: var(--a_link_hover);
 }
 
-#raceBook {
-    padding: 1em;
-}
-
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
     margin-bottom: 2em;
 }
@@ -1316,3 +1312,113 @@ input[type="checkbox"] {
     line-height: 1.4;
 }
 
+/* ---- RaceBook v2: cards + tables modernes ---- */
+#raceBook {
+    container-type: inline-size;
+    display: grid;
+    gap: 16px;
+}
+
+.rb-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@container (min-width: 900px) {
+.rb-grid {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: start;
+}
+}
+
+.card {
+    border: 1px solid var(--border_color);
+    background: var(--td_bg_color);
+    border-radius: 12px;
+    overflow: clip;
+    box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.08);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    border-bottom: 1px solid var(--border_color);
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 12px 16px;
+}
+
+.table-modern {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.table-modern thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border_color);
+}
+.table-modern tbody td {
+    padding: 8px 10px;
+    border-bottom: 1px dashed var(--border_color);
+    background: var(--td_bg_color);
+    color: var(--td_color);
+    white-space: nowrap;
+}
+.table-modern tbody tr:hover td {
+    background: color-mix(in oklab, var(--td_bg_color), #888 12%);
+}
+.table-wrap {
+    overflow: auto;
+    max-width: 100%;
+}
+
+.kv {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+    align-items: center;
+    font-size: 13px;
+}
+.kv .k {opacity:.75}
+.kv .v {font-weight:600; text-align:right}
+
+.badge {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; padding:3px 8px;
+    border-radius:999px; border:1px solid var(--border_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+}
+.badge img {height:22px; border-radius:6px}
+
+.chips { display:flex; gap:8px; flex-wrap:wrap }
+.chip {
+    font-size:12px; padding:3px 8px; border-radius:999px;
+    border:1px solid var(--border_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+}
+
+.pill {
+    display:inline-block; padding:2px 8px; border-radius:999px; font-weight:600;
+}
+.pill--ok { background:#1f883d; color:#fff }
+.pill--muted { background:#555; color:#fff }
+
+  

@@ -136,7 +136,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     speedTxt += '<div class="xfactor"' + xfactorStyle + '>' + xfactorTxt + '</div>';
     speedTxt += '<div class="foil">'
     speedTxt += '<img " class="foilImg" src="'+ chrome.runtime.getURL('./img/foil.png') +'" >'
-    speedTxt += raceIte.metaDash.realFoilFactor==null?"no":(raceIte.metaDash.realFoilFactor+"%");
+    speedTxt += raceIte.metaDash.realFoilFactor==null?"no":(roundTo(raceIte.metaDash.realFoilFactor,2)+"%");
     speedTxt += '</div>';
 
     let lastCalcStyle = ""

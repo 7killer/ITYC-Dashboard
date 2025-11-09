@@ -257,8 +257,6 @@ dashStateInfosListener.start({
     onChange: async ( { oldValue, newValue }) => {
         const currentId = await getData('internal', 'lastLoggedUser');
         const currentRace = await getData('internal', 'lastOpennedRace');
-        
-        console.log(`cid  ${currentId} race ${currentRace}`)
         await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
     }
 });
@@ -294,7 +292,7 @@ connectedUserListener.start({
         if(newValue.loggedUser) {
             const currentRace = await getData('internal', 'lastOpennedRace');
             await manageDashState('playerConnected');
-        await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, newValue.loggedUser); 
+        	await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, newValue.loggedUser); 
         }
     }
 });

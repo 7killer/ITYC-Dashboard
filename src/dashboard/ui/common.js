@@ -248,7 +248,7 @@ export function dateUTCSmall() {
     const res = str.substring(5);
     return '<span class="small">&nbsp;(' + res + ')</span>';
 }
-export function DateUTC(ts, format = 0) {
+export function DateUTC(ts, format = 0,mode=2) {
     if (!ts) return;
     // Format: MM/DD HH:MM:SS
     let tsOptions = {
@@ -282,7 +282,16 @@ export function DateUTC(ts, format = 0) {
     const dtUTCLocal = new Intl.DateTimeFormat("lookup", tsOptions).format(d);
     tsOptions.timeZone = "UTC";
     const dtUTC = new Intl.DateTimeFormat("lookup", tsOptions).format(d);
-    return '<span id="UTC">' + dtUTC + '</span><span id="UTCLocal">' + dtUTCLocal + '</span>';
+    if(mode ==2)
+        return '<span id="UTC">' + dtUTC + '</span><span id="UTCLocal">' + dtUTCLocal + '</span>';
+    else if(mode ==1)
+        return '<span id="UTCLocal">' + dtUTCLocal + '</span>';
+    else if(mode ==0)
+        return '<span id="UTC">' + dtUTC + '</span>';
+    else if(mode ==3)
+        return dtUTC;
+    else if(mode ==4)
+        return  dtUTCLocal;
 
 }
 
@@ -449,4 +458,37 @@ export function changeState(lbl_tochange) {
 export function display_selbox(state) {
     document.getElementById("sel_skippers").style.visibility = state;
     document.getElementById("sel_export").style.visibility = state;
+}
+
+
+export function getRankingCategory(playerOptions)
+{
+    if(!playerOptions) return "?";
+    var categoryIndicator = 0;
+
+    if(     playerOptions.foil
+         && playerOptions.heavy
+         && playerOptions.hull
+         && playerOptions.light
+         && playerOptions.reach
+         && playerOptions.winch
+         && playerOptions.comfortLoungePug
+         && playerOptions.magicFurler
+         && playerOptions.vrtexJacket)
+    {
+        return "Full Pack";
+    }
+    if(playerOptions.hull)  categoryIndicator += 84337349;
+    if(playerOptions.winch) categoryIndicator += 120481928;
+    if(playerOptions.foil)  categoryIndicator += 265060241;
+    if(playerOptions.light) categoryIndicator += 180722892;
+    if(playerOptions.reach) categoryIndicator += 204819277;
+    if(playerOptions.heavy) categoryIndicator += 144578313;
+
+    if(categoryIndicator <= 240963855)
+        return "PDD";        
+    else if(categoryIndicator <= 500000000)
+        return "1/2 Full Pack";  
+    else
+        return "Full Pack";
 }
