@@ -1,0 +1,261 @@
+
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Race_Calendar",
+  "playerId": "68adf11f604179e4acb1395d",
+  "pageNumber": 1,
+  "pageSize": 10,
+  "filters": [
+    {
+      "type": "date",
+      "value": "2025",
+      "operator": "eq"
+    }
+  ],
+  "extendsData": [
+    "yearAvailable",
+    "legsOfMoment"
+  ],
+  "requestId": "638918343930560000_21",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg"
+}
+
+{
+  "scriptData": {
+    "res": [
+      {
+        "raceId": 743,
+        "type": "real",
+        "vsrLevel": 2,
+        "name": "Rolex Sydney Hobart",
+        "start": {
+          "countryFlag": "AU",
+          "date": 1766707200000,
+          "city": "Sydney"
+        },
+        "end": {
+          "countryFlag": "AU",
+          "date": 1767376804000,
+          "city": "Hobart"
+        },
+        "legCount": 1,
+        "boatType": "Offshore Racer",
+        "image": "https://static.virtualregatta.com/offshore/leg/743_1.jpg?t=1740650594206"
+      },
+      {
+        "raceId": 726,
+        "type": "digital",
+        "vsrLevel": 3,
+        "name": "Cap Horizons",
+        "start": {
+          "countryFlag": "MU",
+          "date": 1766161800000,
+          "city": "Port Louis"
+        },
+        "end": {
+          "countryFlag": "IN",
+          "date": 1767376800000,
+          "city": "Thoothukudi"
+        },
+        "legCount": 1,
+        "boatType": "Offshore Racer",
+        "image": "https://static.virtualregatta.com/offshore/leg/726_1.jpg?t=1739870526433"
+      },
+      {
+        "raceId": 748,
+        "type": "digital",
+        "vsrLevel": 2,
+        "name": "Chiloe Expedition",
+        "start": {
+          "countryFlag": "PA",
+          "date": 1765191600000,
+          "city": "Panama"
+        },
+        "end": {
+          "countryFlag": "CL",
+          "date": 1766581200000,
+          "city": "Puerto Montt"
+        },
+        "legCount": 1,
+        "boatType": "Super Maxi 100",
+        "image": "https://static.virtualregatta.com/offshore/leg/748_1.jpg?t=1740751007458"
+      },
+      {
+        "raceId": 747,
+        "type": "digital",
+        "vsrLevel": 2,
+        "name": "Christmas Race ",
+        "start": {
+          "countryFlag": "FI",
+          "date": 1764842400000,
+          "city": "Helsinki"
+        },
+        "end": {
+          "countryFlag": "FI",
+          "date": 1768323600000,
+          "city": "Helsinki"
+        },
+        "legCount": 3,
+        "boatType": "Ultim BP 11",
+        "image": "https://static.virtualregatta.com/offshore/leg/747_3.jpg?t=1740669549686"
+      },
+      {
+        "raceId": 750,
+        "type": "record",
+        "vsrLevel": 2,
+        "name": "Atlantic Record",
+        "start": {
+          "countryFlag": "US",
+          "date": 1764576000000,
+          "city": "New York"
+        },
+        "end": {
+          "countryFlag": "FR",
+          "date": 1768521600000,
+          "city": "Lizard Point"
+        },
+        "legCount": 1,
+        "boatType": "Super Maxi 100",
+        "image": "https://static.virtualregatta.com/offshore/leg/750_1.jpg?t=1744115467504"
+      },
+      {
+        "raceId": 730,
+        "type": "digital",
+        "vsrLevel": 3,
+        "name": "Singapour Express",
+        "start": {
+          "countryFlag": "JP",
+          "date": 1764338400000,
+          "city": "Tokyo"
+        },
+        "end": {
+          "countryFlag": "SG",
+          "date": 1764950400000,
+          "city": "Singapour"
+        },
+        "legCount": 1,
+        "boatType": "Super Maxi 100",
+        "image": "https://static.virtualregatta.com/offshore/leg/730_1.jpg?t=1749735969018"
+      },
+      {
+        "raceId": 731,
+        "type": "digital",
+        "vsrLevel": 3,
+        "name": "China Sea Trophy",
+        "start": {
+          "countryFlag": "HK",
+          "date": 1762509600000,
+          "city": "Hong Kong"
+        },
+        "end": {
+          "countryFlag": "VN",
+          "date": 1763229600000,
+          "city": "Nha Trang"
+        },
+        "legCount": 1,
+        "boatType": "Super Maxi 100",
+        "image": "https://static.virtualregatta.com/offshore/leg/731_1.jpg?t=1749737094680"
+      },
+      {
+        "raceId": 744,
+        "type": "record",
+        "vsrLevel": 1,
+        "name": "Jules Verne Trophy",
+        "start": {
+          "countryFlag": "FR",
+          "date": 1761991200000,
+          "city": "Ouessant"
+        },
+        "end": {
+          "countryFlag": "FR",
+          "date": 1772405940000,
+          "city": "Brest"
+        },
+        "legCount": 1,
+        "boatType": "Ultim BP 11",
+        "image": "https://static.virtualregatta.com/offshore/leg/744_1.jpg?t=1740651828222"
+      },
+      {
+        "raceId": 749,
+        "type": "digital",
+        "vsrLevel": 2,
+        "name": "Halloween Race",
+        "start": {
+          "countryFlag": "US",
+          "date": 1761926400000,
+          "city": "Salem"
+        },
+        "end": {
+          "countryFlag": "US",
+          "date": 1762880400000,
+          "city": "Miami"
+        },
+        "legCount": 1,
+        "boatType": "Multi 50",
+        "image": "https://static.virtualregatta.com/offshore/leg/749_1.jpg?t=1749736846352"
+      },
+      {
+        "raceId": 770,
+        "type": "real",
+        "vsrLevel": 1,
+        "name": "Transat Café l'Or Le Havre Normandie - CLASS40",
+        "start": {
+          "countryFlag": "FR",
+          "date": 1761488100000,
+          "city": "Le Havre"
+        },
+        "end": {
+          "countryFlag": "FR",
+          "date": 1764180000000,
+          "city": "Fort-de-France"
+        },
+        "legCount": 1,
+        "boatType": "Class 40",
+        "image": "https://static.virtualregatta.com/offshore/leg/770_1.jpg?t=1756217939879"
+      }
+    ],
+    "pagination": {
+      "nextPage": 2,
+      "hasNextPage": true,
+      "hasPreviousPage": false,
+      "documentsCount": 70,
+      "pagesCount": 7,
+      "pageNumber": 1,
+      "pageSize": 10
+    },
+    "extendsData": {
+      "yearAvailable": [
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "legsOfMoment": [
+        {
+          "raceId": 757,
+          "legNum": 1,
+          "image": "https://static.virtualregatta.com/offshore/leg/757_1.jpg?t=1756107095222"
+        },
+        {
+          "raceId": 780,
+          "legNum": 3,
+          "image": "https://static.virtualregatta.com/offshore/leg/780_3.jpg?t=1755506907016"
+        },
+        {
+          "raceId": 780,
+          "legNum": 2,
+          "image": "https://static.virtualregatta.com/offshore/leg/780_2.jpg?t=1755589463031"
+        }
+      ]
+    },
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918343930560000_21",
+  "traceId": "Root=1-68adf2f9-4808823d0066d35d1250b05f;Parent=6910bd2961ce0e21;Sampled=0;Lineage=1:e2ef51fb:0"
+}

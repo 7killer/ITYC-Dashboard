@@ -1,0 +1,418 @@
+:root {
+    --bg_body_color: #FFFFFF;
+    --body_color: #000000;
+    
+    --th_color :    #ededed;
+    --th_bg_color : #398AF5;
+    --th_border : 1px solid black;
+    --border_color : black;
+    
+    --td_bg_color : #FFFFFF; 
+    --td_color:     #000000;
+    
+    --td_dtl_color: #fff6ee;
+    --td_dtf_color: #ededed;
+    --td_twd_color: #ffebf2;
+    --td_tws_color: #ebfff5;
+    --td_twa_color: #ffffeb;
+    --td_speed1_color: #d3d3ff;
+    --td_speed2_color: #ececff; 
+    --td_bvmg_color: #d3d3ff;
+    --td_hdg_color:  #ecfcff; 
+    --td_hdg_txt_color:  #000000; 
+    --td_dtu_color: #fff6ee;                
+    --td_startDate_color: #ededed;
+    --td_eRT_color: #ededed; 
+    --td_avg_color: #ededed;
+    --td_brg_color: #fff6ee;
+    
+    --a_link : "blue";
+    --a_link_hover : "blue";
+    --popup_bg_img :linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+
+  }
+  [data-theme="dark"] {
+    --bg_body_color: rgb(3,38,63);
+    --body_color: #FFFFFF;
+    
+    --th_color :    #ededed;
+    --th_bg_color : rgb(41,42,45);
+    --th_border : 1px solid rgb(73, 76, 80);
+    
+    --border_color : rgb(73, 76, 80);
+    --td_bg_color : #202124; 
+    --td_color:     #a5a5a5;
+    --td_dtl_color: #1d0e00;
+    --td_dtf_color: #170000;
+    --td_twd_color: #3a0014;
+    --td_tws_color: #001d0e;
+    --td_twa_color: #151500;
+    --td_speed1_color: #00002d;
+    --td_speed2_color: #000033; 
+    --td_bvmg_color: #000017;
+    --td_hdg_color:  #00282f; 
+    --td_hdg_txt_color:  #a5a5a5; 
+    --td_dtu_color: #2b2d33;                
+    --td_startDate_color: #170000;
+    --td_eRT_color: #170000; 
+    --td_avg_color: #170000;
+    --td_brg_color: #200f00;
+    --th_border : 1px solid rgb(73, 76, 80);
+
+
+    --a_link : "lightskyblue";
+    --a_link_hover : "lightgreen";
+    --popup_bg_img :linear-gradient(180deg, #202124, #252930 40%, #293034)
+    
+  }
+
+
+body {
+    background-color: var(--bg_body_color) !important;
+}
+
+#gameContainer {
+  text-align: center!important;
+}
+
+
+#dashIntegRow {
+  padding-top: 0px;
+  font-size: small;
+  z-index: 1;
+  
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+table {
+  border: var(--th_border)!important;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+
+tr.sel {
+  background: #EEEEEE;
+}
+
+tr.sel:hover {
+  background: #DDDDDD;
+}
+
+tr.hov:hover {
+  background: #DDDDDD;
+}
+
+
+tr.hovred:hover {
+  border: 0.16em solid red;    
+}
+
+tr td {
+  padding-left: 0.3em!important;
+  padding-right:0.3em!important;
+
+}
+tr {
+  height: 23px;
+}
+
+th {
+  border: var(--th_border);
+  padding: 2px!important;
+  background-color: var(--th_bg_color);
+  color: var(--th_color)!important;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  outline: 1px solid  var(--border_color)!important;
+  outline-offset: -1px; 
+  text-align: center;
+}
+
+td {
+  border: 1px solid grey;
+  padding: 0px 5px;
+  background-color: var(--td_bg_color);
+  color: var(--td_color);
+}
+
+
+span {
+  white-space:nowrap;
+}
+
+td.tdc {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 125%;
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+#th_rt, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options {
+  cursor: pointer;
+}
+
+#th_teamname, #th_teamsize, #th_gender, #th_type , #th_total , #th_skipper , #th_raceRank , #th_xOptions , #th_gap , #th_id , #th_teamid , #th_uid{
+  cursor: pointer;
+}
+#th_eRT, #th_avgS, #th_sd, #th_rankcategory, #th_flag {
+  cursor: pointer;
+}
+
+td.xfactor, td.rank, td.foils, td.deltaD, td.deltaT {
+  text-align: right;
+}
+
+td.dtl {    
+  background-color: var(--td_dtl_color);
+  text-align: right;
+}
+
+td.dtf {
+  background-color: var(--td_dtf_color);
+  text-align: right;
+}
+
+td.twd {
+  background-color: var(--td_twd_color);
+  text-align: right;
+}
+td.tws {
+  background-color: var(--td_tws_color);
+  text-align: right;
+}
+
+td.twa {
+  background-color: var(--td_twa_color);
+  text-align: right;
+}
+
+
+
+td.speed1 {
+  background-color: var(--td_speed1_color);
+  text-align: right;
+}
+
+td.speed2 {
+  background-color: var(--td_speed2_color);
+  text-align: right;
+}
+
+td.bvmg {
+  background-color: var(--td_bvmg_color);
+  white-space: nowrap;
+  text-align: center;
+}
+
+td.bspeed, td.sailPenalties, td.gybe, td.tack {
+  text-align: center;
+}
+td.stamina {
+  text-align: center;
+}
+
+td.sail {
+  text-align: left;
+  white-space: nowrap;
+}
+
+td.hdg {
+  background-color: var(--td_hdg_color); 
+  color: var(--td_hdg_txt_color);
+  text-align: right;
+}
+
+
+
+
+td.brg {
+  background-color: var(--td_brg_color); 
+  text-align: right;
+}
+
+td.state {
+  font-size:13px;
+  text-align: center;
+}
+
+td.bull {
+  font-size:15px;
+}
+
+td.time, td.foil, td.position, td.type, td.name, td.agrd, td.man, td.options, td.asail {
+  text-align: center;
+  white-space: nowrap;
+  
+}
+td.position>p {
+  padding-bottom:0px;
+}
+
+
+
+#DTU0 {
+color: #0066ff; /* bleu */
+}
+#DTU1 {
+color: #704aff;
+}
+#DTU2 {
+color: #cc33ff; /* mauve */
+}
+#DTU3 {
+color: #ed7559;
+}
+#DTU4 {
+color: #ff9900; /* orange */
+}
+#colTime {
+text-align:left;
+}
+
+#colSpeedR {
+/*	background-color: #e0e0ff;  /* Michel - Mauve pale1 */
+  text-align:right;
+}
+
+#colSpeedRx {
+  text-align:right;
+}
+#colSpeedC {
+/*	background-color: #ccccff;  /* Michel - Mauve pale2 */
+  text-align:right;
+}
+  
+#colSpeedCx {
+  text-align:right;
+}
+
+#colSpeedT {
+/*	background-color: #e0e0ff;  /* Michel - Mauve pale1 */
+  text-align:right;
+}
+
+#colSpeedTx {
+  text-align:right;
+}
+
+#colFoils {
+  text-align:right;
+}
+
+#colDistance {
+  text-align:right;
+}
+
+#colDeltaT {
+  text-align:right;
+}
+
+#colSail {
+  text-align:left;
+}
+
+
+
+#colSpeedF {
+/*	background-color: #ccccff;  /* Michel - Mauve pale2 */
+background-color: #e0e0ff;  /* Michel - Mauve pale1 */
+  text-align:right;
+}
+
+#colSpeedFx {
+  text-align:right;
+}
+
+
+#colDTF {
+  background-color: #FFE7C6;
+  text-align:right;
+}		
+
+#colDTFx {
+  text-align:right;
+}		
+
+#colDTU {
+  text-align:right;
+}		
+
+#colBFU {
+  text-align:right;
+}		
+
+#colBtEx {
+  text-align:right;
+}
+
+#colBtE {
+  text-align:right;
+}
+
+
+#colCde {
+  text-align:left;
+}
+
+#colDataCde {
+  text-align:left;
+}		
+
+#colHDG {
+  background-color: #E7FFFF;
+  text-align:right;	
+}
+
+#colHDGx {
+  text-align:right;	
+}
+
+#colTWA {
+  background-color: #FFFFE7;
+  text-align:right;	
+}			
+
+#colTWAx {
+  text-align:right;	
+}			
+
+#colTWS {
+  background-color: #E7FFE7;
+  text-align:right;	
+}			
+
+#colTWSx {
+  text-align:right;	
+}			
+
+#colTWD {
+  background-color: #FFD7EC;
+  text-align:right;	
+}		
+
+#colName {
+  text-align:left;
+}
+
+.cursorHelp {
+  cursor: help !important;
+}
+
+td.position p {
+  font-size: 13px !important;
+  line-height: 16px !important;
+}
+.entry-content tr td {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.textMini {
+  font-size: 11px !important;
+  line-height: 1.4;
+}

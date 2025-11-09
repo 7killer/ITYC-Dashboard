@@ -1,0 +1,178 @@
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Game_AddBoatAction",
+  "race_id": 780,
+  "leg_num": 3,
+  "actions": [
+    {
+      "value": 10,
+      "type": "sail"
+    }
+  ],
+  "ts": 1756231020000,
+  "requestId": "638918350012450000_45",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+{
+  "scriptData": {
+    "DecodedTimestamp": "2025-08-26T17:56:40.000Z",
+    "boatActions": [
+      {
+        "sail_id": 10,
+        "qty": 1,
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756231020000,
+          "action": "sail"
+        }
+      }
+    ],
+    "serverTs": 1756231001302,
+    "actionTs": 1756231020000,
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918350012450000_45",
+  "traceId": "Root=1-68adf559-6ad2a2ea64caa3a2434a1932;Parent=198e3e9cdeca77cd;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Game_AddBoatAction",
+  "race_id": 780,
+  "leg_num": 3,
+  "actions": [
+    {
+      "value": 45,
+      "autoTwa": true,
+      "type": "heading"
+    }
+  ],
+  "ts": 1756231020000,
+  "requestId": "638918350078070000_46",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+{
+  "scriptData": {
+    "DecodedTimestamp": "2025-08-26T17:56:40.000Z",
+    "boatActions": [
+      {
+        "sail_id": 10,
+        "qty": 1,
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756231020000,
+          "action": "sail"
+        }
+      },
+      {
+        "deg": 45,
+        "autoTwa": true,
+        "isProg": false,
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756231020000,
+          "action": "heading"
+        }
+      }
+    ],
+    "serverTs": 1756231007758,
+    "actionTs": 1756231020000,
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918350078070000_46",
+  "traceId": "Root=1-68adf55f-63589aba51e51e5d1a49c522;Parent=1ca71b23d80d498b;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+{
+  "scriptData": {
+    "DecodedTimestamp": "2025-08-26T18:03:39.000Z",
+    "boatActions": [
+      {
+        "deg": 48,
+        "autoTwa": true,
+        "isProg": true,
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756235040000,
+          "action": "heading"
+        }
+      },
+      {
+        "deg": 44,
+        "autoTwa": true,
+        "isProg": true,
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756235640000,
+          "action": "heading"
+        }
+      }
+    ],
+    "serverTs": 1756231427589,
+    "actionTs": 1756231440000,
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918354276670000_48",
+  "traceId": "Root=1-68adf703-1b13358e0304042f3309dc8f;Parent=61c6056668bd32dc;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+
+{
+  "scriptData": {
+    "DecodedTimestamp": "2025-08-26T18:05:30.000Z",
+    "boatStateExtract": {
+      "_id": {
+        "user_id": "68adf11f604179e4acb1395d",
+        "race_id": 780,
+        "leg_num": 3
+      },
+      "legStartDate": 1756213200000,
+      "state": "racing",
+      "lastCalcDate": 1756231500000,
+      "tsLastEngine": 1756231500000,
+      "tsEndOfAutoSail": 1756317420000,
+      "nextWpIdx": 3
+    },
+    "boatActions": [
+      {
+        "_id": {
+          "user_id": "68adf11f604179e4acb1395d",
+          "race_id": 780,
+          "leg_num": 3,
+          "ts": 1756231560000,
+          "action": "wp"
+        },
+        "pos": [
+          {
+            "lat": 37.61818,
+            "lon": -0.0323987,
+            "idx": 1
+          },
+          {
+            "lat": 37.61819,
+            "lon": -0.0323987,
+            "idx": 2
+          }
+        ]
+      }
+    ],
+    "serverTs": 1756231535350,
+    "actionTs": 1756231560000,
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918355352430000_50",
+  "traceId": "Root=1-68adf76f-482332da574975710f0e6dcd;Parent=6ebe04a9d11b1514;Sampled=0;Lineage=1:e2ef51fb:0"
+}

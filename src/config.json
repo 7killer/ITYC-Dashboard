@@ -1,0 +1,11 @@
+{
+    "debugDB": false,
+    "debugDBErr": true,
+    "debugDBIte": false,
+    "debugDBIteErr": true,
+    "debugIngester":false,
+    "debugIngesterErr":true,
+    "debugIteRun":true,
+    "debugIteRunErr":true,
+    "debugFilter1":true
+  }

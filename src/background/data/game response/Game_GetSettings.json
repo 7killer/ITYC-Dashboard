@@ -1,0 +1,93 @@
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Game_GetSettings",
+  "requestId": "638918339205700000_4",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+{
+  "scriptData": {
+    "settings": {
+      "lastUpdateTS": 1649427472000,
+      "classRankings": {
+        "baseUrl": "https://vro-api-ranking.prod.virtualregatta.com/",
+        "imoca": {
+          "vintageIndex": 2,
+          "images": {
+            "lobbyNoRank": "classRanking/IMOCA-VIRTUAL-SERIES-LOGO-LARGE.png?d=20250623",
+            "lobbyRank": "classRanking/IMOCA-VIRTUAL-SERIES-LOGO-LARGE-Ranking.png?d=20250623",
+            "mapRace": "classRanking/IMOCA-VIRTUAL-SERIES-LOGO-LARGE.png?d=20250623",
+            "loading": "classRanking/IMOCA-VIRTUAL-SERIES-LOGO-LARGE.png?d=20250623",
+            "rankTab": "classRanking/IMOCA-VIRTUAL-SERIES-LOGO.png?d=20250623"
+          },
+          "vintagesList": {
+            "0": "2022",
+            "1": "2023",
+            "2": "2024"
+          }
+        }
+      },
+      "stamina": {
+        "recovery": {
+          "points": 1,
+          "loWind": 0,
+          "hiWind": 30,
+          "loTime": 5,
+          "hiTime": 15
+        },
+        "tiredness": [
+          20,
+          50
+        ],
+        "consumption": {
+          "points": {
+            "tack": 10,
+            "gybe": 10,
+            "sail": 20
+          },
+          "winds": {
+            "0": 1,
+            "10": 1.2,
+            "20": 1.5,
+            "30": 2
+          },
+          "boats": {
+            "0": 1,
+            "5": 1.2,
+            "15": 1.5,
+            "50": 2
+          }
+        },
+        "impact": {
+          "0": 2,
+          "100": 0.5
+        }
+      },
+      "b2bBuilding": true,
+      "b2bLinks": {
+        "pathe": "https://pathe.com/fr/"
+      },
+      "inRaceConsumablesShop": [
+        {
+          "id": "6670065a5d7aa903781192b0",
+          "name": "L’Or Maison du Café"
+        },
+        {
+          "id": "6720ee6f84c98792f0c010ac",
+          "name": "Racefuel's Bar"
+        },
+        {
+          "id": "6720dc90e2cc235c164acd4e",
+          "name": "Fleet feast box"
+        }
+      ],
+      "catalogVersion": 893,
+      "panicMode": false,
+      "maintenance": false
+    },
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918339205700000_4",
+  "traceId": "Root=1-68adf120-048df54924b1e0f45fb3b7de;Parent=1361281b6ef1adad;Sampled=0;Lineage=1:e2ef51fb:0"
+}

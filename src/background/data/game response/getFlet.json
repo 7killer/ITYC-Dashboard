@@ -1,0 +1,1325 @@
+{
+  "user_id": "68adf11f604179e4acb1395d",
+  "vip": false,
+  "subscriber": false,
+  "race_id": 780,
+  "leg_num": 3,
+  "filter": "opponents,followed,team,branding",
+  "followed": [],
+  "teamMembers": []
+}
+
+{
+  "rc": "ok",
+  "res": [
+    {
+      "userId": "59c0d503b395b292ed620fa4",
+      "state": "racing",
+      "pos": {
+        "lat": 37.54424081317342,
+        "lon": -0.04222910802611066
+      },
+      "heading": 11.06428,
+      "speed": 11.10963,
+      "tws": 9.96508,
+      "twa": 48,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWW4SSFDQN5EHGPEMQPVJX6P",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "Black and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Arylla / INC-BUREAU VALLEE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59c16f64b395b292ed621d2e",
+      "state": "racing",
+      "pos": {
+        "lat": 37.53531624045945,
+        "lon": -0.03811252737427563
+      },
+      "heading": 12,
+      "speed": 11.07028,
+      "tws": 10.00436,
+      "twa": 47.26369,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Tipapacheri BSP",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59c2a3f9b395b292ed62349d",
+      "state": "racing",
+      "pos": {
+        "lat": 37.32735055608579,
+        "lon": -0.13592509961368
+      },
+      "heading": 9.07506,
+      "speed": 10.22489,
+      "tws": 10.38549,
+      "twa": 43,
+      "sail": 4,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "nautil2",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59c4d276b395b292ed626669",
+      "state": "racing",
+      "pos": {
+        "lat": 37.28072682172166,
+        "lon": 0.17137001995682746
+      },
+      "heading": 10.11843,
+      "speed": 12.22677,
+      "tws": 11.01575,
+      "twa": 50,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Pat59118 / EDN",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59ca287fb395b292ed62c365",
+      "state": "racing",
+      "pos": {
+        "lat": 37.85479801761166,
+        "lon": -0.40133336575049317
+      },
+      "heading": 93,
+      "speed": 9.96527,
+      "tws": 9.48588,
+      "twa": -47.03426,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "metar2",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59e2478fe0750e372d63e375",
+      "state": "racing",
+      "pos": {
+        "lat": 37.258953806117766,
+        "lon": 0.13679139553712777
+      },
+      "heading": 109.02938,
+      "speed": 11.86773,
+      "tws": 11.03124,
+      "twa": -50,
+      "sail": 11,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "pompom10",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "59fef2ace0750e372d69768d",
+      "state": "racing",
+      "pos": {
+        "lat": 37.52642285894038,
+        "lon": -0.023307234703361542
+      },
+      "heading": 9.62162,
+      "speed": 11.54997,
+      "tws": 10.08396,
+      "twa": 50,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPVHYQHQRD0TS2F4DF31YBJ",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "White and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Sem la Guédonne - BFC",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5bdf02de517022fc09d77461",
+      "state": "racing",
+      "pos": {
+        "lat": 37.544006724984136,
+        "lon": -0.04275709626567386
+      },
+      "heading": 12,
+      "speed": 10.963,
+      "tws": 9.96411,
+      "twa": 47.05929,
+      "sail": 4,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JN1G5AK72DKCXG2CRM5280EW",
+        "display": {
+          "color1": "#1a4498",
+          "color2": "#ffffff"
+        },
+        "skinName": "France Supporter"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Bayadère / INC-BUREAU VALLEE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5bdf07c9517022fc09d796e4",
+      "state": "racing",
+      "pos": {
+        "lat": 37.525178997630675,
+        "lon": -0.02728180217683049
+      },
+      "heading": 11.57894,
+      "speed": 11.23965,
+      "tws": 10.07377,
+      "twa": 48,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWW4SSFDQN5EHGPEMQPVJX6P",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "Black and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "stoned cat",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5eccecee8e4c1d3e55e6e7d1",
+      "state": "racing",
+      "pos": {
+        "lat": 37.538585908159845,
+        "lon": -0.03930405123278204
+      },
+      "heading": 12.19613,
+      "speed": 11.0076,
+      "tws": 9.99075,
+      "twa": 47,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "falcon470 / INC-BUREAU VALLEE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fa4627ea73ee0501867a44d",
+      "state": "racing",
+      "pos": {
+        "lat": 37.83836217243243,
+        "lon": -0.3567194245495007
+      },
+      "heading": 92.03834,
+      "speed": 9.79386,
+      "tws": 9.56332,
+      "twa": -45,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "oya_breizh",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fa6a0e9a73ee050182b6836",
+      "state": "racing",
+      "pos": {
+        "lat": 37.91170524044577,
+        "lon": -0.4908868650379658
+      },
+      "heading": 86.89602,
+      "speed": 8.03129,
+      "tws": 9.26396,
+      "twa": -42,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Damien21",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fa6a699a73ee05018906ca2",
+      "state": "racing",
+      "pos": {
+        "lat": 37.290546417334774,
+        "lon": 0.11853874183822422
+      },
+      "heading": 13.65396,
+      "speed": 11.53301,
+      "tws": 10.91013,
+      "twa": 45,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWH1BRQFJH9PAAW0J9R0SB",
+        "display": {
+          "color1": "#f61c06",
+          "color2": "#ffffff"
+        },
+        "skinName": "Basic Red"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "OffshoreTeamZoe-TP83",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fa7b46ea73ee05018e069f5",
+      "state": "racing",
+      "pos": {
+        "lat": 38.00422009580207,
+        "lon": -0.5467962423652274
+      },
+      "heading": 3.12432,
+      "speed": 8.37054,
+      "tws": 8.64586,
+      "twa": 46,
+      "sail": 11,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "EXO7085",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fa9273ba73ee0501838d7a0",
+      "state": "racing",
+      "pos": {
+        "lat": 37.26238085980695,
+        "lon": 0.1876037699370811
+      },
+      "heading": 109.6282,
+      "speed": 12.20481,
+      "tws": 11.10242,
+      "twa": -49,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JN1G5AK72DKCXG2CRM5280EW",
+        "display": {
+          "color1": "#1a4498",
+          "color2": "#ffffff"
+        },
+        "skinName": "France Supporter"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Nico_jud - PVe / D-ICE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fabfc1ea73ee05018c6b6b5",
+      "state": "racing",
+      "pos": {
+        "lat": 37.965081293077496,
+        "lon": -0.5494960420852611
+      },
+      "heading": 1.06671,
+      "speed": 8.86219,
+      "tws": 8.78433,
+      "twa": 47,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "6Nations",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fb699b306999515a32de379",
+      "state": "racing",
+      "pos": {
+        "lat": 37.809048540589735,
+        "lon": -0.5556089568931194
+      },
+      "heading": 18,
+      "speed": 3.06767,
+      "tws": 9.36031,
+      "twa": 26.19502,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "PasJamJam",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fbba6af06999515a3e8b617",
+      "state": "racing",
+      "pos": {
+        "lat": 37.762085449655935,
+        "lon": -0.3089816526440678
+      },
+      "heading": 354.86902,
+      "speed": 11.39333,
+      "tws": 9.86236,
+      "twa": 54,
+      "sail": 11,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "thi-b",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "5fe9e32124ee49200190c15c",
+      "state": "racing",
+      "pos": {
+        "lat": 38.02976529265332,
+        "lon": -0.5416941499125254
+      },
+      "heading": 3.19722,
+      "speed": 8.73836,
+      "tws": 8.51647,
+      "twa": 47,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "rank": 1,
+      "displayName": "Camelia54-ETR",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "6011b67cd7d77a6aa455dd17",
+      "state": "racing",
+      "pos": {
+        "lat": 37.55080896419634,
+        "lon": -0.04594368689326176
+      },
+      "heading": 12,
+      "speed": 10.88134,
+      "tws": 9.9355,
+      "twa": 46.90372,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Kah-Yu - PVe / D-ICE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "6028a16fd7d77a6aa447c119",
+      "state": "racing",
+      "pos": {
+        "lat": 37.40096523612337,
+        "lon": 0.015420358671690254
+      },
+      "heading": 101,
+      "speed": 10.00952,
+      "tws": 10.50986,
+      "twa": -42.91172,
+      "sail": 11,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Fanatic77",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "61828ce12a05eec971f39d9f",
+      "state": "racing",
+      "pos": {
+        "lat": 37.54608909308133,
+        "lon": -0.041189463592524234
+      },
+      "heading": 12.05321,
+      "speed": 10.95154,
+      "tws": 9.96295,
+      "twa": 47,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01JKTY8MFKPPCEX7CKDKHRJ5TF",
+        "display": {
+          "color1": "#E20E17",
+          "color2": "#ffffff"
+        },
+        "skinName": "Vendée Globe 2024 Finisher"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "top",
+      "lastCalcDate": 1756230540000,
+      "displayName": "MC kele / INC-BUREAU VALLEE",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "61d5d8f92a05eec971a69d0e",
+      "state": "racing",
+      "pos": {
+        "lat": 37.387761870832385,
+        "lon": -0.05821788344046603
+      },
+      "heading": 110.31999,
+      "speed": 11.90651,
+      "tws": 10.35435,
+      "twa": -54.17287,
+      "sail": 11,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "entre2mer",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "61e09d3d2a05eec971664e2b",
+      "state": "racing",
+      "pos": {
+        "lat": 37.35650216739996,
+        "lon": 0.12467122039981507
+      },
+      "heading": 104.21482,
+      "speed": 11.36442,
+      "tws": 10.72141,
+      "twa": -45,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "yeti_ykp",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "6723f4974b2fe09f732ce985",
+      "state": "racing",
+      "pos": {
+        "lat": 37.734186415938325,
+        "lon": -0.28828366854926213
+      },
+      "heading": 93.51872,
+      "speed": 9.81314,
+      "tws": 9.88382,
+      "twa": -43.43165,
+      "sail": 4,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWR0NAEW9YZQF1SXTEVZS4",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "Blue and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "gueuledeloup7.7",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "672a025a4982a8da3fc8f5c8",
+      "state": "racing",
+      "pos": {
+        "lat": 37.95782218494146,
+        "lon": -0.4824882954896444
+      },
+      "heading": 100,
+      "speed": 10.30593,
+      "tws": 9.1154,
+      "twa": -54.15179,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWW4SSFDQN5EHGPEMQPVJX6P",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "Black and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Twinkel 🤗",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "672f58306b4dc10614471703",
+      "state": "racing",
+      "pos": {
+        "lat": 38.02346626912801,
+        "lon": -0.5392209866845175
+      },
+      "heading": 2.73386,
+      "speed": 8.74291,
+      "tws": 8.57127,
+      "twa": 47,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "rank": 3,
+      "displayName": "boulipi_VR",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "6730b354b180a4b42ba0a15f",
+      "state": "racing",
+      "pos": {
+        "lat": 37.43721039207471,
+        "lon": -0.33233773500948066
+      },
+      "heading": 26,
+      "speed": 4.02784,
+      "tws": 9.72315,
+      "twa": 26.05695,
+      "sail": 1,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Nigalize",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "67c188863d2614540d02aec4",
+      "state": "racing",
+      "pos": {
+        "lat": 37.946427004710145,
+        "lon": -0.4591953341814268
+      },
+      "heading": 93,
+      "speed": 9.32527,
+      "tws": 9.15971,
+      "twa": -47.12642,
+      "sail": 14,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "displayName": "Pierre17630",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "68345107e4c7c9b6884cccc1",
+      "state": "racing",
+      "pos": {
+        "lat": 38.03806513691129,
+        "lon": -0.5575538672969073
+      },
+      "heading": 1.50497,
+      "speed": 9.20423,
+      "tws": 8.3683,
+      "twa": 50,
+      "sail": 4,
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+        "display": {
+          "color1": "#dedede",
+          "color2": "#ffffff"
+        },
+        "skinName": "Virtual Regatta Grey"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "type": "normal",
+      "lastCalcDate": 1756230540000,
+      "rank": 2,
+      "displayName": "Guest_1748259079505",
+      "tsLastEngine": 1756230540000
+    },
+    {
+      "userId": "pilotBoat",
+      "pos": {
+        "lat": 37.396962606275046,
+        "lon": -0.040767470258395964
+      },
+      "heading": 5,
+      "speed": 11.62559,
+      "type": "pilotBoat",
+      "lastCalcDate": 1756230420000,
+      "gateGroupCounters": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

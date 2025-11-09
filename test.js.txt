@@ -1,0 +1,167 @@
+function createKeyChangeListener(dbName, storeName, key, options = {}) {
+    const { 
+        timeout = 500,  // Timeout par défaut de 500ms
+        maxAttempts = 10  // Nombre maximum de tentatives
+    } = options;
+
+    // Objet pour stocker l'état et les méthodes de contrôle
+    const listener = {
+        db: null,
+        initialValue: null,
+        changeDetected: false,
+        attempts: 0,
+        intervalId: null,
+        isRunning: false,
+        promise: null,
+        resolvePromise: null,
+        rejectPromise: null,
+
+        // Méthode pour ouvrir la base de données
+        openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName);
+                
+                request.onupgradeneeded = (event) => {
+                    this.db = event.target.result;
+                    if (!this.db.objectStoreNames.contains(storeName)) {
+                        this.db.createObjectStore(storeName);
+                    }
+                };
+                
+                request.onsuccess = (event) => {
+                    this.db = event.target.result;
+                    resolve();
+                };
+                
+                request.onerror = (error) => reject(error);
+            });
+        },
+
+        // Méthode pour lire la valeur courante
+        readCurrentValue() {
+            if (!this.db) return;
+
+            const transaction = this.db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            const request = store.get(key);
+
+            request.onsuccess = (event) => {
+                const currentValue = event.target.result;
+                
+                // Premier appel : mémoriser la valeur initiale
+                if (this.initialValue === null) {
+                    this.initialValue = currentValue;
+                    return;
+                }
+
+                // Détecter un changement
+                if (JSON.stringify(currentValue) !== JSON.stringify(this.initialValue)) {
+                    this.changeDetected = true;
+                    this.stop();
+                    this.resolvePromise({
+                        newValue: currentValue,
+                        oldValue: this.initialValue
+                    });
+                }
+            };
+        },
+
+        // Démarrer l'écoute
+        async start() {
+            if (this.isRunning) return this.promise;
+
+            this.promise = new Promise((resolve, reject) => {
+                this.resolvePromise = resolve;
+                this.rejectPromise = reject;
+            });
+
+            try {
+                await this.openDB();
+                
+                this.isRunning = true;
+                this.attempts = 0;
+
+                this.intervalId = setInterval(() => {
+                    this.attempts++;
+                    this.readCurrentValue();
+
+                    // Gérer le timeout et le nombre maximum de tentatives
+                    if (this.attempts >= maxAttempts) {
+                        this.stop();
+                        this.rejectPromise(new Error('Timeout: No change detected'));
+                    }
+                }, timeout);
+            } catch (error) {
+                this.stop();
+                this.rejectPromise(error);
+            }
+
+            return this.promise;
+        },
+
+        // Arrêter l'écoute
+        stop() {
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+
+            if (this.db) {
+                this.db.close();
+                this.db = null;
+            }
+
+            this.isRunning = false;
+            this.attempts = 0;
+        },
+
+        // Interrompre complètement
+        interrupt() {
+            this.stop();
+            if (this.rejectPromise) {
+                this.rejectPromise(new Error('Listener interrupted'));
+            }
+        }
+    };
+
+    return listener;
+}
+
+// Exemple d'utilisation
+async function demonstrateKeyListener() {
+    // Créer l'écouteur
+    const keyListener = createKeyChangeListener('MaBaseDeDonnees', 'MonStore', 'MaCle', {
+        timeout: 500,   // Vérifier toutes les 500ms
+        maxAttempts: 20 // Essayer jusqu'à 20 fois
+    });
+
+    try {
+        // Démarrer l'écoute
+        const listenerPromise = keyListener.start();
+
+        // Possibilité d'interrompre de l'extérieur
+        // Par exemple, après 2 secondes
+        setTimeout(() => {
+            keyListener.interrupt();
+        }, 2000);
+
+        // Attendre le résultat
+        const result = await listenerPromise;
+        console.log('Changement détecté :', result);
+    } catch (error) {
+        console.error('Écoute interrompue ou aucun changement :', error);
+    }
+}
+
+// Autre exemple de contrôle manuel
+function manualControlExample() {
+    const keyListener = createKeyChangeListener('MaBaseDeDonnees', 'MonStore', 'MaCle');
+    
+    // Démarrer l'écoute
+    keyListener.start()
+        .then(result => console.log('Changement :', result))
+        .catch(error => console.error('Erreur :', error));
+
+    // Plus tard, si on veut arrêter
+    // keyListener.interrupt();
+}

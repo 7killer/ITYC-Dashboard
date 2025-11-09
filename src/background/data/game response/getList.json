@@ -1,0 +1,1947 @@
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Leg_GetList",
+  "requestId": "638918339265590000_14",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+
+{
+  "scriptData": {
+    "boatsAtSea": 29337,
+    "res": [
+      {
+        "raceId": 757,
+        "legNum": 1,
+        "limitedAccess": false,
+        "legName": "Globe40 - Prologue",
+        "hasCode": true,
+        "estimatedTime": 4,
+        "estimatedLength": 910,
+        "status": "opened",
+        "startDate": 1756641600000,
+        "start": {
+          "date": 1756641600000,
+          "heading": 227,
+          "lat": 47.67808,
+          "lon": -3.391001,
+          "name": "Lorient",
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "end": {
+          "date": 1757368800000,
+          "lat": 36.55729,
+          "lon": -6.252425,
+          "name": "Cadix",
+          "radius": 0,
+          "countryCode": "ESP",
+          "countryFlag": "ES"
+        },
+        "raceName": "Globe40",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "class40",
+          "defaultSkin": "class40_VR_grey",
+          "idx": 1,
+          "label": "Class 40",
+          "name": "Class 40",
+          "polar_id": 3,
+          "sailSponsor": "Incidence",
+          "stats": {
+            "length": 12.19,
+            "width": 4.5,
+            "airDraught": 19,
+            "draught": 3,
+            "weight": 4500,
+            "upwindSails": 115,
+            "downwindSails": 115
+          },
+          "type": "class40"
+        },
+        "vsrRank": 3,
+        "priceLevel": 6,
+        "freeCredits": 300,
+        "adStartCredits": 30,
+        "pilotBoatCredits": 200,
+        "lastUpdate": 1756107095222,
+        "skinDiscount": 250,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "allowInventory": true,
+        "sponsorSkinList": [
+          "01JR7RAFJF0MSMANGYBPB5TF7V"
+        ],
+        "type": "real",
+        "gates": {
+          "1": "Cap Punta Buitra"
+        },
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "sponsorLogo": "https://static.virtualregatta.com/offshore/sponsor/3d/LOGOCM_2018_RVB.jpg?t=1756211912",
+        "sponsorURL": "https://www.skippercreditmutuel.fr/",
+        "loadingScreenLogo": "https://static.virtualregatta.com/offshore/sponsor/hopla-2.png?t=1756211670",
+        "season": "summer",
+        "raceOfTheMoment": {
+          "enabled": true,
+          "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/PROLOGUE_hkps.png"
+        },
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 2026,
+        "boatsAtSea": 2026,
+        "arrived": 0
+      },
+      {
+        "raceId": 780,
+        "legNum": 4,
+        "limitedAccess": false,
+        "legName": "The Ocean Race Europe 4",
+        "hasCode": true,
+        "estimatedTime": 5,
+        "estimatedLength": 670,
+        "status": "opened",
+        "startDate": 1756652100000,
+        "start": {
+          "date": 1756652100000,
+          "heading": 166,
+          "lat": 43.67956,
+          "lon": 7.256791,
+          "name": "Nice",
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "end": {
+          "date": 1756918800000,
+          "lat": 44.3971,
+          "lon": 8.916835,
+          "name": "Gênes",
+          "radius": 1,
+          "countryCode": "ITA",
+          "countryFlag": "IT"
+        },
+        "raceName": "The Ocean Race Europe 2025",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "vendeeglobe",
+          "defaultSkin": "imoca_VR_grey",
+          "idx": 4,
+          "label": "Imoca",
+          "name": "Imoca",
+          "options": {
+            "winch": {
+              "nameKey": "_harken",
+              "descKey": "_harken",
+              "thumbnailURL": "thumbnail_winch_harken",
+              "imageURL": "image_winch_harken"
+            }
+          },
+          "polar_id": 4,
+          "sailSponsor": "Incidence",
+          "stats": {
+            "length": 18.28,
+            "width": 5.85,
+            "airDraught": 29,
+            "draught": 4.5,
+            "weight": 8000,
+            "upwindSails": 300,
+            "downwindSails": 600
+          },
+          "type": "imoca"
+        },
+        "vsrRank": 3,
+        "priceLevel": 4,
+        "freeCredits": 1400,
+        "adStartCredits": 100,
+        "pilotBoatCredits": 600,
+        "lastUpdate": 1754906470746,
+        "skinDiscount": 750,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "real",
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 1791,
+        "boatsAtSea": 1791,
+        "arrived": 0
+      },
+      {
+/        "raceId": 780,
+/       "legNum": 3,
+        "limitedAccess": false,
+/        "legName": "The Ocean Race Europe 3",
+/        "hasCode": true,
+/        "estimatedTime": 4,
+/        "estimatedLength": 550,
+/        "status": "started",
+        "startDate": 1756213200000,
+/        "start": {
+          "date": 1756213200000,
+          "heading": 127,
+          "lat": 37.55654,
+          "lon": -0.9931286,
+          "name": "Carthagène",
+          "countryCode": "ESP",
+          "countryFlag": "ES"
+        },
+/        "end": {
+          "date": 1756647000000,
+          "lat": 43.68401,
+          "lon": 7.278994,
+          "name": "Nice",
+          "radius": 0,
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+/        "raceName": "The Ocean Race Europe 2025",
+/        "raceType": "leg",
+/        "boat": {
+          "assetBundle": "vendeeglobe",
+          "defaultSkin": "imoca_VR_grey",
+          "idx": 4,
+          "label": "Imoca",
+          "name": "Imoca",
+          "options": {
+            "winch": {
+              "nameKey": "_harken",
+              "descKey": "_harken",
+              "thumbnailURL": "thumbnail_winch_harken",
+              "imageURL": "image_winch_harken"
+            }
+          },
+          "polar_id": 4,
+          "sailSponsor": "Incidence",
+          "stats": {
+            "length": 18.28,
+            "width": 5.85,
+            "airDraught": 29,
+            "draught": 4.5,
+            "weight": 8000,
+            "upwindSails": 300,
+            "downwindSails": 600
+          },
+          "type": "imoca"
+        },
+        "vsrRank": 3,
+        "priceLevel": 4,
+        "freeCredits": 1400,
+        "adStartCredits": 100,
+        "pilotBoatCredits": 600,
+/        "lastUpdate": 1755506907016,
+        "skinDiscount": 750,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+/        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "real",
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "raceOfTheMoment": {
+          "enabled": true,
+          "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/ROTM-nume%CC%81ro-3_qxv1.png"
+        },
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 10869,
+        "boatsAtSea": 10869,
+        "arrived": 0
+      },
+      {
+        "raceId": 741,
+        "legNum": 2,
+        "limitedAccess": false,
+        "legName": "HyperSail GP 2",
+        "estimatedTime": 17,
+        "estimatedLength": 8700,
+        "status": "started",
+        "startDate": 1755187200000,
+        "start": {
+          "date": 1755187200000,
+          "heading": 211,
+          "lat": -17.81515,
+          "lon": -149.3621,
+          "name": "Tahiti",
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "end": {
+          "date": 1756814400000,
+          "lat": -20.9305,
+          "lon": 55.32435,
+          "name": "La Réunion",
+          "radius": 1,
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "raceName": "HyperSail GP",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "ultimbp11",
+          "defaultSkin": "ultimbp11_VR_grey",
+          "idx": 18,
+          "label": "Ultim BP XI",
+          "name": "Ultim BP 11",
+          "polar_id": 21,
+          "stats": {
+            "length": 32,
+            "width": 23,
+            "airDraught": 35,
+            "draught": 4.5,
+            "weight": 16000,
+            "upwindSails": 430,
+            "downwindSails": 650
+          },
+          "type": "ultimbp11"
+        },
+        "vsrRank": 2,
+        "priceLevel": 3,
+        "freeCredits": 1400,
+        "adStartCredits": 130,
+        "pilotBoatCredits": 800,
+        "lastUpdate": 1755589472330,
+        "skinDiscount": 1000,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "allowInventory": true,
+        "sponsorSkinList": [],
+        "type": "digital",
+        "gates": {
+          "2": "Tasmanie"
+        },
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 10514,
+        "boatsAtSea": 10514,
+        "arrived": 0
+      },
+      {
+        "raceId": 778,
+        "legNum": 1,
+        "limitedAccess": false,
+        "legName": "Palermo Montecarlo 2025",
+        "hasCode": true,
+        "estimatedTime": 5,
+        "estimatedLength": 450,
+        "status": "started",
+        "startDate": 1755597300000,
+        "start": {
+          "date": 1755597300000,
+          "heading": 317,
+          "lat": 38.1813,
+          "lon": 13.45816,
+          "name": "Palerme",
+          "countryCode": "ITA",
+          "countryFlag": "IT"
+        },
+        "end": {
+          "date": 1756314000000,
+          "lat": 43.73727,
+          "lon": 7.434836,
+          "name": "Montecarlo",
+          "radius": 0,
+          "countryCode": "MON",
+          "countryFlag": "MC"
+        },
+        "raceName": "Palermo Montecarlo 2025",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "offshoreracer",
+          "defaultSkin": "offshoreracer_VR_grey",
+          "idx": 9,
+          "label": "Offshore Racer",
+          "name": "Offshore Racer",
+          "polar_id": 18,
+          "sailSponsor": "Incidence",
+          "stats": {
+            "length": 10.11,
+            "width": 3.43,
+            "airDraught": 15.55,
+            "draught": 2.15,
+            "weight": 3050,
+            "upwindSails": 68,
+            "downwindSails": 123
+          },
+          "type": "offshoreracer",
+          "options": {
+            "foil": {
+              "nameKey": "_code6",
+              "descKey": "_code6",
+              "thumbnailURL": "thumbnail_code6",
+              "imageURL": "image_code6"
+            }
+          }
+        },
+        "vsrRank": 3,
+        "priceLevel": 4,
+        "freeCredits": 1200,
+        "adStartCredits": 100,
+        "pilotBoatCredits": 600,
+        "lastUpdate": 1756107084110,
+        "skinDiscount": 750,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "real",
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 8717,
+        "boatsAtSea": 2244,
+        "arrived": 6473
+      },
+      {
+        "raceId": 751,
+        "legNum": 1,
+        "limitedAccess": false,
+        "legName": "Honolulu-Yokohama",
+        "estimatedTime": 20,
+        "estimatedLength": 3600,
+        "status": "started",
+        "startDate": 1753005600000,
+        "start": {
+          "date": 1753005600000,
+          "heading": 159,
+          "lat": 21.27113,
+          "lon": -157.976,
+          "name": "Honolulu",
+          "countryCode": "USA",
+          "countryFlag": "US"
+        },
+        "end": {
+          "date": 1756850404000,
+          "lat": 35.34841,
+          "lon": 139.634,
+          "name": "Yokohama",
+          "radius": 4,
+          "countryCode": "JPN",
+          "countryFlag": "JP"
+        },
+        "raceName": "Honolulu Yokohama",
+        "raceType": "record",
+        "boat": {
+          "assetBundle": "supermaxi100",
+          "defaultSkin": "maxioffshore_VR_grey",
+          "idx": 10,
+          "label": "Super Maxi 100",
+          "name": "Super Maxi 100",
+          "polar_id": 14,
+          "stats": {
+            "length": 30.5,
+            "width": 7.8,
+            "airDraught": 47,
+            "draught": 6.5,
+            "weight": 31000,
+            "upwindSails": 760,
+            "downwindSails": 1100
+          },
+          "type": "supermaxi100"
+        },
+        "vsrRank": 2,
+        "priceLevel": 3,
+        "freeCredits": 1400,
+        "adStartCredits": 130,
+        "lastUpdate": 1754382747656,
+        "skinDiscount": 1000,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "record",
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "restartPrice": 800,
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 6279,
+        "boatsAtSea": 2084,
+        "arrived": 4195,
+        "record": {
+          "lastRankingGateName": "",
+          "lastRankingGate": 0,
+          "attemptCounter": 0
+        }
+      },
+      {
+        "raceId": 780,
+        "legNum": 2,
+        "limitedAccess": false,
+        "legName": "The Ocean race Europe 2",
+        "hasCode": true,
+        "estimatedTime": 9,
+        "estimatedLength": 1400,
+        "status": "started",
+        "startDate": 1755442500000,
+        "start": {
+          "date": 1755442500000,
+          "heading": 170,
+          "lat": 50.74595,
+          "lon": -1.058057,
+          "name": "Portsmouth",
+          "countryCode": "GBR",
+          "countryFlag": "GB"
+        },
+        "end": {
+          "date": 1756310400000,
+          "lat": 37.56719,
+          "lon": -1.072436,
+          "name": "Carthagène",
+          "radius": 0,
+          "countryCode": "ESP",
+          "countryFlag": "ES"
+        },
+        "raceName": "The Ocean Race Europe 2025",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "vendeeglobe",
+          "defaultSkin": "imoca_VR_grey",
+          "idx": 4,
+          "label": "Imoca",
+          "name": "Imoca",
+          "options": {
+            "winch": {
+              "nameKey": "_harken",
+              "descKey": "_harken",
+              "thumbnailURL": "thumbnail_winch_harken",
+              "imageURL": "image_winch_harken"
+            }
+          },
+          "polar_id": 4,
+          "sailSponsor": "Incidence",
+          "stats": {
+            "length": 18.28,
+            "width": 5.85,
+            "airDraught": 29,
+            "draught": 4.5,
+            "weight": 8000,
+            "upwindSails": 300,
+            "downwindSails": 600
+          },
+          "type": "imoca"
+        },
+        "vsrRank": 2,
+        "priceLevel": 3,
+        "freeCredits": 1400,
+        "adStartCredits": 130,
+        "pilotBoatCredits": 800,
+        "lastUpdate": 1755589463031,
+        "skinDiscount": 1000,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "real",
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "raceOfTheMoment": {
+          "enabled": true,
+          "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/ROTM-nume%CC%81ro-2_kcvj.png"
+        },
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 12315,
+        "boatsAtSea": 3626,
+        "arrived": 8689
+      },
+      {
+        "raceId": 739,
+        "legNum": 1,
+        "limitedAccess": false,
+        "legName": "New York - San Francisco",
+        "estimatedTime": 20,
+        "estimatedLength": 14300,
+        "status": "ended",
+        "startDate": 1748772000000,
+        "start": {
+          "date": 1748772000000,
+          "heading": 114,
+          "lat": 40.50357,
+          "lon": -73.98263,
+          "name": "New York",
+          "countryCode": "USA",
+          "countryFlag": "US"
+        },
+        "end": {
+          "date": 1756072804526,
+          "lat": 37.79962,
+          "lon": -122.5202,
+          "name": "San Francisco",
+          "radius": 10,
+          "countryCode": "USA",
+          "countryFlag": "US"
+        },
+        "raceName": "New York - San Francisco",
+        "raceType": "record",
+        "boat": {
+          "assetBundle": "supermaxi100",
+          "defaultSkin": "maxioffshore_VR_grey",
+          "idx": 10,
+          "label": "Super Maxi 100",
+          "name": "Super Maxi 100",
+          "polar_id": 14,
+          "stats": {
+            "length": 30.5,
+            "width": 7.8,
+            "airDraught": 47,
+            "draught": 6.5,
+            "weight": 31000,
+            "upwindSails": 760,
+            "downwindSails": 1100
+          },
+          "type": "supermaxi100"
+        },
+        "vsrRank": 2,
+        "priceLevel": 3,
+        "freeCredits": 1400,
+        "adStartCredits": 130,
+        "lastUpdate": 1749732247964,
+        "skinDiscount": 1000,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "sponsorSkinList": [],
+        "type": "record",
+        "gates": {
+          "1": "Cap Horn"
+        },
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "restartPrice": 800,
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 9104,
+        "boatsAtSea": 4172,
+        "arrived": 4932,
+        "record": {
+          "lastRankingGateName": "",
+          "lastRankingGate": 0,
+          "attemptCounter": 0
+        }
+      },
+      {
+        "raceId": 741,
+        "legNum": 1,
+        "limitedAccess": false,
+        "legName": "HyperSail GP 1",
+        "estimatedTime": 22,
+        "estimatedLength": 12400,
+        "status": "ended",
+        "startDate": 1752595200000,
+        "start": {
+          "date": 1752595200000,
+          "heading": 158,
+          "lat": 43.11709,
+          "lon": 5.122889,
+          "name": "Marseille",
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "end": {
+          "date": 1756137604207,
+          "lat": -17.77359,
+          "lon": -149.3361,
+          "name": "Tahiti",
+          "radius": 0,
+          "countryCode": "FRA",
+          "countryFlag": "FR"
+        },
+        "raceName": "HyperSail GP",
+        "raceType": "leg",
+        "boat": {
+          "assetBundle": "ultimbp11",
+          "defaultSkin": "ultimbp11_VR_grey",
+          "idx": 18,
+          "label": "Ultim BP XI",
+          "name": "Ultim BP 11",
+          "polar_id": 21,
+          "stats": {
+            "length": 32,
+            "width": 23,
+            "airDraught": 35,
+            "draught": 4.5,
+            "weight": 16000,
+            "upwindSails": 430,
+            "downwindSails": 650
+          },
+          "type": "ultimbp11"
+        },
+        "vsrRank": 2,
+        "priceLevel": 3,
+        "freeCredits": 1400,
+        "adStartCredits": 130,
+        "pilotBoatCredits": 800,
+        "lastUpdate": 1753696884407,
+        "skinDiscount": 1000,
+        "specialIcons": {
+          "raceLogo": true
+        },
+        "syncAWS": "Yes",
+        "fineWinds": true,
+        "freeWindHours": 24,
+        "unlimitedCards": true,
+        "allowInventory": true,
+        "sponsorSkinList": [],
+        "type": "digital",
+        "gates": {
+          "1": "Détroit de Gibraltar",
+          "4": "Cap Horn"
+        },
+        "defaultMapPreset": "default",
+        "mapPresets": [
+          "default",
+          "satellite",
+          "vro1",
+          "old",
+          "imray",
+          "navionics"
+        ],
+        "loadingScreenLogo": null,
+        "season": "summer",
+        "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+        "state": "none",
+        "nbTotalSkippers": 14136,
+        "boatsAtSea": 5532,
+        "arrived": 8604
+      }
+    ],
+    "panicMode": false,
+    "timeBfrPrerolls": 0,
+    "nbrConxAfterPrerolls": "2",
+    "cappingPrerolls": "10",
+    "nbrConxBfrPrerolls": "2",
+    "cappingPerCourse": "10",
+    "cappingGlobal": "100",
+    "nbrConxBtwnAds": "0",
+    "timeBtwnAds": 900000,
+    "timeBfrFirstAd": 86400000,
+    "minAccessBfrFirstAd": "5",
+    "extraActions": {
+      "withAds": true,
+      "isInterstitial": false,
+      "autoSails": {
+        "duration": 4,
+        "price": 50,
+        "max": 86,
+        "chain": [
+          {
+            "duration": 4,
+            "interstitial": false,
+            "credits": 50
+          },
+          {
+            "duration": 6,
+            "interstitial": false,
+            "credits": 50
+          },
+          {
+            "duration": 8,
+            "interstitial": false,
+            "credits": 50
+          },
+          {
+            "duration": 12,
+            "credits": 50
+          },
+          {
+            "duration": 24,
+            "credits": 100
+          }
+        ]
+      },
+      "waypoint": {
+        "max": 9,
+        "price": 50
+      },
+      "prog": {
+        "max": 9,
+        "price": 50
+      },
+      "radar": {
+        "price": 50
+      }
+    },
+    "gsFeatures": {
+      "social_news": true,
+      "social_follow": true,
+      "social_listPlayers": true,
+      "social_userCard": true,
+      "social_userInfos": true,
+      "social_converse": true,
+      "social_invite": true,
+      "social_palmares": true,
+      "social_crm": true,
+      "shopActive": false,
+      "identity_check": false,
+      "team": true,
+      "fleet": false,
+      "fleet_refresh": false,
+      "lootboxes": false,
+      "prevent_guest_purchases": true,
+      "atWillDisplayNameChange": true,
+      "stealth_mode": false,
+      "log_user_actions": true,
+      "count_enterLeg": false,
+      "email_notifs": true,
+      "dev2dev_notifs": false,
+      "firebase_notifs": true,
+      "socialAutoMessages": false,
+      "new_vsr": true,
+      "customizable_map": true,
+      "winds_from_gs": false,
+      "webgl_subscriptions": true,
+      "topRankingCallback": true,
+      "firstOfFleetCallback": true,
+      "mapInfo": true,
+      "fullOptPermanentAutoSails": true,
+      "userSearchEnabled": true,
+      "userSearchFull": false,
+      "boatStateDetailsInLegList": true,
+      "clientWindCache": true
+    },
+    "awsFeatures": {
+      "tracks": true,
+      "legRanks": true,
+      "fleet": true,
+      "nearestFleet": true
+    },
+    "unityLogs": false,
+    "routingPrice": 0,
+    "routing": true,
+    "truePrivateExist": false,
+    "newManeuversSlowdowns": true,
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918339265590000_14",
+  "traceId": "Root=1-68adf126-632ab98c727762c46e429ce8;Parent=521df41800a24145;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+
+
+
+{
+  "scriptData": {
+      "boatsAtSea": 83830,
+      "res": [
+          {
+              "raceId": 738,
+              "legNum": 1,
+              "limitedAccess": false,
+              "legName": "Titanic 1912",
+              "hasCode": true,
+              "estimatedTime": 5,
+              "estimatedLength": 2300,
+              "status": "opened",
+              "startDate": 1744280100000,
+              "start": {
+                  "date": 1744280100000,
+                  "heading": 172,
+                  "lat": 50.64183,
+                  "lon": -0.9203669,
+                  "name": "Southampton",
+                  "countryCode": "GBR",
+                  "countryFlag": "GB"
+              },
+              "end": {
+                  "date": 1745271600000,
+                  "lat": 41.7256,
+                  "lon": -49.947,
+                  "name": "Shipwreck",
+                  "radius": 0,
+                  "countryCode": "USA",
+                  "countryFlag": "US"
+              },
+              "raceName": "Titanic 1912",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "ultimbp11",
+                  "defaultSkin": "ultimbp11_VR_grey",
+                  "idx": 18,
+                  "label": "Ultim BP XI",
+                  "name": "Ultim BP 11",
+                  "polar_id": 21,
+                  "stats": {
+                      "length": 32,
+                      "width": 23,
+                      "airDraught": 35,
+                      "draught": 4.5,
+                      "weight": 16000,
+                      "upwindSails": 430,
+                      "downwindSails": 650
+                  },
+                  "type": "ultimbp11"
+              },
+              "vsrRank": 2,
+              "priceLevel": 4,
+              "freeCredits": 1200,
+              "adStartCredits": 100,
+              "pilotBoatCredits": 600,
+              "lastUpdate": 1740486981833,
+              "skinDiscount": 750,
+              "specialIcons": {
+                  "raceLogo": true,
+                  "raceLogoLink": ""
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "raceOfTheMoment": {
+                  "enabled": true,
+                  "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/NGame-ROTM_Titanic_javx.png"
+              },
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 3657,
+              "boatsAtSea": 3657,
+              "arrived": 0
+          },
+          {
+              "raceId": 745,
+              "legNum": 1,
+              "limitedAccess": false,
+              "legName": "CCEdhec 2025",
+              "estimatedTime": 15,
+              "estimatedLength": 1900,
+              "status": "started",
+              "startDate": 1743847200000,
+              "start": {
+                  "date": 1743847200000,
+                  "heading": 260,
+                  "lat": 43.30798,
+                  "lon": 5.296691,
+                  "name": "Marseille",
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "end": {
+                  "date": 1744477200000,
+                  "lat": 47.53448,
+                  "lon": -2.928721,
+                  "name": "Arzon",
+                  "radius": 3,
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "raceName": "CCEdhec 2025",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "vendeeglobe",
+                  "defaultSkin": "imoca_VR_grey",
+                  "idx": 4,
+                  "label": "Imoca",
+                  "name": "Imoca",
+                  "options": {
+                      "winch": {
+                          "nameKey": "_harken",
+                          "descKey": "_harken",
+                          "thumbnailURL": "thumbnail_winch_harken",
+                          "imageURL": "image_winch_harken"
+                      }
+                  },
+                  "polar_id": 4,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 18.28,
+                      "width": 5.85,
+                      "airDraught": 29,
+                      "draught": 4.5,
+                      "weight": 8000,
+                      "upwindSails": 300,
+                      "downwindSails": 600
+                  },
+                  "type": "imoca"
+              },
+              "vsrRank": 3,
+              "priceLevel": 4,
+              "freeCredits": 1200,
+              "adStartCredits": 100,
+              "pilotBoatCredits": 600,
+              "lastUpdate": 1740663777471,
+              "skinDiscount": 750,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "raceOfTheMoment": {
+                  "enabled": true,
+                  "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/logo_180x180(raceofmoment)_qics.png"
+              },
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 11103,
+              "boatsAtSea": 11103,
+              "arrived": 0
+          },
+          {
+              "raceId": 734,
+              "legNum": 2,
+              "limitedAccess": true,
+              "legName": "eSailing Nations Cup Leg 2",
+              "hasCode": true,
+              "estimatedTime": 7,
+              "estimatedLength": 1500,
+              "status": "started",
+              "startDate": 1743595200000,
+              "start": {
+                  "date": 1743595200000,
+                  "heading": 255,
+                  "lat": 48.2843,
+                  "lon": -4.710269,
+                  "name": "Brest",
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "end": {
+                  "date": 1744300800000,
+                  "lat": 54.74408,
+                  "lon": 18.43864,
+                  "name": "Gdynia",
+                  "radius": 0,
+                  "countryCode": "POL",
+                  "countryFlag": "PL"
+              },
+              "raceName": "eSailing Nations Cup",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "vendeeglobe",
+                  "defaultSkin": "imoca_VR_grey",
+                  "idx": 4,
+                  "label": "Imoca",
+                  "name": "Imoca",
+                  "options": {
+                      "winch": {
+                          "nameKey": "_harken",
+                          "descKey": "_harken",
+                          "thumbnailURL": "thumbnail_winch_harken",
+                          "imageURL": "image_winch_harken"
+                      }
+                  },
+                  "polar_id": 4,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 18.28,
+                      "width": 5.85,
+                      "airDraught": 29,
+                      "draught": 4.5,
+                      "weight": 8000,
+                      "upwindSails": 300,
+                      "downwindSails": 600
+                  },
+                  "type": "imoca"
+              },
+              "vsrRank": 2,
+              "priceLevel": 4,
+              "freeCredits": 1200,
+              "adStartCredits": 100,
+              "pilotBoatCredits": 600,
+              "lastUpdate": 1740058186672,
+              "skinDiscount": 750,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "allowInventory": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 15354,
+              "boatsAtSea": 15354,
+              "arrived": 0
+          },
+          {
+              "raceId": 691,
+              "legNum": 7,
+              "limitedAccess": false,
+              "legName": "Globe 40 - Etape 6",
+              "hasCode": true,
+              "estimatedTime": 19,
+              "estimatedLength": 4800,
+              "status": "started",
+              "startDate": 1743249720000,
+              "start": {
+                  "date": 1743249720000,
+                  "heading": 70,
+                  "lat": -8.082326,
+                  "lon": -34.85705,
+                  "name": "Recife",
+                  "countryCode": "BRA",
+                  "countryFlag": "BR"
+              },
+              "end": {
+                  "date": 1745791200000,
+                  "lat": 47.70115,
+                  "lon": -3.369748,
+                  "name": "Lorient",
+                  "radius": 0,
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "raceName": "Globe 40 - La grande route",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "class40",
+                  "defaultSkin": "class40_VR_grey",
+                  "idx": 12,
+                  "label": "Class 40",
+                  "name": "Class 40",
+                  "polar_id": 3,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 12.19,
+                      "width": 4.5,
+                      "airDraught": 19,
+                      "draught": 3,
+                      "weight": 4500,
+                      "upwindSails": 115,
+                      "downwindSails": 115
+                  },
+                  "type": "class40"
+              },
+              "vsrRank": 2,
+              "priceLevel": 3,
+              "freeCredits": 1400,
+              "adStartCredits": 130,
+              "pilotBoatCredits": 800,
+              "lastUpdate": 1721728094013,
+              "skinDiscount": 1000,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "real",
+              "gates": {
+                  "1": "Equateur"
+              },
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "raceOfTheMoment": {
+                  "enabled": true,
+                  "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/race-of-moment%20(2)_faxl.png"
+              },
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 16338,
+              "boatsAtSea": 16338,
+              "arrived": 0
+          },
+          {
+              "raceId": 729,
+              "legNum": 1,
+              "limitedAccess": false,
+              "legName": "Los Angeles - Honolulu",
+              "estimatedTime": 4,
+              "estimatedLength": 2200,
+              "status": "started",
+              "startDate": 1743530400000,
+              "start": {
+                  "date": 1743530400000,
+                  "heading": 274,
+                  "lat": 33.60807,
+                  "lon": -118.3048,
+                  "name": "Los Angeles",
+                  "countryCode": "USA",
+                  "countryFlag": "US"
+              },
+              "end": {
+                  "date": 1746136800000,
+                  "lat": 21.30941,
+                  "lon": -157.867,
+                  "name": "Honolulu",
+                  "radius": 5,
+                  "countryCode": "USA",
+                  "countryFlag": "US"
+              },
+              "raceName": "Los Angeles - Honolulu",
+              "raceType": "record",
+              "boat": {
+                  "assetBundle": "supermaxi100",
+                  "defaultSkin": "maxioffshore_VR_grey",
+                  "idx": 10,
+                  "label": "Super Maxi 100",
+                  "name": "Super Maxi 100",
+                  "polar_id": 14,
+                  "stats": {
+                      "length": 30.5,
+                      "width": 7.8,
+                      "airDraught": 47,
+                      "draught": 6.5,
+                      "weight": 31000,
+                      "upwindSails": 760,
+                      "downwindSails": 1100
+                  },
+                  "type": "supermaxi100"
+              },
+              "vsrRank": 2,
+              "priceLevel": 3,
+              "freeCredits": 1400,
+              "adStartCredits": 130,
+              "lastUpdate": 1739895831650,
+              "skinDiscount": 1000,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "record",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "restartPrice": 0,
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 6067,
+              "boatsAtSea": 6067,
+              "arrived": 0,
+              "record": {
+                  "lastRankingGateName": "",
+                  "lastRankingGate": 0,
+                  "attemptCounter": 0
+              }
+          },
+          {
+              "raceId": 716,
+              "legNum": 1,
+              "limitedAccess": false,
+              "legName": "Intertropical Challenge",
+              "estimatedTime": 10,
+              "estimatedLength": 2800,
+              "status": "ended",
+              "startDate": 1742832000000,
+              "start": {
+                  "date": 1742832000000,
+                  "heading": 50,
+                  "lat": -0.4085647,
+                  "lon": -48.13962,
+                  "name": "Ananindeua",
+                  "countryCode": "BRA",
+                  "countryFlag": "BR"
+              },
+              "end": {
+                  "date": 1743703204453,
+                  "lat": 5.230335,
+                  "lon": -3.985571,
+                  "name": "Abidjan",
+                  "radius": 5,
+                  "countryCode": "CIV",
+                  "countryFlag": "CI"
+              },
+              "raceName": "Intertropical Challenge",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "ultimbp11",
+                  "defaultSkin": "ultimbp11_VR_grey",
+                  "idx": 18,
+                  "label": "Ultim BP XI",
+                  "name": "Ultim BP 11",
+                  "polar_id": 21,
+                  "stats": {
+                      "length": 32,
+                      "width": 23,
+                      "airDraught": 35,
+                      "draught": 4.5,
+                      "weight": 16000,
+                      "upwindSails": 430,
+                      "downwindSails": 650
+                  },
+                  "type": "ultimbp11",
+                  "options": {
+                      "foil": {
+                          "nameKey": "_code6",
+                          "descKey": "_code6",
+                          "thumbnailURL": "thumbnail_code6",
+                          "imageURL": "image_code6"
+                      }
+                  }
+              },
+              "vsrRank": 2,
+              "priceLevel": 3,
+              "freeCredits": 1400,
+              "adStartCredits": 130,
+              "pilotBoatCredits": 800,
+              "lastUpdate": 1733740100047,
+              "skinDiscount": 1000,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 18526,
+              "boatsAtSea": 13716,
+              "arrived": 4810
+          },
+          {
+/              "raceId": 723,
+/              "legNum": 1,
+              "limitedAccess": false,
+/              "legName": "Atlantic Conqueror",
+/              "estimatedTime": 26,
+/              "estimatedLength": 19000,
+/              "status": "started",
+              "startDate": 1742490000000,
+              "start": {
+                  "date": 1742490000000,
+                  "heading": 145,
+                  "lat": -35.71069,
+                  "lon": -55.70989,
+                  "name": "Buenos Aires",
+                  "countryCode": "ARG",
+                  "countryFlag": "AR"
+              },
+              "end": {
+                  "date": 1748624400000,
+                  "lat": -34.45226,
+                  "lon": -58.16945,
+                  "name": "Buenos Aires",
+                  "radius": 0,
+                  "countryCode": "ARG",
+                  "countryFlag": "AR"
+              },
+              "raceName": "Atlantic Conqueror",
+              "raceType": "leg",
+/              "boat": {
+                  "assetBundle": "vendeeglobe",
+                  "defaultSkin": "imoca_basic_darkgrey",
+                  "idx": 4,
+                  "label": "Imoca",
+                  "name": "Imoca",
+                  "options": {
+                      "winch": {
+                          "nameKey": "_harken",
+                          "descKey": "_harken",
+                          "thumbnailURL": "thumbnail_winch_harken",
+                          "imageURL": "image_winch_harken"
+                      }
+                  },
+                  "polar_id": 4,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 18.28,
+                      "width": 5.85,
+                      "airDraught": 29,
+                      "draught": 4.5,
+                      "weight": 8000,
+                      "upwindSails": 300,
+                      "downwindSails": 600
+                  },
+                  "type": "imoca"
+              },
+              "vsrRank": 1,
+              "priceLevel": 2,
+              "freeCredits": 1800,
+              "adStartCredits": 170,
+              "pilotBoatCredits": 1000,
+/              "lastUpdate": 1740478284710,
+              "skinDiscount": 1250,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 20057,
+              "boatsAtSea": 20057,
+              "arrived": 0
+          },
+          {
+              "raceId": 712,
+              "legNum": 1,
+              "limitedAccess": false,
+              "legName": "Reverse Odyssey",
+              "estimatedTime": 80,
+              "estimatedLength": 23500,
+              "status": "started",
+              "startDate": 1741348800000,
+              "start": {
+                  "date": 1741348800000,
+                  "heading": 251,
+                  "lat": 48.29665,
+                  "lon": -4.646351,
+                  "name": "Brest",
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "end": {
+                  "date": 1751889600000,
+                  "lat": 48.34571,
+                  "lon": -4.483616,
+                  "name": "Brest",
+                  "radius": 5,
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "raceName": "Reverse Odyssey",
+              "raceType": "record",
+              "boat": {
+                  "assetBundle": "supermaxi100",
+                  "defaultSkin": "maxioffshore_VR_grey",
+                  "idx": 10,
+                  "label": "Super Maxi 100",
+                  "name": "Super Maxi 100",
+                  "polar_id": 14,
+                  "stats": {
+                      "length": 30.5,
+                      "width": 7.8,
+                      "airDraught": 47,
+                      "draught": 6.5,
+                      "weight": 31000,
+                      "upwindSails": 760,
+                      "downwindSails": 1100
+                  },
+                  "type": "supermaxi100"
+              },
+              "vsrRank": 1,
+              "priceLevel": 2,
+              "freeCredits": 1800,
+              "adStartCredits": 170,
+              "pilotBoatCredits": 1000,
+              "lastUpdate": 1738230247007,
+              "skinDiscount": 1250,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "sponsorSkinList": [],
+              "type": "record",
+              "gates": {
+                  "3": "Equator",
+                  "5": "Horn",
+                  "8": "Leeuwin",
+                  "9": "Agulhas",
+                  "11": "Equator Wayback"
+              },
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "summer",
+              "raceOfTheMoment": {
+                  "enabled": true,
+                  "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/race-of-the-moment-Reverse-Odyssey%20(1)_n5tr.png"
+              },
+              "restartPrice": 0,
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 14911,
+              "boatsAtSea": 14911,
+              "arrived": 0,
+              "record": {
+                  "lastRankingGateName": "",
+                  "lastRankingGate": 0,
+                  "attemptCounter": 0
+              }
+          },
+          {
+              "raceId": 734,
+              "legNum": 3,
+              "limitedAccess": true,
+              "legName": "eSailing Nations Cup Leg 3",
+              "hasCode": true,
+              "estimatedTime": 3,
+              "estimatedLength": 720,
+              "status": "opened",
+              "startDate": 1745406000000,
+              "start": {
+                  "date": 1745406000000,
+                  "heading": 153,
+                  "lat": 37.04092,
+                  "lon": 15.38581,
+                  "name": "Syracuse",
+                  "countryCode": "ITA",
+                  "countryFlag": "IT"
+              },
+              "end": {
+                  "date": 1745766000000,
+                  "lat": 43.0951,
+                  "lon": 5.933122,
+                  "name": "Toulon",
+                  "radius": 0,
+                  "countryCode": "FRA",
+                  "countryFlag": "FR"
+              },
+              "raceName": "eSailing Nations Cup",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "vendeeglobe",
+                  "defaultSkin": "imoca_VR_grey",
+                  "idx": 4,
+                  "label": "Imoca",
+                  "name": "Imoca",
+                  "options": {
+                      "winch": {
+                          "nameKey": "_harken",
+                          "descKey": "_harken",
+                          "thumbnailURL": "thumbnail_winch_harken",
+                          "imageURL": "image_winch_harken"
+                      }
+                  },
+                  "polar_id": 4,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 18.28,
+                      "width": 5.85,
+                      "airDraught": 29,
+                      "draught": 4.5,
+                      "weight": 8000,
+                      "upwindSails": 300,
+                      "downwindSails": 600
+                  },
+                  "type": "imoca"
+              },
+              "vsrRank": 3,
+              "priceLevel": 5,
+              "freeCredits": 600,
+              "adStartCredits": 70,
+              "pilotBoatCredits": 400,
+              "lastUpdate": 1740132951153,
+              "skinDiscount": 500,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "allowInventory": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 1784,
+              "boatsAtSea": 1784,
+              "arrived": 0
+          },
+          {
+              "raceId": 734,
+              "legNum": 1,
+              "limitedAccess": true,
+              "legName": "eSailing Nations Cup Leg 1",
+              "hasCode": true,
+              "estimatedTime": 15,
+              "estimatedLength": 4800,
+              "status": "ended",
+              "startDate": 1741089600000,
+              "start": {
+                  "date": 1741089600000,
+                  "heading": 227,
+                  "lat": 34.51271,
+                  "lon": 135.1694,
+                  "name": "Osaka",
+                  "countryCode": "JPN",
+                  "countryFlag": "JP"
+              },
+              "end": {
+                  "date": 1743508804310,
+                  "lat": -32.26843,
+                  "lon": 115.7198,
+                  "name": "Perth",
+                  "radius": 0,
+                  "countryCode": "AUS",
+                  "countryFlag": "AU"
+              },
+              "raceName": "eSailing Nations Cup",
+              "raceType": "leg",
+              "boat": {
+                  "assetBundle": "vendeeglobe",
+                  "defaultSkin": "imoca_VR_grey",
+                  "idx": 4,
+                  "label": "Imoca",
+                  "name": "Imoca",
+                  "options": {
+                      "winch": {
+                          "nameKey": "_harken",
+                          "descKey": "_harken",
+                          "thumbnailURL": "thumbnail_winch_harken",
+                          "imageURL": "image_winch_harken"
+                      }
+                  },
+                  "polar_id": 4,
+                  "sailSponsor": "Incidence",
+                  "stats": {
+                      "length": 18.28,
+                      "width": 5.85,
+                      "airDraught": 29,
+                      "draught": 4.5,
+                      "weight": 8000,
+                      "upwindSails": 300,
+                      "downwindSails": 600
+                  },
+                  "type": "imoca"
+              },
+              "vsrRank": 2,
+              "priceLevel": 3,
+              "freeCredits": 2200,
+              "adStartCredits": 130,
+              "pilotBoatCredits": 800,
+              "lastUpdate": 1739887405477,
+              "skinDiscount": 1000,
+              "specialIcons": {
+                  "raceLogo": true
+              },
+              "syncAWS": "Yes",
+              "fineWinds": true,
+              "freeWindHours": 24,
+              "unlimitedCards": true,
+              "allowInventory": true,
+              "sponsorSkinList": [],
+              "type": "digital",
+              "defaultMapPreset": "default",
+              "mapPresets": [
+                  "default",
+                  "satellite",
+                  "vro1",
+                  "old",
+                  "imray",
+                  "navionics"
+              ],
+              "loadingScreenLogo": null,
+              "season": "spring",
+              "fullpackRessource": "https://static.virtualregatta.com/offshore/events/fullpack_standard3.png?c",
+              "state": "none",
+              "nbTotalSkippers": 18842,
+              "boatsAtSea": 7266,
+              "arrived": 11576
+          }
+      ],
+      "panicMode": false,
+      "timeBfrPrerolls": 0,
+      "nbrConxAfterPrerolls": "2",
+      "cappingPrerolls": "10",
+      "nbrConxBfrPrerolls": "2",
+      "cappingPerCourse": "10",
+      "cappingGlobal": "100",
+      "nbrConxBtwnAds": "0",
+      "timeBtwnAds": 900000,
+      "timeBfrFirstAd": 86400000,
+      "minAccessBfrFirstAd": "5",
+      "extraActions": {
+          "withAds": true,
+          "isInterstitial": false,
+          "autoSails": {
+              "duration": 4,
+              "price": 50,
+              "max": 86,
+              "chain": [
+                  {
+                      "duration": 4,
+                      "interstitial": false,
+                      "credits": 50
+                  },
+                  {
+                      "duration": 6,
+                      "interstitial": false,
+                      "credits": 50
+                  },
+                  {
+                      "duration": 8,
+                      "interstitial": false,
+                      "credits": 50
+                  },
+                  {
+                      "duration": 12,
+                      "credits": 50
+                  },
+                  {
+                      "duration": 24,
+                      "credits": 100
+                  }
+              ]
+          },
+          "waypoint": {
+              "max": 9,
+              "price": 50
+          },
+          "prog": {
+              "max": 9,
+              "price": 50
+          },
+          "radar": {
+              "price": 50
+          }
+      },
+      "gsFeatures": {
+          "social_news": true,
+          "social_follow": true,
+          "social_listPlayers": true,
+          "social_userCard": true,
+          "social_userInfos": true,
+          "social_converse": true,
+          "social_invite": true,
+          "social_palmares": true,
+          "social_crm": true,
+          "shopActive": false,
+          "identity_check": false,
+          "team": true,
+          "fleet": false,
+          "fleet_refresh": false,
+          "lootboxes": false,
+          "prevent_guest_purchases": true,
+          "atWillDisplayNameChange": true,
+          "stealth_mode": false,
+          "log_user_actions": true,
+          "count_enterLeg": false,
+          "email_notifs": true,
+          "dev2dev_notifs": false,
+          "firebase_notifs": true,
+          "socialAutoMessages": false,
+          "new_vsr": true,
+          "customizable_map": true,
+          "winds_from_gs": false,
+          "webgl_subscriptions": true,
+          "topRankingCallback": true,
+          "firstOfFleetCallback": true,
+          "mapInfo": true,
+          "fullOptPermanentAutoSails": true,
+          "userSearchEnabled": true,
+          "userSearchFull": false,
+          "boatStateDetailsInLegList": true,
+          "clientWindCache": true
+      },
+      "awsFeatures": {
+          "tracks": true,
+          "legRanks": true,
+          "fleet": true,
+          "nearestFleet": true
+      },
+      "unityLogs": false,
+      "routingPrice": 0,
+      "routing": true,
+      "truePrivateExist": false,
+      "newManeuversSlowdowns": true,
+      "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638794939843200000_11",
+  "traceId": "Root=1-67f1a640-3addcaf60575536349ce2525;Parent=7fd433f240b3af29;Sampled=0;Lineage=1:e2ef51fb:0"
+}

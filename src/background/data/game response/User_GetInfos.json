@@ -1,0 +1,50 @@
+{
+  "@class": "LogEventRequest",
+  "eventKey": "User_GetInfos",
+  "requestId": "638918339261730000_11",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+
+
+{
+  "scriptData": {
+    "infos": {
+      "personal": {
+        "country": "FR",
+        "partners": false,
+        "raceInfos": false
+      },
+      "mailSubscribe": {
+        "all": true,
+        "badSail": true,
+        "aground": true,
+        "iceLimit": true,
+        "restrictedArea": true,
+        "rankingGate": true,
+        "arrival": true,
+        "legStarted": true,
+        "prepEnd": true,
+        "aground24h": true
+      },
+      "notificationSubscribe": {
+        "all": true,
+        "badSail": true,
+        "aground": true,
+        "iceLimit": true,
+        "restrictedArea": true,
+        "rankingGate": true,
+        "arrival": true,
+        "raceIsStarted": true,
+        "vsrUpdateJustDone": true
+      },
+      "playerPrefs": {},
+      "canNotChangeDisplayName": false,
+      "creditsNeededForNextPseudoChange": 0
+    },
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918339261730000_11",
+  "traceId": "Root=1-68adf126-0f36c39b31a237a205720991;Parent=0c9135dc7f24145e;Sampled=0;Lineage=1:e2ef51fb:0"
+}

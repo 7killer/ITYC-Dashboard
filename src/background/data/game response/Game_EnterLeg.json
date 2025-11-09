@@ -1,0 +1,109 @@
+{
+  "@class": "LogEventRequest",
+  "eventKey": "Game_EnterLeg",
+  "raceId": 780,
+  "legNum": 3,
+  "partnerOptin": 0,
+  "partnerCodeOptIn": 0,
+  "requestId": "638918345834120000_27",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+
+{
+  "scriptData": {
+    "boatState": {
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "stats": {
+          "length": 18.28,
+          "width": 5.85,
+          "airDraught": 29,
+          "draught": 4.5,
+          "weight": 8000,
+          "upwindSails": 300,
+          "downwindSails": 600
+        },
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "imoca_VR_grey",
+        "display": {
+          "color1": "#58585b",
+          "color2": "#58585b"
+        }
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "state": "prep",
+      "pos": {
+        "lat": 37.55654,
+        "lon": -0.9931286
+      },
+      "coord": {
+        "type": "Point",
+        "coordinates": [
+          -0.9931286,
+          37.55654
+        ]
+      },
+      "heading": 127,
+      "sail": 1,
+      "priceLevel": 4,
+      "credits": 1400,
+      "legStartDate": 1756213200000,
+      "distanceFromStart": 0,
+      "stamina": 100,
+      "options": [],
+      "type": "normal",
+      "gateGroupCounters": [
+        0,
+        0,
+        0
+      ],
+      "isMultiLeg": true,
+      "personal": {
+        "displayName": "Guest_1756229919473",
+        "country": "FR"
+      },
+      "_id": {
+        "user_id": "68adf11f604179e4acb1395d",
+        "race_id": 780,
+        "leg_num": 3
+      }
+    },
+    "boatOptions": {
+      "foil": 1010,
+      "winch": 450,
+      "radio": 100,
+      "skin": 750,
+      "hull": 290,
+      "reach": 710,
+      "heavy": 500,
+      "light": 630,
+      "comfortLoungePug": 390,
+      "magicFurler": 570,
+      "vrtexJacket": 510
+    },
+    "balance": {
+      "free": 1400,
+      "player": 500
+    },
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918345834120000_27",
+  "traceId": "Root=1-68adf3b7-285850904ba3501727ed6adc;Parent=4c49cd068d4960eb;Sampled=0;Lineage=1:e2ef51fb:0"
+}

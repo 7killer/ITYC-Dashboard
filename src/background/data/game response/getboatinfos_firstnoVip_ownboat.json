@@ -1,0 +1,939 @@
+{
+  "user_id": "68adf11f604179e4acb1395d",
+  "race_id": 780,
+  "leg_num": 3,
+  "infos": "engine,bs,ba,leg,graph"
+}
+
+
+{
+  "rc": "ok",
+  "res": {
+    "bs": null,
+    "engine": {
+      "lastCalc": 1756230540000,
+      "nextCalc": 1756230630000,
+      "lastWindUpdate": 1756225207667,
+      "lastFineWindUpdate": 1756225827154
+    },
+    "ba": null,
+    "leg": {
+      "_id": {
+        "race_id": 780,
+        "num": 3
+      },
+      "_updatedAt": "2025-08-25T09:19:33.294Z",
+      "boat": {
+        "assetBundle": "vendeeglobe",
+        "defaultSkin": "imoca_VR_grey",
+        "idx": 4,
+        "label": "Imoca",
+        "name": "Imoca",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "polar_id": 4,
+        "sailSponsor": "Incidence",
+        "stats": {
+          "length": 18.28,
+          "width": 5.85,
+          "airDraught": 29,
+          "draught": 4.5,
+          "weight": 8000,
+          "upwindSails": 300,
+          "downwindSails": 600
+        },
+        "type": "imoca"
+      },
+      "checkpoints": [
+        {
+          "id": 1,
+          "group": 1,
+          "name": "Cap de la Nao",
+          "start": {
+            "lat": 38.732895141415,
+            "lon": 0.23089368078137
+          },
+          "end": {
+            "lat": 36.916889434628,
+            "lon": 3.8769699224788
+          },
+          "engine": true,
+          "display": "none",
+          "ranking": false,
+          "side": "port"
+        },
+        {
+          "id": 2,
+          "group": 2,
+          "name": "Cap Camarat",
+          "start": {
+            "lat": 43.199230145774,
+            "lon": 6.6793893957323
+          },
+          "end": {
+            "lat": 42.802692365012,
+            "lon": 10.73370304031
+          },
+          "engine": true,
+          "display": "none",
+          "ranking": false,
+          "side": "port"
+        },
+        {
+          "id": 3,
+          "group": 3,
+          "name": "Nice",
+          "start": {
+            "lat": 43.668025519518,
+            "lon": 7.2289298595892
+          },
+          "end": {
+            "lat": 43.675406958726,
+            "lon": 7.3251677998444
+          },
+          "engine": true,
+          "display": "gate",
+          "ranking": false,
+          "side": "port"
+        }
+      ],
+      "close": {
+        "date": 1756992600000
+      },
+      "course": [
+        {
+          "lat": 37.5565,
+          "lon": -0.993129
+        },
+        {
+          "lat": 37.0451,
+          "lon": -0.175456
+        },
+        {
+          "lat": 38.5416,
+          "lon": 0.674838
+        },
+        {
+          "lat": 41.2356,
+          "lon": 2.40297
+        },
+        {
+          "lat": 43.1631,
+          "lon": 6.91064
+        },
+        {
+          "lat": 43.3352,
+          "lon": 7.29198
+        },
+        {
+          "lat": 43.6721,
+          "lon": 7.26819
+        }
+      ],
+      "defaultMapPreset": "default",
+      "displayOrder": 30,
+      "end": {
+        "date": 1756647000000,
+        "lat": 43.68401,
+        "lon": 7.278994,
+        "name": "Nice",
+        "radius": 0,
+        "countryCode": "FRA",
+        "countryFlag": "FR"
+      },
+      "freeCredits": 1400,
+      "ice_limits": {
+        "maxLat": 90,
+        "minLat": -90,
+        "north": [],
+        "south": [
+          {
+            "lat": -90,
+            "lon": -180
+          },
+          {
+            "lat": -90,
+            "lon": -90
+          },
+          {
+            "lat": -90,
+            "lon": 0
+          },
+          {
+            "lat": -90,
+            "lon": 90
+          },
+          {
+            "lat": -90,
+            "lon": 180
+          }
+        ]
+      },
+      "lastUpdate": 1755506907016,
+      "mapPresets": [
+        "default",
+        "satellite",
+        "vro1",
+        "old",
+        "imray",
+        "navionics"
+      ],
+      "name": "The Ocean Race Europe 3",
+      "open": {
+        "date": 1755349204460
+      },
+      "optionPrices": {
+        "foil": 1010,
+        "winch": 450,
+        "radio": 100,
+        "skin": 750,
+        "hull": 290,
+        "reach": 710,
+        "heavy": 500,
+        "light": 630,
+        "comfortLoungePug": 390,
+        "magicFurler": 570,
+        "vrtexJacket": 510
+      },
+      "pilotBoatCredits": 600,
+      "priceLevel": 4,
+      "race": {
+        "name": "The Ocean Race Europe 2025",
+        "type": "leg"
+      },
+      "stamina": true,
+      "start": {
+        "date": 1756213200000,
+        "heading": 127,
+        "lat": 37.55654,
+        "lon": -0.9931286,
+        "name": "Carthagène",
+        "countryCode": "ESP",
+        "countryFlag": "ES"
+      },
+      "status": "started",
+      "syncAWS": "Yes",
+      "vsrLevel": 3,
+      "estimatedLength": 550,
+      "estimatedTime": 4,
+      "fineWinds": true,
+      "overrideLoadingScreen": {},
+      "raceOfTheMoment": {
+        "enabled": true,
+        "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/ROTM-nume%CC%81ro-3_qxv1.png"
+      },
+      "schedule": "validated",
+      "specialIcons": {
+        "raceLogo": true
+      },
+      "hasCode": true,
+      "restrictedZones": [
+        {
+          "name": "Cabo de Palos Exclusion Zone",
+          "slowDownRate": 0.3,
+          "vertices": [
+            {
+              "lat": 37.5953333,
+              "lon": -0.5583333
+            },
+            {
+              "lat": 37.571,
+              "lon": -0.4785
+            },
+            {
+              "lat": 37.5411667,
+              "lon": -0.5003333
+            },
+            {
+              "lat": 37.5185,
+              "lon": -0.5403333
+            },
+            {
+              "lat": 37.561,
+              "lon": -0.5988333
+            },
+            {
+              "lat": 37.5825,
+              "lon": -0.5655
+            }
+          ],
+          "bbox": [
+            37.5185,
+            -0.5988333,
+            37.5953333,
+            -0.4785
+          ]
+        },
+        {
+          "name": "Cabo de Palos Marine Reserve Exclusion Zone",
+          "slowDownRate": 0.3,
+          "vertices": [
+            {
+              "lat": 37.6248333,
+              "lon": -0.6808333
+            },
+            {
+              "lat": 37.6603333,
+              "lon": -0.6116667
+            },
+            {
+              "lat": 37.6804167,
+              "lon": -0.6278333
+            },
+            {
+              "lat": 37.6456667,
+              "lon": -0.697
+            }
+          ],
+          "bbox": [
+            37.6248333,
+            -0.697,
+            37.6804167,
+            -0.6116667
+          ]
+        },
+        {
+          "name": "Cap Negre Exclusion Zone",
+          "slowDownRate": 0.3,
+          "vertices": [
+            {
+              "lat": 38.63,
+              "lon": 0.22535
+            },
+            {
+              "lat": 38.625833,
+              "lon": 0.433333
+            },
+            {
+              "lat": 38.688667,
+              "lon": 0.483333
+            },
+            {
+              "lat": 38.732667,
+              "lon": 0.376167
+            },
+            {
+              "lat": 38.681667,
+              "lon": 0.336667
+            }
+          ],
+          "bbox": [
+            38.625833,
+            0.22535,
+            38.732667,
+            0.483333
+          ]
+        },
+        {
+          "name": "Tabarca Exclusion Zone",
+          "slowDownRate": 0.3,
+          "vertices": [
+            {
+              "lat": 38.159417,
+              "lon": -0.503083
+            },
+            {
+              "lat": 38.136833,
+              "lon": -0.417
+            },
+            {
+              "lat": 38.159333,
+              "lon": -0.408167
+            },
+            {
+              "lat": 38.181167,
+              "lon": -0.495167
+            }
+          ],
+          "bbox": [
+            38.136833,
+            -0.503083,
+            38.181167,
+            -0.408167
+          ]
+        }
+      ]
+    },
+    "partnerCode": ""
+  }
+}
+
+{
+    "rc": "ok",
+    "res": {
+        "bs": {
+            "_id": {
+                "user_id": "67f1a5ec5ef356cda256ec4d",
+                "race_id": 723,
+                "leg_num": 1
+            },
+            "boat": {
+                "name": "Imoca",
+                "label": "Imoca",
+                "polar_id": 4,
+                "assetBundle": "vendeeglobe",
+                "stats": {
+                    "length": 18.28,
+                    "width": 5.85,
+                    "airDraught": 29,
+                    "draught": 4.5,
+                    "weight": 8000,
+                    "upwindSails": 300,
+                    "downwindSails": 600
+                },
+                "sailSponsor": "Incidence",
+                "options": {
+                    "winch": {
+                        "nameKey": "_harken",
+                        "descKey": "_harken",
+                        "thumbnailURL": "thumbnail_winch_harken",
+                        "imageURL": "image_winch_harken"
+                    }
+                },
+                "type": "imoca",
+                "idx": 4,
+                "skin_id": "01GWPWESE463EJGB39EVWGBG06",
+                "display": {
+                    "color1": "#dedede",
+                    "color2": "#ffffff"
+                },
+                "skinName": "Virtual Regatta Grey"
+            },
+            "branding": {
+                "id": "VR"
+            },
+            "credits": 1800,
+            "earlyBirdLimit": null,
+            "isMultiLeg": false,
+            "legStartDate": 1742490000000,
+            "options": [],
+            "personal": {
+                "country": "FR",
+                "deptId": null,
+                "townId": null,
+                "yachtClubId": null
+            },
+            "priceLevel": 2,
+            "type": "normal",
+            "startDate": 1743890825711,
+            "displayName": "Guest_1743889900171",
+            "last_seen_rank": {
+                "rank": 15240,
+                "ts": 1744234860
+            },
+            "state": "racing",
+            "heading": 8,
+            "pos": {
+                "lat": -7.042524214936647,
+                "lon": -4.650593650971525
+            },
+            "sail": 1,
+            "speed": 11.8913,
+            "distanceFromStart": 5740.69535,
+            "gateGroupCounters": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "stamina": 100,
+            "distanceToEnd": 12333.40043,
+            "lastCalcDate": 1744234920000,
+            "stats": {
+                "staminaMax": 100,
+                "staminaTemp": [],
+                "staminaMaxEffects": []
+            },
+            "tsLastEngine": 1744234920000,
+            "tws": 12.35959,
+            "twd": 134.89934,
+            "twa": 126.89934,
+            "tsLastTrackPoint": 1744232940000,
+            "badSail": true,
+            "hasPermanentAutoSails": false,
+            "rank": 15240
+        },
+        "engine": {
+            "lastCalc": 1744234920000,
+            "nextCalc": 1744235010000,
+            "lastWindUpdate": 1744234810344,
+            "lastFineWindUpdate": 1744215383321
+        },
+        "ba": null,
+        "leg": {
+            "_id": {
+                "race_id": 723,
+                "num": 1
+            },
+            "_updatedAt": "2025-03-20T09:21:44.919Z",
+            "boat": {
+                "assetBundle": "vendeeglobe",
+                "defaultSkin": "imoca_basic_darkgrey",
+                "idx": 4,
+                "label": "Imoca",
+                "name": "Imoca",
+                "options": {
+                    "winch": {
+                        "nameKey": "_harken",
+                        "descKey": "_harken",
+                        "thumbnailURL": "thumbnail_winch_harken",
+                        "imageURL": "image_winch_harken"
+                    }
+                },
+                "polar_id": 4,
+                "sailSponsor": "Incidence",
+                "stats": {
+                    "length": 18.28,
+                    "width": 5.85,
+                    "airDraught": 29,
+                    "draught": 4.5,
+                    "weight": 8000,
+                    "upwindSails": 300,
+                    "downwindSails": 600
+                },
+                "type": "imoca"
+            },
+            "checkpoints": [
+                {
+                    "id": 1,
+                    "group": 1,
+                    "name": 1,
+                    "start": {
+                        "lat": -51.834994582305,
+                        "lon": -61.346780040739
+                    },
+                    "end": {
+                        "lat": -73.31334653295,
+                        "lon": -99.788997175046
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 2,
+                    "group": 1,
+                    "name": "",
+                    "start": {
+                        "lat": -51.84480448126,
+                        "lon": -61.280148704185
+                    },
+                    "end": {
+                        "lat": -51.84480448126,
+                        "lon": -61.273966091089
+                    },
+                    "engine": false,
+                    "display": "buoy",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 3,
+                    "group": 2,
+                    "name": 2,
+                    "start": {
+                        "lat": -15.92120793711,
+                        "lon": -5.635078000128
+                    },
+                    "end": {
+                        "lat": -8.2836038282697,
+                        "lon": 13.337520125543
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 4,
+                    "group": 2,
+                    "name": "",
+                    "start": {
+                        "lat": -15.956702788836,
+                        "lon": -5.6990967016681
+                    },
+                    "end": {
+                        "lat": -15.958762725359,
+                        "lon": -5.711525148179
+                    },
+                    "engine": false,
+                    "display": "buoy",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 8,
+                    "group": 3,
+                    "name": 3,
+                    "start": {
+                        "lat": 14.759721663312,
+                        "lon": -17.125688120087
+                    },
+                    "end": {
+                        "lat": 15.473832991437,
+                        "lon": -85.467662718015
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "stbd"
+                },
+                {
+                    "id": 9,
+                    "group": 4,
+                    "name": "",
+                    "start": {
+                        "lat": 65.097361322751,
+                        "lon": -13.574826768403
+                    },
+                    "end": {
+                        "lat": 67.198496576657,
+                        "lon": 14.628736631419
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 5,
+                    "group": 5,
+                    "name": 5,
+                    "start": {
+                        "lat": 66.512314906498,
+                        "lon": -16.54239101517
+                    },
+                    "end": {
+                        "lat": 80.212840071102,
+                        "lon": -16.587711110303
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 6,
+                    "group": 5,
+                    "name": 5,
+                    "start": {
+                        "lat": 65.042947311836,
+                        "lon": -16.601506566883
+                    },
+                    "end": {
+                        "lat": 65.715173263984,
+                        "lon": -16.579399598095
+                    },
+                    "engine": false,
+                    "display": "buoy",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 10,
+                    "group": 6,
+                    "name": "",
+                    "start": {
+                        "lat": 65.57100049064,
+                        "lon": -24.318627393655
+                    },
+                    "end": {
+                        "lat": 68.342301760171,
+                        "lon": -30.598067958327
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "port"
+                },
+                {
+                    "id": 11,
+                    "group": 7,
+                    "name": "",
+                    "start": {
+                        "lat": -7.948116224109,
+                        "lon": -34.843916775628
+                    },
+                    "end": {
+                        "lat": -21.880840223132,
+                        "lon": 15.059690062074
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "stbd"
+                },
+                {
+                    "id": 12,
+                    "group": 8,
+                    "name": "",
+                    "start": {
+                        "lat": -34.650897149434,
+                        "lon": -54.169736408637
+                    },
+                    "end": {
+                        "lat": -76.995638970724,
+                        "lon": -25.784377862928
+                    },
+                    "engine": true,
+                    "display": "none",
+                    "ranking": false,
+                    "side": "stbd"
+                },
+                {
+                    "id": 7,
+                    "group": 9,
+                    "name": 4,
+                    "start": {
+                        "lat": -34.746158756543,
+                        "lon": -58.167731590358
+                    },
+                    "end": {
+                        "lat": -34.474853314686,
+                        "lon": -57.853461711257
+                    },
+                    "engine": true,
+                    "display": "gate",
+                    "ranking": false,
+                    "side": "port"
+                }
+            ],
+            "close": {
+                "date": 1749229200000
+            },
+            "course": [
+                {
+                    "lat": -35.7107,
+                    "lon": -55.7099
+                },
+                {
+                    "lat": -37.6928,
+                    "lon": -54.0138
+                },
+                {
+                    "lat": -39.208,
+                    "lon": -55.1111
+                },
+                {
+                    "lat": -44.8078,
+                    "lon": -60.2564
+                },
+                {
+                    "lat": -47.5293,
+                    "lon": -62.5397
+                },
+                {
+                    "lat": -50.0147,
+                    "lon": -64.5819
+                },
+                {
+                    "lat": -52.7473,
+                    "lon": -61.0018
+                },
+                {
+                    "lat": -56.4637,
+                    "lon": -55.7105
+                },
+                {
+                    "lat": -51.6822,
+                    "lon": -30.9322
+                },
+                {
+                    "lat": -46.1611,
+                    "lon": -0.940395
+                },
+                {
+                    "lat": -26.7753,
+                    "lon": 2.02499
+                },
+                {
+                    "lat": -13.8607,
+                    "lon": 2.34396
+                },
+                {
+                    "lat": -4.24189,
+                    "lon": -4.65397
+                },
+                {
+                    "lat": 0.0268571,
+                    "lon": -7.39551
+                },
+                {
+                    "lat": 8.34955,
+                    "lon": -21.8814
+                },
+                {
+                    "lat": 11.9656,
+                    "lon": -26.9101
+                },
+                {
+                    "lat": 16.3946,
+                    "lon": -28.1377
+                },
+                {
+                    "lat": 30.9116,
+                    "lon": -30.0265
+                },
+                {
+                    "lat": 55.8218,
+                    "lon": -12.3815
+                },
+                {
+                    "lat": 60.8888,
+                    "lon": -9.02844
+                },
+                {
+                    "lat": 67.5599,
+                    "lon": -13.2889
+                },
+                {
+                    "lat": 70.8991,
+                    "lon": -15.8273
+                },
+                {
+                    "lat": 67.295,
+                    "lon": -24.1776
+                },
+                {
+                    "lat": 62.9111,
+                    "lon": -34.8654
+                },
+                {
+                    "lat": 32.6213,
+                    "lon": -46.6958
+                },
+                {
+                    "lat": 15.924,
+                    "lon": -51.7934
+                },
+                {
+                    "lat": -3.49778,
+                    "lon": -34.8743
+                },
+                {
+                    "lat": -19.1404,
+                    "lon": -22.9697
+                },
+                {
+                    "lat": -27.6199,
+                    "lon": -32.2466
+                },
+                {
+                    "lat": -38.3707,
+                    "lon": -46.5767
+                },
+                {
+                    "lat": -34.5985,
+                    "lon": -57.9981
+                }
+            ],
+            "defaultMapPreset": "default",
+            "displayOrder": 20,
+            "end": {
+                "date": 1748624400000,
+                "lat": -34.45226,
+                "lon": -58.16945,
+                "name": "Buenos Aires",
+                "radius": 0,
+                "countryCode": "ARG",
+                "countryFlag": "AR"
+            },
+            "freeCredits": 1800,
+            "ice_limits": {
+                "maxLat": 90,
+                "minLat": -90,
+                "north": [],
+                "south": [
+                    {
+                        "lat": -90,
+                        "lon": -180
+                    },
+                    {
+                        "lat": -90,
+                        "lon": -90
+                    },
+                    {
+                        "lat": -90,
+                        "lon": 0
+                    },
+                    {
+                        "lat": -90,
+                        "lon": 90
+                    },
+                    {
+                        "lat": -90,
+                        "lon": 180
+                    }
+                ]
+            },
+            "lastUpdate": 1740478284710,
+            "mapPresets": [
+                "default",
+                "satellite",
+                "vro1",
+                "old",
+                "imray",
+                "navionics"
+            ],
+            "name": "Atlantic Conqueror",
+            "open": {
+                "date": 1741885204318
+            },
+            "optionPrices": {
+                "foil": 1660,
+                "winch": 750,
+                "radio": 170,
+                "skin": 1250,
+                "hull": 490,
+                "reach": 1190,
+                "heavy": 840,
+                "light": 1050,
+                "comfortLoungePug": 650,
+                "magicFurler": 950,
+                "vrtexJacket": 850
+            },
+            "pilotBoatCredits": 1000,
+            "priceLevel": 2,
+            "race": {
+                "name": "Atlantic Conqueror",
+                "type": "leg"
+            },
+            "stamina": true,
+            "start": {
+                "date": 1742490000000,
+                "heading": 145,
+                "lat": -35.71069,
+                "lon": -55.70989,
+                "name": "Buenos Aires",
+                "countryCode": "ARG",
+                "countryFlag": "AR"
+            },
+            "status": "started",
+            "syncAWS": "Yes",
+            "vsrLevel": 1,
+            "estimatedLength": 19000,
+            "estimatedTime": 26,
+            "fineWinds": true,
+            "schedule": "validated",
+            "specialIcons": {
+                "raceLogo": true
+            },
+            "raceOfTheMoment": {
+                "enabled": true,
+                "img": "https://static.virtualregatta.com/offshore/images/race-of-the-moment/logo_180x180%20(4)_eas0.png"
+            }
+        }
+    }
+}

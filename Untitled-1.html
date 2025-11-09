@@ -1,0 +1,86 @@
+<html data-theme="dark" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>I.T.Y.C. VR Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="icon.png">
+        <script type="module" src="src/dashboard/main.js"></script>
+    </head>
+<body>
+<div class="container">
+    <div class="top">
+        <div class="flexrow">
+            <div>
+                <label><b id="t_boat">Bateau : </b></label>
+                <span id="lb_boatvip"></span>
+                <label><span id="lb_boatname" style="color:Red; font-weight:bold;">unknown</span><span> [&#128176;<span id="lb_credits">0</span>]</span></label>
+            </div>
+            <div>
+                <label><b id="t_team">Équipe: </b></label>
+                <label id="lb_teamname">-</label>
+            </div>
+            <div>
+                <label id="t_race">Course</label>
+                <select id="sel_race" name="race"></select>
+                <button id="bt_router">Go</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+ je veux une focntion qui rempli sel_race a partir d un store indexed db
+donc les objets sont au format :
+legList: races.map(r => ({
+    id: `${r.raceId}-${r.legNum}`,
+    rid: r.raceId,
+    legNum: r.legNum,
+    raceName: r.raceName,
+    legName: r.legName,
+    estimatedTime: r.estimatedTime,
+    estimatedLength: r.estimatedLength,
+    status: r.status,
+    startDate: r.startDate,
+    vsrRank: r.vsrRank,
+    priceLevel: r.priceLevel,
+    freeCredits: r.freeCredits,
+    adStartCredits: r.adStartCredits,
+    pilotBoatCredits: r.pilotBoatCredits,
+    lastUpdate: r.lastUpdate,
+    skinDiscount: r.skinDiscount,
+    fineWinds: r.fineWinds,
+    nbTotalSkippers: r.nbTotalSkippers,
+    boatsAtSea: r.boatsAtSea,
+    arrived: r.arrived,
+    raceType: r.raceType,
+    limitedAccess: r.limitedAccess,
+
+    boat: {
+      polar_id: r.boat?.polar_id
+    },
+
+    start: {
+      date: r.start?.date,
+      heading: r.start?.heading,
+      lat: r.start?.lat,
+      lon: r.start?.lon,
+      name: r.start?.name,
+      countryFlag: r.start?.countryFlag
+    },
+
+    end: {
+      date: r.end?.date,
+      lat: r.end?.lat,
+      lon: r.end?.lon,
+      name: r.end?.name,
+      radius: r.end?.radius,
+      countryFlag: r.end?.countryFlag
+    }
+  }))
+}
+je veux qu une option au selrace soit ajouté avec le legName
+si le status est egale finished et que end.date est anterieur à plus d une semaine la course n apparaissent pas dans la liste.
+pour recuperer les infos de la db, j ai deja la focntion suivante 
+getAllData("legList")
+        .then(race => {
+        });
+            

@@ -1,0 +1,225 @@
+User_GetCard
+{
+  "@class": "LogEventRequest",
+  "eventKey": "User_GetCard",
+  "user_id": "5fa9273ba73ee0501838d7a0",
+  "race_id": 780,
+  "syncAWS": "Yes",
+  "leg_num": 3,
+  "requestId": "638918357161620000_70",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+{
+  "scriptData": {
+    "baseInfos": {
+      "id": "5fa9273ba73ee0501838d7a0",
+      "displayName": "Nico_jud - PVe / D-ICE",
+      "currentLegs": [],
+      "country": "FR",
+      "avatar": {
+        "pict": "default",
+        "gravatarHash": "b86ec73943bf343eaf286b61a16bafba"
+      },
+      "races": {
+        "participated": 343,
+        "finished": 343,
+        "bestPerfRank": 1,
+        "bestPerfPlayers": 63932,
+        "bestPerfLegName": "Indian Ocean Rise"
+      },
+      "VSR2": 118720,
+      "VSR_2": {
+        "currentPoints": 118720,
+        "maxPoints": 1709330,
+        "last": 2186,
+        "best": 20339,
+        "bestTs": 1751994004279,
+        "ts": 1756137604207,
+        "rank": 5,
+        "previous": {
+          "ts": 1756072804526,
+          "rank": 5
+        },
+        "season": {
+          "ts": 1756137604207,
+          "season": "2025-summer",
+          "points": 37154,
+          "rank": 273,
+          "previous": {
+            "ts": 1688731204254,
+            "season": "2023-summer",
+            "points": 11607,
+            "rank": 3
+          }
+        }
+      },
+      "nbFollowed": 27,
+      "nbFollowers": 17272,
+      "nbFriends": 17366,
+      "nbBlocked": 148,
+      "nbFollowedPlayers": 27,
+      "team": {
+        "id": "5fec43b7d018c2055564ba0c",
+        "name": "Team PVe / D ICE",
+        "badgeId": "2-ecu-illu-4_1",
+        "coach": false
+      },
+      "genderType": "M",
+      "xp": 1181414,
+      "level": 14
+    },
+    "legInfos": {
+      "state": "inLeg"
+    },
+    "rc": "ok"
+  },
+  "@class": ".LogEventResponse",
+  "requestId": "638918357161620000_70",
+  "traceId": "Root=1-68adf823-7cca37fc32e949bc6b384faa;Parent=2985d8bfa0a23801;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+
+{
+  "rc": "ok",
+  "res": {
+    "bs": {
+      "_id": {
+        "user_id": "6723f4974b2fe09f732ce985",
+        "race_id": 780,
+        "leg_num": 3
+      },
+      "boat": {
+        "name": "Imoca",
+        "label": "Imoca",
+        "polar_id": 4,
+        "assetBundle": "vendeeglobe",
+        "sailSponsor": "Incidence",
+        "options": {
+          "winch": {
+            "nameKey": "_harken",
+            "descKey": "_harken",
+            "thumbnailURL": "thumbnail_winch_harken",
+            "imageURL": "image_winch_harken"
+          }
+        },
+        "type": "imoca",
+        "idx": 4,
+        "skin_id": "01GWPWR0NAEW9YZQF1SXTEVZS4",
+        "display": {
+          "color1": "#ceab5b",
+          "color2": "#ffffff"
+        },
+        "skinName": "Blue and Gold"
+      },
+      "branding": {
+        "id": "VR"
+      },
+      "personal": {
+        "country": "FR"
+      },
+      "type": "normal",
+      "displayName": "gueuledeloup7.7",
+      "state": "racing",
+      "heading": 7.48872,
+      "pos": {
+        "lat": 37.754151525046716,
+        "lon": -0.2592787027605466
+      },
+      "sail": 4,
+      "speed": 9.19113,
+      "distanceFromStart": 56.6314,
+      "lastCalcDate": 1756231560000,
+      "distanceToEnd": 492.95981,
+      "tws": 9.81141,
+      "twa": 42.28981,
+      "rank": 1713
+    },
+    "track": {
+      "_id": {
+        "user_id": "6723f4974b2fe09f732ce985",
+        "race_id": 780,
+        "leg_num": 3
+      },
+      "track": [
+        {
+          "ts": 1756213200000,
+          "lat": 37.55654,
+          "lon": -0.993129,
+          "tag": "s"
+        },
+        {
+          "ts": 1756214081878,
+          "lat": 37.526827,
+          "lon": -0.940029,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756215060107,
+          "lat": 37.499779,
+          "lon": -0.883753,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756215916232,
+          "lat": 37.475566,
+          "lon": -0.82441,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756216774650,
+          "lat": 37.45339,
+          "lon": -0.762287,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756219020000,
+          "lat": 37.399364,
+          "lon": -0.598752,
+          "tag": "h-wp"
+        },
+        {
+          "ts": 1756219440000,
+          "lat": 37.392194,
+          "lon": -0.569153,
+          "tag": "h-wp"
+        },
+        {
+          "ts": 1756219800000,
+          "lat": 37.392023,
+          "lon": -0.551014,
+          "tag": "h-wp"
+        },
+        {
+          "ts": 1756220647668,
+          "lat": 37.385855,
+          "lon": -0.497505,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756227236106,
+          "lat": 37.695007,
+          "lon": -0.428486,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756228158780,
+          "lat": 37.740868,
+          "lon": -0.42597,
+          "tag": "wp"
+        },
+        {
+          "ts": 1756229082509,
+          "lat": 37.738383,
+          "lon": -0.374582,
+          "tag": "wp"
+        }
+      ]
+    },
+    "engine": {
+      "lastCalc": 1756231560000,
+      "nextCalc": 1756231650000,
+      "lastWindUpdate": 1756231204414,
+      "lastFineWindUpdate": 1756225827154
+    }
+  }
+}

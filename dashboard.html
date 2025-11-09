@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!--    <script type="module" src="/src/dashboard/main.jsx"></script> -->
+ <html data-theme="dark" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>I.T.Y.C. VR Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="icon.png">
+        <script type="module" src="src/dashboard/main.js"></script>
+    </head>
+<body>
+<div class="container">
+    <div class="top">
+        <div class="flexrow">
+            <div>
+                <label><b id="t_boat">Bateau : </b></label>
+                <span id="lb_boatvip"></span>
+                <label><span id="lb_boatname" style="color:Red; font-weight:bold;">unknown</span><span> [&#128176;<span id="lb_credits">0</span>]</span></label>
+            </div>
+            <div>
+                <label><b id="t_team">Équipe: </b></label>
+                <label id="lb_teamname">-</label>
+            </div>
+            <div>
+                <label id="t_race">Course</label>
+                <select id="sel_race" name="race"></select>
+                <button id="bt_router">Go</button>
+            </div>
+            <div>
+                <input type="checkbox" id="auto_router" checked>
+                <label for="auto_router">Auto router window</label>
+                <select id="sel_router" name="defaultRouter">
+                    <option value="zezo">Zezo</option>
+                    <option value="vrzen">VrZen</option>
+                    <option value="both">Les Deux</option>
+                </select>
+                <label id="lb_cycle"></label>
+            </div>
+            <div>
+                <input type="checkbox" id="nmea_output">
+                <label id="t_NMEA" for="nmea_output">NMEA output</label>
+                <select id="sel_nmeaport" name="nmeaport">
+                    <option value="8081">8081</option>
+                    <option value="8082">8082</option>
+                    <option value="8083">8083</option>
+                    <option value="8084">8084</option>
+                </select>
+                <span id="ledNmeaStatus" style="color:LightGrey;font-size:16px;"><b>&#9679;</b></span>
+            </div>
+            <div>
+                <input type="checkbox" id="color_theme" checked>
+                <label for="color_theme">Light/Dark</label>
+            </div>
+            <div>
+                <img id="lg_fr" src="./img/fr.png" title="Français">
+                <img id="lg_en" src="./img/en.png" title="English">
+                <!--<img id="lg_es" src="./img/es.png" title="Español">-->
+            </div>
+            <div>
+                <label><a href="https://ityc.fr/aide_dash.html" title="Aide en ligne" target="_blank" id="t_help">Aide</a></label>
+            </div>
+            <div>
+                <label class="version">Version</label>
+                <label class="version" id="lb_version"></label>
+            </div>
+        </div>
+        <div id="raceStatus">
+            <table id="raceStatusTable"></table>
+        </div>
+        <div id="headSpacer">
+            <div align="inline">
+                <ul class="tabs">
+                    <li class="tab">
+                        <input type="radio" name="tabs" checked="checked" id="ts:1">
+                        <label for="ts:1" id="t_raceLog">Journal</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:2">
+                        <label for="ts:2" id="t_fleet">Flotte</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:3">
+                        <label for="ts:3" id="t_map">Carte</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:4">
+                        <label for="ts:4" id="t_resume">Résumé</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:5">
+                        <label for="ts:5" id="t_graph">Graph</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:9">
+                        <label for="ts:9" id="t_analyse">Analyse</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:6">
+                        <label for="ts:6" id="t_notif">Notifications</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:7">
+                        <label for="ts:7" id="t_config">Config</label>
+                    </li>
+                    <li class="tab">
+                        <input type="radio" name="tabs" id="ts:8">
+                        <label for="ts:8" id="t_rawLog">Raw Log</label>
+                    </li>
+                </ul>
+            </div>
+            <fieldset class="fieldset" id="sel_skippers" align="left">
+                <legend id="t_filter">Filters</legend>
+                <ul  id="fleetFilterList" class="tab3">
+                    <li class="tab">
+                        <input type="checkbox" id="sel_team" name="checkbox1" class="content hidden" checked>
+                        <label for="sel_team" id="lbl_team"><span style="color:Red;">&#x2B24;</span>&nbsp;Team</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_friends" name="checkbox2" class="content hidden" checked>
+                        <label for="sel_friends" id="lbl_friends"><span style="color:LimeGreen;">&#x2B24;</span>&nbsp;Amis</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_top" name="checkbox3" class="content hidden" checked>
+                        <label for="sel_top" id="lbl_top"><span style="color:GoldenRod;">&#x2B24;</span>&nbsp;Top VSR</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_sponsors" name="checkbox4" class="content hidden" checked>
+                        <label for="sel_sponsors" id="lbl_sponsors"><span style="color:DarkSlateBlue;">&#x2B24;</span>&nbsp;Sponsors</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_certified" name="checkbox5" class="content hidden" checked>
+                        <label for="sel_certified" id="lbl_certified"><span style="color:DodgerBlue;">&#x2B24;</span>&nbsp;Certifié</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_opponents" name="checkbox6" class="content hidden">
+                        <label for="sel_opponents" id="lbl_opponents"><span style="color:lightgray;">&#x2B24;</span>&nbsp;Adversaires</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_reals" name="checkbox7" class="content hidden">
+                        <label for="sel_reals" id="lbl_reals"><span style="color:Chocolate;">&#x2B24;</span>&nbsp;Réels</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_selected" name="checkbox8" class="content hidden" checked>
+                        <label for="sel_selected" id="lbl_selected"><span style="color:HotPink;">&#x2B24;</span>&nbsp;Sélectionné</label>
+                    </li>
+                    <li class="tab">
+                        <input type="checkbox" id="sel_inrace" name="checkbox9" class="content hidden">
+                        <label for="sel_inrace" id="lbl_inrace">En course</label>
+                    </li>
+                </ul>
+            </fieldset>
+            <fieldset  class="fieldset" id="sel_export"  id="export" align="left">
+                <legend>Export</legend>
+                <ul class="tab2">
+                    <li class="tab">
+                        <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
+                        <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRank - CSV in clipboard">SailRanks</label>
+                    </li>
+                </ul>
+            </fieldset>
+                
+            <div align="inline" style="position:relative;"></div>
+        </div>
+    </div>
+
+    <div id="tab-content1" class="content">
+        <div id="recordlog"></div>
+    </div>
+    <div id="tab-content2" class="content hidden">
+        <div id="friendList"></div>
+    </div>
+    <div id="tab-content3" class="content hidden">
+        <div id="mapfilterLmap">
+            <div id="extraLmap" class="mapBtDiv">
+                <input type="button" id="sel_helpLmap" name="button4" checked class="content hidden">
+                <label for="sel_helpLmap" id="lbl_helpLmap">Aide</label>
+            </div>
+            <div class="extraMapSep"></div>
+            <div id="existingRouteLmap" class="mapBtDiv mapPrevSep">
+                <input type="checkbox" id="sel_showMarkersLmap" name="button12" class="content hidden">
+                <label for="sel_showMarkersLmap" id="lbl_showMarkersLmap">Marqueurs</label>
+                <input type="checkbox" id="sel_showTracksLmap" name="button12" class="content hidden">
+                <label for="sel_showTracksLmap" id="lbl_showTracksLmap">Traces</label>
+            </div>
+            <div class="extraMapSep"></div>
+            <div id="existingRoute2Lmap" class="mapBtDiv">
+                <input type="checkbox" id="sel_rt_openLmap" name="button12" class="content hidden">
+                <label for="sel_rt_openLmap" id="lbl_rt_openLmap">Ajouter</label>
+                <input type="button" id="sel_rt_cleanLmap" name="button4" checked class="content hidden">
+                <label for="sel_rt_cleanLmap" id="lbl_rt_cleanLmap">Effacer</label>
+            </div>
+            <div id="existingRoute3Lmap" class="mapBtDiv mapPrevSep">
+                <div class="rt_lst_color">
+                    <label for="sel_borderColorLmap" id="lbl_borderColorLmap">Cotes</label>
+                    <input type="color" id="sel_borderColorLmap" value="#0000FF" >
+                </div>
+                <div class="rt_lst_color">
+                    <label  for="sel_projectionColorLmap" id="lbl_projectionColorLmap">Projection</label>
+                    <input type="color" id="sel_projectionColorLmap" value="#0000FF" >   
+                </div>
+            </div>
+            <div class="extraMapSep"></div>
+            <table id="route_list_tableLmap" class="noBorderElt"></table>
+        </div>
+        <div id="rt_popupLmap" style="display: none;">
+            <div id="rt_popupHeaderLmap">
+                <h3 id="t_rtTitle">Route Import</h3>
+                <img id="rt_close_popupLmap" src="./img/close.png">
+            </div>
+            <table class="noBorderElt">
+                <tbody style="display: block;">
+                    <tr>
+                        <td class="noBorderElt rt_left_col">
+                            <select id="sel_routeTypeLmap" name="routeType">
+                                <option value="rt_Zezo">Zezo</option>
+                                <option value="rt_Avalon">Avalon</option>
+                                <option value="rt_VRZen">VR Zen</option>
+                                <option value="rt_gpx">GPX</option>
+                            </select>
+                        </td>
+                        <td class="select-editable noBorderElt" colspan="3">
+                            <select id="sel_rt_skipperLmap" name="rt_skipper"></select>
+                            <input type="text" name="rt_nameSkipper" id="rt_nameSkipperLmap" style="display: none;" value="">
+                        </td>
+                        <td class="rt_lst_color noBorderElt">
+                            <input type="color" id="route_colorLmap" value="#ff0000">
+                        </td>
+                    </tr>
+                    <tr id="rt_extraFormat2Lmap" style="display: flex;">
+                        <td class="noBorderElt"  style="width: 17%;background-color: transparent;" id="t_opt_opts">Options</td>
+                        <td class="noBorderElt" style="width: 25%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_FP_Lmap" checked>
+                            <label id="t_opt_fp">Full Pack</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_hull_Lmap" checked>
+                            <label id="t_opt_hull">Polish</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_foils_Lmap" checked>
+                            <label id="t_opt_foil">Foils</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;">
+                            <input type="checkbox" id="opt_winch_Lmap" checked>
+                            <label id="t_opt_winch">Winch</label></td>
+                    </tr>
+                    <tr id="rt_extraFormat3Lmap" style="display: flex;">
+                        <td class="noBorderElt" style="width: 17%;background-color: transparent;" id="t_opt_sails">Voiles</td>
+                        <td class="noBorderElt" style="width: 25%;background-color: transparent;">
+                            <input type="checkbox" id="opt_c0_Lmap" checked>
+                            <label id="t_opt_c0">Reaching</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_ljg_Lmap" checked>
+                            <label id="t_opt_ljg">Light</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"> 
+                            <input type="checkbox" id="opt_hgss_Lmap" checked>
+                            <label id="t_opt_hgss">Heavy</label>
+                        </td>
+                        <td class="noBorderElt" style="width: 19%;background-color: transparent;"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="bt_rt_addLmap">Import</button>
+        </div>
+    </div>
+    <div id="tab-content4" class="content hidden">
+        <div id="raceBook"></div>
+    </div>
+    <div id="tab-content5" class="content hidden">
+        <table class="noBorderElt">
+            <thead>
+                <tr>
+                    <td class="noBorderElt">
+                        <div class="flex-container flex-container-last">
+                            <div class="flex-item"><button id="bt_cleanGraph">Effacer graphiques</button></div>
+                            <div class="flex-item"><button id="bt_exportGraphData">Export data</button></div>
+                        </div>
+                    </td>
+                    <td class="noBorderElt"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="twsChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="twdChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="bsChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="twaChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="staminaChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                    <td class="td-graph">
+                        <div style="font-size:0.8em; position: relative;">
+                            <canvas id="hdgChart" class="myfChart"></canvas>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="tab-content9" class="content hidden">
+        <iframe id="ityc_frame" src="" width="100%" height="100%" style="border:none; " frameborder="0" ></iframe>
+    </div>
+    <div id="tab-content6" class="content hidden">
+        <div class="shadowbox" style="margin-top:40px">
+            <H3 id="t_notif2" style="margin-top:0px">Notifications</H3>
+            <p>
+                <span id="t_notif21">Sélectionner une course :</span>
+                <select id="sel_raceNotif" name="raceNotif" class="notif">
+                    <option>---</option>
+                </select>
+            </p>
+            <p id="t_notif22">Paramètres :</p>
+            <select id="sel_type1Notif" name="twa" class="notif">
+                <option value="0">---</option>
+                <option value="1">TWA</option>
+                <option value="2">HDG</option>
+                <option value="3">TWS</option>
+                <option value="4">TWD</option>
+                <option value="5">STAMINA</option>
+            </select>
+            <select id="sel_type2Notif" name="type" class="notif">
+                <option>---</option>
+                <option value ="inf" id="t_notif_opt1">inférieur</option>
+                <option value ="infegal" id="t_notif_opt2">inférieur ou égal</option>
+                <option value ="egal" id="t_notif_opt3">égal</option>
+                <option value ="supegal" id="t_notif_opt4">supérieur ou égal</option>
+                <option value ="sup" id="t_notif_opt5">supérieur</option>
+            </select>
+            <label class="notif" id="t_notif23">à</label>
+            <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif" style="width:50px">
+            
+            <label id="notifUnit" class="notif notifSpacer"></label>    
+            <label id="notifPrecision" class="notif">(XX.XX)</label>
+            <p class="notifBorderBottom">
+                <input type="checkbox" id="notif_repeat" checked>
+                <label for="notif_repeat" id="t_notif_repeat" class="notif">Répétition (x3)</label>
+                <button id="bt_notif" style="font-size:14px; margin-left:170px">Créer</button>
+            </p>            
+            <h3 id="t_notif2" style="margin-top:0px">Rappels</h3>
+            <p class="notif">
+                <label id="t_notif25">M'envoyer un rappel dans</label>
+                <input type="number" id="sel_minuteNotif" name="minute" min="10" max="900" step="5" class="notif" style="width:50px">
+                <label id="t_notif25b"> minutes.</label>
+            </p>
+            <input type="checkbox" id="notif_repeat2" checked>
+            <label for="notif_repeat2" id="t_notif_repeat2" class="notif">Répétition (x3)</label>
+            <button id="bt_notif2" style="font-size:14px; margin-left:170px">Créer</button>
+        </div>
+        <div class="box2 shadowbox" style="margin-top:100px;" id="notif"></div>
+    </div>
+    <div id="tab-content7" class="content hidden">
+        <div id="userConfig">
+            <div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_g">Général</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="vrzenPositionFormat">
+                                <label for="vrzenPositionFormat" id="t_vrzenPositionFormat">Afficher position sans séparateur "-" <sup><i>(*)</i></sup></label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="uiFilterMode" checked>
+                                <label for="uiFilterMode" id="t_uiFilterMode">Affichage alternatif filtres</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="reuse_tab" checked>
+                                <label for="reuse_tab" id="t_reuse_tab">Ré-utilisation onglet</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="local_time" checked>
+                                <label for="local_time" id="t_local_time">Heure locale</label>
+                            </div>
+                            <div class="flex-item">
+                                <label for="sel_polarSite" id="t_polarSite">Site polaires</label>
+                                <select id="sel_polarSite" name="polarSite" style="width:70px">
+                                    <option value="0">Toxcct</option>
+                                    <option value="1" selected="selected">INC</option>
+                                    <option value="2">LSV</option>
+                                </select>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="ITYC_record" checked>
+                                <label for="ITYC_record" id="t_ITYC_record">Envoi données à ITYC</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_d">Affichage</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="fullScreen_Game">
+                                <label for="fullScreen_Game" id="t_fullScreen_Game">Mode plein écran</label>
+                            </div>
+                            <div class="flex-item">
+                                <label for="fullScreen_Size" id="t_fullScreen_Size">Taille du jeu</label>
+                                <input type="number" min="50" max="95" id="fullScreen_Size" value="85" style="width:70px"><span class="label">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_rs">Données course</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="showBVMGSpeed">
+                                <label for="showBVMGSpeed" id="t_showBVMGSpeed">Afficher vitesse du bateau à la VMG</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="with_LastCommand">
+                                <label for="with_LastCommand" id="t_with_LastCommand">Afficher derniers ordres</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_l">Journal</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="hideCommandsLines">
+                                <label for="hideCommandsLines" id="t_hideCommandsLines">Cacher les lignes correspondantes aux actions/commandes (sauf les 5 dernières)</label>
+                            </div>
+                            <div class="flex-container flex-container-sub">
+                                <div class="flex-item label" id="t_config_c" style="margin-right:1em"><u>Colonnes</u> <sup><i>(*)</i></sup> :</div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_rank" checked><label for="racelog_rank" id="t_racelog_rank">Rang</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_dtl" checked><label for="racelog_dtl" id="t_racelog_dtl" title="Distance To Leader">DTL</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_dtf" checked><label for="racelog_dtf" id="t_racelog_dtf" title="Distance To Finish">DTF</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_reportedSpeed" checked><label for="racelog_reportedSpeed" id="t_racelog_reportedSpeed" title="Reported speed">vR (kn)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_calcSpeed" checked><label for="racelog_calcSpeed" id="t_racelog_calcSpeed" title="Calculated speed (Δd/Δt)">vC (kn)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_foils" checked><label for="racelog_foils" id="t_racelog_foils">Foils</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_factor" checked><label for="racelog_factor" id="t_racelog_factor" title="Speed factor over no-options boat">Factor</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_stamina" checked><label for="racelog_stamina" id="t_racelog_stamina">Stamina</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_deltaDistance" checked><label for="racelog_deltaDistance" id="t_racelog_deltaDistance" title="Calculated distance">Δd (nm)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_deltaTime" checked><label for="racelog_deltaTime" id="t_racelog_deltaTime" title="Time between positions">Δt (s)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_position" checked><label for="racelog_position" id="t_racelog_position">Position</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_m">Carte</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="track_infos">
+                                <label for="track_infos" id="t_track_infos">Charger données traces <sup><i>(*)</i></sup></label>
+                            </div>
+                            <div class="flex-item">
+                                <label for="projectionLine_Size" id="t_projectionLine_Size">Longueur ligne de projection</label>
+                                <input type="number" min="0" max="360" id="projectionLine_Size" value="20" style="width:70px">min
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="view_InvisibleDoors">
+                                <label for="view_InvisibleDoors" id="t_view_InvisibleDoors">Afficher bouées invisibles <sup><i>(*)</i></sup></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_f">Flotte</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="abbreviatedOption" checked>
+                                <label for="abbreviatedOption" id="t_abbreviatedOption">Options abrégées</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="auto_clean" checked>
+                                <label for="auto_clean" id="t_auto_clean">Nettoyage infos obsolètes</label>
+                                <input type="number" min="0" max="360" id="auto_cleanInterval" value="5" style="width:70px"><span class="label">min</span>
+                            </div>
+                            <div class="flex-item">
+                                <label for="sailRankRaceId" id="t_sailRankRaceId">SailRanks raceId</label>
+                                <input type="number" id="sailRankRaceId" value="" style="width:70px">
+                            </div>
+                            <div class="flex-container flex-container-sub">
+                                <div class="flex-item label" id="t_config_c1" style="margin-right:1em"><u>Colonnes</u> :</div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_team" checked><label for="fleet_team" id="t_fleet_team">Équipe</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_rank" checked><label for="fleet_rank" id="t_fleet_rank">Rang</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_racetime" checked><label for="fleet_racetime" id="t_fleet_racetime">Temps de course</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_dtu" checked><label for="fleet_dtu" title="Distance To Us">DTU</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_dtf" checked><label for="fleet_dtf" title="Distance To Finish">DTF</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_twd" checked><label for="fleet_twd" title="True Wind Direction">TWD</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_tws" checked><label for="fleet_tws" title="True Wind Speed">TWS</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_twa" checked><label for="fleet_twa" title="True Wind Angle">TWA</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_hdg" checked><label for="fleet_hdg" title="Heading">HDG</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_speed" checked><label for="fleet_speed" id="t_fleet_speed">Vitesse</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_vmg" checked><label for="fleet_vmg" title="Velocity Made Good">VMG</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_sail" checked><label for="fleet_sail" id="t_fleet_sail">Voile</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor" title="Speed factor over no-options boat">Factor</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_foils" checked><label for="fleet_foils">Foils</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_options" checked><label for="fleet_options" id="t_fleet_options">Options</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_state" checked><label for="fleet_state" id="t_fleet_state">État</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_remove" checked><label for="fleet_remove" id="t_fleet_remove">Sélection</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container  flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title">Export</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <button id="bt_exportPolar" style="margin-left:0;">Polaires (.json)</button>
+                            </div>
+                            <div class="flex-item">
+                                <button id="bt_exportStamina">Stamina (.json)</button>
+                            </div>
+                            <div class="flex-item">
+                                <button id="bt_exportOwnBoatTrack">Trace bateau (.gpx)</button>
+                            </div>
+                            <div class="flex-item">
+                                <select id="sel_Seperator" name="type">
+                                    <option value ="sep_1" id="t_sep_1">; (EU style)</option>
+                                    <option value ="sep_2" id="t_sep_2">, (US style)</option>
+                                    <option value ="sep_3" id="t_sep_3">Tab (SailRanks)</option>
+                                </select>
+                                <button id="bt_exportFleet">Flotte (.csv)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-item" id="legend_DashboardReload"><sup><i>(*)</i></sup> => Redémarrage du dashboard requis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-content8" class="content hidden">
+        <div id="userConfig">
+            <div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title">Credits</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item awarded">Big Bird (Cvetan Ivanov)</div>
+                            <div class="flex-item awarded">Hardtack fka Raumzeit aka mak08 (Michael Kappert)</div>
+                            <div class="flex-item awarded">Xeelee (Patrick Guelat)</div>
+                            <div class="flex-item awarded">Patg</div>
+                            <div class="flex-item awarded">GeGaX (Romain Le Lamer)</div>
+                            <div class="flex-item awarded">toxcct (Nicolas Guittet)</div>
+                            <div class="flex-item awarded">mcmgj (Guy Juy)</div>
+                            <div class="flex-item awarded">Amoutiers</div>
+                            <div class="flex-item awarded">Xpillons</div>
+                            <div class="flex-item awarded">Valgit</div>
+                            <div class="flex-item awarded">Helios (Michel)</div>
+                            <div class="flex-item awarded">David05320 (David)</div>
+                            <div class="flex-item awarded">SailSmurf (Franck)</div>
+                            <div class="flex-item awarded">Kurun56 (JY)</div>
+                            <div class="flex-item awarded">Padd_</div>
+                            <div class="flex-item awarded" id="t_credit_all">Tous les contributeurs inconnus !</div>
+                            <div class="flex-item awarded" id="t_credit_me">Votre serviteur !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-border">
+                    <div class="flex-item us_title">Raw log</div>
+                    <div class="flex-item">
+                        <input type="checkbox" id="cb_rawlog">
+                        <label for="cb_rawlog">Log messages</label>
+                    </div>
+                    <div class="flex-item">
+                        <button id="bt_clear">Clear log</button>
+                    </div>
+                    <div style="white-space: pre;" id="rawlog"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,262 @@
+{
+  "@class": "AccountDetailsRequest",
+  "requestId": "638918339522210000_17",
+  "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFkZjExZjYwNDE3OWU0YWNiMTM5NWQiLCJpYXQiOjE3NTYyMjk5MTksImV4cCI6MTc1NjI3MzExOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.BJjHwhfXS2pcGKfC15xlzT5zPbWdplbYaVUkDtIXkkEUk66IKPIrY2Z6g8n40Wmu9BsJBinN3ik-iFq4zUXfCLPFBycdpKTRrR9a7A03xdjhCfm0sVw3nMbU--Jbl1-91WMP3UoRtt4KipWXyljhHc-eNL8vsTyImgwuol91K5it0K-RI5F3F75FOHrYYqdqTeJV3Kxp68_3Ve0p7_RLLm3ZOCaRoXLUKVKppslXCN-J5IsMRowJqfFBip4E0lslmTi4Fxz7Duc9qCM2DJRHLE4N9WPbEYxYg1sokxkdupMK4CK8joVK5yTNGFsn-1t_zBHhFsRJH4mm8lYmjo3pJg",
+  "playerId": "68adf11f604179e4acb1395d"
+}
+{
+  "achievements": [],
+  "currencies": {},
+  "currency1": 500,
+  "currency2": 0,
+  "currency3": 0,
+  "currency4": 0,
+  "currency5": 0,
+  "currency6": 0,
+  "displayName": "Guest_1756229919473",
+  "location": {},
+  "reservedCurrencies": {},
+  "userId": "68adf11f604179e4acb1395d",
+  "virtualGoods": {},
+  "scriptData": {
+    "isVIP": false,
+    "userSettings": {
+      "noAds": false,
+      "previewMaxLength": 24,
+      "progMaxLength": 24,
+      "progMaxNumber": 9,
+      "wayptMaxLength": 24,
+      "wayptMaxNumber": 9,
+      "hasMapCustomization": false
+    },
+    "location": {},
+    "displayPopup": false,
+    "isGuest": true,
+    "registered": 1756229919473,
+    "isSurveyAnswered": false,
+    "playerPrefs": {},
+    "gotNotificationsCredits": false,
+    "gsFeatures": {
+      "social_news": true,
+      "social_follow": true,
+      "social_listPlayers": true,
+      "social_userCard": true,
+      "social_userInfos": true,
+      "social_converse": true,
+      "social_invite": true,
+      "social_palmares": true,
+      "social_crm": true,
+      "shopActive": false,
+      "identity_check": false,
+      "team": true,
+      "fleet": false,
+      "fleet_refresh": false,
+      "lootboxes": false,
+      "prevent_guest_purchases": true,
+      "atWillDisplayNameChange": true,
+      "stealth_mode": false,
+      "log_user_actions": true,
+      "count_enterLeg": false,
+      "email_notifs": true,
+      "dev2dev_notifs": false,
+      "firebase_notifs": true,
+      "socialAutoMessages": false,
+      "new_vsr": true,
+      "customizable_map": true,
+      "winds_from_gs": false,
+      "webgl_subscriptions": true,
+      "topRankingCallback": true,
+      "firstOfFleetCallback": true,
+      "mapInfo": true,
+      "fullOptPermanentAutoSails": true,
+      "userSearchEnabled": true,
+      "userSearchFull": false,
+      "boatStateDetailsInLegList": true,
+      "clientWindCache": true
+    },
+    "awsFeatures": {
+      "tracks": true,
+      "legRanks": true,
+      "fleet": true,
+      "nearestFleet": true
+    },
+    "serverSettings": {
+      "boatSkinDir": "https://static.virtualregatta.com/offshore/boatSkin",
+      "raceImageDir": "https://static.virtualregatta.com/offshore/leg/",
+      "raceSponsorDir": "https://static.virtualregatta.com/offshore/sponsor",
+      "legBrandingDir": "https://static.virtualregatta.com/offshore/branding",
+      "windsDir": "https://static.virtualregatta.com/winds",
+      "assetBundleDir": "https://static.virtualregatta.com/ressources/WebGL/vro3/AssetBundles/%version%",
+      "helpURL": "https://virtualregatta.zendesk.com/hc",
+      "awsStage": "prod",
+      "awsURL": "https://vro-api-client.prod.virtualregatta.com/",
+      "languages": [
+        "EN",
+        "FR",
+        "ES",
+        "IT"
+      ],
+      "windPreviewDuration": 7200,
+      "versions": {
+        "android": {
+          "6.1.16": "20241128",
+          "7.0.10": "20250423",
+          "7.0.11": "20250423",
+          "7.0.12": "20250423",
+          "7.0.13": "20250423",
+          "7.0.14": "20250423",
+          "7.0.15": "20250423",
+          "7.1.0": "20250423"
+        },
+        "ios": {
+          "6.1.16": "20241128",
+          "7.0.10": "20250423",
+          "7.0.11": "20250423",
+          "7.0.12": "20250423",
+          "7.0.13": "20250423",
+          "7.0.14": "20250423",
+          "7.0.15": "20250423",
+          "7.1.0": "20250423"
+        },
+        "webgl": {
+          "6.1.16": "20241128",
+          "7.0.10": "20250423",
+          "7.0.11": "20250423",
+          "7.0.12": "20250423",
+          "7.0.13": "20250423",
+          "7.0.14": "20250423",
+          "7.0.15": "20250423",
+          "7.1.0": "20250423"
+        },
+        "win": {},
+        "osx": {},
+        "default": {}
+      },
+      "lastPolarUpdate": 1539594000000,
+      "lastMapInfoUpdate": 1514764800000,
+      "lastMapTilesUpdates": {
+        "6": 1528712511000
+      },
+      "cardsDef": {
+        "HL": "0",
+        "WF": "1",
+        "AS": "1",
+        "WP": "1",
+        "PR": "1",
+        "SM": "1"
+      },
+      "xpLevels": [
+        500,
+        1000,
+        2000,
+        3000,
+        4000,
+        5000,
+        6000,
+        8000,
+        10000,
+        14000,
+        20000,
+        30000,
+        50000,
+        999999999
+      ],
+      "vsrLevels": [
+        500,
+        1000,
+        2000,
+        3000,
+        4000,
+        5000,
+        6000,
+        8000,
+        10000,
+        14000,
+        20000,
+        30000,
+        50000,
+        999999999
+      ],
+      "windMinKts": 2,
+      "fineWindMinKts": 1,
+      "autoSailPeriod": 24,
+      "localisationVersion": "222",
+      "rankProgressCoolDown": 3600000,
+      "rankProgressThreshold": 10,
+      "now": 1756229952208,
+      "adminLogs": {
+        "warn_autosails_qty": false,
+        "warn_bad_sail": false,
+        "info_game_state_focus": false,
+        "info_game_state_begin": false,
+        "info_force_action_push_to_gs": false
+      },
+      "mapPresets": [
+        {
+          "tag": "default",
+          "displayName": "Default"
+        },
+        {
+          "tag": "satellite",
+          "displayName": "Satellite"
+        },
+        {
+          "tag": "vro1",
+          "displayName": "VRO 1"
+        },
+        {
+          "tag": "old",
+          "displayName": "Old school"
+        },
+        {
+          "tag": "imray",
+          "displayName": "Imray"
+        },
+        {
+          "tag": "navionics",
+          "displayName": "Navionics"
+        }
+      ],
+      "panicMode": false,
+      "progMaxNumberClassic": 2,
+      "progMaxNumberFullpack": 9,
+      "progMaxNumberSub": 15,
+      "wayptMaxNumberClassic": 2,
+      "wayptMaxNumberFullpack": 9,
+      "wayptMaxNumberSub": 15,
+      "legsRefreshRate": 600,
+      "zipCodeFmt": "^[A-Z0-9- ]{3,15}$",
+      "stateCodeFmt": "^[A-Z]{2,3}$",
+      "newManeuversSlowdowns": true,
+      "vppDlUrl": "https://vro-api-client.prod.virtualregatta.com/dl?t=vpp&u={0}&r={1}&l={2}&f=csv",
+      "delayedRecordStart": true
+    },
+    "vsr": {
+      "current": {
+        "level": 1,
+        "points": 0
+      },
+      "max": {
+        "level": 1,
+        "points": 0
+      }
+    },
+    "nbFollowedPlayers": 0,
+    "lastVersion": 178,
+    "country": "FR",
+    "xp": {
+      "points": 0,
+      "level": 1
+    },
+    "vsr2": {
+      "currentPoints": 0,
+      "maxPoints": 0,
+      "rank": null
+    },
+    "lastSeen": "2025-08-26T17:38:39.473Z",
+    "languageCode": "FR"
+  },
+  "@class": ".AccountDetailsResponse",
+  "requestId": "638918339522210000_17",
+  "traceId": "Root=1-68adf140-2c2e6007443ee7ba48c90aa7;Parent=0dfba21f4fd3782e;Sampled=0;Lineage=1:155e2751:0"
+}
