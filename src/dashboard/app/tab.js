@@ -4,7 +4,7 @@ let activeTab = 1;
 import {display_selbox} from "../ui/common.js"
 import {buildRaceLogHtml} from '../ui/raceLog.js'
 import {buildRaceFleetHtml} from '../ui/raceFleet.js'
-import {buildRaceBookHtml} from '../ui/raceBook,js'
+import {buildRaceBookHtml} from '../ui/raceBook.js'
 export const tabList = Object.freeze({
     1 : "raceLog",
     2 : "raceFleet",
