@@ -4619,6 +4619,7 @@ async function initializeMap(race) {
         document.getElementById("with_LastCommand").addEventListener("change", makeRaceStatusHTML);
         document.getElementById("vrzenPositionFormat").addEventListener("change", saveOption);
         document.getElementById("showBVMGSpeed").addEventListener("change", saveOption);
+        document.getElementById("showBVMGSpeed").addEventListener("change", makeRaceStatusHTML);
         document.getElementById("hideCommandsLines").addEventListener("change", saveOption);
         document.getElementById("hideCommandsLines").addEventListener("change", updateToggleRaceLogCommandsLines);
         document.getElementById("abbreviatedOption").addEventListener("change", saveOption);

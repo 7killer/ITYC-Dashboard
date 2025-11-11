@@ -354,7 +354,7 @@ export function exportStamina(paramStamina)
 
     if(!paramStamina || !paramStamina.consumption) return;
   //  if(format="json")
-  var ExportedData = "stamina = ";
+  var ExportedData = "";
   ExportedData += JSON.stringify(paramStamina);
   let blobData = new Blob([ExportedData], {type: "text/plain"});
   let url = window.URL.createObjectURL(blobData);
