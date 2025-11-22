@@ -667,7 +667,8 @@ fieldset {
     margin: 0;
     border: 1px solid #7a1419;
     border-radius: 6px;
-    color: white;
+    background-color: var(--bg_body_color);
+    color: var(--body_color);
     text-align: center;
 }
 .us_general {
@@ -1295,6 +1296,7 @@ input[type="checkbox"] {
 .leaflet-control-coordinates {
     font-size: 11px !important;
     padding: 0 5px;
+    color: #fff !important;
 }
 .leaflet-control-coordinates .uiElement .labelFirst {
     margin-right: 0px;
