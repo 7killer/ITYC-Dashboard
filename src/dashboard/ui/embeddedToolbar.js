@@ -213,7 +213,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     else
         sailPenaTxt += '<div>-</div>';
     if(raceIte.tsEndOfSailChange)
-        sailPenaTxt += '<div ' + getBG(raceIte.tsEndOfSailChange) + '>' + formatSeconds(raceIte.tsEndOfSailChange - raceIte.iteDate) + '</div>';
+        sailPenaTxt += '<div ' + getBG(raceIte.tsEndOfSailChange,raceIte.metaDash.previousIteDate) + '>' + formatSeconds(raceIte.tsEndOfSailChange - raceIte.iteDate) + '</div>';
     else
         sailPenaTxt += '<div> - </div>';
     sailPenaTxt += '</td>';
@@ -223,7 +223,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     else
         tackPenaTxt += '<div>-</div>';
     if(raceIte.tsEndOfTack)
-        tackPenaTxt += '<div ' + getBG(raceIte.tsEndOfTack) + '>' + formatSeconds(raceIte.tsEndOfTack - raceIte.iteDate) + '</div>';
+        tackPenaTxt += '<div ' + getBG(raceIte.tsEndOfTack,raceIte.metaDash.previousIteDate) + '>' + formatSeconds(raceIte.tsEndOfTack - raceIte.iteDate) + '</div>';
     else
         tackPenaTxt += '<div> - </div>';
     tackPenaTxt += '</td>';
@@ -233,7 +233,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     else
         gybePenaTxt += '<div>-</div>';
     if(raceIte.tsEndOfGybe)
-        gybePenaTxt += '<div ' + getBG(raceIte.tsEndOfGybe) + '>' + formatSeconds(raceIte.tsEndOfGybe - raceIte.iteDate) + '</div>';
+        gybePenaTxt += '<div ' + getBG(raceIte.tsEndOfGybe,raceIte.metaDash.previousIteDate) + '>' + formatSeconds(raceIte.tsEndOfGybe - raceIte.iteDate) + '</div>';
     else
         gybePenaTxt += '<div> - </div>';
     gybePenaTxt += '</td>';

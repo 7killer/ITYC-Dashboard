@@ -21,7 +21,7 @@ export function switchTheme(theme)
     //TODO Redraw dash
 }
 
-export function getBG(timestamp) {
+export function getBG(timestamp, previousTimeStamp) {
     return isCurrent(timestamp) ? ('style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"') : "";
 }
 
@@ -185,6 +185,7 @@ export function genth(id, content, title, sortfield, sortmark) {
             cspan = "colspan = 2";
         }
         return '<th ' + cspan + ' id="' + id + '"'
+            + ' data-sort-key="' + checkboxId + '"'
             + (sortfield ? ' style="background: DarkBlue;"' : "")
             + (title ? (' title="' + title + '"') : "")
             + '>' + content + '</th>';

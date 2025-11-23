@@ -82,7 +82,7 @@ export function foilingFactor(options, tws, twa, foil) {
             foilMat[iA.index - 1][iS.index],
             foilMat[iA.index][iS.index]);
     } else {
-        return 1.0;
+        return 1.00000000;
     }
 }
 

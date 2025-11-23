@@ -178,8 +178,8 @@ export function hasKeys(target, keys = []) {
 
   return false;
 }
-export function isCurrent(timestamp) {
-    return (timestamp && (timestamp > raceIte.previousIteDate));
+export function isCurrent(timestamp, previousTimeStamp = 0) {
+    return (timestamp && (timestamp > previousTimeStamp));
 }
 
 

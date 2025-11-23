@@ -18,50 +18,18 @@ import {getConnectedPlayerId,
 
 import {getUserPrefs} from '../../common/userPrefs.js'
 
-import {getSortField, getSortOrder,isDisplayEnabled} from '../app/sortManager.js'
-
-
+import {getSortField, getSortOrder,setSortOrder,setSortField,isDisplayEnabled,compareFleetPlayers,FLEET_SORT_KEY_BY_TH_ID} from '../app/sortManager.js'
 
 
 export function buildRaceFleetHtml() {
-    const raceInfo = getRaceInfo();
-    const raceItes = getLegPlayerInfos();
-    const raceItesFleet = getLegFleetInfos();
+    const raceInfo         = getRaceInfo();
+    const raceItes         = getLegPlayerInfos();
+    const raceItesFleet    = getLegFleetInfos();
     const connectedPlayerId = getConnectedPlayerId();
 
+    if (!raceInfo || raceInfo?.length === 0) return;
 
-    if(!raceInfo || raceInfo?.length == 0 ) return;
-    
-
-    let raceFleetTableHeader = '<tr>'
-                + genth("th_rt", "RT", "Call Router", undefined)
-                + genth("th_lu", "Date" + dateUTCSmall(), undefined, getSortField() == "lastCalcDate", getSortOrder())
-                + genth("th_name", "Skipper", undefined, getSortField() == "displayName", getSortOrder())
-                + genth("th_teamname", "Team", undefined, getSortField() == "teamname", getSortOrder())
-                + genth("th_rank", "Rank", undefined, getSortField() == "rank", getSortOrder())
-                + ((raceInfo.type !== "record")?genth("th_racetime", "RaceTime", "Current Race Time", getSortField() == "raceTime", getSortOrder()):"")
-                + genth("th_dtu", "DTU", "Distance to Us", getSortField() == "distanceToUs", getSortOrder())
-                + genth("th_dtf", "DTF", "Distance to Finish", getSortField() == "dtf", getSortOrder())
-                + genth("th_twd", "TWD", "True Wind Direction", getSortField() == "twd", getSortOrder())
-                + genth("th_tws", "TWS", "True Wind Speed", getSortField() == "tws", getSortOrder())
-                + genth("th_twa", "TWA", "True Wind Angle", getSortField() == "twa", getSortOrder())
-                + genth("th_hdg", "HDG", "Heading", getSortField() == "heading", getSortOrder())
-                + genth("th_speed","Speed","Boat Speed", getSortField() == 'speed', getSortOrder())
-                + genth("th_vmg","VMG","Velocity Made Good", getSortField() == 'vmg', getSortOrder())
-                + genth("th_sail", "Sail", "Sail Used", getSortField() == "sail", getSortOrder())
-                + genth("th_factor", "Factor", "Speed factor over no-options boat", getSortField() == "xfactor", getSortOrder())
-                + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", getSortField() == "xoption_foils", getSortOrder());
-    if(raceInfo.type === "record") {
-        raceFleetTableHeader += genth("th_sd","Race Time", "Current Race Time", getSortField() == "startDate", getSortOrder())
-                        + genth("th_eRT","ERT", "Estimated Total Race Time", getSortField() == "eRT", getSortOrder())
-                        + genth("th_avgS","avgS", "Average Speed", getSortField() == "avgSpeed", getSortOrder());              
-    }     
-    raceFleetTableHeader += genth("th_psn", "Position", undefined)
-            + genth("th_options", "Options", "Options according to Usercard",  getSortField() == "xoption_options", getSortOrder())
-            + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", getSortField() == "state", getSortOrder())
-            + genth("th_remove", "", "Remove selected boats from the fleet list", undefined)
-            + '</tr>';
-
+    // pas de flotte
     if (!raceItesFleet || Object.keys(raceItesFleet).length === 0) {
         document.getElementById("friendList").innerHTML = `
             <table id="raceidTable">
@@ -70,14 +38,71 @@ export function buildRaceFleetHtml() {
         return;
     }
 
-    raceItes.ite = raceItes.ites[0];
-    let raceFleetLines = "";
-    for (const [userId, entry] of Object.entries(raceItesFleet)) {
-        const pInfos = (userId==connectedPlayerId)?raceItes:entry;
-        raceFleetLines += buildRacFleetLine(pInfos,raceInfo,connectedPlayerId);
+    // on prend l’ite courante pour le joueur connecté
+    if (raceItes && raceItes.ites && raceItes.ites.length > 0) {
+        raceItes.ite = raceItes.ites[0];
     }
 
-    var fleetHTML =
+    const sortField = getSortField();   // ex: "dtf", "speed", "displayName", ...
+    const sortAsc   = getSortOrder();   // booléen, utilisé déjà par genth()
+
+    // HEADER
+    let raceFleetTableHeader = '<tr>'
+        + genth("th_rt", "RT", "Call Router", undefined)
+        + genth("th_lu", "Date" + dateUTCSmall(), undefined,      sortField == "lastCalcDate",   sortAsc)
+        + genth("th_name", "Skipper", undefined,                   sortField == "displayName",    sortAsc)
+        + genth("th_teamname", "Team", undefined,                  sortField == "teamname",       sortAsc)
+        + genth("th_rank", "Rank", undefined,                      sortField == "rank",           sortAsc)
+        + ((raceInfo.type !== "record")
+            ? genth("th_racetime", "RaceTime", "Current Race Time", sortField == "raceTime",     sortAsc)
+            : "")
+        + genth("th_dtu", "DTU", "Distance to Us",                 sortField == "distanceToUs",  sortAsc)
+        + genth("th_dtf", "DTF", "Distance to Finish",             sortField == "dtf",           sortAsc)
+        + genth("th_twd", "TWD", "True Wind Direction",            sortField == "twd",           sortAsc)
+        + genth("th_tws", "TWS", "True Wind Speed",                sortField == "tws",           sortAsc)
+        + genth("th_twa", "TWA", "True Wind Angle",                sortField == "twa",           sortAsc)
+        + genth("th_hdg", "HDG", "Heading",                        sortField == "heading",       sortAsc)
+        + genth("th_speed","Speed","Boat Speed",                   sortField == "speed",         sortAsc)
+        + genth("th_vmg","VMG","Velocity Made Good",               sortField == "vmg",           sortAsc)
+        + genth("th_sail", "Sail", "Sail Used",                    sortField == "sail",          sortAsc)
+        + genth("th_factor", "Factor", "Speed factor over no-options boat", sortField == "xfactor", sortAsc)
+        + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", sortField == "xoption_foils", sortAsc);
+
+    if (raceInfo.type === "record") {
+        raceFleetTableHeader +=
+              genth("th_sd","Race Time", "Current Race Time",       sortField == "startDate",     sortAsc)
+            + genth("th_eRT","ERT", "Estimated Total Race Time",    sortField == "eRT",           sortAsc)
+            + genth("th_avgS","avgS", "Average Speed",              sortField == "avgSpeed",      sortAsc);
+    }
+
+    raceFleetTableHeader +=
+          genth("th_psn", "Position", undefined)
+        + genth("th_options", "Options", "Options according to Usercard",  sortField == "xoption_options", sortAsc)
+        + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", sortField == "state", sortAsc)
+        + genth("th_remove", "", "Remove selected boats from the fleet list", undefined)
+        + '</tr>';
+
+    const rows = Object.entries(raceItesFleet).map(([userId, entry]) => {
+        const pInfos = (userId == connectedPlayerId) ? raceItes : entry;
+        return { userId, pInfos };
+    });
+
+    rows.sort((a, b) => {
+        const isAme = a.userId === connectedPlayerId;
+        const isBme = b.userId === connectedPlayerId;
+
+        if (isAme && !isBme) return -1;
+        if (!isAme && isBme) return  1;
+
+        return compareFleetPlayers(a.pInfos, b.pInfos, sortField, sortAsc);
+    });
+
+    let raceFleetLines = "";
+    for (const { userId, pInfos } of rows) {
+        raceFleetLines += buildRaceFleetLine(pInfos, raceInfo, connectedPlayerId);
+    }
+
+    const fleetHTML =
         '<table>'
         + '<thead class="sticky">'
         + raceFleetTableHeader
@@ -86,15 +111,17 @@ export function buildRaceFleetHtml() {
         + raceFleetLines
         + '</tbody>'
         + '</table>';
+
     document.getElementById("friendList").innerHTML = fleetHTML;
 
     addEventListenersToRemoveSelectedBoatButtons();
     addEventListenersToSelectedLine();
-    
+    addEventListenersFleetSort();
 }
+    
 
 
-function buildRacFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
+function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
 
 
     if(!playerFleetInfos || !raceInfo) 
@@ -401,4 +428,31 @@ function addEventListenersToSelectedLine() {
         });
     });
 }
+
+function addEventListenersFleetSort() {
+    const friendList = document.getElementById("friendList");
+    if (!friendList) return;
+
+    const header = friendList.querySelector("thead");
+    if (!header) return;
+
+    header.addEventListener("click", (event) => {
+        const th = event.target.closest("th");
+        if (!th || !th.id) return;
+
+        const sortKey = FLEET_SORT_KEY_BY_TH_ID[th.id];
+        if (!sortKey) {
+            return;
+        }
+
+        if (getSortField() === sortKey) {
+            setSortOrder(!getSortOrder());
+        } else {
+            setSortField(sortKey);
+            setSortOrder(true);
+        }
+        buildRaceFleetHtml();
+    });
+}
+
 
