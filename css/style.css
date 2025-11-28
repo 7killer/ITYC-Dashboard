@@ -592,65 +592,90 @@ fieldset {
     margin-top: 1em;
 }
 
-
 #userConfig {
     padding: 0 1em;
 }
 
-#userConfig button {
-    padding: 3px 12px;
+.us_title{
+    font-size: 17px !important;
+    font-weight: bold;
+    min-width: 140px;
+    padding-top: 0em;
+    line-height: 1.8;
 }
-
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+    color: var(--body_color);
+    padding: 2em 0;
+    line-height: 1.5;
+}
+.flex-container-2cols {
+    flex-wrap: nowrap;
+}
+.flex-container-border {
+    border-bottom: 1px solid #444;
+}
+.flex-container-sub {
+    padding: 0.5em 0 0 0;
+}
+.flex-container-last {
+    border-bottom: 0px solid transparent !important;
+}
+.flex-item {
+    margin-right: 2.5em;
+    font-size: 13px;
+}
+.flex-item label,
+.flex-item .label {
+    background-color: var(--bg_body_color);
+    font-size: 13px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.flex-item input,
+.flex-item select,
+.flex-item button {
+    min-height: 24px;
+    font-size: 13px;
+    margin: 0 0.6em;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+.flex-item button {
+    min-width: 100px;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 0;
+    background-color: #d9232d;
+    border-radius: 6px;
+    border: 0;
+    color: white;
+}
+.flex-item input[type="checkbox"] {
+    font-size: 12px;
+    height: 24px;
+    vertical-align: middle;
+    margin: 0 0.6em 0 0;
+    cursor: pointer;
+}
+.awarded {
+    padding: 10px 20px;
+    font-size: 14px;
+    margin: 0;
+    border: 1px solid #7a1419;
+    border-radius: 6px;
+    background-color: var(--bg_body_color);
+    color: var(--body_color);
+    text-align: center;
+}
 .us_general {
     border-spacing: 0 25px;
     border-collapse: separate;
     border: none;
 }
-tr.us_line>td {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    padding-bottom: 2em;
-    background: transparent;
-    font-size: medium;
-}
-tr.us_line3>td {
-    border: none;
-    padding-bottom: 2em;
-    background: transparent;
-    font-size: medium;
-}
-tr.us_line3t>td {
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    padding-bottom: 2em;
-    background: transparent;
-    font-size: medium;
-}
-tr.us_line3b>td {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    padding-bottom: 2em;
-    background: transparent;
-    font-size: medium;
-}
-tr.us_line2>td {
-    border: none;
-    padding-bottom: 1em;
-    background: transparent;
-    font-size: medium;
-}
-
-tr.us_line>td.us_title, tr.us_line2>td.us_title , tr.us_line3>td.us_title, tr.us_line3t>td.us_title, tr.us_line3b>td.us_title{
-    font-size: 1.2em;
-}
-tr.us_line>td>label, tr.us_line2>td>label, tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
-    font-size: 1em;
-    cursor: pointer;
-}
-
 
 #sel_ranking {
     width: 50%;
@@ -1196,7 +1221,7 @@ a:active {
 }
 
 #raceBook {
-    margin :2em;
+    padding: 1em;
 }
 
 #raceidTable,#raceidTable2,#raceIceLimitTable,#restrictedZonesTable{
@@ -1226,20 +1251,6 @@ table#raceidTable2>tbody>tr>td {
     height : 200px;/*300px;*/
 
 }
-#bt_cleanGraph {
-    margin: 1em;
-
-
-}
-tr.us_line>td>label, tr.us_line2>td>label , tr.us_line>td>input[type="checkbox"], tr.us_line2>td>input[type="checkbox"] {
-
-    background-color: var(--bg_body_color);
-}
-
-tr.us_line3>td>label, tr.us_line3t>td>label, tr.us_line3b>td>label {
-
-    background-color: var(--bg_body_color);
-}
 
 tr.highlightMe {
     border: 0.16em solid #b86dff;    
@@ -1247,10 +1258,6 @@ tr.highlightMe {
 
 .cursorHelp {
     cursor: help;
-}
-
-#sel_Seperator {
-    font-size: 14px;
 }
 
 .tagGatePassed {
@@ -1284,6 +1291,21 @@ input[type="checkbox"] {
 }
 .leaflet-popup-content {
     margin: 13px 22px 11px 18px !important;
+    line-height: 15px !important;
+}
+.leaflet-control-coordinates {
+    font-size: 11px !important;
+    padding: 0 5px;
+    color: #fff !important;
+}
+.leaflet-control-coordinates .uiElement .labelFirst {
+    margin-right: 0px;
+}
+.leaflet-control-coordinates .uiElement .labelGeo {
+    padding-left: 6px;
+}
+.leaflet-control-coordinates .input{
+    padding-bottom: 2px;
 }
 .textMini {
     font-size: 11px !important;

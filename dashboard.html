@@ -25,7 +25,12 @@
         <script src="./js/stamina.js"></script>
         <script src="./lib/chartjs/chart380.js"></script>
         <script type="module" src="./js/dashboard.js"></script>
+        <script src="./lib/leafletNauticscale/nauticscale.min.js"></script>
+        <link rel="stylesheet" href="./lib/leafletRuler/ruler.css">
+        <script src="./lib/leafletRuler/ruler.js"></script>
         <script type="text/javascript" src="./lib/leafletCoordinates/Leaflet.Coordinates-0.1.5.min.js"></script>
+        <script type="text/javascript"  src="./lib/proj4/proj4.js"></script>
+        <script type="text/javascript"  src="./lib/proj4leaflet/proj4leaflet.js"></script>
         <link rel="stylesheet" href="./lib/leafletCoordinates/Leaflet.Coordinates-0.1.5.css"/>
     </head>
 
@@ -36,7 +41,7 @@
             <div>
                 <label><b id="t_boat">Bateau : </b></label>
                 <span id="lb_boatvip"></span>
-                <label><span id="lb_boatname" style="color:Red; font-weight:bold;">unknown</span><span> [&#128176;<span id="lb_credits">0</span>]</span></label>
+                <label><span id="lb_boatname" style="color:Red; font-weight:bold;">unknown</span><span> [&#128176;<span id="lb_credits">-</span>]</span></label>
             </div>
             <div>
                 <label><b id="t_team">Équipe: </b></label>
@@ -174,7 +179,7 @@
                 <ul class="tab2">
                     <li class="tab">
                         <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
-                        <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRank - CSV in clipboard">SailRanks</label>
+                        <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRanks - CSV in clipboard">SailRanks</label>
                     </li>
                 </ul>
             </fieldset>
@@ -292,9 +297,12 @@
         <table class="noBorderElt">
             <thead>
                 <tr>
-                    <td class="noBorderElt"><button id="bt_cleanGraph">Effacer graphiques</button>
-                        <button id="bt_exportGraphData">Export data</button>
-                    </td> 
+                    <td class="noBorderElt">
+                        <div class="flex-container flex-container-last">
+                            <div class="flex-item"><button id="bt_cleanGraph">Effacer graphiques</button></div>
+                            <div class="flex-item"><button id="bt_exportGraphData">Export data</button></div>
+                        </div>
+                    </td>
                     <td class="noBorderElt"></td>
                 </tr>
             </thead>
@@ -357,7 +365,7 @@
                 <option value="2">HDG</option>
                 <option value="3">TWS</option>
                 <option value="4">TWD</option>
-                <option value="5">STAMINA</opton>
+                <option value="5">STAMINA</option>
             </select>
             <select id="sel_type2Notif" name="type" class="notif">
                 <option>---</option>
@@ -392,170 +400,226 @@
     <div id="tab-content7" class="content hidden">
         <div id="userConfig">
             <div>
-                <table class="us_general">
-                    <tbody>
-                        <tr class="us_line">
-                            <td class="us_title" id="t_config_g">General</td>
-                            <td colspan="4"><input type="checkbox" id="vrzenPositionFormat"><label for="vrzenPositionFormat" id="t_vrzenPositionFormat">Afficher position sans le séparateur "-" (redémarrage dashboard requis)</label></td>
-                            <td colspan="2"><input type="checkbox" id="uiFilterMode" checked><label for="uiFilterMode" id="t_uiFilterMode">Affichage alternative filtres</label></td>
-                            <td colspan="2"><input type="checkbox" id="reuse_tab" checked><label for="reuse_tab" id="t_reuse_tab">Re-utilisation onglet</label></td>
-                            <td colspan="2"><input type="checkbox" id="local_time" checked><label for="local_time" id="t_local_time">Local times</label></td>
-                            <td colspan="2"><input type="checkbox" id="FullScreen_Game" ><label for="FullScreen_Game" id="t_FullScreen_Game">Mode plein Ecran</label></td>
-                            <td colspan="3">
-                                <label for="fullScreen_Size" id="t_fullScreen_Size">Taille du jeu</label>
-                                <input type="number" min="50" max="95" id="fullScreen_Size" value="85"> %</td>
-                            </td>
-                            <td colspan="3">
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_g">Général</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="vrzenPositionFormat">
+                                <label for="vrzenPositionFormat" id="t_vrzenPositionFormat">Afficher position sans séparateur "-" <sup><i>(*)</i></sup></label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="uiFilterMode" checked>
+                                <label for="uiFilterMode" id="t_uiFilterMode">Affichage alternatif filtres</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="reuse_tab" checked>
+                                <label for="reuse_tab" id="t_reuse_tab">Ré-utilisation onglet</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="local_time" checked>
+                                <label for="local_time" id="t_local_time">Heure locale</label>
+                            </div>
+                            <div class="flex-item">
                                 <label for="sel_polarSite" id="t_polarSite">Site polaires</label>
-                                            <select id="sel_polarSite" name="polarSite">
-                                                <option value="0">Toxcct</option>
-                                                <option value="1" selected="selected">INC</option>
-                                                <option value="2">LSV</option>
-                                            </select>
-                            </td>
-                            <td colspan="3"><input type="checkbox" id="ITYC_record" checked><label for="ITYC_record" id="t_ITYC_record">Envoi infos ITYC</label></td>
-                        </tr>
-                        <tr class="us_line">
-                            <td class="us_title" id="t_config_rs">Race Status</td>
-                            <td colspan="4"><input type="checkbox" id="showBVMGSpeed"><label for="showBVMGSpeed" id="t_showBVMGSpeed">Afficher Vitesse du bateau à la VMG</label></td>
-                            <td colspan="4"><input type="checkbox" id="with_LastCommand"><label for="with_LastCommand" id="t_with_LastCommand">Afficher derniers ordres</label></td>
-                            <td colspan="13"></td>
-                        </tr>
-                        <tr class="us_line2">
-                            <td class="us_title" id="t_config_l">Journal</td>
-                            <td colspan="21"><input type="checkbox" id="hideCommandsLines"><label for="hideCommandsLines" id="t_hideCommandsLines">Cacher les lignes correspondantes aux actions/commandes</label></td>
-                        </tr>
-                        <tr class="us_line">
-                            <td id="t_config_c">Colonnes</td>
-                            <td><input type="checkbox" id="racelog_rank" checked><label for="racelog_rank" id="t_racelog_rank">Rank</label></td>
-                            <td><input type="checkbox" id="racelog_dtl" checked><label for="racelog_dtl" id="t_racelog_dtl" title="Distance To Leader">DTL</label></td>
-                            <td><input type="checkbox" id="racelog_dtf" checked><label for="racelog_dtf" id="t_racelog_dtf" title="Distance To Finish">DTF</label></td>
-                            <td><input type="checkbox" id="racelog_reportedSpeed" checked><label for="racelog_reportedSpeed" id="t_racelog_reportedSpeed" title="Reported speed">vR (kn)</label></td>
-                            <td><input type="checkbox" id="racelog_calcSpeed" checked><label for="racelog_calcSpeed" id="t_racelog_calcSpeed" title="Calculated speed (Δd/Δt)">vC (kn)</label></td>
-                            <td colspan="2"><input type="checkbox" id="racelog_foils" checked><label for="racelog_foils" id="t_racelog_foils">Foils</label></td>
-                            <td colspan="2"><input type="checkbox" id="racelog_factor" checked><label for="racelog_factor" id="t_racelog_factor" title="Speed factor over no-options boat">Factor</label></td>
-                            <td colspan="2"><input type="checkbox" id="racelog_stamina" checked><label for="racelog_stamina" id="t_racelog_stamina">Stamina</label></td>
-                            <td><input type="checkbox" id="racelog_deltaDistance" checked><label for="racelog_deltaDistance" id="t_racelog_deltaDistance" title="Calculated distance">Δd (nm)</label></td>
-                            <td><input type="checkbox" id="racelog_deltaTime" checked><label for="racelog_deltaTime" id="t_racelog_deltaTime" title="Time between positions">Δt (s)</label></td>
-                            <td><input type="checkbox" id="racelog_position" checked><label for="racelog_position" id="t_racelog_position">Position</label></td>
-                            <td></td>
-                            <td colspan="2">(redémarrage dashboard requis)</td>
-                            <td colspan="5"></td>
-                        </tr>
-                        <tr class="us_line">
-                            <td class="us_title" id="t_config_m">Carte</td>
-                            <td colspan="3"><input type="checkbox" id="track_infos"><label for="track_infos" id="t_track_infos">Charger infos traces (redémarrage dashboard requis)</label></td>
-                            <td colspan="5">
-                                <label for="projectionLine_Size" id="t_projectionLine_Size">Taille ligne de projection</label>
-                                <input type="number" min="0" max="360" id="projectionLine_Size" value="20"> min</td>
-                            </td>
-                            <td colspan="12"></td>
-                        </tr>
-
-                        <tr class="us_line2">
-                            <td class="us_title" id="t_config_f">Flotte</td>
-                            <td colspan="2"><input type="checkbox" id="abbreviatedOption" checked><label for="abbreviatedOption" id="t_abbreviatedOption">Options abrégées</label></td>
-                            <td colspan="3">
-                                <label for="sailRankRaceId" id="t_sailRankRaceId">sailRank Race Id</label>
-                                <input type="number" id="sailRankRaceId" value=""></td>
-                            </td>
-                            <td colspan="8">
-                                <input type="checkbox" id="auto_clean" checked><label for="auto_clean" id="t_auto_clean">Nettoyage infos obsolètes</label>
-                                <input type="number" min="0" max="360" id="auto_cleanInterval" value="5"> min</td>
-                            <td colspan="8"></td>
-                        </tr>
-                        <tr class="us_line">
-                            <td id="t_config_c">Colonnes</td>
-                            <td><input type="checkbox" id="fleet_team" checked><label for="fleet_team" id="t_fleet_team">Team</label></td>
-                            <td><input type="checkbox" id="fleet_rank" checked><label for="fleet_rank" id="t_fleet_rank">Rank</label></td>
-                            <td><input type="checkbox" id="fleet_racetime" checked><label for="fleet_racetime" id="t_fleet_racetime">Race Time</label></td>
-                            <td><input type="checkbox" id="fleet_dtu" checked><label for="fleet_dtu" title="Distance To Us">DTU</label></td>
-                            <td><input type="checkbox" id="fleet_dtf" checked><label for="fleet_dtf" title="Distance To Finish">DTF</label></td>
-                            <td><input type="checkbox" id="fleet_twd" checked><label for="fleet_twd" title="True Wind Direction">TWD</label></td>
-                            <td><input type="checkbox" id="fleet_tws" checked><label for="fleet_tws" title="True Wind Speed">TWS</label></td>
-                            <td><input type="checkbox" id="fleet_twa" checked><label for="fleet_twa" title="True Wind Angle">TWA</label></td>
-                            <td><input type="checkbox" id="fleet_hdg" checked><label for="fleet_hdg" title="Heading">HDG</label></td>
-                            <td><input type="checkbox" id="fleet_speed" checked><label for="fleet_speed" id="t_fleet_speed">Speed</label></td>
-                            <td><input type="checkbox" id="fleet_vmg" checked><label for="fleet_vmg" title="Velocity Made Good">VMG</label></td>
-                            <td><input type="checkbox" id="fleet_sail" checked><label for="fleet_sail" id="t_fleet_sail">Sail</label></td>
-                            <td><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor" title="Speed factor over no-options boat">Factor</label></td>
-                            <td><input type="checkbox" id="fleet_foils" checked><label for="fleet_foils">Foils</label></td>
-							<td><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></td>
-                            <td><input type="checkbox" id="fleet_options" checked><label for="fleet_options" id="t_fleet_options">Options</label></td>
-                            <td><input type="checkbox" id="fleet_state" checked><label for="fleet_state" id="t_fleet_state">State</label></td>
-                            <td><input type="checkbox" id="fleet_remove" checked><label for="fleet_remove" id="t_fleet_state">Selected</label></td>
-                            <td colspan="3"></td>
-                        </tr>
-                        <tr class="us_line2">
-                            <td class="us_title">Export</td>
-                            <td width="150px">
-                                <select id="sel_Seperator" name="type" class="notif">
+                                <select id="sel_polarSite" name="polarSite" style="width:70px">
+                                    <option value="0">Toxcct</option>
+                                    <option value="1" selected="selected">INC</option>
+                                    <option value="2">LSV</option>
+                                </select>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="ITYC_record" checked>
+                                <label for="ITYC_record" id="t_ITYC_record">Envoi données à ITYC</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_d">Affichage</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="fullScreen_Game">
+                                <label for="fullScreen_Game" id="t_fullScreen_Game">Mode plein écran</label>
+                            </div>
+                            <div class="flex-item">
+                                <label for="fullScreen_Size" id="t_fullScreen_Size">Taille du jeu</label>
+                                <input type="number" min="50" max="95" id="fullScreen_Size" value="85" style="width:70px"><span class="label">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_rs">Données course</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="showBVMGSpeed">
+                                <label for="showBVMGSpeed" id="t_showBVMGSpeed">Afficher vitesse du bateau à la VMG</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="with_LastCommand">
+                                <label for="with_LastCommand" id="t_with_LastCommand">Afficher derniers ordres</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_l">Journal</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="hideCommandsLines">
+                                <label for="hideCommandsLines" id="t_hideCommandsLines">Cacher les lignes correspondantes aux actions/commandes (sauf les 5 dernières)</label>
+                            </div>
+                            <div class="flex-container flex-container-sub">
+                                <div class="flex-item label" id="t_config_c" style="margin-right:1em"><u>Colonnes</u> <sup><i>(*)</i></sup> :</div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_rank" checked><label for="racelog_rank" id="t_racelog_rank">Rang</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_dtl" checked><label for="racelog_dtl" id="t_racelog_dtl" title="Distance To Leader">DTL</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_dtf" checked><label for="racelog_dtf" id="t_racelog_dtf" title="Distance To Finish">DTF</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_reportedSpeed" checked><label for="racelog_reportedSpeed" id="t_racelog_reportedSpeed" title="Reported speed">vR (kn)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_calcSpeed" checked><label for="racelog_calcSpeed" id="t_racelog_calcSpeed" title="Calculated speed (Δd/Δt)">vC (kn)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_foils" checked><label for="racelog_foils" id="t_racelog_foils">Foils</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_factor" checked><label for="racelog_factor" id="t_racelog_factor" title="Speed factor over no-options boat">Factor</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_stamina" checked><label for="racelog_stamina" id="t_racelog_stamina">Stamina</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_deltaDistance" checked><label for="racelog_deltaDistance" id="t_racelog_deltaDistance" title="Calculated distance">Δd (nm)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_deltaTime" checked><label for="racelog_deltaTime" id="t_racelog_deltaTime" title="Time between positions">Δt (s)</label></div>
+                                <div class="flex-item"><input type="checkbox" id="racelog_position" checked><label for="racelog_position" id="t_racelog_position">Position</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_m">Carte</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="track_infos">
+                                <label for="track_infos" id="t_track_infos">Charger données traces <sup><i>(*)</i></sup></label>
+                            </div>
+                            <div class="flex-item">
+                                <label for="projectionLine_Size" id="t_projectionLine_Size">Longueur ligne de projection</label>
+                                <input type="number" min="0" max="360" id="projectionLine_Size" value="20" style="width:70px">min
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="view_InvisibleDoors">
+                                <label for="view_InvisibleDoors" id="t_view_InvisibleDoors">Afficher bouées invisibles <sup><i>(*)</i></sup></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title" id="t_config_f">Flotte</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <input type="checkbox" id="abbreviatedOption" checked>
+                                <label for="abbreviatedOption" id="t_abbreviatedOption">Options abrégées</label>
+                            </div>
+                            <div class="flex-item">
+                                <input type="checkbox" id="auto_clean" checked>
+                                <label for="auto_clean" id="t_auto_clean">Nettoyage infos obsolètes</label>
+                                <input type="number" min="0" max="360" id="auto_cleanInterval" value="5" style="width:70px"><span class="label">min</span>
+                            </div>
+                            <div class="flex-item">
+                                <label for="sailRankRaceId" id="t_sailRankRaceId">SailRanks raceId</label>
+                                <input type="number" id="sailRankRaceId" value="" style="width:70px">
+                            </div>
+                            <div class="flex-container flex-container-sub">
+                                <div class="flex-item label" id="t_config_c1" style="margin-right:1em"><u>Colonnes</u> :</div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_team" checked><label for="fleet_team" id="t_fleet_team">Équipe</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_rank" checked><label for="fleet_rank" id="t_fleet_rank">Rang</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_racetime" checked><label for="fleet_racetime" id="t_fleet_racetime">Temps de course</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_dtu" checked><label for="fleet_dtu" title="Distance To Us">DTU</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_dtf" checked><label for="fleet_dtf" title="Distance To Finish">DTF</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_twd" checked><label for="fleet_twd" title="True Wind Direction">TWD</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_tws" checked><label for="fleet_tws" title="True Wind Speed">TWS</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_twa" checked><label for="fleet_twa" title="True Wind Angle">TWA</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_hdg" checked><label for="fleet_hdg" title="Heading">HDG</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_speed" checked><label for="fleet_speed" id="t_fleet_speed">Vitesse</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_vmg" checked><label for="fleet_vmg" title="Velocity Made Good">VMG</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_sail" checked><label for="fleet_sail" id="t_fleet_sail">Voile</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_factor" checked><label for="fleet_factor" id="t_fleet_factor" title="Speed factor over no-options boat">Factor</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_foils" checked><label for="fleet_foils">Foils</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_position" checked><label for="fleet_position" id="t_fleet_position">Position</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_options" checked><label for="fleet_options" id="t_fleet_options">Options</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_state" checked><label for="fleet_state" id="t_fleet_state">État</label></div>
+                                <div class="flex-item"><input type="checkbox" id="fleet_remove" checked><label for="fleet_remove" id="t_fleet_remove">Sélection</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container  flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title">Export</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <button id="bt_exportPolar" style="margin-left:0;">Polaires (.json)</button>
+                            </div>
+                            <div class="flex-item">
+                                <button id="bt_exportStamina">Stamina (.json)</button>
+                            </div>
+                            <div class="flex-item">
+                                <button id="bt_exportOwnBoatTrack">Trace bateau (.gpx)</button>
+                            </div>
+                            <div class="flex-item">
+                                <select id="sel_Seperator" name="type">
                                     <option value ="sep_1" id="t_sep_1">; (EU style)</option>
                                     <option value ="sep_2" id="t_sep_2">, (US style)</option>
                                     <option value ="sep_3" id="t_sep_3">Tab (SailRanks)</option>
                                 </select>
-                            </td>
-                            <td colspan="20">
-                                <button id="bt_exportPolar">Export polars</button>
-                                <button id="bt_exportStamina">Export stamina</button>
-                                <button id="bt_exportFleet">Export FleetInfos</button>
-                                <button id="bt_exportOwnBoatTrack">Export trace bateau</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <button id="bt_exportFleet">Flotte (.csv)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-item" id="legend_DashboardReload"><sup><i>(*)</i></sup> => Redémarrage du dashboard requis</div>
+                </div>
             </div>
         </div>
     </div>
     <div id="tab-content8" class="content hidden">
         <div id="userConfig">
             <div>
-                <table class="us_general">
-                    <tbody>
-                        <tr class="us_line3t">
-                            <td class="us_title">Credits:</td>
-                            <td colspan="4"><label>Big Bird (Cvetan Ivanov)</label></td>
-                            <td colspan="4"><label>Hardtack fka Raumzeit aka mak08 (Michael Kappert)</label></td>
-                            <td colspan="4"></td>
-                        </tr>
-                        <tr class="us_line3">
-                            <td class="us_title"></td>
-                            <td colspan="4"><label>Xeelee (Patrick Guelat)</label></td>
-                            <td colspan="4"><label>Patg</label></td>
-                            <td colspan="4"><label>GeGaX (Romain Le Lamer)</label></td>
-                        </tr>
-                        <tr class="us_line3">
-                            <td class="us_title"></td>
-                            <td colspan="4"><label>toxcct (Nicolas Guittet)</label></td>
-                            <td colspan="4"><label>mcmgj (Guy Juy)</label></td>
-                            <td colspan="4"><label>Amoutiers</label></td>
-                        </tr>
-                        <tr class="us_line3">
-                            <td class="us_title"></td>
-                            <td colspan="4"><label>Xpillons</label></td>
-                            <td colspan="4"><label>Valgit</label></td>
-                            <td colspan="4"><label>Helios (Michel)</label></td>
-                        </tr>
-                        <tr class="us_line3">
-                            <td class="us_title"></td>
-                            <td colspan="4"><label> David05320 (David)</label></td>
-                            <td colspan="4"><label>SailSmurf (Franck)</label></td>
-                            <td colspan="4"><label>Kurun56 (JY)</label></td>
-                        </tr>
-                        <tr class="us_line3b">
-                            <td class="us_title"></td>
-                            <td colspan="4"><label>Padd_</label></td>
-                            <td colspan="4"><label id="t_credit_all">Tous les contributeurs inconnus !</label></td>
-                            <td colspan="4"><label id="t_credit_me">Votre serviteur !</label></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="flex-container flex-container-2cols flex-container-border">
+                    <div class="flex-item us_title">Credits</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item awarded">Big Bird (Cvetan Ivanov)</div>
+                            <div class="flex-item awarded">Hardtack fka Raumzeit aka mak08 (Michael Kappert)</div>
+                            <div class="flex-item awarded">Xeelee (Patrick Guelat)</div>
+                            <div class="flex-item awarded">Patg</div>
+                            <div class="flex-item awarded">GeGaX (Romain Le Lamer)</div>
+                            <div class="flex-item awarded">toxcct (Nicolas Guittet)</div>
+                            <div class="flex-item awarded">mcmgj (Guy Juy)</div>
+                            <div class="flex-item awarded">Amoutiers</div>
+                            <div class="flex-item awarded">Xpillons</div>
+                            <div class="flex-item awarded">Valgit</div>
+                            <div class="flex-item awarded">Helios (Michel)</div>
+                            <div class="flex-item awarded">David05320 (David)</div>
+                            <div class="flex-item awarded">SailSmurf (Franck)</div>
+                            <div class="flex-item awarded">Kurun56 (JY)</div>
+                            <div class="flex-item awarded">Padd_</div>
+                            <div class="flex-item awarded" id="t_credit_all">Tous les contributeurs inconnus !</div>
+                            <div class="flex-item awarded" id="t_credit_me">Votre serviteur !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-border">
+                    <div class="flex-item us_title">Raw log</div>
+                    <div class="flex-item">
+                        <input type="checkbox" id="cb_rawlog">
+                        <label for="cb_rawlog">Log messages</label>
+                    </div>
+                    <div class="flex-item">
+                        <button id="bt_clear">Clear log</button>
+                    </div>
+                    <div style="white-space: pre;" id="rawlog"></div>
+                </div>
             </div>
         </div>
-        <input type="checkbox" id="cb_rawlog">
-        <label for="cb_rawlog">Log messages</label>
-        <button id="bt_clear">Clear log</button>
-        <div style="white-space: pre;" id="rawlog"></div>
     </div>
 </div>
 </body>

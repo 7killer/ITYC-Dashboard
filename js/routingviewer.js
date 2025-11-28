@@ -193,13 +193,17 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     let gpx = new gpxParser(); //Create gpxParser Object
     gpx.parse(gpxFile); //parse gpx file from string data
 
-    if(!gpx || !gpx.routes || !gpx.routes[0].points)return "" ;//File not available
+    let gpxPoints;
+    if (!gpx || (!gpx.routes && !gpx.tracks && !gpx.waypoints)) return "" ; //File not available
+    if (Array.isArray(gpx.routes) && gpx.routes[0]?.points) gpxPoints = gpx.routes[0].points;
+    else if (Array.isArray(gpx.tracks) && gpx.tracks[0]?.points) gpxPoints = gpx.tracks[0].points;
+    else if (Array.isArray(gpx.waypoints)) gpxPoints = gpx.waypoints;
+    else return "";
 
     var routeName = routerName + " " + skipperName;
     createEmptyRoute(race.id,routeName.cleanSpecial(),skipperName,color,routeName);
-    
 
-    gpx.routes[0].points.forEach(function (pt) {
+    gpxPoints.forEach(function (pt) {
         
         var lat = Number(pt.lat);
         var lon = Number(pt.lon);
@@ -217,6 +221,7 @@ function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.speed = "";
         routeData.stamina = "";
         routeData.boost = "";
+        routeData.desc = pt.desc;
         addNewPoints(race.id,routeName.cleanSpecial(),routeData);
 
     });
@@ -243,12 +248,13 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
     var currentYear = new Date();
     currentYear = currentYear.getFullYear();
     var previousMonth =0;
-    while (i < lineAvl.length-2) {
-        i = i + 1;
-        //if (i > 54) i = i + 5;
-        if(i > lineAvl.length-2) i = lineAvl.length-2;
-        poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
 
+    var totalLines = lineAvl.length-2;
+    if (mode == 1) totalLines = lineAvl.length-1;
+    while (i < totalLines) {
+        i = i + 1;
+        if (i > totalLines) i = totalLines;
+        poi = lineAvl[i].replace(/\,/g,".").split(";");
 
         var isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
 
@@ -280,7 +286,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             } else 
                 isoDate = poi[0]+" GMT";
 
-            sail =  poi[15];
+            sail = renameSailFromRoutes(poi[15]);
             twa = Util.roundTo(poi[6], 2)+ "°";
             twd = Util.roundTo(poi[11], 2)+ "°"; 
             stamina = Util.roundTo(poi[24], 2);
@@ -320,7 +326,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             if(isNumber(poi[5]))
                 sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
             else
-                sail = poi[5]; //new version give sail name
+                sail = renameSailFromRoutes(poi[5]);
             stamina = Util.roundTo(poi[9], 2);
             boost = Util.roundTo(poi[10], 2);
             
@@ -348,6 +354,18 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
 }
 
+function renameSailFromRoutes(sailName) {
+    if (sailName && sailName !== undefined) {
+        if (sailName == '"HeavyGnk-foils"' || sailName == '"HeavyGnk"' || sailName == 'Spi lourd' || sailName == '"HEAVY_GNK"' || sailName == '"HEAVY_GNK-foils"') sailName = 'HG';
+        else if (sailName == '"LightGnk-foils"' || sailName == '"LightGnk"' || sailName == 'Spi leger' || sailName == '"LIGHT_GNK"' || sailName == '"LIGHT_GNK-foils"') sailName = 'LG';
+        else if (sailName == '"Code0-foils"' || sailName == '"Code0"' || sailName == 'Code 0' || sailName == '"CODE_0"' || sailName == '"CODE_0-foils"') sailName = 'C0';
+        else if (sailName == '"Jib-foils"' || sailName == '"Jib"' || sailName == '"JIB"') sailName = 'Jib';
+        else if (sailName == '"Spi-foils"' || sailName == '"Spi"' || sailName == '"SPI"') sailName = 'Spi';
+        else if (sailName == '"Staysail-foils"' || sailName == '"STAYSAIL-foils"' || sailName == '"Staysail"' || sailName == 'Trinquette' || sailName == '"STAYSAIL"') sailName = 'Stay';
+        else if (sailName == '"LightJib-foils"' || sailName == '"LightJib"' || sailName == 'Genois leger' || sailName == '"LIGHT_JIB"' || sailName == '"LIGHT_JIB-foils"') sailName = 'LJ';
+    }
+    return sailName;
+}
 
 function getOption(name) {
     var z = "cb_" + name;
@@ -457,9 +475,9 @@ function loadRacingSkipperList(elt)
 
             let optionK = "";
             if(!fleetInfos[fln[key]].options || fleetInfos[fln[key]].options=="?")
-                optionK = "(*) ";
+                optionK = " (*)";
 
-            option.text = optionK+fleetInfos[fln[key]].displayName;
+            option.text = fleetInfos[fln[key]].displayName+optionK;
             option.value = fln[key];
             if(fln[key]==optionsSelect) optionsSelectStillExist = true;
 
@@ -533,6 +551,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value = actualAvalon06Color;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
@@ -542,6 +561,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualVRZenColor;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
@@ -551,6 +571,7 @@ function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualgpxColor;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
@@ -936,6 +957,7 @@ function buildMarkerTitle(point)
     textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
     textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
     textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+    if (point.desc) position += '<br>' + point.desc.replace(/�/g, "°");
     let textStamina = '';
     if (point.stamina && point.stamina > 0) textStamina = "🔋 " + point.stamina + "%";
 
@@ -989,7 +1011,10 @@ function help(){
         "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
         "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
         "Copier les coordonnées pointées par la souris :\n" +
-        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).";
+        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).\n\n" +
+        "Outil Règle :\n" +
+        "- Pour l'utiliser, il faut activer l'outil en cliquant sur le bouton. Puis, un premier clic gauche sur un emplacement de la carte début le tracé de mesure, un second clic gauche termine le tracé de mesure et permet de débuter un nouveau tracé de mesure. Les tracés terminés restent affichés tant que l'outil est activé.\n" +
+        "- La touche « Echap » annule le tracé de mesure en cours non terminé. Une deuxième pression sur cette touche désactive l'outil.";
         
     alert(msg);
 }
