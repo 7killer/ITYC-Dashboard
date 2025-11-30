@@ -60,7 +60,8 @@ export const userPrefsDefault =
         showMarkers : false,
         showTracks : false,
         borderColor :"#0000FF",
-        projectionColor :"#B56AFB"
+        projectionColor :"#B56AFB",
+        selectBaseMap : "Dark"
     },
     fleet : {
         shortOption : true,
