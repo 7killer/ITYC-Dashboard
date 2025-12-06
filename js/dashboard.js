@@ -2659,6 +2659,14 @@ var controller = function () {
     {
         exp.exportStamina(paramStamina);
     }
+
+    function exportRestrictedZones()
+    {
+        var race = races.get(selRace.value);
+        if (!race)  return;
+        exp.exportRestrictedZones(race);
+    }
+
     function exportPolar()
     {
         exp.exportPolar(polars)
@@ -5897,6 +5905,7 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
+            document.getElementById("bt_exportRestrictedZones").innerHTML = "Zones interdites (.json)";
             document.getElementById("bt_exportPolar").innerHTML = "Polaires (.json)";
             document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
             document.getElementById("bt_exportFleet").innerHTML = "Flotte (.csv)";
@@ -6017,6 +6026,7 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
+            document.getElementById("bt_exportRestrictedZones").innerHTML = "Restricted areas (.json)";
             document.getElementById("bt_exportPolar").innerHTML = "Polars (.json)";
             document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
             document.getElementById("bt_exportFleet").innerHTML = "Fleet data (.csv)";
@@ -6073,6 +6083,7 @@ async function initializeMap(race) {
         onMarkersChange:onMarkersChange,
         onSkipperSelectChange:onSkipperSelectChange,
         onTracksChange:onTracksChange,
+        exportRestrictedZones:exportRestrictedZones,
         exportPolar:exportPolar,
         exportStamina:exportStamina,
         exportFleet:exportFleet,
@@ -6122,6 +6133,7 @@ window.addEventListener("load", async function () {
     document.getElementById("uiFilterMode").addEventListener("change", controller.changeFilterUI);
     document.getElementById("local_time").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
+    document.getElementById("bt_exportRestrictedZones").addEventListener("click", controller.exportRestrictedZones);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
     document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
