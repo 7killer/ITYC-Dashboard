@@ -173,21 +173,25 @@ var controller = function () {
         zezoRaceListAnswer = false;
         
         if(raceListTimeOut) clearTimeout(raceListTimeOut);
-        raceListTimeOut = setTimeout(mergeRaceList, 10000); // let 10 sec to zezo and ITYC to answer.
+        raceListTimeOut = setTimeout(mergeRaceList, 4000); // let few secs to zezo and ITYC to answer.
 
     }
 
     function mergeRaceList() {
-        if(zezoRaceListAnswer) return;
+//        if(zezoRaceListAnswer) return;
         
         if(raceListTimeOut) clearTimeout(raceListTimeOut);
         var raceListItyc = DM.getRaceListInfos();
         Object.keys(raceListItyc.uinfo).forEach(function (key) {
             var raceInfo =raceListItyc.uinfo[key];
-            if(raceInfo.vsr != 0) { 
+            if(Number(raceInfo.endDate) + Number(7*24*3600*1000) > Number(Date.now())) // hide race close since more than one week
+            {                
                 raceInfo.legId = raceInfo.legId.replace("_",".");
-                raceInfo.id=raceInfo.legId 
-                initRace(raceInfo, true);
+                if(raceInfo.vsr != 0  && !races.get(raceInfo.legId)) { 
+                    raceInfo.id=raceInfo.legId 
+                    initRace(raceInfo, true);
+                }
+                renameRace(raceInfo.legId,raceInfo.legName+" ("+raceInfo.legId.split(".")[0]+")");
             }       
         });
 
@@ -4623,6 +4627,7 @@ async function initializeMap(race) {
         document.getElementById("with_LastCommand").addEventListener("change", makeRaceStatusHTML);
         document.getElementById("vrzenPositionFormat").addEventListener("change", saveOption);
         document.getElementById("showBVMGSpeed").addEventListener("change", saveOption);
+        document.getElementById("showBVMGSpeed").addEventListener("change", makeRaceStatusHTML);
         document.getElementById("hideCommandsLines").addEventListener("change", saveOption);
         document.getElementById("hideCommandsLines").addEventListener("change", updateToggleRaceLogCommandsLines);
         document.getElementById("abbreviatedOption").addEventListener("change", saveOption);
@@ -5316,7 +5321,7 @@ async function initializeMap(race) {
             savedData += "/**/"+JSON.stringify(polars[race]);
     
         });
-        localStorage["polars"] = savedData;
+        await saveLocal("polars",savedData);
 
         console.info("Stored polars " + boatPolar.label);     
 
