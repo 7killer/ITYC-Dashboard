@@ -432,7 +432,7 @@ export async function computeOwnIte(raceId, legNum, userId)
 
 
     metaDash.isAutoSail = latest.hasPermanentAutoSails ||
-            (latest.tsEndOfAutoSail &&(latest.tsEndOfAutoSail - latest.lastCalcDate) > 0);
+            (latest.tsEndOfAutoSail &&(latest.tsEndOfAutoSail - latest.iteDate) > 0);
     metaDash.autoSailTime = latest.hasPermanentAutoSails ?"inf" : (latest.tsEndOfAutoSail - latest.iteDate)
     latest.metaDash = metaDash;
     

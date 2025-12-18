@@ -57,13 +57,13 @@ export function buildRaceLogHtml() {
         if(raceItes.length == 0) return; //TODO display empty raceLog
         for(let idx=0;idx<raceItes.length;idx++)
         {
-                const raceLogLine = raceItes[idx];
-                if('action' in raceLogLine)
-                {
-                    raceLogContent += buildRaceLogLineCmd(raceLogLine);
-                } else {
-                    raceLogContent += buildRaceLogLine(raceLogLine);
-                }
+            const raceLogLine = raceItes[idx];
+            if('action' in raceLogLine)
+            {
+                raceLogContent += buildRaceLogLineCmd(raceLogLine);
+            } else {
+                raceLogContent += buildRaceLogLine(raceLogLine);
+            }
             
 
         }
@@ -102,7 +102,7 @@ function buildRaceLogLineCmd(raceLogLine) {
     if(!raceLogLine.action) return"";
     return '<tr class="commandLine hovred">'
     + '<td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td>'
-    + '<td colspan="19"><b>Command @ ' + (raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.serverTs))
+    + '<td colspan="19"><b>Command @ ' + (raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.iteDate))
     + '</b> • <b>Actions</b> → ' + printLastCommand(raceLogLine.action) + '</td>'
     + '</tr>';
 }

@@ -14,6 +14,8 @@ import {boatActionResponseData } from './ingesterModels/boatAction.js'
 /* addBoatActionResponseData */ 
 import { getFleetRequestDataSchema, getFleetResponseSchema } from './ingesterModels/getFleet.js';
 import { polarSchema} from './ingesterModels/polar.js';
+import { ghostTrackRequestDataSchema, ghostTrackResponseSchema } from './ingesterModels/getGhostTrack.js';
+
 import cfg from '@/config.json';
 
 
@@ -748,17 +750,16 @@ export function ingestBoatAction(boatActionTxt)
       else
         prog.order.push(order)
     } else if ('pos' in action) {
-      const order = {
-        lat: action.pos[0].lat,
-        lon: action.pos[0].lon,
-        idx: action.pos[0].idx,
-      };
-      prog.wp.push(order);
+      action.pos.forEach(({ lat, lon, idx }) => {
+        const order = {
+          lat: lat,
+          lon: lon,
+          idx: idx,
+        };
+        prog.wp.push(order);
+      });
+      prog.wp.sort((a, b) => a.idx - b.idx);
     }
-  }
-
-  if (prog.wp.length) {
-    prog.wp.sort((a, b) => a.idx - b.idx);
   }
 
   if (prog.order) {
@@ -826,6 +827,86 @@ export function ingestBoatAction(boatActionTxt)
   })
   .catch(error => {
       if(cfg.debugIngesterErr) console.error('boatAction Validation Error :', error);
+      return false;
+  });
+
+}
+
+
+export async function ingestGhostTrack(request, response) {
+
+  // ✅ Validation synchrone de la requête
+  const req = ghostTrackRequestDataSchema.validateSync(request, {
+    stripUnknown: true
+  });
+
+  ghostTrackResponseSchema.validate(response, { stripUnknown: true })
+  .then(validGhostTracks => {
+    
+    const raceId = req?.race_id;
+    const legNum = req?.leg_num;
+    if(!raceId || !legNum) return;
+
+    const leaderName = validGhostTracks?.scriptData?.leaderName;
+    const leaderId = validGhostTracks?.scriptData?.leaderId;
+    const leaderTrack = validGhostTracks?.scriptData?.leaderTrack;
+    
+    const ghostPlayerId = req?.playerId;
+    const ghostPlayerTrack = validGhostTracks?.scriptData?.myTrack;
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        ...(leaderId && leaderTrack  && {
+          players: [
+            {
+            id : leaderId,
+            name : leaderName,
+            timestamp: Date.now(),
+          
+            }
+          ],
+          playersTracks : [
+            {
+              raceId : raceId,
+              legNum : legNum,
+              userId : leaderId,
+              type : 'leader',
+              track : leaderTrack
+            }
+          ]
+        }),
+        ...(ghostPlayerTrack  && {
+          playersTracks : [
+            {
+              raceId : raceId,
+              legNum : legNum,
+              userId : ghostPlayerId,
+              type : 'ghost',
+              track : ghostPlayerTrack
+            }
+          ],
+        }),
+        ...((ghostPlayerTrack || (leaderId && leaderTrack))   && {
+          internal: [
+            {
+              id: "playersTracksUpdate",
+              ts: Date.now(),
+            },
+            ...(ghostPlayerTrack && 
+            {
+              id: "playersUpdate",
+              ts: Date.now(),
+            }), 
+          ],
+        }),
+      },
+    ];
+
+    processDBOperations(dbOpe);
+    return true;
+  })
+  .catch(error => {
+      if(cfg.debugIngesterErr) console.error('ghostTrack validation Error :', error);
       return false;
   });
 

@@ -218,8 +218,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
                     await msgInjest.ingestPolars(body);
                 } else if (eventKey == "Game_AddBoatAction") {
                     await msgInjest.ingestBoatAction(body);
-                }  
-                 
+                } else if (eventKey == "Game_GetGhostTrack") {
+                    await msgInjest.ingestGhostTrack(postData, body);
+                }
 
                 
                 /*

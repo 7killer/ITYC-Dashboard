@@ -100,7 +100,9 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     const legInfos = await getData('legList', [raceId, legNum]); 
     if(!legInfos || !raceIte || !raceIte.metaDash) return;
 
-
+/*const { items, meta2 } = await getEntriesForTriplet(    raceId,legNum,connectedPlayerId,{    storeName : 'legPlayersOrder',limit:5,since:Date.now() - latest.iteDate });
+    if(meta.timeout || !items || items.length == 0) return;
+  */ 
 
     const best = raceIte.metaDash.bVmg;
     

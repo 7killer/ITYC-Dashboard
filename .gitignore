@@ -2,3 +2,5 @@
 *.bak
 js/fleet2Ityc.js
 js/FLeetBoardintegration.txt
+node_modules/*
+dist/*

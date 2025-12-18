@@ -110,62 +110,54 @@ function updateMapCheckpoints(raceInfo,playerIte) {
     if(!mapState.userZoom) updateBounds();
 }
 
-function updateMapWaypoints(race) {
+function updateMapWaypoints(raceInfo,playerIte) {
 
-    if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
+    
+    const raceOrder = getLegPlayersOrder();
+
+
+    if (!mapState || !mapState.map || !mapState.gdiv) return;
     
     var map = mapState.map;
 
-    if (!race.curr) return; // current position unknown
-    if (!map) return; // no map yet
-    
+    if (!playerIte?.ite) return; // current position unknown
+    if(!raceOrder && raceOrder[0].action.type !== "wp") return; //last order not wp
+
     if(mapState.wayPointLayer)
     {
         map.removeLayer(mapState.wayPointLayer);
     }
     mapState.wayPointLayer = L.layerGroup();
 
+    const wpOrder = raceOrder[0].action.action;  
+    const lastWpIdx = playerIte.ite.lastWpIdx;
+    const currPos = playerIte.ite.pos;
     
-    // track wp
-    var tpath = [];
-    tpath[0] = [];
-    tpath[1] = [];
-    tpath[2] = [];
+    // Waypoint lines already passed
+    let wpPts = [];
+    wpOrder.forEach(({ lat, lon, idx }) => {
+        if(idx <= lastWpIdx) wpPts.push({lat,lon});
+    });
+    let cpath = buildPath(wpPts,null,null,currPos.lat, currPos.lon);
+    buildTrace(cpath,mapState.wayPointLayer,mapState.refPoints,"#FF00FF",1.5,0.7,[0,1,0,1]);
 
-    if (race.waypoints && race.waypoints.type == "wp") {
-        var action = race.waypoints;
-        if (action.pos) {
-            // Waypoint lines
-            var cpath = buildPath(action.pos,race.curr.pos.lat, race.curr.pos.lon);
-            buildTrace(cpath,mapState.wayPointLayer,race,"#FF00FF",1.5,0.7);
-
-            // Waypoint markers
-            for (var i = 0; i < action.pos.length; i++) {
-                var pos = buildPt2(action.pos[i].lat, action.pos[i].lon);
-                var title = Util.formatPosition(action.pos[i].lat, action.pos[i].lon);
-                buildCircle(pos,mapState.wayPointLayer,"#FF00FF", 2,1, title)
-                mapState.refPoints.push(pos[1]);
-             }
-        } else if (action.length) {
-            // Waypoint lines
-
-            var cpath = buildPath(action,race.curr.pos.lat, race.curr.pos.lon);
-            buildTrace(cpath,mapState.wayPointLayer,race,"#FF00FF",1.5,0.7);
-            // Waypoint markers
-            for (var i = 0; i < action.length; i++) {
-                var pos = buildPt2(action[i].lat, action[i].lon);
-                var title = Util.formatPosition(action[i].lat, action[i].lon);
-                buildCircle(pos, mapState.wayPointLayer,"#FF00FF", 2,1, title);
-                mapState.refPoints.push(pos[1]);
-            }
-        } else {
-            console.error("Unexpected waypoint format: " + JSON.stringify(action));
-        }
-    }       
+    // Waypoint lines    
+    wpPts = [];
+    wpOrder.forEach(({ lat, lon, idx }) => {
+        if(idx > lastWpIdx) wpPts.push({lat,lon});
+    });
+    
+    cpath = buildPath(wpOrder,currPos.lat, currPos.lon);
+    buildTrace(cpath,mapState.wayPointLayer,mapState.refPoints,"#FF00FF",1.5,0.7);
+    // Waypoint markers
+    wpOrder.forEach(({ lat, lon, idx }) => {
+        const pos = buildPt2(lat, lon);
+        const title = formatPosition(lat, lon);
+        buildCircle(pos,mapState.wayPointLayer,"#FF00FF", 2,1, title);
+        mapState.refPoints.push(pos[1]);
+    });     
     mapState.wayPointLayer.addTo(map); 
     if(!mapState.userZoom) updateBounds();
-    lMapInfos = mapState;
-
 }
 function updateMapMe(race, track) {
     if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
@@ -491,7 +483,7 @@ export async function initialize(raceFleetMap)
         updateBounds();
         updateMapCheckpoints(raceInfo);
         updateMapFleet(raceInfo, raceItesFleet);
-        updateMapWaypoints(raceInfo);
+        updateMapWaypoints(playerItes);
         updateMapLeader(raceInfo);
         updateMapMe(raceInfo,playerIte);
         initButtonToCenterViewMap(playerIte.pos.lat, playerIte.pos.lon, mapState.map);
@@ -671,10 +663,18 @@ export async function initialize(raceFleetMap)
             newMap.on('baselayerchange', onBaseLayerChange);
 
             // re-appliquer les couches dynamiques pour la course courante
+            const raceInfo = getRaceInfo();
+            const playerItes = getLegPlayerInfos();
+            const raceItesFleet    = getLegFleetInfos();
+            const connectedPlayerId = getConnectedPlayerId();
+    
+            if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+                playerItes.ite = playerItes.ites[0];
+            }
             updateBounds(raceInfo);
             updateMapCheckpoints(raceInfo);
             updateMapFleet(raceInfo, raceItesFleet);
-            updateMapWaypoints(raceInfo);
+            updateMapWaypoints(playerItes);
             updateMapLeader(raceInfo);
             updateMapMe(raceInfo);
             lMapInfos = mapState;
@@ -822,7 +822,7 @@ export async function initialize(raceFleetMap)
         });
     }
 
-    updateMapWaypoints(raceInfo);
+    updateMapWaypoints(playerItes);
     updateMapLeader(raceInfo);
     updateMapMe(raceInfo);
 
