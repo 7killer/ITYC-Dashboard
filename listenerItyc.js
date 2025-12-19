@@ -212,7 +212,6 @@ function manageFullScreen2() {
         div = document.querySelector('#hero');
         if(div) {
           div.style.setProperty('padding-top', '10px', 'important');
-          div.style.backgroundImage = 'none';
         }
 
         div = document.querySelector('div[data-colibri-id="1342-h1"]');
@@ -234,7 +233,6 @@ function manageFullScreen2() {
         div = document.querySelector('#hero');
         if(div) {
           div.style.setProperty('padding-top', '120px', 'important');
-          div.style.backgroundImage = 'none';
         }
 
         div = document.querySelector('div[data-colibri-id="1342-h2"]');

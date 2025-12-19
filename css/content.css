@@ -73,6 +73,7 @@ body {
 
 #hero {
     background-color: var(--bg_body_color) !important;
+    background-image : none !important;
 }
 
 #gameContainer {
