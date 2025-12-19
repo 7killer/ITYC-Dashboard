@@ -200,7 +200,7 @@ function manageFullScreen2() {
         let ourDiv = document.getElementById('dashIntegRow');
         if(ourDiv) ourDiv.remove();        
       }
-	  const targetElement = document.querySelector('[data-colibri-id="1752-c14"]');     
+	    const targetElement = document.querySelector('[data-colibri-id="1752-c203"]');     
       if (targetElement) {
         targetElement.style.setProperty('text-align', 'center'); 
       }
@@ -211,7 +211,7 @@ function manageFullScreen2() {
 
         div = document.querySelector('#hero');
         if(div) {
-          div.style.setProperty('padding-top', '0px', 'important');
+          div.style.setProperty('padding-top', '10px', 'important');
           div.style.backgroundImage = 'none';
         }
 
