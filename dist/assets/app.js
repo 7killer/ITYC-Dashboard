@@ -1,5 +1,5 @@
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, r as raceTableHeaders, e as roundTo, f as formatHM, h as formatTimeNotif, i as raceTableLines, j as infoSail, k as getUserPrefs, l as genthRacelog, m as dateUTCSmall, D as DateUTC, s as sailNames, n as formatPosition, o as formatSeconds, p as getxFactorStyle, q as gentdRacelog, t as getBG, u as genth, v as category, w as sailColors, x as gentd, y as formatTime, z as formatDHMS, A as formatShortDate, B as categoryStyleDark, C as categoryStyle, E as isBitSet, F as guessOptionBits, G as display_selbox, H as changeState, I as saveUserPrefs, J as switchTheme, K as loadUserPrefs, L as createKeyChangeListener } from "./common-9e96a115.js";
+import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, r as raceTableHeaders, e as roundTo, f as formatHM, h as formatTimeNotif, i as raceTableLines, j as infoSail, k as getUserPrefs, l as genthRacelog, m as dateUTCSmall, D as DateUTC, s as sailNames, n as formatPosition, o as formatSeconds, p as getxFactorStyle, q as gentdRacelog, t as getBG, u as genth, v as category, w as sailColors, x as gentd, y as formatTime, z as formatDHMS, A as formatShortDate, B as categoryStyleDark, C as categoryStyle, E as isBitSet, F as guessOptionBits, G as getRankingCategory, H as creditsMaxAwardedByPriceLevel, I as display_selbox, J as changeState, K as saveUserPrefs, L as switchTheme, M as loadUserPrefs, N as createKeyChangeListener } from "./common-1c8f3165.js";
 const style = "";
 let connectedPlayerId;
 let connectedPlayerInfos = [];
@@ -455,17 +455,17 @@ function buildRaceStatusHtml() {
   tablecontainer.innerHTML = '<table id="raceStatusTable"><thead>' + raceStatusHeader + "</thead><tbody>" + tableContent + "</tbody></table>";
 }
 function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   if (!raceIte || !raceInfo2)
     return "";
   const userPrefs = getUserPrefs();
   let lastCommand = "-";
   let lastCommandBG = "";
   let agroundBG = raceIte.aground ? "LightRed" : "lightgreen";
-  let mnvrBG = raceIte.metaDash.manoeuvering ? "LightRed" : "lightgreen";
+  let mnvrBG = ((_a = raceIte.metaDash) == null ? void 0 : _a.manoeuvering) ? "LightRed" : "lightgreen";
   if (userPrefs.theme == "dark") {
     agroundBG = raceIte.aground ? "darkred" : "darkgreen";
-    mnvrBG = raceIte.metaDash.manoeuvering ? "darkred" : "darkgreen";
+    mnvrBG = ((_b = raceIte.metaDash) == null ? void 0 : _b.manoeuvering) ? "darkred" : "darkgreen";
   }
   let info = "-";
   if (raceInfo2.raceType === "leg") {
@@ -477,29 +477,29 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
       info = "<span>-</span>";
     }
   }
-  if ((_a = raceInfo2.record) == null ? void 0 : _a.lastRankingGateName) {
+  if ((_c = raceInfo2.record) == null ? void 0 : _c.lastRankingGateName) {
     info += "<br/><span>@ " + r.record.lastRankingGateName + "</span>";
   }
   let trstyle = "hov";
   const raceIdFull = getOpenedRaceId();
   if (raceInfo2.id === raceIdFull.raceId || raceInfo2.legNum === raceIdFull.legNum)
     trstyle += " sel";
-  const best = raceIte.metaDash.bVmg;
+  const best = (_d = raceIte.metaDash) == null ? void 0 : _d.bVmg;
   const bestVMGString = best ? best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>' : "-";
   const bestVMGTilte = best ? roundTo(best.vmgUp, 3) + '<span class="textMini"> kts</span> | ' + roundTo(Math.abs(best.vmgDown), 3) + '<span class="textMini"> kts</span>' : "-";
   const bspeedTitle = best ? roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>' : "-";
   let lastCalcStyle = "";
-  if (raceIte.metaDash.deltaReceiveCompute > 9e5) {
+  if (((_e = raceIte.metaDash) == null ? void 0 : _e.deltaReceiveCompute) > 9e5) {
     lastCalcStyle = 'style="background-color: red;';
     lastCalcStyle += userPrefs.theme == "dark" ? ' color:black;"' : '"';
   }
-  const manoeuver = raceIte.metaDash.manoeuver;
+  const manoeuver = (_f = raceIte.metaDash) == null ? void 0 : _f.manoeuver;
   const tack = manoeuver ? "<p>-" + manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p><p>-" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>" : "-";
   const gybe = manoeuver ? "<p>-" + manoeuver.gybe.pena.dist + "nm | " + manoeuver.gybe.pena.time + "s</p><p>-" + manoeuver.gybe.energyLoose + "% | " + manoeuver.gybe.energyRecovery + "min</p>" : "-";
   const sail = manoeuver ? "<p>-" + manoeuver.sail.pena.dist + "nm | " + manoeuver.sail.pena.time + "s</p><p>-" + manoeuver.sail.energyLoose + "% | " + manoeuver.sail.energyRecovery + "min</p>" : "-";
   let staminaStyle = "";
   let staminaTxt = "-";
-  const stamina = raceIte.metaDash.realStamina;
+  const stamina = (_g = raceIte.metaDash) == null ? void 0 : _g.realStamina;
   const paramStamina2 = getParamStamina();
   if (stamina) {
     if (stamina < (paramStamina2 == null ? void 0 : paramStamina2.tiredness[0]))
@@ -512,7 +512,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
     staminaTxt += " (x" + roundTo(manoeuver.staminaFactor, 2) + ")";
   }
   let fullStamina = '<td class="stamina" ';
-  if (((_b = raceIte.metaDash) == null ? void 0 : _b.coffeeBoost) != 0 || ((_c = raceIte.metaDash) == null ? void 0 : _c.chocoBoost) != 0) {
+  if (((_h = raceIte.metaDash) == null ? void 0 : _h.coffeeBoost) != 0 || ((_i = raceIte.metaDash) == null ? void 0 : _i.chocoBoost) != 0) {
     fullStamina += '><div class="textMini">';
     if (raceIte.metaDash.chocoBoost != 0) {
       fullStamina += "🍫+" + roundTo(raceIte.metaDash.chocoBoost, 2) + "%";
@@ -533,12 +533,32 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
     fullStamina += staminaStyle + ">" + staminaTxt + "</td>";
   }
   let itycLedColor = "LightGrey";
-  const rid = raceInfo2.id + "-" + raceInfo2.legNum;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
   const zezoUrl = raceInfo2.zezoUrl ? raceInfo2.zezoUrl : null;
-  let returnVal = '<tr class="' + trstyle + '" id="rs:' + rid + '">' + (zezoUrl ? '<td class="tdc"><span id="rt:' + rid + '">&#x2388;</span></td>' : "<td>&nbsp;</td>") + '<td class="tdc"><span id="vrz:' + rid + '">&#x262F;</span></td><td class="tdc"><span id="pl:' + rid + '">&#x26F5;</span></td><td class="tdc"><span id="wi:' + rid + '"><img class="icon" src="./img/wind.svg"/></span></td><td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td><td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td><td class="name">' + raceInfo2.legName + '</td><td class="time" ' + lastCalcStyle + ">" + formatTimeNotif(raceIte.iteDate) + "</td>" + raceTableLines(raceIte, best) + infoSail(raceIte, false) + '<td class="speed1">' + roundTo(raceIte.speed, 3) + '</td><td class="speed2">' + roundTo(raceIte.metaDash.vmg, 3) + '</td><td class="bvmg"><p>' + bestVMGString + "</p>";
+  let returnVal = '<tr class="' + trstyle + '" id="rs:' + rid + '">';
+  returnVal += zezoUrl ? '<td class="tdc"><span id="rt:' + rid + '">&#x2388;</span></td>' : "<td>&nbsp;</td>";
+  returnVal += '<td class="tdc"><span id="vrz:' + rid + '">&#x262F;</span></td>';
+  returnVal += '<td class="tdc"><span id="pl:' + rid + '">&#x26F5;</span></td>';
+  returnVal += '<td class="tdc"><span id="wi:' + rid + '"><img class="icon" src="./img/wind.svg"/></span></td>';
+  returnVal += '<td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td>';
+  returnVal += '<td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td>';
+  returnVal += '<td class="name">' + raceInfo2.legName + "</td>";
+  returnVal += '<td class="time" ' + lastCalcStyle + ">" + formatTimeNotif(raceIte.iteDate) + "</td>";
+  returnVal += raceTableLines(raceIte, best);
+  returnVal += infoSail(raceIte, false);
+  returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + "</td>";
+  returnVal += '<td class="speed2">' + (((_j = raceIte.metaDash) == null ? void 0 : _j.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
+  returnVal += '<td class="bvmg"><p>' + bestVMGString + "</p>";
   if (userPrefs.raceData.VMGSpeed)
     returnVal += "<p>(" + bestVMGTilte + ")</p>";
-  returnVal += '</td><td class="bspeed">' + bspeedTitle + "</td>" + fullStamina + '<td class="tack">' + tack + '</td><td class="gybe">' + gybe + '</td><td class="sailPenalties">' + sail + '</td><td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + '</td><td class="man" style="background-color:' + mnvrBG + ';">' + (raceIte.metaDash.manoeuvering ? "Yes" : "No") + "</td>";
+  returnVal += "</td>";
+  returnVal += '<td class="bspeed">' + bspeedTitle + "</td>";
+  returnVal += fullStamina;
+  returnVal += '<td class="tack">' + tack + "</td>";
+  returnVal += '<td class="gybe">' + gybe + "</td>";
+  returnVal += '<td class="sailPenalties">' + sail + "</td>";
+  returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + "</td>";
+  returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_k = raceIte.metaDash) == null ? void 0 : _k.manoeuvering) ? "Yes" : "No") + "</td>";
   if (userPrefs.raceData.lastCmd)
     returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
   returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
@@ -595,7 +615,7 @@ function buildRaceLogHtml() {
 function buildRaceLogLineCmd(raceLogLine) {
   if (!raceLogLine.action)
     return "";
-  return '<tr class="commandLine hovred"><td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td><td colspan="19"><b>Command @ ' + (raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.serverTs)) + "</b> • <b>Actions</b> → " + printLastCommand(raceLogLine.action) + "</td></tr>";
+  return '<tr class="commandLine hovred"><td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td><td colspan="19"><b>Command @ ' + (raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.iteDate)) + "</b> • <b>Actions</b> → " + printLastCommand(raceLogLine.action) + "</td></tr>";
 }
 function printLastCommand(order) {
   let lastCommand = "";
@@ -665,7 +685,7 @@ function buildRaceLogLine(raceIte) {
     xfactorTxt += " " + iteDash2.sailCoverage + "%";
   }
   const foilTxt = iteDash2.realFoilFactor == null ? "-" : roundTo(iteDash2.realFoilFactor, 0) + "%";
-  return '<tr class="hovred">' + gentdRacelog("time", "time", null, "Time", DateUTC(raceIte.iteDate, 1)) + raceTableLines(raceIte, iteDash2.bVmg) + infoSail(raceIte, false, false) + gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", roundTo(raceIte.speed, 3)) + gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", roundTo(iteDash2.speedC, 3) + " (" + sailNames[raceIte.sail % 10] + ")") + gentdRacelog("foils", "foils", null, "Foils", foilTxt) + gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt) + gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", stamina ? roundTo(stamina, 2) + "%" : "-") + gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist) + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", roundTo(iteDash2.deltaT, 0)) + gentdRacelog("position", "position", null, "Position", formatPosition(raceIte.pos.lat, raceIte.pos.lon)) + '<td class="sailPenalties" ' + getBG(iteDash2.tsEndOfSailChange) + ">" + sailChange + '</td><td class="gybe" ' + getBG(iteDash2.tsEndOfGybe) + ">" + gybing + '</td><td class="tack" ' + getBG(iteDash2.tsEndOfTack) + ">" + tacking + "</td></tr>";
+  return '<tr class="hovred">' + gentdRacelog("time", "time", null, "Time", DateUTC(raceIte.iteDate, 1)) + raceTableLines(raceIte, iteDash2.bVmg) + infoSail(raceIte, false, false) + gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", roundTo(raceIte.speed, 3)) + gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", roundTo(iteDash2.speedC, 3) + " (" + sailNames[raceIte.sail % 10] + ")") + gentdRacelog("foils", "foils", null, "Foils", foilTxt) + gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt) + gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", stamina ? roundTo(stamina, 2) + "%" : "-") + gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist) + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", roundTo(iteDash2.deltaT, 0)) + gentdRacelog("position", "position", null, "Position", formatPosition(raceIte.pos.lat, raceIte.pos.lon)) + '<td class="sailPenalties" ' + getBG(iteDash2.tsEndOfSailChange, raceIte.metaDash.previousIteDate) + ">" + sailChange + '</td><td class="gybe" ' + getBG(iteDash2.tsEndOfGybe, iteDash2.previousIteDate) + ">" + gybing + '</td><td class="tack" ' + getBG(iteDash2.tsEndOfTack, iteDash2.previousIteDate) + ">" + tacking + "</td></tr>";
 }
 function updateToggleRaceLogCommandsLines() {
   const userPrefs = getUserPrefs();
@@ -682,6 +702,36 @@ function updateToggleRaceLogCommandsLines() {
 }
 let sortOrder = 0;
 let sortField = "none";
+const FLEET_SORT_KEY_BY_TH_ID = {
+  th_lu: "lastCalcDate",
+  th_name: "displayName",
+  th_teamname: "teamname",
+  th_rank: "rank",
+  th_racetime: "raceTime",
+  th_dtu: "distanceToUs",
+  th_dtf: "dtf",
+  th_twd: "twd",
+  th_tws: "tws",
+  th_twa: "twa",
+  th_hdg: "heading",
+  th_speed: "speed",
+  th_vmg: "vmg",
+  th_sail: "sail",
+  th_factor: "xfactor",
+  th_foils: "xoption_foils",
+  th_sd: "startDate",
+  th_eRT: "eRT",
+  th_avgS: "avgSpeed",
+  th_options: "xoption_options",
+  th_state: "state"
+  // pas de tri pour: th_rt, th_psn, th_remove
+};
+function setSortField(value) {
+  sortField = value;
+}
+function setSortOrder(value) {
+  sortOrder = value;
+}
 function getSortField() {
   return sortField;
 }
@@ -719,18 +769,89 @@ function isDisplayEnabled(playerIte, userId, connectPlayerId) {
   }
   return result;
 }
+function getFleetSortValue(pInfos, sortField2) {
+  var _a, _b;
+  const ite = pInfos == null ? void 0 : pInfos.ite;
+  const iteDash2 = ite == null ? void 0 : ite.metaDash;
+  switch (sortField2) {
+    case "lastCalcDate":
+      return (ite == null ? void 0 : ite.dateIte) ?? 0;
+    case "displayName":
+      return ((_a = pInfos.info) == null ? void 0 : _a.name) ?? "";
+    case "teamname":
+      return ((_b = pInfos.team) == null ? void 0 : _b.name) ?? "";
+    case "rank":
+      return (ite == null ? void 0 : ite.rank) ?? Number.POSITIVE_INFINITY;
+    case "raceTime":
+      return (iteDash2 == null ? void 0 : iteDash2.raceTime) ?? Number.POSITIVE_INFINITY;
+    case "distanceToUs":
+      return (iteDash2 == null ? void 0 : iteDash2.DTU) ?? Number.POSITIVE_INFINITY;
+    case "dtf":
+      return (iteDash2 == null ? void 0 : iteDash2.dtf) ?? Number.POSITIVE_INFINITY;
+    case "twd":
+      return (ite == null ? void 0 : ite.twd) ?? (iteDash2 == null ? void 0 : iteDash2.twd) ?? 0;
+    case "tws":
+      return (ite == null ? void 0 : ite.tws) ?? 0;
+    case "twa":
+      return Math.abs((ite == null ? void 0 : ite.twa) ?? 0);
+    case "heading":
+      return (ite == null ? void 0 : ite.hdg) ?? 0;
+    case "speed":
+      return (ite == null ? void 0 : ite.speed) ?? 0;
+    case "vmg":
+      return (iteDash2 == null ? void 0 : iteDash2.vmg) ?? 0;
+    case "sail":
+      return (ite == null ? void 0 : ite.sail) ?? 0;
+    case "xfactor":
+      return (iteDash2 == null ? void 0 : iteDash2.xfactor) ?? 0;
+    case "xoption_foils":
+      return (iteDash2 == null ? void 0 : iteDash2.realFoilFactor) ?? 0;
+    case "startDate":
+      return (ite == null ? void 0 : ite.startDate) ?? 0;
+    case "eRT":
+      return (iteDash2 == null ? void 0 : iteDash2.eRT) ?? Number.POSITIVE_INFINITY;
+    case "avgSpeed":
+      return (iteDash2 == null ? void 0 : iteDash2.avgSpeed) ?? 0;
+    case "xoption_options":
+      return pInfos.options ? Object.keys(pInfos.options).length : 0;
+    case "state":
+      const order = {
+        racing: 1,
+        waiting: 2,
+        staying: 3,
+        arrived: 4
+      };
+      return order[ite == null ? void 0 : ite.state] ?? 999;
+    default:
+      return 0;
+  }
+}
+function compareFleetPlayers(pA, pB, sortField2, sortAsc) {
+  const A = getFleetSortValue(pA, sortField2);
+  const B = getFleetSortValue(pB, sortField2);
+  const aNull = A === null || A === void 0;
+  const bNull = B === null || B === void 0;
+  if (aNull && !bNull)
+    return 1;
+  if (!aNull && bNull)
+    return -1;
+  if (aNull && bNull)
+    return 0;
+  let cmp;
+  if (typeof A === "string" || typeof B === "string") {
+    cmp = String(A).localeCompare(String(B));
+  } else {
+    cmp = A < B ? -1 : A > B ? 1 : 0;
+  }
+  return sortAsc ? cmp : -cmp;
+}
 function buildRaceFleetHtml() {
   const raceInfo2 = getRaceInfo();
   const raceItes = getLegPlayerInfos();
   const raceItesFleet = getLegFleetInfos();
   const connectedPlayerId2 = getConnectedPlayerId();
-  if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0)
+  if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) === 0)
     return;
-  let raceFleetTableHeader = "<tr>" + genth("th_rt", "RT", "Call Router", void 0) + genth("th_lu", "Date" + dateUTCSmall(), void 0, getSortField() == "lastCalcDate", getSortOrder()) + genth("th_name", "Skipper", void 0, getSortField() == "displayName", getSortOrder()) + genth("th_teamname", "Team", void 0, getSortField() == "teamname", getSortOrder()) + genth("th_rank", "Rank", void 0, getSortField() == "rank", getSortOrder()) + (raceInfo2.type !== "record" ? genth("th_racetime", "RaceTime", "Current Race Time", getSortField() == "raceTime", getSortOrder()) : "") + genth("th_dtu", "DTU", "Distance to Us", getSortField() == "distanceToUs", getSortOrder()) + genth("th_dtf", "DTF", "Distance to Finish", getSortField() == "dtf", getSortOrder()) + genth("th_twd", "TWD", "True Wind Direction", getSortField() == "twd", getSortOrder()) + genth("th_tws", "TWS", "True Wind Speed", getSortField() == "tws", getSortOrder()) + genth("th_twa", "TWA", "True Wind Angle", getSortField() == "twa", getSortOrder()) + genth("th_hdg", "HDG", "Heading", getSortField() == "heading", getSortOrder()) + genth("th_speed", "Speed", "Boat Speed", getSortField() == "speed", getSortOrder()) + genth("th_vmg", "VMG", "Velocity Made Good", getSortField() == "vmg", getSortOrder()) + genth("th_sail", "Sail", "Sail Used", getSortField() == "sail", getSortOrder()) + genth("th_factor", "Factor", "Speed factor over no-options boat", getSortField() == "xfactor", getSortOrder()) + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", getSortField() == "xoption_foils", getSortOrder());
-  if (raceInfo2.type === "record") {
-    raceFleetTableHeader += genth("th_sd", "Race Time", "Current Race Time", getSortField() == "startDate", getSortOrder()) + genth("th_eRT", "ERT", "Estimated Total Race Time", getSortField() == "eRT", getSortOrder()) + genth("th_avgS", "avgS", "Average Speed", getSortField() == "avgSpeed", getSortOrder());
-  }
-  raceFleetTableHeader += genth("th_psn", "Position", void 0) + genth("th_options", "Options", "Options according to Usercard", getSortField() == "xoption_options", getSortOrder()) + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", getSortField() == "state", getSortOrder()) + genth("th_remove", "", "Remove selected boats from the fleet list", void 0) + "</tr>";
   if (!raceItesFleet || Object.keys(raceItesFleet).length === 0) {
     document.getElementById("friendList").innerHTML = `
             <table id="raceidTable">
@@ -738,18 +859,40 @@ function buildRaceFleetHtml() {
             </table>`;
     return;
   }
-  raceItes.ite = raceItes.ites[0];
-  let raceFleetLines = "";
-  for (const [userId, entry] of Object.entries(raceItesFleet)) {
-    const pInfos = userId == connectedPlayerId2 ? raceItes : entry;
-    raceFleetLines += buildRacFleetLine(pInfos, raceInfo2, connectedPlayerId2);
+  if (raceItes && raceItes.ites && raceItes.ites.length > 0) {
+    raceItes.ite = raceItes.ites[0];
   }
-  var fleetHTML = '<table><thead class="sticky">' + raceFleetTableHeader + "</thead><tbody>" + raceFleetLines + "</tbody></table>";
+  const sortField2 = getSortField();
+  const sortAsc = getSortOrder();
+  let raceFleetTableHeader = "<tr>" + genth("th_rt", "RT", "Call Router", void 0) + genth("th_lu", "Date" + dateUTCSmall(), void 0, sortField2 == "lastCalcDate", sortAsc) + genth("th_name", "Skipper", void 0, sortField2 == "displayName", sortAsc) + genth("th_teamname", "Team", void 0, sortField2 == "teamname", sortAsc) + genth("th_rank", "Rank", void 0, sortField2 == "rank", sortAsc) + (raceInfo2.type !== "record" ? genth("th_racetime", "RaceTime", "Current Race Time", sortField2 == "raceTime", sortAsc) : "") + genth("th_dtu", "DTU", "Distance to Us", sortField2 == "distanceToUs", sortAsc) + genth("th_dtf", "DTF", "Distance to Finish", sortField2 == "dtf", sortAsc) + genth("th_twd", "TWD", "True Wind Direction", sortField2 == "twd", sortAsc) + genth("th_tws", "TWS", "True Wind Speed", sortField2 == "tws", sortAsc) + genth("th_twa", "TWA", "True Wind Angle", sortField2 == "twa", sortAsc) + genth("th_hdg", "HDG", "Heading", sortField2 == "heading", sortAsc) + genth("th_speed", "Speed", "Boat Speed", sortField2 == "speed", sortAsc) + genth("th_vmg", "VMG", "Velocity Made Good", sortField2 == "vmg", sortAsc) + genth("th_sail", "Sail", "Sail Used", sortField2 == "sail", sortAsc) + genth("th_factor", "Factor", "Speed factor over no-options boat", sortField2 == "xfactor", sortAsc) + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", sortField2 == "xoption_foils", sortAsc);
+  if (raceInfo2.type === "record") {
+    raceFleetTableHeader += genth("th_sd", "Race Time", "Current Race Time", sortField2 == "startDate", sortAsc) + genth("th_eRT", "ERT", "Estimated Total Race Time", sortField2 == "eRT", sortAsc) + genth("th_avgS", "avgS", "Average Speed", sortField2 == "avgSpeed", sortAsc);
+  }
+  raceFleetTableHeader += genth("th_psn", "Position", void 0) + genth("th_options", "Options", "Options according to Usercard", sortField2 == "xoption_options", sortAsc) + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", sortField2 == "state", sortAsc) + genth("th_remove", "", "Remove selected boats from the fleet list", void 0) + "</tr>";
+  const rows = Object.entries(raceItesFleet).map(([userId, entry]) => {
+    const pInfos = userId == connectedPlayerId2 ? raceItes : entry;
+    return { userId, pInfos };
+  });
+  rows.sort((a, b) => {
+    const isAme = a.userId === connectedPlayerId2;
+    const isBme = b.userId === connectedPlayerId2;
+    if (isAme && !isBme)
+      return -1;
+    if (!isAme && isBme)
+      return 1;
+    return compareFleetPlayers(a.pInfos, b.pInfos, sortField2, sortAsc);
+  });
+  let raceFleetLines = "";
+  for (const { userId, pInfos } of rows) {
+    raceFleetLines += buildRaceFleetLine(pInfos, raceInfo2, connectedPlayerId2);
+  }
+  const fleetHTML = '<table><thead class="sticky">' + raceFleetTableHeader + "</thead><tbody>" + raceFleetLines + "</tbody></table>";
   document.getElementById("friendList").innerHTML = fleetHTML;
   addEventListenersToRemoveSelectedBoatButtons();
   addEventListenersToSelectedLine();
+  addEventListenersFleetSort();
 }
-function buildRacFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
+function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
   var _a, _b;
   if (!playerFleetInfos || !raceInfo2)
     return "";
@@ -983,6 +1126,244 @@ function addEventListenersToSelectedLine() {
     });
   });
 }
+function addEventListenersFleetSort() {
+  const friendList = document.getElementById("friendList");
+  if (!friendList)
+    return;
+  const header = friendList.querySelector("thead");
+  if (!header)
+    return;
+  header.addEventListener("click", (event) => {
+    const th = event.target.closest("th");
+    if (!th || !th.id)
+      return;
+    const sortKey = FLEET_SORT_KEY_BY_TH_ID[th.id];
+    if (!sortKey) {
+      return;
+    }
+    if (getSortField() === sortKey) {
+      setSortOrder(!getSortOrder());
+    } else {
+      setSortField(sortKey);
+      setSortOrder(true);
+    }
+    buildRaceFleetHtml();
+  });
+}
+function h(tag, props = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (k === "class")
+      el.className = v;
+    else if (k === "dataset")
+      Object.assign(el.dataset, v);
+    else if (k === "style")
+      Object.assign(el.style, v);
+    else if (k === "on")
+      for (const [ev, fn] of Object.entries(v))
+        el.addEventListener(ev, fn);
+    else if (v !== void 0 && v !== null)
+      el.setAttribute(k, v);
+  }
+  for (const c of children.flat()) {
+    el.append(c instanceof Node ? c : document.createTextNode(c ?? ""));
+  }
+  return el;
+}
+const frag = (...nodes) => nodes.reduce((f, n) => (f.append(n), f), document.createDocumentFragment());
+const optionKeys = [
+  ["foil", "Foils"],
+  ["winch", "Winch"],
+  ["hull", "Hull"],
+  ["light", "Light"],
+  ["reach", "Reach"],
+  ["heavy", "Heavy"],
+  ["radio", "Radio"],
+  ["magicFurler", "Magic Furler"],
+  ["comfortLoungePug", "Comfort Lounge"],
+  ["vrtexJacket", "VRTex Jacket"]
+];
+function isTaken(playerOptions, key) {
+  return !!(playerOptions && playerOptions[key] === true);
+}
+function totalOptionCredits(raceInfo2, playerOptions) {
+  let sum = 0;
+  if (!(raceInfo2 == null ? void 0 : raceInfo2.optionPrices))
+    return sum;
+  for (const [k] of optionKeys)
+    if (isTaken(playerOptions, k))
+      sum += raceInfo2.optionPrices[k] || 0;
+  return sum;
+}
+function card(title, bodyNodes, { icon = null } = {}) {
+  return h(
+    "section",
+    { class: "card" },
+    h(
+      "div",
+      { class: "card-header" },
+      icon ? h("span", { class: "badge" }, icon) : null,
+      h("h3", null, title)
+    ),
+    h("div", { class: "card-body" }, ...Array.isArray(bodyNodes) ? bodyNodes : [bodyNodes])
+  );
+}
+function tableModern({ head = [], rows = [] }) {
+  const thead = h("thead", null, h("tr", null, ...head.map((t) => h("th", null, t))));
+  const tbody = h("tbody", null, ...rows.map((r2) => h("tr", null, ...r2.map((c, i) => h("td", { class: i.className || "" }, c)))));
+  return h("div", { class: "table-wrap" }, h("table", { class: "table-modern" }, thead, tbody));
+}
+function viewIdentity(raceInfo2, playerOptions) {
+  const rid = raceInfo2.raceId + "_" + raceInfo2.legNum;
+  const img = h("img", { src: `https://static.virtualregatta.com/offshore/leg/${rid}.jpg`, style: { height: "48px", borderRadius: "8px" } });
+  const badge = h("span", { class: "badge" }, img, "Race");
+  const grid = h(
+    "div",
+    { class: "kv" },
+    h("div", { class: "k" }, "Race Name (Id)"),
+    h("div", { class: "v" }, `${raceInfo2.legName} (${rid})`),
+    h("div", { class: "k" }, "Boat Name"),
+    h("div", { class: "v" }, raceInfo2.boatName ?? "-"),
+    h("div", { class: "k" }, "Wind Model"),
+    h("div", { class: "v" }, `GFS ${raceInfo2.fineWinds ? "0.25" : "1.0"}°`),
+    h("div", { class: "k" }, "VSR Level"),
+    h("div", { class: "v" }, `VSR${raceInfo2.vsrLevel}`),
+    h("div", { class: "k" }, "Price"),
+    h("div", { class: "v" }, `Cat. ${raceInfo2.priceLevel}`),
+    h("div", { class: "k" }, "Category"),
+    h("div", { class: "v" }, getRankingCategory(playerOptions == null ? void 0 : playerOptions.options))
+  );
+  return card("Race Details", [h("div", { class: "chips" }, badge), grid]);
+}
+function viewCredits(raceInfo2, playerIte) {
+  var _a, _b, _c, _d;
+  const awarded = (playerIte == null ? void 0 : playerIte.rank) > 0 ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo2.priceLevel - 1] / Math.pow(playerIte.rank, 0.4)) : "-";
+  const head = [
+    "Game Credits",
+    "Free Credits",
+    "Current Race Credits (Total Options)",
+    "Gains",
+    ...optionKeys.map(([, label]) => label)
+  ];
+  const takenTotal = totalOptionCredits(raceInfo2, (_a = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a.options);
+  const takenCells = optionKeys.map(([k]) => {
+    var _a2;
+    const takenStyle = isTaken((_a2 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a2.options, k) ? { outline: "2px solid #25d366" } : {};
+    return h("span", { class: "chip", style: takenStyle }, String((raceInfo2 == null ? void 0 : raceInfo2.optionPrices[k]) ?? "-"));
+  });
+  const rows = [[
+    String(((_b = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _b.credits) ?? "-"),
+    String(raceInfo2.freeCredits ?? "-"),
+    `${((_c = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _c.credits) || ((_d = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _d.credits) === 0 ? playerIte.info.credits : "???"}  `,
+    String(awarded),
+    ...takenCells
+  ]];
+  rows[0][2] = frag(
+    h("span", null, rows[0][2]),
+    " ",
+    h("span", { class: "chip", style: { borderColor: "tomato", color: "tomato" } }, `(-${takenTotal})`)
+  );
+  return card("Credits (Option équipée)", tableModern({ head, rows }));
+}
+function viewStages(raceInfo2, playerIte) {
+  var _a, _b, _c, _d;
+  const userPrefs = getUserPrefs();
+  const head = ["Type", "Name", "Id", "Position", "Position2", "Status"];
+  const rows = [];
+  rows.push([
+    "🚩 Start",
+    ((_a = raceInfo2.start) == null ? void 0 : _a.name) ?? "-",
+    "Start",
+    formatPosition(raceInfo2.start.lat, raceInfo2.start.lon),
+    true,
+    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo2.start.date, 1, userPrefs.global.localTime ? 3 : 4)))
+  ]);
+  if (Array.isArray(raceInfo2.checkpoints)) {
+    for (const cp of raceInfo2.checkpoints) {
+      let cpName = cp.display && cp.display !== "none" ? cp.display : "Invisible";
+      cpName = cpName.charAt(0).toUpperCase() + cpName.slice(1);
+      if (cpName === "Buoy")
+        cpName = "🏳️ " + cpName;
+      const passed = ((_b = playerIte == null ? void 0 : playerIte.ites[0]) == null ? void 0 : _b.gateGroupCounters) && playerIte.ites[0].gateGroupCounters[cp.group - 1] ? h("span", { class: "pill pill--ok" }, "Passed") : " - ";
+      rows.push([
+        cpName,
+        cp.name ?? "",
+        `${cp.group}.${cp.id}`,
+        formatPosition(cp.start.lat, cp.start.lon),
+        cp.end ? formatPosition(cp.end.lat, cp.end.lon) : " - ",
+        passed
+      ]);
+    }
+  }
+  rows.push([
+    "🏁 End",
+    ((_c = raceInfo2.end) == null ? void 0 : _c.name) ?? "-",
+    "End",
+    formatPosition(raceInfo2.end.lat, raceInfo2.end.lon),
+    ((_d = raceInfo2.end) == null ? void 0 : _d.radius) ? `Radius : ${raceInfo2.end.radius} mn` : " - ",
+    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo2.end.date, 1, userPrefs.global.localTime ? 3 : 4)))
+  ]);
+  return card("Race Stages", tableModern({ head, rows }));
+}
+function viewIceLimits(raceInfo2) {
+  var _a;
+  const south = (_a = raceInfo2 == null ? void 0 : raceInfo2.ice_limits) == null ? void 0 : _a.south;
+  if (!Array.isArray(south) || south.length === 0)
+    return null;
+  const isDummy = south.length === 5 && south[0].lat === -90 && south[0].lon === -180 && south[2].lat === -90 && south[2].lon === 0 && south[4].lat === -90 && south[4].lon === 180;
+  if (isDummy)
+    return null;
+  const head = ["Section", "Position", "Position2"];
+  const rows = [];
+  for (let i = 1; i < south.length; i++) {
+    rows.push([
+      `Section ${i + 1}`,
+      formatPosition(south[i - 1].lat, south[i - 1].lon),
+      formatPosition(south[i].lat, south[i].lon)
+    ]);
+  }
+  return card("Limites des glaces", tableModern({ head, rows }));
+}
+function viewRestrictedZones(raceInfo2) {
+  const rz = raceInfo2 == null ? void 0 : raceInfo2.restrictedZones;
+  if (!Array.isArray(rz) || rz.length === 0)
+    return null;
+  const head = ["Nom", "Position"];
+  const rows = [];
+  for (const z of rz) {
+    const name = z.name ?? "—";
+    for (const p of z.vertices || []) {
+      rows.push([name, formatPosition(p.lat, p.lon)]);
+    }
+  }
+  return card("Zones interdites", tableModern({ head, rows }));
+}
+function buildRaceBookHtml() {
+  var _a;
+  const host = document.getElementById("raceBook");
+  if (!host)
+    return;
+  const raceInfo2 = getRaceInfo();
+  const playerIte = getLegPlayerInfos();
+  if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0) {
+    host.replaceChildren(
+      card("Race Details", h("div", { class: "centered" }, "No data available. Please enter a race."))
+    );
+    return;
+  }
+  const identity = viewIdentity(raceInfo2, (_a = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a.options);
+  const credits = viewCredits(raceInfo2, playerIte);
+  const stages = viewStages(raceInfo2, playerIte);
+  const ice = viewIceLimits(raceInfo2);
+  const rz = viewRestrictedZones(raceInfo2);
+  const gridTop = h("div", { class: "rb-grid" }, identity, credits);
+  host.replaceChildren(
+    gridTop,
+    stages,
+    ice || document.createComment("no ice limits"),
+    rz || document.createComment("no restricted zones")
+  );
+}
 let activeTab = 1;
 const tabList = Object.freeze({
   1: "raceLog",
@@ -1024,6 +1405,9 @@ function tabSwitch(tabId = null) {
       break;
     case "raceMap":
       display_selbox("visible");
+      break;
+    case "raceBook":
+      buildRaceBookHtml();
       break;
   }
 }

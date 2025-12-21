@@ -1,5 +1,5 @@
 
-import {getData,getAllData,getLatestEntriesPerUser,getEntriesForTriplet,getLegPlayersOptionsByRaceLeg} from '../../common/dbOpes.js';
+import {getData,getAllData,getLatestEntriesPerUser,getEntriesForTriplet,getLegPlayersOptionsByRaceLeg,getLegPlayersTracksByType} from '../../common/dbOpes.js';
 
 let connectedPlayerId;
 let connectedPlayerInfos = [];
@@ -25,6 +25,8 @@ let paramStamina = [];
 let legPlayersOrderUpdate = 0;
 let legPlayersOrder = [];
 let legSelectedPlayers = [];
+let legPlayersTracksUpdate = 0;
+let legPlayersTracks = [];
 
 
 export async function initMemo()
@@ -460,6 +462,60 @@ export async function updateLegPlayersOptions()
         legPlayersOptions = (playersOptList && playersOptList.length !=0)?playersOptList:[]; 
     }
 }
+
+
+export function getLegPlayerTracksUpdate()
+{
+    return legPlayersTracksUpdate;
+}
+export function setLegPlayersTracksUpdate(ts)
+{
+    legPlayersTracksUpdate = ts;
+}
+
+
+export function getLegPlayersTracksFleet()
+{
+    return legPlayersTracks.fleet?legPlayersTracks.fleet:[];
+}
+
+export function getLegPlayersTrackLeader()
+{
+    return legPlayersTracks.leader?legPlayersTracks.leader:[];
+}
+
+
+export function getLegPlayersTracksGhost()
+{
+    if(!connectedPlayerId || !legPlayersTracks.ghosts 
+        || legPlayersTracks.ghosts.lenght == 0 
+        || legPlayersTracks.ghosts[connectedPlayerId] == 0)
+         return [];
+    return legPlayersTracks.ghosts[connectedPlayerId];
+}
+
+export async function updateLegPlayerTracks()
+{
+    if(raceInfo?.raceId && raceInfo?.legNum)
+    { 
+        const raceId = raceInfo.raceId;
+        const legNum = raceInfo.legNum;
+
+        legPlayersTracks = {};
+        const { items, meta } = await getEntriesForTriplet(    raceId,legNum,'fleet',{    storeName : 'playersTracks'});
+        if(meta.timeout || !items || items.length == 0) legPlayersTracks.fleet = [];
+        else legPlayersTracks.fleet = items;
+
+        const { items2, meta2 } = await getEntriesForTriplet(    raceId,legNum,'leader',{    storeName : 'playersTracks'});
+        if(meta2.timeout || !items2 || items2.length == 0) legPlayersTracks.leader = [];
+        else legPlayersTracks.leader = items2;
+
+        const { items3, meta3 } = await getEntriesForTriplet(    raceId,legNum,'ghost',{    storeName : 'playersTracks'});
+        if(meta3.timeout || !items3 || items3.length == 0) legPlayersTracks.ghosts = [];
+        else legPlayersTracks.ghosts = items3;
+    }
+}
+
 
 export function getConnectedPlayerId()
 {

@@ -71,6 +71,11 @@ body {
     background-color: var(--bg_body_color) !important;
 }
 
+#hero {
+    background-color: var(--bg_body_color) !important;
+    background-image : none !important;
+}
+
 #gameContainer {
   text-align: center!important;
 }

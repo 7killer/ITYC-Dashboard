@@ -129,7 +129,7 @@ function sendMaxSize(iframe)
   let winWidth = window.innerWidth;
         
   /* remove padding-left and right */
-  winWidth  -= 40;
+  winWidth  -= 80;
   winHeight  -= 20;
   iframe.contentWindow.postMessage(
     { port:"VR2Iframe" + manifestVersion,
@@ -200,14 +200,20 @@ function manageFullScreen2() {
         let ourDiv = document.getElementById('dashIntegRow');
         if(ourDiv) ourDiv.remove();        
       }
-	  const targetElement = document.querySelector('[data-colibri-id="1752-c14"]');     
+	  const targetElement = document.querySelector('[data-colibri-id="1752-c203"]');     
       if (targetElement) {
         targetElement.style.setProperty('text-align', 'center'); 
       }
 
       if(gameSize != 0) {
-          let div = document.getElementById('hero');
-          if(div) div.style.setProperty('display', 'none', 'important');
+        let div = document.querySelector(  '#page-top > div.page-header.style-1098.style-local-1342-h1.position-relative.h-footer-parallax-header-class > div');
+        if(div) div.style.setProperty('display', 'none', 'important');
+
+        div = document.querySelector('#hero');
+        if(div) {
+          div.style.setProperty('padding-top', '10px', 'important');
+        }
+
           div = document.querySelector('div[data-colibri-id="1342-h1"]');
           if(div) div.style.setProperty('display', 'none', 'important');
           
@@ -219,16 +225,15 @@ function manageFullScreen2() {
             originalSize = document.defaultView.getComputedStyle(el).getPropertyValue('max-width');
             el.style.setProperty('max-width', '100%', 'important');
           });
-
-          const targetIframe = foundVRIframe();
-          if (targetIframe) {
-            targetIframe.style.setProperty('margin-left', '20px', 'important');
-            targetIframe.style.setProperty('margin-right', '20px', 'important');
-          }
       } else
       {
-          let div =document.getElementById('hero');
-          if(div) div.style.removeProperty('display');
+        let div = document.querySelector('#page-top > div.page-header.style-1098.style-local-1342-h1.position-relative.h-footer-parallax-header-class > div');
+        if(div) div.style.removeProperty('display');
+
+        div = document.querySelector('#hero');
+        if(div) {
+          div.style.setProperty('padding-top', '120px', 'important');
+        }
 
           div = document.querySelector('div[data-colibri-id="1342-h2"]');
           if(div) div.style.removeProperty('position');

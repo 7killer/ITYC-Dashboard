@@ -208,7 +208,6 @@ export async function ingestBoatInfos(boatData)
           type : "putOrUpdate",
           legPlayersInfos : [
             {
-//              key:[bs._id.race_id,bs._id.leg_num,bs._id.user_id,bs.lastCalcDate],   
               id: bs._id.race_id+"_"+bs._id.leg_num+"_"+bs._id.user_id+"_"+bs.lastCalcDate,
               userId: bs._id.user_id,
               iteDate: bs.lastCalcDate,
@@ -289,7 +288,6 @@ export async function ingestBoatInfos(boatData)
           type : "putOrUpdate",
           legFleetInfos : [
             {
-//              key:[bs._id.race_id,bs._id.leg_num,bs._id.user_id,bs.lastCalcDate],   
               id: bs._id.race_id+"_"+bs._id.leg_num+"_"+bs._id.user_id+"_"+bs.lastCalcDate,
               userId: bs._id.user_id,
               iteDate: bs.lastCalcDate,
@@ -321,10 +319,7 @@ export async function ingestBoatInfos(boatData)
             { 
               id : bs._id.user_id,
               name : bs.displayName,
-//                  teamId : validAccount.scriptData.team?.id?? null,
               timestamp: Date.now(),
-//                  isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
-//                  credits : validAccount.currency1
             }      
           ],
           internal: [
@@ -340,8 +335,28 @@ export async function ingestBoatInfos(boatData)
         });        
       }
       
+      if(boatInfos.res.track)
+      {
+        ope.push( {
+          type : "putOrUpdate",
+          playersTracks : [
+            {
+              raceId : raceId,
+              legNum : legNum,
+              userId : userId,
+              type : 'fleet',
+              track : boatInfos.res.track
+            }
+          ],
+          internal: [
+            {
+              id: "playersTracksUpdate",
+              ts: Date.now(),
+            },
+          ]
+         });        
+      }
     }
-
     processDBOperations(ope);
     return {rstTimer: rstTimer,
             raceId : raceId,

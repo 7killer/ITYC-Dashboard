@@ -1,4 +1,4 @@
-import { M as processDBOperations, g as getData, N as cfg, e as roundTo, O as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, P as saveData, Q as gcDistance, R as courseAngle, S as angle, T as toRad, U as toDeg, V as calculateCOGLoxo, F as guessOptionBits, E as isBitSet, s as sailNames, p as getxFactorStyle, W as twaBackGround, f as formatHM, t as getBG, h as formatTimeNotif, j as infoSail, n as formatPosition, k as getUserPrefs, L as createKeyChangeListener } from "./common-9e96a115.js";
+import { O as processDBOperations, g as getData, P as cfg, e as roundTo, Q as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, R as saveData, S as gcDistance, T as courseAngle, U as angle, V as toRad, W as toDeg, X as calculateCOGLoxo, F as guessOptionBits, E as isBitSet, s as sailNames, p as getxFactorStyle, Y as twaBackGround, f as formatHM, t as getBG, h as formatTimeNotif, j as infoSail, n as formatPosition, k as getUserPrefs, N as createKeyChangeListener } from "./common-1c8f3165.js";
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -2639,8 +2639,19 @@ const legSchema = create$3({
   open: create$3({
     date: create$5().required()
   }).required(),
-  optionPrices: create$3().shape({}).required(),
-  // clé dynamique, on valide tout objet
+  optionPrices: create$3({
+    foil: create$5().required(),
+    winch: create$5().required(),
+    radio: create$5().required(),
+    skin: create$5().required(),
+    hull: create$5().required(),
+    reach: create$5().required(),
+    heavy: create$5().required(),
+    light: create$5().required(),
+    comfortLoungePug: create$5().required(),
+    magicFurler: create$5().required(),
+    vrtexJacket: create$5().required()
+  }).required(),
   pilotBoatCredits: create$5().required(),
   priceLevel: create$5().required(),
   race: create$3({
@@ -3055,6 +3066,33 @@ create$3({
     polar: polarSchema
   })
 });
+const ghostTrackRequestDataSchema = create$3({
+  race_id: create$5().required(),
+  leg_num: create$5().required(),
+  playerId: create$6().required()
+});
+const ghostTrackResponseSchema = create$3({
+  scriptData: create$3({
+    leaderName: create$6().notRequired(),
+    leaderId: create$6().notRequired(),
+    leaderTrack: create$2(
+      create$3({
+        lat: create$5().required(),
+        lon: create$5().required(),
+        ts: create$5().required(),
+        tag: create$6().required()
+      })
+    ).notRequired(),
+    myTrack: create$2(
+      create$3({
+        lat: create$5().required(),
+        lon: create$5().required(),
+        ts: create$5().required(),
+        tag: create$6().required()
+      })
+    ).notRequired()
+  }).required()
+});
 function ingestPolars(msgBody) {
   var _a, _b;
   const polarsData = (_b = (_a = msgBody == null ? void 0 : msgBody.scriptData) == null ? void 0 : _a.extendsData) == null ? void 0 : _b.boatPolar;
@@ -3096,7 +3134,7 @@ function ingestPolars(msgBody) {
   });
 }
 async function ingestBoatInfos(boatData) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w;
   const ope = [];
   let rstTimer = false;
   let raceId = null;
@@ -3134,6 +3172,7 @@ async function ingestBoatInfos(boatData) {
             close: l.close,
             open: l.open,
             polar_id: (_b = l.boat) == null ? void 0 : _b.polar_id,
+            boatName: (_c = l.boat) == null ? void 0 : _c.name,
             pilotBoatCredits: l.pilotBoatCredits,
             priceLevel: l.priceLevel,
             freeCredits: l.freeCredits,
@@ -3146,7 +3185,7 @@ async function ingestBoatInfos(boatData) {
             restrictedZones: l.restrictedZones ?? null
           }
         ],
-        ...((_d = (_c = l.boat) == null ? void 0 : _c.stats) == null ? void 0 : _d.weight) && ((_e = l.boat) == null ? void 0 : _e.polar_id) && {
+        ...((_e = (_d = l.boat) == null ? void 0 : _d.stats) == null ? void 0 : _e.weight) && ((_f = l.boat) == null ? void 0 : _f.polar_id) && {
           polars: [
             {
               //                key: l.boat.polar_id,
@@ -3160,16 +3199,16 @@ async function ingestBoatInfos(boatData) {
             id: "legListUpdate",
             ts: Date.now()
           },
-          ...((_g = (_f = l.boat) == null ? void 0 : _f.stats) == null ? void 0 : _g.weight) && ((_h = l.boat) == null ? void 0 : _h.polar_id) ? [{
+          ...((_h = (_g = l.boat) == null ? void 0 : _g.stats) == null ? void 0 : _h.weight) && ((_i = l.boat) == null ? void 0 : _i.polar_id) ? [{
             id: "polarsUpdate",
             ts: Date.now()
           }] : []
         ]
       });
     }
-    if (((_i = boatInfos.res) == null ? void 0 : _i.bs) && !boatInfos.res.bs.lastCalcDate)
+    if (((_j = boatInfos.res) == null ? void 0 : _j.bs) && !boatInfos.res.bs.lastCalcDate)
       boatInfos.res.bs.lastCalcDate = Date.now();
-    if (((_j = boatInfos.res) == null ? void 0 : _j.leg) && ((_k = boatInfos.res) == null ? void 0 : _k.bs)) {
+    if (((_k = boatInfos.res) == null ? void 0 : _k.leg) && ((_l = boatInfos.res) == null ? void 0 : _l.bs)) {
       const bs = boatInfos.res.bs;
       const l = boatInfos.res.leg;
       raceId = l.race_id;
@@ -3210,7 +3249,7 @@ async function ingestBoatInfos(boatData) {
         ]
       });
     }
-    if ((_l = boatInfos.res) == null ? void 0 : _l.bs) {
+    if ((_m = boatInfos.res) == null ? void 0 : _m.bs) {
       const bs = boatInfos.res.bs;
       raceId = bs._id.race_id;
       legNum = bs._id.leg_num;
@@ -3224,6 +3263,7 @@ async function ingestBoatInfos(boatData) {
             "hull",
             "light",
             "reach",
+            "radio",
             "winch",
             "comfortLoungePug",
             "magicFurler",
@@ -3234,7 +3274,6 @@ async function ingestBoatInfos(boatData) {
           type: "putOrUpdate",
           legPlayersInfos: [
             {
-              //              key:[bs._id.race_id,bs._id.leg_num,bs._id.user_id,bs.lastCalcDate],   
               id: bs._id.race_id + "_" + bs._id.leg_num + "_" + bs._id.user_id + "_" + bs.lastCalcDate,
               userId: bs._id.user_id,
               iteDate: bs.lastCalcDate,
@@ -3280,15 +3319,16 @@ async function ingestBoatInfos(boatData) {
                 userId: bs._id.user_id,
                 id: bs._id.race_id + "_" + bs._id.leg_num + "_" + bs._id.user_id + "_" + bs.lastCalcDate,
                 options: {
-                  foil: ((_m = bs.options) == null ? void 0 : _m.includes("foil")) ?? false,
-                  heavy: ((_n = bs.options) == null ? void 0 : _n.includes("heavy")) ?? false,
-                  hull: ((_o = bs.options) == null ? void 0 : _o.includes("hull")) ?? false,
-                  light: ((_p = bs.options) == null ? void 0 : _p.includes("light")) ?? false,
-                  reach: ((_q = bs.options) == null ? void 0 : _q.includes("reach")) ?? false,
-                  winch: ((_r = bs.options) == null ? void 0 : _r.includes("winch")) ?? false,
-                  comfortLoungePug: ((_s = bs.options) == null ? void 0 : _s.includes("comfortLoungePug")) ?? false,
-                  magicFurler: ((_t = bs.options) == null ? void 0 : _t.includes("magicFurler")) ?? false,
-                  vrtexJacket: ((_u = bs.options) == null ? void 0 : _u.includes("vrtexJacket")) ?? false
+                  foil: ((_n = bs.options) == null ? void 0 : _n.includes("foil")) ?? false,
+                  heavy: ((_o = bs.options) == null ? void 0 : _o.includes("heavy")) ?? false,
+                  hull: ((_p = bs.options) == null ? void 0 : _p.includes("hull")) ?? false,
+                  light: ((_q = bs.options) == null ? void 0 : _q.includes("light")) ?? false,
+                  reach: ((_r = bs.options) == null ? void 0 : _r.includes("reach")) ?? false,
+                  winch: ((_s = bs.options) == null ? void 0 : _s.includes("winch")) ?? false,
+                  comfortLoungePug: ((_t = bs.options) == null ? void 0 : _t.includes("comfortLoungePug")) ?? false,
+                  magicFurler: ((_u = bs.options) == null ? void 0 : _u.includes("magicFurler")) ?? false,
+                  vrtexJacket: ((_v = bs.options) == null ? void 0 : _v.includes("vrtexJacket")) ?? false,
+                  radio: ((_w = bs.options) == null ? void 0 : _w.includes("radio")) ?? false
                 },
                 timestamp: bs.lastCalcDate
               }
@@ -3310,7 +3350,6 @@ async function ingestBoatInfos(boatData) {
           type: "putOrUpdate",
           legFleetInfos: [
             {
-              //              key:[bs._id.race_id,bs._id.leg_num,bs._id.user_id,bs.lastCalcDate],   
               id: bs._id.race_id + "_" + bs._id.leg_num + "_" + bs._id.user_id + "_" + bs.lastCalcDate,
               userId: bs._id.user_id,
               iteDate: bs.lastCalcDate,
@@ -3342,10 +3381,7 @@ async function ingestBoatInfos(boatData) {
             {
               id: bs._id.user_id,
               name: bs.displayName,
-              //                  teamId : validAccount.scriptData.team?.id?? null,
               timestamp: Date.now()
-              //                  isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
-              //                  credits : validAccount.currency1
             }
           ],
           internal: [
@@ -3355,6 +3391,26 @@ async function ingestBoatInfos(boatData) {
             },
             {
               id: "playersUpdate",
+              ts: Date.now()
+            }
+          ]
+        });
+      }
+      if (boatInfos.res.track) {
+        ope.push({
+          type: "putOrUpdate",
+          playersTracks: [
+            {
+              raceId,
+              legNum,
+              userId,
+              type: "fleet",
+              track: boatInfos.res.track
+            }
+          ],
+          internal: [
+            {
+              id: "playersTracksUpdate",
               ts: Date.now()
             }
           ]
@@ -3435,7 +3491,7 @@ function ingestAccountDetails(account) {
 }
 function ingestEndLegPrep(endLegPrep) {
   endLegPrepDataModel.validate(endLegPrep, { stripUnknown: true, abortEarly: false }).then((validData) => {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const l = validData.scriptData.leg;
     const dbOpe = [
       {
@@ -3459,6 +3515,7 @@ function ingestEndLegPrep(endLegPrep) {
             close: l.close,
             open: l.open,
             polar_id: (_a = l.boat) == null ? void 0 : _a.polar_id,
+            boatName: (_b = l.boat) == null ? void 0 : _b.name,
             pilotBoatCredits: l.pilotBoatCredits,
             priceLevel: l.priceLevel,
             freeCredits: l.freeCredits,
@@ -3476,7 +3533,7 @@ function ingestEndLegPrep(endLegPrep) {
             update: (/* @__PURE__ */ new Date()).toISOString()
           }
         ],
-        ...((_c = (_b = l.boat) == null ? void 0 : _b.stats) == null ? void 0 : _c.weight) && ((_d = l.boat) == null ? void 0 : _d.polar_id) && {
+        ...((_d = (_c = l.boat) == null ? void 0 : _c.stats) == null ? void 0 : _d.weight) && ((_e = l.boat) == null ? void 0 : _e.polar_id) && {
           polars: [
             {
               //                key: l.boat.polar_id,
@@ -3490,7 +3547,7 @@ function ingestEndLegPrep(endLegPrep) {
             id: "legListUpdate",
             ts: Date.now()
           },
-          ...((_f = (_e = l.boat) == null ? void 0 : _e.stats) == null ? void 0 : _f.weight) && ((_g = l.boat) == null ? void 0 : _g.polar_id) ? [{
+          ...((_g = (_f = l.boat) == null ? void 0 : _f.stats) == null ? void 0 : _g.weight) && ((_h = l.boat) == null ? void 0 : _h.polar_id) ? [{
             id: "polarsUpdate",
             ts: Date.now()
           }] : [],
@@ -3513,7 +3570,7 @@ function ingestEndLegPrep(endLegPrep) {
   });
 }
 function ingestRaceList(legListData) {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c, _d, _e, _f;
   try {
     const validData = legListDataModel.validateSync(legListData, {
       stripUnknown: true,
@@ -3551,10 +3608,11 @@ function ingestRaceList(legListData) {
           raceType: validated.raceType,
           limitedAccess: validated.limitedAccess,
           polar_id: (_b = validated.boat) == null ? void 0 : _b.polar_id,
+          boatName: (_c = validated.boat) == null ? void 0 : _c.name,
           start: validated.start,
           end: validated.end
         });
-        if (((_d = (_c = validated.boat) == null ? void 0 : _c.stats) == null ? void 0 : _d.weight) && ((_e = validated.boat) == null ? void 0 : _e.polar_id)) {
+        if (((_e = (_d = validated.boat) == null ? void 0 : _d.stats) == null ? void 0 : _e.weight) && ((_f = validated.boat) == null ? void 0 : _f.polar_id)) {
           polars.push(
             {
               //              key: validated.boat.polar_id,
@@ -3724,16 +3782,16 @@ function ingestBoatAction(boatActionTxt) {
         else
           prog.order.push(order);
       } else if ("pos" in action) {
-        const order = {
-          lat: action.pos[0].lat,
-          lon: action.pos[0].lon,
-          idx: action.pos[0].idx
-        };
-        prog.wp.push(order);
+        action.pos.forEach(({ lat, lon, idx }) => {
+          const order = {
+            lat,
+            lon,
+            idx
+          };
+          prog.wp.push(order);
+        });
+        prog.wp.sort((a, b) => a.idx - b.idx);
       }
-    }
-    if (prog.wp.length) {
-      prog.wp.sort((a, b) => a.idx - b.idx);
     }
     if (prog.order) {
       prog.order.sort((a, b) => a.timestamp - b.timestamp);
@@ -3789,6 +3847,74 @@ function ingestBoatAction(boatActionTxt) {
     return true;
   }).catch((error) => {
     console.error("boatAction Validation Error :", error);
+    return false;
+  });
+}
+async function ingestGhostTrack(request, response) {
+  const req = ghostTrackRequestDataSchema.validateSync(request, {
+    stripUnknown: true
+  });
+  ghostTrackResponseSchema.validate(response, { stripUnknown: true }).then((validGhostTracks) => {
+    var _a, _b, _c, _d;
+    const raceId = req == null ? void 0 : req.race_id;
+    const legNum = req == null ? void 0 : req.leg_num;
+    if (!raceId || !legNum)
+      return;
+    const leaderName = (_a = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _a.leaderName;
+    const leaderId = (_b = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _b.leaderId;
+    const leaderTrack = (_c = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _c.leaderTrack;
+    const ghostPlayerId = req == null ? void 0 : req.playerId;
+    const ghostPlayerTrack = (_d = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _d.myTrack;
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        ...leaderId && leaderTrack && {
+          players: [
+            {
+              id: leaderId,
+              name: leaderName,
+              timestamp: Date.now()
+            }
+          ],
+          playersTracks: [
+            {
+              raceId,
+              legNum,
+              userId: leaderId,
+              type: "leader",
+              track: leaderTrack
+            }
+          ]
+        },
+        ...ghostPlayerTrack && {
+          playersTracks: [
+            {
+              raceId,
+              legNum,
+              userId: ghostPlayerId,
+              type: "ghost",
+              track: ghostPlayerTrack
+            }
+          ]
+        },
+        ...(ghostPlayerTrack || leaderId && leaderTrack) && {
+          internal: [
+            {
+              id: "playersTracksUpdate",
+              ts: Date.now()
+            },
+            ...ghostPlayerTrack && {
+              id: "playersUpdate",
+              ts: Date.now()
+            }
+          ]
+        }
+      }
+    ];
+    processDBOperations(dbOpe);
+    return true;
+  }).catch((error) => {
+    console.error("ghostTrack validation Error :", error);
     return false;
   });
 }
@@ -4484,7 +4610,7 @@ async function computeOwnIte(raceId, legNum, userId) {
   metaDash.manoeuvering = latest.tsEndOfSailChange > latest.iteDate || latest.tsEndOfGybe > latest.iteDate || latest.tsEndOfTack > latest.iteDate;
   metaDash.receivedTS = Date.now();
   metaDash.deltaReceiveCompute = metaDash.receivedTS - latest.iteDate;
-  metaDash.isAutoSail = latest.hasPermanentAutoSails || latest.tsEndOfAutoSail && latest.tsEndOfAutoSail - latest.lastCalcDate > 0;
+  metaDash.isAutoSail = latest.hasPermanentAutoSails || latest.tsEndOfAutoSail && latest.tsEndOfAutoSail - latest.iteDate > 0;
   metaDash.autoSailTime = latest.hasPermanentAutoSails ? "inf" : latest.tsEndOfAutoSail - latest.iteDate;
   latest.metaDash = metaDash;
   await computeFleetPlayerIte(legInfos, latest, playerOption, latest, polar);
@@ -4571,7 +4697,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
   speedTxt += '<div class="xfactor"' + xfactorStyle + ">" + xfactorTxt + "</div>";
   speedTxt += '<div class="foil">';
   speedTxt += '<img " class="foilImg" src="' + chrome.runtime.getURL("./img/foil.png") + '" >';
-  speedTxt += raceIte.metaDash.realFoilFactor == null ? "no" : raceIte.metaDash.realFoilFactor + "%";
+  speedTxt += raceIte.metaDash.realFoilFactor == null ? "no" : roundTo(raceIte.metaDash.realFoilFactor, 2) + "%";
   speedTxt += "</div>";
   let lastCalcStyle = "";
   if (raceIte.metaDash.deltaReceiveCompute > 9e5) {
@@ -4632,7 +4758,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
   else
     sailPenaTxt += "<div>-</div>";
   if (raceIte.tsEndOfSailChange)
-    sailPenaTxt += "<div " + getBG(raceIte.tsEndOfSailChange) + ">" + formatSeconds(raceIte.tsEndOfSailChange - raceIte.iteDate) + "</div>";
+    sailPenaTxt += "<div " + getBG(raceIte.tsEndOfSailChange, raceIte.metaDash.previousIteDate) + ">" + formatSeconds(raceIte.tsEndOfSailChange - raceIte.iteDate) + "</div>";
   else
     sailPenaTxt += "<div> - </div>";
   sailPenaTxt += "</td>";
@@ -4642,7 +4768,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
   else
     tackPenaTxt += "<div>-</div>";
   if (raceIte.tsEndOfTack)
-    tackPenaTxt += "<div " + getBG(raceIte.tsEndOfTack) + ">" + formatSeconds(raceIte.tsEndOfTack - raceIte.iteDate) + "</div>";
+    tackPenaTxt += "<div " + getBG(raceIte.tsEndOfTack, raceIte.metaDash.previousIteDate) + ">" + formatSeconds(raceIte.tsEndOfTack - raceIte.iteDate) + "</div>";
   else
     tackPenaTxt += "<div> - </div>";
   tackPenaTxt += "</td>";
@@ -4652,7 +4778,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
   else
     gybePenaTxt += "<div>-</div>";
   if (raceIte.tsEndOfGybe)
-    gybePenaTxt += "<div " + getBG(raceIte.tsEndOfGybe) + ">" + formatSeconds(raceIte.tsEndOfGybe - raceIte.iteDate) + "</div>";
+    gybePenaTxt += "<div " + getBG(raceIte.tsEndOfGybe, raceIte.metaDash.previousIteDate) + ">" + formatSeconds(raceIte.tsEndOfGybe - raceIte.iteDate) + "</div>";
   else
     gybePenaTxt += "<div> - </div>";
   gybePenaTxt += "</td>";
@@ -4845,6 +4971,8 @@ chrome.runtime.onMessageExternal.addListener(
           await ingestPolars(body);
         } else if (eventKey == "Game_AddBoatAction") {
           await ingestBoatAction(body);
+        } else if (eventKey == "Game_GetGhostTrack") {
+          await ingestGhostTrack(postData, body);
         }
       } else {
         let event = msg.url.substring(msg.url.lastIndexOf("/") + 1);
@@ -4868,7 +4996,6 @@ dashStateInfosListener.start({
   onChange: async ({ oldValue, newValue }) => {
     const currentId = await getData("internal", "lastLoggedUser");
     const currentRace = await getData("internal", "lastOpennedRace");
-    console.log(`cid  ${currentId} race ${currentRace}`);
     await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
   }
 });

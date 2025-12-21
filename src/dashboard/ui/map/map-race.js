@@ -110,15 +110,10 @@ function updateMapCheckpoints(raceInfo,playerIte) {
     if(!mapState.userZoom) updateBounds();
 }
 
-function updateMapWaypoints(raceInfo,playerIte) {
-
-    
+function updateMapWaypoints(playerIte) {
     const raceOrder = getLegPlayersOrder();
-
-
     if (!mapState || !mapState.map || !mapState.gdiv) return;
-    
-    var map = mapState.map;
+    const map = mapState.map;
 
     if (!playerIte?.ite) return; // current position unknown
     if(!raceOrder && raceOrder[0].action.type !== "wp") return; //last order not wp
@@ -162,7 +157,7 @@ function updateMapWaypoints(raceInfo,playerIte) {
 function updateMapMe(race, track) {
     if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
     
-    var map = mapState.map;
+    const map = mapState.map;
 
     if(!mapState.meLayer) mapState.meLayer  = L.layerGroup();
     if(!mapState.meBoatLayer) mapState.meBoatLayer  = L.layerGroup();

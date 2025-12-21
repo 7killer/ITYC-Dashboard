@@ -70,6 +70,10 @@ export async function openDatabase() {
                         ts: Date.now()
                     });
                     store.add({
+                        id: "playersTracksUpdate",
+                        ts: Date.now()
+                    });
+                    store.add({
                         id: "state",
                         state: 'dashInstalled'
                     });
@@ -116,9 +120,13 @@ export async function openDatabase() {
                     store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false }); 
                     if(cfg.debugDB) console.log('Created "legPlayersOptions" object store');
                 }
-                
-
-
+                if (!db.objectStoreNames.contains('playersTracks')) {
+                    const store = db.createObjectStore('playersTracks', {
+                         keyPath: ['raceId', 'legNum', 'userId', 'type' ]  });
+                    store.createIndex('byTriplet', ['raceId', 'legNum', 'type'], { unique: false });
+                    
+                    if(cfg.debugDB) console.log('Created "playersTracks" object store');
+                }
             }
         });
     } catch (error) {
@@ -837,6 +845,48 @@ export async function getLegPlayersOptionsByRaceLeg(raceId, legNum, options = {}
     } else {
       // 🔁 fallback sans ré-init DB : range prefix sur byTriplet
       // [raceId, legNum] … [raceId, legNum, '\uffff'] pour couvrir tous les userId (string)
+      const idx = store.index('byTriplet');
+      const range = IDBKeyRange.bound([raceId, legNum], [raceId, legNum, '\uffff']);
+      items = await idx.getAll(range);
+    }
+
+    await tx.done;
+    if (!asMap) return items;
+
+    // { [userId]: entrée complète }
+    return items.reduce((acc, it) => {
+      if (it?.userId != null) acc[it.userId] = it;
+      return acc;
+    }, {});
+  } finally {
+    db.close();
+  }
+}
+
+/**
+ * Récupère toutes les options joueurs pour un couple (raceId, legNum, type).
+ * @param {number|string} raceId
+ * @param {number|string} legNum
+ * @param {number|string} type
+ * @param {{ asMap?: boolean }} [options]  - asMap=true => { [userId]: entry }
+ * @returns {Promise<Array|Object>}        - tableau d’entrées ou map par userId
+ */
+export async function getLegPlayersTracksByType(raceId, legNum, type, options = {}) {
+  const { asMap = true } = options;
+  const db = await openDatabase();
+  try {
+    const tx = db.transaction('playersTracks', 'readonly');
+    const store = tx.objectStore('playersTracks');
+
+    let items = [];
+
+    // ✅ chemin optimisé si l’index existe
+    if (store.indexNames.contains('byType')) {
+      const idx = store.index('byType');
+      items = await idx.getAll([raceId, legNum, type]);
+    } else {
+      // 🔁 fallback sans ré-init DB : range prefix sur byTriplet
+      // [raceId, legNum] … [raceId, legNum, '\uffff'] pour couvrir tous les byType (string)
       const idx = store.index('byTriplet');
       const range = IDBKeyRange.bound([raceId, legNum], [raceId, legNum, '\uffff']);
       items = await idx.getAll(range);
