@@ -5,6 +5,7 @@ import {display_selbox} from "../ui/common.js"
 import {buildRaceLogHtml} from '../ui/raceLog.js'
 import {buildRaceFleetHtml} from '../ui/raceFleet.js'
 import {buildRaceBookHtml} from '../ui/raceBook.js'
+import {initializeMap} from '../ui/map/map-race.js'
 export const tabList = Object.freeze({
     1 : "raceLog",
     2 : "raceFleet",
@@ -54,6 +55,7 @@ export function tabSwitch(tabId = null)
             buildRaceFleetHtml();
             break;
         case "raceMap":
+            initializeMap();
             display_selbox("visible");
             
             break;

@@ -1,4 +1,4 @@
-import { O as processDBOperations, g as getData, P as cfg, e as roundTo, Q as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, R as saveData, S as gcDistance, T as courseAngle, U as angle, V as toRad, W as toDeg, X as calculateCOGLoxo, F as guessOptionBits, E as isBitSet, s as sailNames, p as getxFactorStyle, Y as twaBackGround, f as formatHM, t as getBG, h as formatTimeNotif, j as infoSail, n as formatPosition, k as getUserPrefs, N as createKeyChangeListener } from "./common-1c8f3165.js";
+import { Q as processDBOperations, g as getData, R as cfg, e as roundTo, S as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, T as saveData, J as gcDistance, U as courseAngle, V as angle, W as toRad, X as toDeg, Y as calculateCOGLoxo, F as guessOptionBits, E as isBitSet, s as sailNames, p as getxFactorStyle, Z as twaBackGround, f as formatHM, t as getBG, h as formatTimeNotif, j as infoSail, n as formatPosition, k as getUserPrefs, P as createKeyChangeListener } from "./common-eb028e3b.js";
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -911,9 +911,11 @@ class Schema {
    * Run the configured transform pipeline over an input value.
    */
   cast(value, options = {}) {
-    let resolvedSchema = this.resolve(Object.assign({
+    let resolvedSchema = this.resolve(Object.assign({}, options, {
       value
-    }, options));
+      // parent: options.parent,
+      // context: options.context,
+    }));
     let allowOptionality = options.assert === "ignore-optionality";
     let result = resolvedSchema._cast(value, options);
     if (options.assert !== false && !resolvedSchema.isType(result)) {
@@ -930,7 +932,7 @@ attempted value: ${formattedValue}
     return result;
   }
   _cast(rawValue, options) {
-    let value = rawValue === void 0 ? rawValue : this.transforms.reduce((prevValue, fn) => fn.call(this, prevValue, rawValue, this), rawValue);
+    let value = rawValue === void 0 ? rawValue : this.transforms.reduce((prevValue, fn) => fn.call(this, prevValue, rawValue, this, options), rawValue);
     if (value === void 0) {
       value = this.getDefault(options);
     }
@@ -1428,8 +1430,8 @@ class BooleanSchema extends Schema {
       }
     });
     this.withMutation(() => {
-      this.transform((value, _raw, ctx) => {
-        if (ctx.spec.coerce && !ctx.isType(value)) {
+      this.transform((value, _raw) => {
+        if (this.spec.coerce && !this.isType(value)) {
           if (/^(true|1)$/i.test(String(value)))
             return true;
           if (/^(false|0)$/i.test(String(value)))
@@ -1562,8 +1564,8 @@ class StringSchema extends Schema {
       }
     });
     this.withMutation(() => {
-      this.transform((value, _raw, ctx) => {
-        if (!ctx.spec.coerce || ctx.isType(value))
+      this.transform((value, _raw) => {
+        if (!this.spec.coerce || this.isType(value))
           return value;
         if (Array.isArray(value))
           return value;
@@ -1773,8 +1775,8 @@ class NumberSchema extends Schema {
       }
     });
     this.withMutation(() => {
-      this.transform((value, _raw, ctx) => {
-        if (!ctx.spec.coerce)
+      this.transform((value, _raw) => {
+        if (!this.spec.coerce)
           return value;
         let parsed = value;
         if (typeof parsed === "string") {
@@ -1783,7 +1785,7 @@ class NumberSchema extends Schema {
             return NaN;
           parsed = +parsed;
         }
-        if (ctx.isType(parsed) || parsed === null)
+        if (this.isType(parsed) || parsed === null)
           return parsed;
         return parseFloat(parsed);
       });
@@ -1885,8 +1887,8 @@ class DateSchema extends Schema {
       }
     });
     this.withMutation(() => {
-      this.transform((value, _raw, ctx) => {
-        if (!ctx.spec.coerce || ctx.isType(value) || value === null)
+      this.transform((value, _raw) => {
+        if (!this.spec.coerce || this.isType(value) || value === null)
           return value;
         value = parseIsoDate(value);
         return !isNaN(value) ? new Date(value) : DateSchema.INVALID_DATE;
@@ -1974,7 +1976,7 @@ function sortByKeyOrder(keys) {
     return findIndex(keys, a) - findIndex(keys, b);
   };
 }
-const parseJson = (value, _, ctx) => {
+const parseJson = (value, _, schema) => {
   if (typeof value !== "string") {
     return value;
   }
@@ -1983,7 +1985,7 @@ const parseJson = (value, _, ctx) => {
     parsed = JSON.parse(value);
   } catch (err) {
   }
-  return ctx.isType(parsed) ? parsed : value;
+  return schema.isType(parsed) ? parsed : value;
 };
 function deepPartial(schema) {
   if ("fields" in schema) {
@@ -2063,9 +2065,9 @@ class ObjectSchema extends Schema {
     for (const prop of props) {
       let field = fields[prop];
       let exists = prop in value;
+      let inputValue = value[prop];
       if (field) {
         let fieldValue;
-        let inputValue = value[prop];
         innerOptions.path = (options.path ? `${options.path}.` : "") + prop;
         field = field.resolve({
           value: inputValue,
@@ -2078,17 +2080,14 @@ class ObjectSchema extends Schema {
           isChanged = isChanged || prop in value;
           continue;
         }
-        fieldValue = !options.__validating || !strict ? (
-          // TODO: use _cast, this is double resolving
-          field.cast(value[prop], innerOptions)
-        ) : value[prop];
+        fieldValue = !options.__validating || !strict ? field.cast(inputValue, innerOptions) : inputValue;
         if (fieldValue !== void 0) {
           intermediateValue[prop] = fieldValue;
         }
       } else if (exists && !strip) {
-        intermediateValue[prop] = value[prop];
+        intermediateValue[prop] = inputValue;
       }
-      if (exists !== prop in intermediateValue || intermediateValue[prop] !== value[prop]) {
+      if (exists !== prop in intermediateValue || intermediateValue[prop] !== inputValue) {
         isChanged = true;
       }
     }
@@ -2359,7 +2358,11 @@ class ArraySchema extends Schema {
     let isChanged = false;
     const castArray = value.map((v, idx) => {
       const castElement = this.innerType.cast(v, Object.assign({}, _opts, {
-        path: `${_opts.path || ""}[${idx}]`
+        path: `${_opts.path || ""}[${idx}]`,
+        parent: value,
+        originalValue: v,
+        value: v,
+        index: idx
       }));
       if (castElement !== v) {
         isChanged = true;
@@ -2955,7 +2958,11 @@ const getFleetResponseSchema = create$3({
       isFollowed: create$7().notRequired().nullable(),
       followed: create$7().notRequired().nullable(),
       team: create$7().notRequired().nullable(),
-      type: create$6().notRequired()
+      type: create$6().notRequired(),
+      extendedInfos: create$3({
+        boatName: create$6().notRequired(),
+        skipperName: create$6().notRequired()
+      }).notRequired().nullable()
     })
   )
 });

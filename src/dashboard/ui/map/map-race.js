@@ -8,16 +8,22 @@ import {buildPt2, buildMarker,
     yellowRLIconP, yellowRRIconP, yellowRLIcon, yellowRRIcon,
     redRLIconP, redRLIcon, greenRRIconP, greenRRIcon
 } from './map-utils.js'
-import {DateUTC,formatPosition
+import {formatPosition,formatShortDate,formatTimestampToReadableDate,formatDHMS
 } from '../common.js';
+
+import {sailNames} from "../constant.js"
 
 import {getConnectedPlayerId,
         getRaceInfo,
         getLegPlayerInfos,
         getLegFleetInfos,
-        getLegSelectedPlayersState,
-        setLegSelectedPlayers
+        getLegPlayersTracksFleet,
+        getLegPlayersTrackLeader,
 } from '../../app/memoData.js'
+
+import { gcDistance, roundTo} from '../../../common/utils.js';
+
+import {drawProjectionLine} from './map-proj.js'
 
 export const mapState = {
     raceId: null,       // id de la course actuellement affichée
@@ -38,7 +44,8 @@ export const mapState = {
     meLayerMarkers: null,
     meBoatLayer: null,
     leaderLayer: null,
-    leaderMeLayer: null
+    leaderMeLayer: null,
+    
 };
 const MAP_CONTAINER_ID = 'lMap';
 
@@ -115,7 +122,7 @@ function updateMapWaypoints(playerIte) {
     if (!mapState || !mapState.map || !mapState.gdiv) return;
     const map = mapState.map;
 
-    if (!playerIte?.ite) return; // current position unknown
+    if (!playerIte) return; // current position unknown
     if(!raceOrder && raceOrder[0].action.type !== "wp") return; //last order not wp
 
     if(mapState.wayPointLayer)
@@ -125,8 +132,8 @@ function updateMapWaypoints(playerIte) {
     mapState.wayPointLayer = L.layerGroup();
 
     const wpOrder = raceOrder[0].action.action;  
-    const lastWpIdx = playerIte.ite.lastWpIdx;
-    const currPos = playerIte.ite.pos;
+    const lastWpIdx = playerIte.lastWpIdx;
+    const currPos = playerIte.pos;
     
     // Waypoint lines already passed
     let wpPts = [];
@@ -154,105 +161,112 @@ function updateMapWaypoints(playerIte) {
     mapState.wayPointLayer.addTo(map); 
     if(!mapState.userZoom) updateBounds();
 }
-function updateMapMe(race, track) {
-    if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
+
+function updateMapMe(connectedPlayerId,playerIte) {
+    const trackFleet = getLegPlayersTracksFleet();
+    const userPrefs = getUserPrefs();
+    const localTimes = userPrefs.global.localTime;
+    const displayMarkers = userPrefs.map.showMarkers;
+
+    if (!mapState|| !mapState.map || !mapState.gdiv || !trackFleet || !trackFleet[connectedPlayerId]) return;
     
     const map = mapState.map;
+    const myTrack = trackFleet[connectedPlayerId].track;
 
     if(!mapState.meLayer) mapState.meLayer  = L.layerGroup();
     if(!mapState.meBoatLayer) mapState.meBoatLayer  = L.layerGroup();
     if(!mapState.meLayerMarkers) mapState.meLayerMarkers  = L.layerGroup();
 
-    // track
-
-    if (track) {
-
-        if(mapState.meLayer) map.removeLayer(mapState.meLayer);
-        if(mapState.meLayerMarkers) map.removeLayer(mapState.meLayerMarkers);
-        mapState.meLayer  = L.layerGroup();
-        mapState.meLayerMarkers  = L.layerGroup();
-
-        for (var i = 0; i < track.length; i++) {
-            var segment = track[i];
-            var pos = buildPt2(segment.lat, segment.lon);
-            if(displayFilter & 0x200) {
-                if (i > 0) {
-                    var deltaT = (segment.ts -  track[i-1].ts) / 1000;
-                    var deltaD =  Util.gcDistance(track[i-1], segment);
-                    var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
-                    var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                    var title =  "Me " + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts<br>" + Util.formatPosition(segment.lat, segment.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
-                    var trackcolor = "#b86dff";
-                    buildCircle(pos, mapState.meLayerMarkers,trackcolor, 1.5 ,1, title);
-                    mapState.refPoints.push(pos[1]);
-                }
-            }
+    if(mapState.meLayer) map.removeLayer(mapState.meLayer);
+    if(mapState.meLayerMarkers) map.removeLayer(mapState.meLayerMarkers);
+    if(mapState.meBoatLayer) map.removeLayer(mapState.meBoatLayer);
+    mapState.meLayer  = L.layerGroup();
+    mapState.meLayerMarkers  = L.layerGroup();
+    mapState.meBoatLayer  = L.layerGroup();
+    
+    const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon}
+    let myTrackPts = [];
+    let isFirst = false;
+    let prevPt = null;
+    myTrack.forEach(({ lat, lon, ts,tag}) => {
+        myTrackPts.push({lat,lon});
+        if(isFirst)
+        {
+            const title =  "Me " 
+                        + "<br><b>" 
+                        + formatShortDate(ts,undefined,localTimes) 
+                        + "</b> | Speed: " 
+                        + roundTo(Math.abs(gcDistance(myPos, {lat, lon}) / ((ts -  prevPt.ts) / 1000) * 3600), 2) 
+                        + " kts<br>" + formatPosition(lat, lon) 
+                        + (tag ? "<br>(Type: " + tag + ")" : "");
+            buildCircle({lat,lon}, mapState.meLayerMarkers,"#b86dff", 1.5 ,1, title);
+            mapState.refPoints.push({lat,lon});
         }
-        var cpath = buildPath(track, undefined, undefined, race.curr.pos.lat, race.curr.pos.lon);
-        buildTrace(cpath, mapState.meLayer, race, "#b86dff", 1.5, 1);
-    }        
+        isFirst = true;
+        prevPt = {lat:lat, lon:lon, ts:ts};
+    });
     
-    // boat
-    if (race.curr && race.curr.pos) {
-        var pos = buildPt2(race.curr.pos.lat, race.curr.pos.lon);
+    if(displayMarkers) mapState.meLayerMarkers.addTo(map);
 
-        if(mapState.meBoatLayer) map.removeLayer(mapState.meBoatLayer);
-        mapState.meBoatLayer  = L.layerGroup();
+    if(myPos.lat && myPos.lon)
+    {
+        const myTrackpath = buildPath(myTrackPts, undefined, undefined, myPos.lat, myPos.lon);
+        buildTrace(myTrackpath, mapState.meLayer, mapState.refPoints, "#b86dff", 1.5, 1);
+        mapState.meLayer.addTo(map);
 
-        var title = "Me (Last position: " + Util.formatTimestampToReadableDate(race.curr.lastCalcDate, 1) + ")<br>TWA: <b>" + Util.roundTo(race.curr.twa, 3) + "°</b>"
-                    + " | HDG: <b>" + Util.roundTo(race.curr.heading, 2) + "°</b>"
-                    + "<br>Sail: " + sailNames[race.curr.sail] + " | Speed: " + Util.roundTo(race.curr.speed, 3) + " kts"
-                    + "<br>TWS: " + Util.roundTo(race.curr.tws, 3) + " kts | TWD: " + Util.roundTo(race.curr.twd, 3) + "°";
+        const myPosPt = buildPt2(myPos.lat, myPos.lon);
+        const title = "Me (Last position: " 
+                    + formatTimestampToReadableDate(playerIte.iteDate, 1) 
+                    + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>"
+                    + " | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b>"
+                    + "<br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts"
+                    + "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+        buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,playerIte.hdg);
+        drawProjectionLine(myPosPt,playerIte.hdg,playerIte.speed) ;
+    }
+    mapState.meBoatLayer.addTo(map);
 
-        buildMarker(pos, mapState.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,race.curr.heading);
-     }
+    if(!mapState.userZoom) updateBounds();  
+}
 
+function updateMapLeader(playerIte) {
     
-    if(document.getElementById('sel_showMarkersLmap').checked)
-       mapState.meLayerMarkers.addTo(map);                
-    mapState.meLayer.addTo(map);           
-    mapState.meBoatLayer.addTo(map); 
-    if(!mapState.userZoom) updateBounds();    
-    lMapInfos = mapState;
+    if (!mapState|| !mapState.map || !mapState.gdiv) return;
+
+    if(mapState.leaderLayer) map.removeLayer(mapState.leaderLayer);
+    if(mapState.leaderMeLayer) map.removeLayer(mapState.leaderMeLayer);
+    mapState.leaderLayer = L.layerGroup(); 
+    mapState.leaderMeLayer = L.layerGroup(); 
+
+    const offset = playerIte?.startDate?(new Date() - playerIte.startDate):new Date();
+
+    const trackLeader = getLegPlayersTrackLeader();
+    if (trackLeader && trackLeader.track.length > 0) {
+        const playersList = getPlayersList();
+        const title = "Leader: <b>" + playersList[trackLeader.userId] + "</b><br>Elapsed: " + formatDHMS(offset);
+        addGhostTrack(trackLeader.track, title, offset, "#FF8C00", mapState.leaderLayer);
+    }
+
+    const trackGhost = getLegPlayersTrackLeader();
+    if (trackGhost && trackGhost.track.length > 0) {
+        const title = "<b>Best Attempt</b><br>Elapsed: " + formatDHMS(offset);
+        addGhostTrack(trackGhost.track, title, offset, "#b86dff", mapState.leaderMeLayer);
+    }
 
 }
-function updateMapLeader(race) {
 
-    if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
-
-    if (!race.curr) return;
-    if (!race.curr.startDate) return;
+function addGhostTrack (ghostTrack, title, offset, color,layer) {
+    const userPrefs = getUserPrefs();
+    const displayMarkers = userPrefs.map.showMarkers;
     
-    var map = mapState.map;
-    var d = new Date();
-    var offset = d - race.curr.startDate;
-
-    // track
-    if (race.leaderTrack && race.leaderTrack.length > 0) {
-        if(mapState.leaderLayer) map.removeLayer(mapState.leaderLayer);
-        mapState.leaderLayer = L.layerGroup(); 
-
-        addGhostTrack(race,race.leaderTrack, "Leader: <b>" + race.leaderName + "</b><br>Elapsed: " + Util.formatDHMS(offset), offset, "#FF8C00", mapState.leaderLayer);
-    }
-    if (race.myTrack && race.myTrack.length > 0) {
-        if(mapState.leaderMeLayer) map.removeLayer(mapState.leaderMeLayer);
-        mapState.leaderMeLayer = L.layerGroup(); 
-        addGhostTrack(race,race.myTrack, "<b>Best Attempt</b><br>Elapsed: " + Util.formatDHMS(offset), offset, "#b86dff", mapState.leaderMeLayer);
-    }
-    lMapInfos = mapState;
-
-}
-function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
+    if (!ghostTrack || !mapState|| !mapState.map || !mapState.gdiv) return;
     
-    if (!race || !mapState|| !mapState.map || !mapState.gdiv) return;
-    
-    var map = mapState.map;
+    const ghostStartTS = ghostTrack[0].ts;
+    const ghostPosTS = ghostStartTS + offset;
+    let ghostPos;
 
-    var ghostStartTS = ghostTrack[0].ts;
-    var ghostPosTS = ghostStartTS + offset;
-    var ghostPos;
     for (var i = 0; i < ghostTrack.length; i++) {
-        pos = buildPt2(ghostTrack[i].lat, ghostTrack[i].lon);
+        const pos = buildPt2(ghostTrack[i].lat, ghostTrack[i].lon);
         mapState.refPoints.push(pos[1]);
                 
         if (!ghostPos) {
@@ -262,33 +276,37 @@ function addGhostTrack (race,ghostTrack, title, offset, color,layer) {
         }
     }
        
-    buildTrace(buildPath(ghostTrack),layer,race, color,1,0.6,'10, 10','5');
+    buildTrace(buildPath(ghostTrack),layer,mapState.refPoints, color,1,0.6,'10, 10','5');
 
-
-    if (ghostPos) {
-        var lat1 = ghostTrack[ghostPos].lat;
-        var lon1 = ghostTrack[ghostPos].lon
-        var lat0 = ghostTrack[Math.max(ghostPos - 1, 0)].lat;
-        var lon0 = ghostTrack[Math.max(ghostPos - 1, 0)].lon;
-        var heading = Util.courseAngle(lat0, lon0, lat1, lon1) * 180 / Math.PI;
-        var d = (ghostPosTS - ghostTrack[ghostPos - 1].ts ) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts)
-        var lat = lat0 + (lat1-lat0) * d;
-        var lon = lon0 + (lon1-lon0) * d;
-        var pos = buildPt2(lat, lon);
+    if (ghostPos && displayMarkers) {
+        const lat1 = ghostTrack[ghostPos].lat;
+        const lon1 = ghostTrack[ghostPos].lon
+        const lat0 = ghostTrack[Math.max(ghostPos - 1, 0)].lat;
+        const lon0 = ghostTrack[Math.max(ghostPos - 1, 0)].lon;
+        const heading = Util.courseAngle(lat0, lon0, lat1, lon1) * 180 / Math.PI;
+        const d = (ghostPosTS - ghostTrack[ghostPos - 1].ts ) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts)
+        const lat = lat0 + (lat1-lat0) * d;
+        const lon = lon0 + (lon1-lon0) * d;
+        const pos = buildPt2(lat, lon);
         buildMarker(pos,layer, buildBoatIcon(color,color,0.6), title,  20, 0.4,heading);
     }
 
-    layer.addTo(map); 
+    layer.addTo(mapState.map); 
     if(!mapState.userZoom) updateBounds();
 }
 
 
-function updateMapFleet(race,raceFleetMap) {
+function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
 
     if (!race || !mapState|| !mapState.map  || !mapState.gdiv) return;
     
-    var map = mapState.map;
+    const map = mapState.map;
+    const userPrefs = getUserPrefs();
+    const trackFleet = getLegPlayersTracksFleet();
 
+    const displayMarkers = userPrefs.map.showMarkers;
+    const displayTracks = userPrefs.map.showTracks;
+    
     if(mapState.fleetLayer) map.removeLayer(mapState.fleetLayer);
     if(mapState.fleetLayerMarkers) map.removeLayer(mapState.fleetLayerMarkers);
     if(mapState.fleetLayerTracks) map.removeLayer(mapState.fleetLayerTracks);
@@ -298,101 +316,121 @@ function updateMapFleet(race,raceFleetMap) {
     mapState.fleetLayerTracks = L.layerGroup();
 
 
-    // opponents/followed
-    var fleet = raceFleetMap.get(race.id);
+    Object.entries(raceItesFleet).map(([userId, playerFleetInfos]) => {
 
-    Object.keys(fleet.uinfo).forEach(function (key) {
-        var elem = fleet.uinfo[key];
-        var bi = boatinfo(key, elem);
 
-        if (isDisplayEnabled(elem, key)) {
-            var pos = buildPt2(elem.pos.lat, elem.pos.lon);
-            // Boat
-            // Organisation z-index
-            var zi;
-            if (key == currentId){
+        const playerIte = playerFleetInfos.ite;
+        if(playerIte && userId && userId != connectedPlayerId && isDisplayEnabled(playerIte, userId,connectedPlayerId))
+        {
+            let zi;
+            /*if (key == currentId){
                 zi = 50;    // Me
-                drawProjectionLine(race,pos,elem.heading,elem.speed) ;   
-            } else if (elem.type == "top") {
+                drawProjectionLine(race.lMap.me_PlLayer,pos,elem.heading,elem.speed) ;   
+            } else*/ 
+            if (playerIte.type == "top") {
                 zi = 49;    // Top VSR
-            } else if (elem.teamname == currentTeam) {
+            } else if (playerIte.team) {
                 zi = 48;    // Team
-            } else if (elem.isFollowed) {
+            } else if (playerIte.followed == true || playerIte.isFollowed == true) {
                 zi = 47;    // Friend
-            } else if (elem.type == "sponsor" ) {
+            } else if ( playerIte.type == "sponsor") {
                 zi = 46;    // Color Sponsor
             } else {
                 zi = 44;    // Real   // Opponent
             }
-            
+            const pos = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
+         
             // Add names to real skippers if data exists
-            var nameAddSkipperName = '';
-            if (elem.extendedInfos && elem.extendedInfos.skipperName) nameAddSkipperName = elem.extendedInfos.boatName + '</span><br><b>' + elem.extendedInfos.skipperName + '</b>';
+            let skipperName = playerIte.displayName;
+            if (playerIte.extendedInfos?.skipperName) 
+                skipperName += '<span class="txtUpper">' 
+                            + playerIte.extendedInfos.boatName 
+                            + '</span><br><b>' 
+                            + playerIte.extendedInfos.skipperName + '</b>';
 
-            if (nameAddSkipperName != '') bi.name = '<span class="txtUpper">' + nameAddSkipperName;
-            else bi.name = bi.name;
-
-            if (elem.type == 'real') {
-                var info = bi.name + "<br>HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b> | Speed: " + Util.roundTo(bi.speed, 3) + " kts";
-                if (bi.twa > 0) info += "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b>";
-                if (bi.sail != "-") info += " | Sail: " + bi.sail;
-                if (bi.tws > 0) info += "<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts";
-                if (bi.twd > 0) info += " | TWD: " + Util.roundTo(bi.twd, 3) + "°";
+            let info = '';
+            if (playerIte.type == 'real') {
+                info = skipperName + "<br>HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b> | Speed: " + roundTo(playerIte.speed, 3) + " kts";
+                if (playerIte.twa > 0) info += "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>";
+                if (playerIte.sail != "-") info += " | Sail: " + sailNames[playerIte];
+                if (playerIte.tws > 0) info += "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts";
+                if (playerIte.twd > 0) info += " | TWD: " + roundTo(playerIte.twd, 3) + "°";
             }
             else {
-                var info = bi.name + "<br>TWA: <b>" + Util.roundTo(bi.twa, 3) + "°</b> | HDG: <b>" + Util.roundTo(bi.heading, 2) + "°</b><br>Sail: " + bi.sail + " | Speed: " + Util.roundTo(bi.speed, 3) + " kts<br>TWS: " + Util.roundTo(bi.tws, 3) + " kts | TWD: " + Util.roundTo(bi.twd, 3) + "°";
-            }
-            if (race.type == "record") {
-                if (key == currentId && elem.tsRecord && race.curr.startDate) {
-                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - race.curr.startDate) + "</b>";
-                }
-                else if (elem.startDate && elem.tsRecord) {
-                    info += "<br>Elapsed: <b>" + Util.formatDHMS(elem.tsRecord - elem.startDate) + "</b>";
-                }
+                info = skipperName 
+                    + "<br>TWA: <b>" 
+                    + roundTo(playerIte.twa, 3) 
+                    + "°</b> | HDG: <b>" 
+                    + roundTo(playerIte.heading, 2) 
+                    + "°</b><br>Sail: " 
+                    + sailNames[playerIte] || "-" 
+                    + " | Speed: " 
+                    + roundTo(playerIte.speed, 3) 
+                    + " kts<br>TWS: " 
+                    + roundTo(playerIte.tws, 3) + " kts | TWD: " 
+                    + roundTo(playerIte.twd, 3) + "°";
             }
 
-            buildMarker(pos, mapState.fleetLayer,buildBoatIcon(bi.bcolor,bi.bbcolor,0.8), info,  zi, 0.8,elem.heading);
-                
+            
+            if(raceInfo.type == "record") {
+                info += "<br>Elapsed: <b>" + formatDHMS(playerIte.iteDate - playerIte.startDate) + "</b>";
+            }
+
+            const categoryIdx = category.indexOf(playerIte.type);
+            const nameStyle = (userId == connectedPlayerId)?"color: #b86dff; font-weight: bold; "
+                            :((userPrefs.theme=="dark")?categoryStyleDark[categoryIdx]:categoryStyle[categoryIdx]);
+            
+            const sailStyle = sailColors[playerIte.sail];
+            buildMarker(pos, mapState.fleetLayer,buildBoatIcon(nameStyle,sailStyle,0.8), info,  zi, 0.8,playerIte.hdg);
+
+
             // track
-            if (elem.track && elem.track.length != 0) {
+            if (trackFleet[userId].track && trackFleet[userId].length != 0) {
 
-                for (var i = 0; i < elem.track.length; i++) {
-                    var segment = elem.track[i];
-                    var pos2 = buildPt2(segment.lat, segment.lon);
-
-                    mapState.refPoints.push(pos2[1]);
-                    if(displayFilter & 0x200) {
-                        if ((i > 0) && ((key != currentId)
-                                        || elem.isFollowed
-                                        || elem.followed))
-                        {
-                                var deltaT = (segment.ts -  elem.track[i-1].ts) / 1000;
-                                var deltaD =  Util.gcDistance(elem.track[i-1], segment);
-                                var speed = Util.roundTo(Math.abs(deltaD / deltaT * 3600), 2);
-                                var timeStamp = Util.formatShortDate(segment.ts,undefined,(displayFilter & 0x800));
-                                var title = elem.displayName + "<br><b>" + timeStamp + "</b> | Speed: " + speed + " kts" + "<br>" + Util.formatPosition(elem.pos.lat, elem.pos.lon) + (segment.tag ? "<br>(Type: " + segment.tag + ")" : "");
-
-                                buildCircle(pos2,mapState.fleetLayerMarkers,bi.bcolor, 1.5,1,title);
-                        }
+                const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon}
+                let playerTrackPts = [];
+                let isFirst = false;
+                let prevPt = null;
+                trackFleet[userId].track.forEach(({ lat, lon, ts,tag}) => {
+                    playerTrackPts.push({lat,lon});
+                    if(isFirst)
+                    {
+                        const title =  skipperName 
+                            + "<br><b>" 
+                            + formatShortDate(ts,undefined,localTimes) 
+                            + "</b> | Speed: " 
+                            + roundTo(Math.abs(gcDistance(playerPos, {lat, lon}) / ((ts -  prevPt.ts) / 1000) * 3600), 2) 
+                            + " kts<br>" + formatPosition(lat, lon) 
+                            + (tag ? "<br>(Type: " + tag + ")" : "");
+                
+                        buildCircle(pos2,mapState.fleetLayerMarkers,nameStyle, 1.5,1,title);
+                        mapState.refPoints.push({lat,lon});
                     }
+                    isFirst = true;
+                    prevPt = {lat:lat, lon:lon, ts:ts};
+                });
+            
+                if(playerPos.lat && playerPos.lon)
+                {
+                    const myTrackpath = buildPath(playerTrackPts, undefined, undefined, playerPos.lat, playerPos.lon);
+                    buildTrace(myTrackpath, mapState.fleetLayerTracks, mapState.refPoints, nameStyle, 1.5, 1);
+                    mapState.fleetLayerTracks.addTo(map);
                 }
-
-                var cpath = buildPath(elem.track,undefined,undefined,elem.pos.lat, elem.pos.lon);    
-                buildTrace(cpath,mapState.fleetLayerTracks,race, bi.bcolor,1,1);    
-
             }
         }
+                
     });
+
     mapState.fleetLayer.addTo(map); 
-    if(document.getElementById('sel_showMarkersLmap').checked)
+    if(displayMarkers)
         mapState.fleetLayerMarkers.addTo(map); 
-    if(document.getElementById('sel_showTracksLmap').checked)
+    if(displayTracks)
         mapState.fleetLayerTracks.addTo(map); 
 
     if(!mapState.userZoom) updateBounds();
-    lMapInfos = mapState;
 
 }
+
 function cleanMap() {
     // on cache juste le conteneur global
     const existingMap = document.getElementById(MAP_CONTAINER_ID);
@@ -433,7 +471,7 @@ function getOrCreateMapContainer() {
     return divMap;
 }
 
-export async function initialize(raceFleetMap)
+export async function initializeMap()
 {
     function set_userCustomZoom(e)
     {
@@ -476,12 +514,12 @@ export async function initialize(raceFleetMap)
 
         // couches dynamiques
         updateBounds();
-        updateMapCheckpoints(raceInfo);
-        updateMapFleet(raceInfo, raceItesFleet);
-        updateMapWaypoints(playerItes);
-        updateMapLeader(raceInfo);
-        updateMapMe(raceInfo,playerIte);
-        initButtonToCenterViewMap(playerIte.pos.lat, playerIte.pos.lon, mapState.map);
+        updateMapCheckpoints(raceInfo, playerItes.ite);
+        updateMapWaypoints(playerItes.ite);
+        updateMapMe(connectedPlayerId,playerItes.ite);
+        updateMapLeader(playerItes.ite);
+        updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
+        initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
         enableCoordinateCopyingWithShortcut();
         return;
     }
@@ -557,8 +595,7 @@ export async function initialize(raceFleetMap)
         crs: usingPolar ? POLAR.crs : L.CRS.EPSG3857
     });
 
-    mapState.map = map;
-    lMapInfos = mapState;    
+    mapState.map = map; 
 
     
     const layerControl = L.control.layers(baseLayers, null, { position: 'topright' });
@@ -667,12 +704,11 @@ export async function initialize(raceFleetMap)
                 playerItes.ite = playerItes.ites[0];
             }
             updateBounds(raceInfo);
-            updateMapCheckpoints(raceInfo);
-            updateMapFleet(raceInfo, raceItesFleet);
-            updateMapWaypoints(playerItes);
-            updateMapLeader(raceInfo);
-            updateMapMe(raceInfo);
-            lMapInfos = mapState;
+            updateMapCheckpoints(raceInfo, playerItes.ite); 
+            updateMapWaypoints(playerItes.ite);
+            updateMapMe(connectedPlayerId,playerItes.ite);
+            updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
+            updateMapLeader(playerItes.ite);
             return;
         }
 
@@ -802,8 +838,8 @@ export async function initialize(raceFleetMap)
     }
     mapState.refLayer.addTo(map);
     updateBounds(raceInfo);
-    updateMapCheckpoints(raceInfo);
-    updateMapFleet(raceInfo, raceItesFleet);
+    updateMapCheckpoints(raceInfo, playerItes.ite);
+    updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
 
     if(mapState.route[rid] && mapState.route[rid].length !==0) {
         Object.keys(mapState.route[rid]).forEach(function (name) {
@@ -817,9 +853,9 @@ export async function initialize(raceFleetMap)
         });
     }
 
-    updateMapWaypoints(playerItes);
-    updateMapLeader(raceInfo);
-    updateMapMe(raceInfo);
+    updateMapWaypoints(playerItes.ite);
+    updateMapLeader(playerItes.ite);
+    updateMapMe(connectedPlayerId,playerItes.ite);
 
     set_userCustomZoom(false);
     applyBoundsForCurrentMode(map);
@@ -828,7 +864,7 @@ export async function initialize(raceFleetMap)
     map.on('zoomend',set_userCustomZoom);
 
     mapState.map = map;
-    initButtonToCenterViewMap(playerIte.pos.lat, playerIte.lon, mapState.map);
+    initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
     enableCoordinateCopyingWithShortcut();
     
 }

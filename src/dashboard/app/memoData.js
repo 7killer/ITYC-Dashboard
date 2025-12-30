@@ -502,15 +502,15 @@ export async function updateLegPlayerTracks()
         const legNum = raceInfo.legNum;
 
         legPlayersTracks = {};
-        const { items, meta } = await getEntriesForTriplet(    raceId,legNum,'fleet',{    storeName : 'playersTracks'});
+        const { items, meta } = await getLegPlayersTracksByType(    raceId,legNum,'fleet',{ asMap: true });
         if(meta.timeout || !items || items.length == 0) legPlayersTracks.fleet = [];
         else legPlayersTracks.fleet = items;
 
-        const { items2, meta2 } = await getEntriesForTriplet(    raceId,legNum,'leader',{    storeName : 'playersTracks'});
+        const { items2, meta2 } = await getLegPlayersTracksByType(    raceId,legNum,'leader');
         if(meta2.timeout || !items2 || items2.length == 0) legPlayersTracks.leader = [];
         else legPlayersTracks.leader = items2;
 
-        const { items3, meta3 } = await getEntriesForTriplet(    raceId,legNum,'ghost',{    storeName : 'playersTracks'});
+        const { items3, meta3 } = await getLegPlayersTracksByType(    raceId,legNum,'ghost');
         if(meta3.timeout || !items3 || items3.length == 0) legPlayersTracks.ghosts = [];
         else legPlayersTracks.ghosts = items3;
     }

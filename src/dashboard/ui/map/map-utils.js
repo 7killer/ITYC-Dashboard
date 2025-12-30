@@ -130,7 +130,7 @@ function buildBoatIcon(fillColor,borderColor,opacity)
     });
 }
 
-function buildCircle( pos, layer,trackcolor,size,opacity,title)
+export function buildCircle( pos, layer,trackcolor,size,opacity,title)
 {
     let ret = [];
     for(let i=0;i<pos.length;i++)

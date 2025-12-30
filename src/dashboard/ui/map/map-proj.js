@@ -1,4 +1,8 @@
 
+import {buildPt2, buildCircle,buildTrace} from './map-utils.js'
+import {getUserPrefs} from '../../../common/userPrefs.js'
+import { mapState } from './map-race.js';
+
 function computeNextPos(pos,hdg,speed,time) {
     var dist5 = speed*time/(3600*60);
     var alpha = 360 - ( hdg - 90);
@@ -23,42 +27,30 @@ function computeNextPos(pos,hdg,speed,time) {
 
 }
 
-var pColor;
-var pSize;
-
-function setProjectionLineColor(e)
-{
-    pColor =  e;
-}
-
-function setProjectionLineSize(e)
-{
-    pSize =  e;
-}
-
-
-function drawProjectionLine(race,pos,hdg,speed) {
+export function drawProjectionLine(pos,hdg,speed) {
 
     if(!hdg || !speed) return;
-    var map = race.lMap.map;
-    if(race.lMap.me_PlLayer) map.removeLayer(race.lMap.me_PlLayer);
+    if(!mapState|| !mapState.map || !mapState.gdiv) return;
     
-    race.lMap.me_PlLayer  = L.layerGroup();
+    const userPrefs = getUserPrefs();
+    const map = mapState.map;
 
-    var tpath = [];
+    if(mapState.me_PlLayer) map.removeLayer(mapState.me_PlLayer);
+    mapState.me_PlLayer = L.layerGroup(); 
+
+    let tpath = [];
 
     tpath.push(pos[1]);
 
-    for(var i=0;i<pSize/2;i++)
+    for(var i=0;i<userPrefs.map.projectionLineLenght/2;i++)
     {
         pos = computeNextPos(pos[1],hdg,speed,2*60);
         tpath.push(pos[1]);
-        var title = 2*(i+1)+"min";
-        buildCircle(pos,race.lMap.me_PlLayer,pColor, 1.5,1,title); 
+        const title = 2*(i+1)+"min";
+        buildCircle(pos,layer,userPrefs.map.projectionColor, 1.5,1,title); 
     }  
-    buildTrace(buildPath(tpath) ,race.lMap.me_PlLayer, race,pColor,1,0.4,'10, 10','5');
-
-    race.lMap.me_PlLayer.addTo(map); 
+    buildTrace(buildPath(tpath) ,mapState.me_PlLayer, mapState.refPoints,userPrefs.map.projectionColor,1,0.4,'10, 10','5');
+    layer.addTo(map); 
 
 }
 

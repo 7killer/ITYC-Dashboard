@@ -125,6 +125,17 @@ export function formatShortDate(ts, dflt, timezone) {
     return `${day}/${month} ${hours}:${minutes}`;
 }
 
+export function formatTimestampToReadableDate(ts, returnType = 0) {
+    const date = new Date(ts);
+    if (returnType == 1) return date.toLocaleString('fr-FR', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+        }); // return '02/15/25, 06:33'
+    else return date.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }); // return 'Sunday, November 10, 2024 at 2:22 PM'
+}
 
 export function twaBackGround(currTwa,bestTwa)
     {

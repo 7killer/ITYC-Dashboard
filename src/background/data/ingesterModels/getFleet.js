@@ -32,8 +32,11 @@ export const getFleetResponseSchema = Yup.object({
       isFollowed : Yup.boolean().notRequired().nullable(),
       followed : Yup.boolean().notRequired().nullable(),
       team : Yup.boolean().notRequired().nullable(),
-      type : Yup.string().notRequired()
-
+      type : Yup.string().notRequired(),
+      extendedInfos : Yup.object({
+          boatName : Yup.string().notRequired(),
+          skipperName : Yup.string().notRequired(),
+      }).notRequired().nullable()
     }),
   ),
 });

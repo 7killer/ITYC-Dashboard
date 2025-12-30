@@ -1,5 +1,5 @@
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, r as raceTableHeaders, e as roundTo, f as formatHM, h as formatTimeNotif, i as raceTableLines, j as infoSail, k as getUserPrefs, l as genthRacelog, m as dateUTCSmall, D as DateUTC, s as sailNames, n as formatPosition, o as formatSeconds, p as getxFactorStyle, q as gentdRacelog, t as getBG, u as genth, v as category, w as sailColors, x as gentd, y as formatTime, z as formatDHMS, A as formatShortDate, B as categoryStyleDark, C as categoryStyle, E as isBitSet, F as guessOptionBits, G as getRankingCategory, H as creditsMaxAwardedByPriceLevel, I as display_selbox, J as changeState, K as saveUserPrefs, L as switchTheme, M as loadUserPrefs, N as createKeyChangeListener } from "./common-1c8f3165.js";
+import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, r as raceTableHeaders, e as roundTo, f as formatHM, h as formatTimeNotif, i as raceTableLines, j as infoSail, k as getUserPrefs, l as genthRacelog, m as dateUTCSmall, D as DateUTC, s as sailNames, n as formatPosition, o as formatSeconds, p as getxFactorStyle, q as gentdRacelog, t as getBG, u as genth, v as category$1, w as sailColors$1, x as gentd, y as formatTime, z as formatDHMS, A as formatShortDate, B as categoryStyleDark$1, C as categoryStyle$1, E as isBitSet, F as guessOptionBits, G as getRankingCategory, H as creditsMaxAwardedByPriceLevel, I as formatTimestampToReadableDate, J as gcDistance, K as display_selbox, L as changeState, M as saveUserPrefs, N as switchTheme, O as loadUserPrefs, P as createKeyChangeListener } from "./common-eb028e3b.js";
 const style = "";
 let connectedPlayerId;
 let connectedPlayerInfos = [];
@@ -24,6 +24,7 @@ let paramStamina = [];
 let legPlayersOrderUpdate = 0;
 let legPlayersOrder = [];
 let legSelectedPlayers = [];
+let legPlayersTracks = [];
 async function initMemo() {
   const currentId = await getData("internal", "lastLoggedUser");
   const currentRace = await getData("internal", "lastOpennedRace");
@@ -124,11 +125,11 @@ async function updateLegList() {
       const db = new Date(((_b = b == null ? void 0 : b.start) == null ? void 0 : _b.date) || 0);
       return da - db;
     });
-    const map = /* @__PURE__ */ Object.create(null);
+    const map2 = /* @__PURE__ */ Object.create(null);
     let foundRaceInfo = null;
     for (const leg of filtered) {
       const fullRaceId = `${leg.raceId}-${leg.legNum}`;
-      map[fullRaceId] = {
+      map2[fullRaceId] = {
         raceId: leg.raceId,
         legNum: leg.legNum,
         name: leg.legName
@@ -137,7 +138,7 @@ async function updateLegList() {
         foundRaceInfo = leg;
       }
     }
-    raceList = map;
+    raceList = map2;
     raceInfo = foundRaceInfo ?? null;
     console.log("[updateLegList] races:", Object.keys(raceList).length, "raceInfo:", !!raceInfo);
     return { raceList, raceInfo };
@@ -276,7 +277,7 @@ async function updateLegPlayerInfos() {
 function getLegPlayersOrderUpdate() {
   return legPlayersOrderUpdate;
 }
-function getLegPlayersOrder() {
+function getLegPlayersOrder$1() {
   return legPlayersOrder;
 }
 async function updateLegPlayersOrder() {
@@ -305,6 +306,12 @@ async function updateLegPlayersOptions() {
     });
     legPlayersOptions = playersOptList && playersOptList.length != 0 ? playersOptList : [];
   }
+}
+function getLegPlayersTracksFleet() {
+  return legPlayersTracks.fleet ? legPlayersTracks.fleet : [];
+}
+function getLegPlayersTrackLeader() {
+  return legPlayersTracks.leader ? legPlayersTracks.leader : [];
 }
 function getConnectedPlayerId() {
   return connectedPlayerId;
@@ -569,7 +576,7 @@ function buildRaceLogHtml() {
   const userPrefs = getUserPrefs();
   const raceInfo2 = getRaceInfo();
   const racePlayerInfos = getLegPlayerInfos();
-  const raceOrder = getLegPlayersOrder();
+  const raceOrder = getLegPlayersOrder$1();
   if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0 || !(racePlayerInfos == null ? void 0 : racePlayerInfos.ites))
     return;
   let raceItes = racePlayerInfos.ites;
@@ -738,7 +745,7 @@ function getSortField() {
 function getSortOrder() {
   return sortOrder;
 }
-function isDisplayEnabled(playerIte, userId, connectPlayerId) {
+function isDisplayEnabled$1(playerIte, userId, connectPlayerId) {
   const userPrefs = getUserPrefs();
   const userFilters = userPrefs.filters;
   {
@@ -905,7 +912,7 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
   const userPrefs = getUserPrefs();
   const darkTheme = userPrefs.theme == "dark";
   const userId = playerIte.userId;
-  const isDisplay = isDisplayEnabled(playerIte, userId, connectedPlayerId2) && (!userPrefs.filters.inRace || r.state == "racing");
+  const isDisplay = isDisplayEnabled$1(playerIte, userId, connectedPlayerId2) && (!userPrefs.filters.inRace || r.state == "racing");
   if (!isDisplay)
     return "";
   let iconState = "";
@@ -982,11 +989,11 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
     else
       routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
   const nameClass = userId == connectedPlayerId2 ? "highlightMe" : "";
-  const categoryIdx = category.indexOf(playerIte.type);
-  const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : darkTheme ? categoryStyleDark[categoryIdx] : categoryStyle[categoryIdx];
+  const categoryIdx = category$1.indexOf(playerIte.type);
+  const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : darkTheme ? categoryStyleDark$1[categoryIdx] : categoryStyle$1[categoryIdx];
   const autoSail = playerIte.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : "";
   const name = playerIte.type == "sponsor" ? ((_b = playerIte.branding) == null ? void 0 : _b.name) ? playerFleetInfos.info.name + "(" + playerIte.branding.name + ")" : playerFleetInfos.info.name : playerFleetInfos.info.name;
-  const sailStyle = sailColors[playerIte.sail];
+  const sailStyle = sailColors$1[playerIte.sail];
   const sailName = sailNames[playerIte.sail % 10] || "-";
   const foils = (iteDash2 == null ? void 0 : iteDash2.realFoilFactor) == null ? foilsType ? "no" : "?" : roundTo(iteDash2.realFoilFactor, 1) + "%";
   return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '"><td class="tdc">' + routerIcon + "</td>" + gentd("Time", "", null, formatTime(playerIte.dateIte, 1)) + '<td class="Skipper" style="' + nameStyle + '"><div class="bull">' + bull + "</div> " + name + "</td>" + gentd("Team", "", null, teamName) + gentd("Rank", "", null, playerIte.rank ? playerIte.rank : "-") + (raceInfo2.type !== "record" ? gentd("RaceTime", "", null, iteDash2.raceTime ? formatDHMS(iteDash2.raceTime) : "-") : "") + gentd("DTU", "", null, iteDash2.DTU ? roundTo(iteDash2.DTU, 3) : "-") + gentd("DTF", "", null, iteDash2.dtf == iteDash2.dtfC ? "(" + roundTo(iteDash2.dtfC, 3) + ")" : roundTo(iteDash2.dtf, 3)) + gentd("TWD", "", null, roundTo(playerIte.twd ? playerIte.twd : iteDash2.twd, 3)) + gentd("TWS", "", null, roundTo(playerIte.tws, 3)) + gentd("TWA", twaFG, null, roundTo(Math.abs(playerIte.twa), 3)) + gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock) + gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold, null, roundTo(playerIte.hdg, 3)) + gentd("Speed", "", null, roundTo(playerIte.speed, 3)) + gentd("VMG", "", null, roundTo(iteDash2.vmg, 3)) + gentd("Sail", "", null, "<span " + sailStyle + ">&#x25e2&#x25e3  </span>" + sailName) + gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, autoSail) + gentd("Factor", xfactorStyle, null, xfactorTxt) + gentd("Foils", "", null, foils) + recordRaceFields(raceInfo2, playerIte) + gentd("Position", "", null, playerIte.pos ? formatPosition(playerIte.pos.lat, playerIte.pos.lon) : "-") + gentd("Options", optionsStyle, optionsTitle, optionsTxt) + gentd("State", "", txtTitle, iconState) + gentd("Remove", "", null, getLegSelectedPlayersState(userId) && userId != connectedPlayerId2 ? '<span class="removeSelectedBoat" data-id="' + userId + '" title="Remove this boat: ' + name + '">❌</span>' : "") + "</tr>";
@@ -994,17 +1001,17 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
 function recordRaceFields(raceInfo2, playerIte) {
   const userPrefs = getUserPrefs();
   if (raceInfo2.type === "record") {
-    const localTimes = userPrefs.global.localTime;
+    const localTimes2 = userPrefs.global.localTime;
     if (playerIte.state === "racing" && playerIte.distanceToEnd) {
       let t;
       if (iteDash.eRT)
-        t = '<td class="eRT" title= "End : ' + formatShortDate(iteDash.eRT, void 0, localTimes) + '">' + formatDHMS(iteDash.eRT) + "</td>";
+        t = '<td class="eRT" title= "End : ' + formatShortDate(iteDash.eRT, void 0, localTimes2) + '">' + formatDHMS(iteDash.eRT) + "</td>";
       else
         t = '<td class="eRT" title= "End : unknow"></td>';
-      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(raceTime) + "</td>" + t + '<td class="avg">' + roundTo(iteDash.avgSpeed, 2) + "</td>";
+      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes2) + '">' + formatDHMS(raceTime) + "</td>" + t + '<td class="avg">' + roundTo(iteDash.avgSpeed, 2) + "</td>";
     } else {
       if (playerIte.startDate && playerIte.state === "racing" && playerIte.startDate != "-") {
-        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(raceTime) + "</td>";
+        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes2) + '">' + formatDHMS(raceTime) + "</td>";
         retVal += '<td class="eRT"> - </td><td class="avg"> - </td>';
         return retVal;
       } else
@@ -1364,6 +1371,1134 @@ function buildRaceBookHtml() {
     rz || document.createComment("no restricted zones")
   );
 }
+window.POLAR = window.POLAR || {
+  enabled: false,
+  crs: null,
+  wmsLayer: null
+};
+function hasProj4Leaflet$1() {
+  return typeof window !== "undefined" && window.L && L.Proj && typeof window.proj4 === "function";
+}
+function buildPolarCRS() {
+  if (!hasProj4Leaflet$1())
+    return null;
+  return new L.Proj.CRS(
+    "EPSG:3413",
+    "+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs",
+    {
+      resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1],
+      origin: [-4194304, 4194304],
+      bounds: L.bounds([-4194304, -4194304], [4194304, 4194304])
+    }
+  );
+}
+function createArcticWMS() {
+  if (!hasProj4Leaflet$1())
+    return null;
+  if (!POLAR.crs)
+    POLAR.crs = buildPolarCRS();
+  return L.tileLayer.wms("https://gibs.earthdata.nasa.gov/wms/epsg3413/best/wms.cgi", {
+    layers: "BlueMarble_ShadedRelief_Bathymetry",
+    format: "image/png",
+    transparent: false,
+    version: "1.1.1",
+    crs: POLAR.crs,
+    attribution: "&copy; NASA GIBS"
+  });
+}
+let mercatorDragHandler = null;
+let mercatorDragHandlerMapId = null;
+function applyBoundsForCurrentMode(map2) {
+  if (mercatorDragHandler && mercatorDragHandlerMapId && map2 && map2._leaflet_id === mercatorDragHandlerMapId) {
+    map2.off("drag", mercatorDragHandler);
+    mercatorDragHandler = null;
+    mercatorDragHandlerMapId = null;
+  }
+  if (!POLAR.enabled) {
+    const bounds = [
+      [-89.98155760646617, -270],
+      [89.99346179538875, 270]
+    ];
+    map2.setMaxBounds(bounds);
+    mercatorDragHandler = function() {
+      map2.panInsideBounds(bounds, { animate: false });
+    };
+    map2.on("drag", mercatorDragHandler);
+    mercatorDragHandlerMapId = map2._leaflet_id;
+  } else {
+    map2.setMaxBounds(null);
+  }
+}
+function computeComfortView(isArctic, prevCenter, prevZoom) {
+  const prevLat = prevCenter && Number.isFinite(prevCenter.lat) ? prevCenter.lat : 0;
+  const prevLng = prevCenter && Number.isFinite(prevCenter.lng) ? prevCenter.lng : 0;
+  const normLng = (prevLng + 540) % 360 - 180;
+  if (isArctic) {
+    const THRESHOLD_NORTH = 60;
+    const alreadyInArctic = prevLat >= THRESHOLD_NORTH;
+    const targetLat = alreadyInArctic ? prevLat : 85;
+    const targetLng = normLng;
+    const targetZoom = alreadyInArctic ? prevZoom ?? 3 : 3;
+    return { center: L.latLng(targetLat, targetLng), zoom: targetZoom };
+  }
+  const clampedLat = Math.max(-85, Math.min(85, prevLat));
+  return { center: L.latLng(clampedLat, normLng), zoom: prevZoom ?? 3 };
+}
+function initButtonToCenterViewMap(lat, lon, map2) {
+  let recenterButton = document.querySelector("#lMap #recenterButton");
+  if (recenterButton) {
+    updateCoordinatesToCenterViewMap(lat, lon);
+  } else {
+    let buttonHTML = `
+        <div id="lMapControls" class="leaflet-control-custom leaflet-control leaflet-bar">
+            <a id="recenterButton" title="Centrer" href="#">🎯</a>
+        </div>`;
+    let mapContainer = document.querySelector("#lMap .leaflet-top.leaflet-left");
+    mapContainer.insertAdjacentHTML("afterbegin", buttonHTML);
+    recenterButton = document.querySelector("#lMap #recenterButton");
+    recenterButton.setAttribute("data-lat", lat);
+    recenterButton.setAttribute("data-lon", lon);
+    recenterButton.addEventListener("click", function(e) {
+      e.preventDefault();
+      let defaultZoom = 10;
+      if (map2.getZoom() >= defaultZoom)
+        defaultZoom = map2.getZoom();
+      let lat2 = parseFloat(recenterButton.getAttribute("data-lat"));
+      let lon2 = parseFloat(recenterButton.getAttribute("data-lon"));
+      map2.setView([lat2, lon2], defaultZoom);
+    });
+  }
+}
+function updateCoordinatesToCenterViewMap(lat, lon) {
+  let recenterButton = document.querySelector("#lMap #recenterButton");
+  if (recenterButton) {
+    recenterButton.setAttribute("data-lat", lat);
+    recenterButton.setAttribute("data-lon", lon);
+  }
+}
+function enableCoordinateCopyingWithShortcut() {
+  const coordinatesDisplay = document.querySelector(".leaflet-control-coordinates");
+  if (coordinatesDisplay) {
+    document.addEventListener("keydown", function(event) {
+      const isCtrlOrCmd = event.ctrlKey || event.metaKey;
+      const isKeyC = event.key === "b" || event.key === "B";
+      if (isCtrlOrCmd && isKeyC) {
+        event.preventDefault();
+        let coordinatesText = coordinatesDisplay.innerText.trim();
+        coordinatesText = coordinatesText.replace(/\s+/g, "").replace(/([NS])(?=\d)/, "$1 ");
+        coordinatesText && navigator.clipboard.writeText(coordinatesText).catch(console.error);
+      }
+    });
+  }
+}
+const greenRRIcon = L.icon({
+  iconUrl: "../img/greenIcon.png",
+  shadowUrl: "../img/RRIconShadowNok.png",
+  iconSize: [20, 35],
+  // size of the icon
+  shadowSize: [53, 51],
+  // size of the shadow
+  iconAnchor: [10, 35],
+  // point of the icon which will correspond to marker's location
+  shadowAnchor: [27, 45],
+  // the same for the shadow
+  popupAnchor: [0, -42]
+  // point from which the popup should open relative to the iconAnchor
+});
+const redRLIcon = L.icon({
+  iconUrl: "../img/redIcon.png",
+  shadowUrl: "../img/RLIconShadowNok.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const greenRRIconP = L.icon({
+  iconUrl: "../img/greenIcon.png",
+  shadowUrl: "../img/RRIconShadowOK.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const redRLIconP = L.icon({
+  iconUrl: "../img/redIcon.png",
+  shadowUrl: "../img/RLIconShadowOK.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const yellowRRIcon = L.icon({
+  iconUrl: "../img/yellowIcon.png",
+  shadowUrl: "../img/RRIconShadowNok.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const yellowRLIcon = L.icon({
+  iconUrl: "../img/yellowIcon.png",
+  shadowUrl: "../img/RLIconShadowNok.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const yellowRRIconP = L.icon({
+  iconUrl: "../img/yellowIcon.png",
+  shadowUrl: "../img/RRIconShadowOK.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+const yellowRLIconP = L.icon({
+  iconUrl: "../img/yellowIcon.png",
+  shadowUrl: "../img/RLIconShadowOK.png",
+  iconSize: [20, 35],
+  shadowSize: [53, 51],
+  iconAnchor: [10, 35],
+  shadowAnchor: [27, 45],
+  popupAnchor: [0, -42]
+});
+function buildMarker(pos3, layer2, icond, title, zi, op, heading) {
+  let ret = [];
+  for (let i = 0; i < pos3.length; i++) {
+    if (!heading)
+      heading = 0;
+    if (heading == 180)
+      heading = 179.9;
+    const marker1 = L.marker(pos3[i], { icon: icond, rotationAngle: heading / 2 });
+    if (op)
+      marker1.opacity = op;
+    if (zi)
+      marker1.zIndexOffset = zi;
+    if (title) {
+      marker1.bindPopup(title);
+      marker1.on("mouseover", function(e) {
+        e.target.bindPopup(title).openPopup();
+      });
+      marker1.on("mouseout", function(e) {
+        e.target.closePopup();
+      });
+    }
+    marker1.addTo(layer2);
+    ret.push(marker1);
+  }
+  return ret;
+}
+function buildTextIcon(icon, iconColor, markerColor, text) {
+  return L.AwesomeMarkers.icon({
+    icon,
+    markerColor,
+    iconColor,
+    prefix: "fa",
+    html: text
+  });
+}
+function buildCircle$1(pos3, layer2, trackcolor, size, opacity, title) {
+  let ret = [];
+  for (let i = 0; i < pos3.length; i++) {
+    const circleMark = L.circleMarker(
+      pos3[i],
+      {
+        radius: size,
+        color: trackcolor,
+        fillColor: trackcolor,
+        fillOpacity: opacity
+      }
+    );
+    if (title && title != "") {
+      circleMark.bindPopup(title);
+      circleMark.on("mouseover", function(e) {
+        e.target.bindPopup(title).openPopup();
+      });
+      circleMark.on("mouseout", function(e) {
+        e.target.closePopup();
+      });
+    }
+    circleMark.addTo(layer2);
+    ret.push(circleMark);
+  }
+  return ret;
+}
+function buildCircleEndRace(pos3, layer2, trackcolor, size) {
+  let ret = [];
+  for (let i = 0; i < pos3.length; i++) {
+    const circleMark = L.circle(pos3[i], {
+      color: trackcolor,
+      weight: 2,
+      fill: false,
+      radius: size
+    });
+    circleMark.addTo(layer2);
+    ret.push(circleMark);
+  }
+  return ret;
+}
+function buildTrace(tpath, layer2, pointsContainer, color, weight, opacity, dashArray, dashOffset, mode = true) {
+  let nbTrackLine = 0;
+  let trackLine = [];
+  for (let i = 0; i < tpath.length; i++) {
+    let path = [];
+    path[0] = [];
+    path[1] = [];
+    path[2] = [];
+    for (var j = 0; j < tpath[i].length; j++) {
+      const pos3 = buildPt2(tpath[i][j].lat, tpath[i][j].lng);
+      path[0].push(pos3[0]);
+      path[1].push(pos3[1]);
+      path[2].push(pos3[2]);
+      pointsContainer.push(pos3[1]);
+    }
+    for (j = 0; j < path.length; j++) {
+      var trackLineP;
+      if (mode) {
+        trackLineP = L.geodesic(
+          path[j],
+          {
+            color,
+            opacity,
+            weight,
+            wrap: false
+          }
+        );
+      } else {
+        trackLineP = L.polyline(
+          path[j],
+          {
+            color,
+            opacity,
+            weight,
+            wrap: false
+          }
+        );
+      }
+      if (dashArray)
+        trackLineP.options.dashArray = dashArray;
+      if (dashOffset)
+        trackLineP.options.dashOffset = dashOffset;
+      trackLineP.on("mouseover", function() {
+        trackLineP.setStyle({
+          weight: opacity * 2
+        });
+      });
+      trackLineP.on("mouseout", function() {
+        trackLineP.setStyle({
+          weight: opacity
+        });
+      });
+      trackLine[nbTrackLine] = trackLineP;
+      trackLine[nbTrackLine].addTo(layer2);
+      nbTrackLine++;
+    }
+  }
+  return trackLine;
+}
+function buildPt(lat, lon) {
+  if (!lat)
+    lat = 0;
+  if (!lon)
+    lon = 0;
+  return L.latLng(lat, lon);
+}
+function buildPt2(lat, lon) {
+  if (!lat)
+    lat = 0;
+  if (!lon)
+    lon = 0;
+  let ret = [];
+  ret[0] = L.latLng(lat, lon - 360, true);
+  ret[1] = L.latLng(lat, lon);
+  ret[2] = L.latLng(lat, lon + 360, true);
+  return ret;
+}
+const convertLng0To360 = (coordinates) => {
+  const coordinatesWithOffset = [];
+  let offset = 0;
+  for (const point of coordinates) {
+    const previousPoint = coordinatesWithOffset[coordinatesWithOffset.length - 1];
+    const lon = point.lon ? point.lon : point.lng;
+    const lonp = previousPoint ? previousPoint.lon ? previousPoint.lon : previousPoint.lng : null;
+    if (previousPoint && lon > 90 && lonp < -90) {
+      offset = -360;
+    } else if (previousPoint && lonp > 90 && lon < -90) {
+      offset = 360;
+    }
+    if (point.lon)
+      point.lon += offset;
+    else
+      point.lng += offset;
+    coordinatesWithOffset.push(point);
+  }
+  return coordinatesWithOffset;
+};
+function buildPath_bspline(pathEntry, initLat, initLng, finishLat, finshLng) {
+  let cpath = [];
+  let cpathNum = 0;
+  cpath[cpathNum] = [];
+  if (!pathEntry)
+    return cpath;
+  let path = [];
+  if (initLat && initLng) {
+    path.push({ lat: initLat, lon: initLng });
+  }
+  for (const pts of pathEntry) {
+    path.push(pts);
+  }
+  if (finishLat && finshLng) {
+    path.push({ lat: finishLat, lon: finshLng });
+  }
+  const paths = convertLng0To360(path);
+  cpath[cpathNum].push(buildPt(paths[0].lat, paths[0].lon ? paths[0].lon : paths[0].lng));
+  if (path.length > 1) {
+    for (let i = 2; i < paths.length - 1; i++) {
+      for (let t = 0; t < 1; t += 0.1) {
+        const ax = (-paths[i - 2].lat + 3 * paths[i - 1].lat - 3 * paths[i].lat + paths[i + 1].lat) / 6;
+        const ay = (-paths[i - 2].lon + 3 * paths[i - 1].lon - 3 * paths[i].lon + paths[i + 1].lon) / 6;
+        const bx = (paths[i - 2].lat - 2 * paths[i - 1].lat + paths[i].lat) / 2;
+        const by = (paths[i - 2].lon - 2 * paths[i - 1].lon + paths[i].lon) / 2;
+        const cx = (-paths[i - 2].lat + paths[i].lat) / 2;
+        const cy = (-paths[i - 2].lon + paths[i].lon) / 2;
+        const dx = (paths[i - 2].lat + 4 * paths[i - 1].lat + paths[i].lat) / 6;
+        const dy = (paths[i - 2].lon + 4 * paths[i - 1].lon + paths[i].lon) / 6;
+        const lat = ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx;
+        const lon = ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy;
+        pos = buildPt(lat, lon);
+        cpath[cpathNum].push(pos);
+      }
+    }
+  }
+  return cpath;
+}
+function computeNextPos(pos3, hdg, speed, time) {
+  var dist5 = speed * time / (3600 * 60);
+  var alpha = 360 - (hdg - 90);
+  var lat5 = pos3.lat;
+  var lng5 = pos3.lng;
+  var latrad1 = Util.toRad(lat5);
+  var latrad2;
+  var phi;
+  lat5 += dist5 * Math.sin(Util.toRad(alpha));
+  latrad2 = Util.toRad(lat5);
+  phi = Math.cos((latrad1 + latrad2) / 2);
+  lng5 += dist5 * Math.cos(Util.toRad(alpha)) / phi;
+  if (lng5 > 180) {
+    lng5 = lng5 - 360;
+  }
+  if (lng5 < -180) {
+    lng5 = lng5 + 360;
+  }
+  return buildPt2(lat5, lng5);
+}
+function drawProjectionLine(pos3, hdg, speed) {
+  if (!hdg || !speed)
+    return;
+  if (!mapState || !mapState.map || !mapState.gdiv)
+    return;
+  const userPrefs = getUserPrefs();
+  const map2 = mapState.map;
+  if (mapState.me_PlLayer)
+    map2.removeLayer(mapState.me_PlLayer);
+  mapState.me_PlLayer = L.layerGroup();
+  let tpath = [];
+  tpath.push(pos3[1]);
+  for (var i = 0; i < userPrefs.map.projectionLineLenght / 2; i++) {
+    pos3 = computeNextPos(pos3[1], hdg, speed, 2 * 60);
+    tpath.push(pos3[1]);
+    const title = 2 * (i + 1) + "min";
+    buildCircle$1(pos3, layer, userPrefs.map.projectionColor, 1.5, 1, title);
+  }
+  buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs.map.projectionColor, 1, 0.4, "10, 10", "5");
+  layer.addTo(map2);
+}
+const mapState = {
+  raceId: null,
+  // id de la course actuellement affichée
+  map: null,
+  // instance Leaflet
+  refPoints: [],
+  // points pour fitBounds
+  refLayer: null,
+  // layerGroup pour traits de côte / ice / RZ
+  route: [],
+  // routes importées (importRoute / showRoute / hideRoute)
+  bounds: null,
+  resetUserZoom: 0,
+  userZoom: false,
+  // couches optionnelles, créées à la demande :
+  checkPointLayer: null,
+  fleetLayer: null,
+  fleetLayerMarkers: null,
+  fleetLayerTracks: null,
+  wayPointLayer: null,
+  meLayer: null,
+  meLayerMarkers: null,
+  meBoatLayer: null,
+  leaderLayer: null,
+  leaderMeLayer: null
+};
+const MAP_CONTAINER_ID = "lMap";
+function updateBounds() {
+  if (!mapState.map)
+    return;
+  mapState.bounds = L.latLngBounds(mapState.refPoints);
+  mapState.map.fitBounds(mapState.bounds);
+}
+function updateMapCheckpoints(raceInfo2, playerIte) {
+  var _a;
+  if (!mapState.map)
+    return;
+  const map2 = mapState.map;
+  if (!raceInfo2 || !map2)
+    return;
+  if (mapState.checkPointLayer) {
+    map2.removeLayer(mapState.checkPointLayer);
+  }
+  mapState.checkPointLayer = L.layerGroup();
+  const userPrefs = getUserPrefs();
+  const showInvisibleDoors = userPrefs.map.invisibleBuoy;
+  if (Array.isArray(raceInfo2.checkpoints)) {
+    for (const cp of raceInfo2.checkpoints) {
+      if (cp.display == "none" && !showInvisibleDoors) {
+        continue;
+      }
+      let cpType = cp.display && cp.display !== "none" ? cp.display : "Invisible";
+      cpType = cpType.charAt(0).toUpperCase() + cpType.slice(1);
+      const position_s = buildPt2(cp.start.lat, cp.start.lon);
+      const position_e = buildPt2(cp.end.lat, cp.end.lon);
+      const passed = ((_a = playerIte == null ? void 0 : playerIte.ite) == null ? void 0 : _a.gateGroupCounters) && playerIte.ite.gateGroupCounters[cp.group - 1] ? true : false;
+      let op = 1;
+      if (passed)
+        op = 0.6;
+      const label_g = (passed ? "<div class='tagGatePassed'>PASSED</div>" : "") + "Checkpoint " + cp.group + "." + cp.id + ": <b>" + cp.name + "</b><br>";
+      const label_g_more = "<br>Type: <b>" + cpType + "</b> | Engine: " + cp.engine;
+      const side_s = cp.side == "stbd" ? "Starboard" : "Port";
+      const side_e = cp.side == "stbd" ? "Port" : "Starboard";
+      const label_s = label_g + formatPosition(cp.start.lat, cp.start.lon) + label_g_more + " | Side: " + side_s;
+      const label_e = label_g + formatPosition(cp.end.lat, cp.end.lon) + label_g_more + " | Side: " + side_e;
+      if (cp.display == "buoy" || cp.side == "stbd") {
+        const iconStart = cp.side == "stbd" ? passed ? greenRRIconP : greenRRIcon : passed ? redRLIconP : redRLIcon;
+        const iconEnd = cp.side == "stbd" ? passed ? redRLIconP : redRLIcon : passed ? greenRRIconP : greenRRIcon;
+        buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op, 0);
+        buildMarker(position_e, mapState.checkPointLayer, iconEnd, label_e, 8, op, 0);
+      } else {
+        const iconStart = cp.side == "stbd" ? passed ? yellowRRIconP : yellowRRIcon : passed ? yellowRLIconP : yellowRLIcon;
+        buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op, 0);
+      }
+      mapState.refPoints.push(position_e[1]);
+      mapState.refPoints.push(position_s[1]);
+      const pathColor = passed ? "green" : "yellow";
+      const tpath = [];
+      tpath.push(position_e[1]);
+      tpath.push(position_s[1]);
+      buildTrace(buildPath(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10");
+    }
+  }
+  mapState.checkPointLayer.addTo(map2);
+  if (!mapState.userZoom)
+    updateBounds();
+}
+function updateMapWaypoints(playerIte) {
+  const raceOrder = getLegPlayersOrder();
+  if (!mapState || !mapState.map || !mapState.gdiv)
+    return;
+  const map2 = mapState.map;
+  if (!playerIte)
+    return;
+  if (!raceOrder && raceOrder[0].action.type !== "wp")
+    return;
+  if (mapState.wayPointLayer) {
+    map2.removeLayer(mapState.wayPointLayer);
+  }
+  mapState.wayPointLayer = L.layerGroup();
+  const wpOrder = raceOrder[0].action.action;
+  const lastWpIdx = playerIte.lastWpIdx;
+  const currPos = playerIte.pos;
+  let wpPts = [];
+  wpOrder.forEach(({ lat, lon, idx }) => {
+    if (idx <= lastWpIdx)
+      wpPts.push({ lat, lon });
+  });
+  let cpath = buildPath(wpPts, null, null, currPos.lat, currPos.lon);
+  buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7, [0, 1, 0, 1]);
+  wpPts = [];
+  wpOrder.forEach(({ lat, lon, idx }) => {
+    if (idx > lastWpIdx)
+      wpPts.push({ lat, lon });
+  });
+  cpath = buildPath(wpOrder, currPos.lat, currPos.lon);
+  buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7);
+  wpOrder.forEach(({ lat, lon, idx }) => {
+    const pos3 = buildPt2(lat, lon);
+    const title = formatPosition(lat, lon);
+    buildCircle(pos3, mapState.wayPointLayer, "#FF00FF", 2, 1, title);
+    mapState.refPoints.push(pos3[1]);
+  });
+  mapState.wayPointLayer.addTo(map2);
+  if (!mapState.userZoom)
+    updateBounds();
+}
+function updateMapMe(connectedPlayerId2, playerIte) {
+  const trackFleet = getLegPlayersTracksFleet();
+  const userPrefs = getUserPrefs();
+  const localTimes2 = userPrefs.global.localTime;
+  const displayMarkers = userPrefs.map.showMarkers;
+  if (!mapState || !mapState.map || !mapState.gdiv || !trackFleet || !trackFleet[connectedPlayerId2])
+    return;
+  const map2 = mapState.map;
+  const myTrack = trackFleet[connectedPlayerId2].track;
+  if (!mapState.meLayer)
+    mapState.meLayer = L.layerGroup();
+  if (!mapState.meBoatLayer)
+    mapState.meBoatLayer = L.layerGroup();
+  if (!mapState.meLayerMarkers)
+    mapState.meLayerMarkers = L.layerGroup();
+  if (mapState.meLayer)
+    map2.removeLayer(mapState.meLayer);
+  if (mapState.meLayerMarkers)
+    map2.removeLayer(mapState.meLayerMarkers);
+  if (mapState.meBoatLayer)
+    map2.removeLayer(mapState.meBoatLayer);
+  mapState.meLayer = L.layerGroup();
+  mapState.meLayerMarkers = L.layerGroup();
+  mapState.meBoatLayer = L.layerGroup();
+  const myPos = { lat: playerIte.pos.lat, lon: playerIte.pos.lon };
+  let myTrackPts = [];
+  let isFirst = false;
+  let prevPt = null;
+  myTrack.forEach(({ lat, lon, ts, tag }) => {
+    myTrackPts.push({ lat, lon });
+    if (isFirst) {
+      const title = "Me <br><b>" + formatShortDate(ts, void 0, localTimes2) + "</b> | Speed: " + roundTo(Math.abs(gcDistance(myPos, { lat, lon }) / ((ts - prevPt.ts) / 1e3) * 3600), 2) + " kts<br>" + formatPosition(lat, lon) + (tag ? "<br>(Type: " + tag + ")" : "");
+      buildCircle({ lat, lon }, mapState.meLayerMarkers, "#b86dff", 1.5, 1, title);
+      mapState.refPoints.push({ lat, lon });
+    }
+    isFirst = true;
+    prevPt = { lat, lon, ts };
+  });
+  if (displayMarkers)
+    mapState.meLayerMarkers.addTo(map2);
+  if (myPos.lat && myPos.lon) {
+    const myTrackpath = buildPath(myTrackPts, void 0, void 0, myPos.lat, myPos.lon);
+    buildTrace(myTrackpath, mapState.meLayer, mapState.refPoints, "#b86dff", 1.5, 1);
+    mapState.meLayer.addTo(map2);
+    const myPosPt = buildPt2(myPos.lat, myPos.lon);
+    const title = "Me (Last position: " + formatTimestampToReadableDate(playerIte.iteDate, 1) + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+    buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff", "#000000", 0.4), title, 200, 0.5, playerIte.hdg);
+    drawProjectionLine(myPosPt, playerIte.hdg, playerIte.speed);
+  }
+  mapState.meBoatLayer.addTo(map2);
+  if (!mapState.userZoom)
+    updateBounds();
+}
+function updateMapLeader(playerIte) {
+  if (!mapState || !mapState.map || !mapState.gdiv)
+    return;
+  if (mapState.leaderLayer)
+    map.removeLayer(mapState.leaderLayer);
+  if (mapState.leaderMeLayer)
+    map.removeLayer(mapState.leaderMeLayer);
+  mapState.leaderLayer = L.layerGroup();
+  mapState.leaderMeLayer = L.layerGroup();
+  const offset = (playerIte == null ? void 0 : playerIte.startDate) ? /* @__PURE__ */ new Date() - playerIte.startDate : /* @__PURE__ */ new Date();
+  const trackLeader = getLegPlayersTrackLeader();
+  if (trackLeader && trackLeader.track.length > 0) {
+    const playersList2 = getPlayersList();
+    const title = "Leader: <b>" + playersList2[trackLeader.userId] + "</b><br>Elapsed: " + formatDHMS(offset);
+    addGhostTrack(trackLeader.track, title, offset, "#FF8C00", mapState.leaderLayer);
+  }
+  const trackGhost = getLegPlayersTrackLeader();
+  if (trackGhost && trackGhost.track.length > 0) {
+    const title = "<b>Best Attempt</b><br>Elapsed: " + formatDHMS(offset);
+    addGhostTrack(trackGhost.track, title, offset, "#b86dff", mapState.leaderMeLayer);
+  }
+}
+function addGhostTrack(ghostTrack, title, offset, color, layer2) {
+  const userPrefs = getUserPrefs();
+  const displayMarkers = userPrefs.map.showMarkers;
+  if (!ghostTrack || !mapState || !mapState.map || !mapState.gdiv)
+    return;
+  const ghostStartTS = ghostTrack[0].ts;
+  const ghostPosTS = ghostStartTS + offset;
+  let ghostPos;
+  for (var i = 0; i < ghostTrack.length; i++) {
+    const pos3 = buildPt2(ghostTrack[i].lat, ghostTrack[i].lon);
+    mapState.refPoints.push(pos3[1]);
+    if (!ghostPos) {
+      if (ghostTrack[i].ts >= ghostPosTS) {
+        ghostPos = i;
+      }
+    }
+  }
+  buildTrace(buildPath(ghostTrack), layer2, mapState.refPoints, color, 1, 0.6, "10, 10", "5");
+  if (ghostPos && displayMarkers) {
+    const lat1 = ghostTrack[ghostPos].lat;
+    const lon1 = ghostTrack[ghostPos].lon;
+    const lat0 = ghostTrack[Math.max(ghostPos - 1, 0)].lat;
+    const lon0 = ghostTrack[Math.max(ghostPos - 1, 0)].lon;
+    const heading = Util.courseAngle(lat0, lon0, lat1, lon1) * 180 / Math.PI;
+    const d = (ghostPosTS - ghostTrack[ghostPos - 1].ts) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts);
+    const lat = lat0 + (lat1 - lat0) * d;
+    const lon = lon0 + (lon1 - lon0) * d;
+    const pos3 = buildPt2(lat, lon);
+    buildMarker(pos3, layer2, buildBoatIcon(color, color, 0.6), title, 20, 0.4, heading);
+  }
+  layer2.addTo(mapState.map);
+  if (!mapState.userZoom)
+    updateBounds();
+}
+function updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2) {
+  if (!race || !mapState || !mapState.map || !mapState.gdiv)
+    return;
+  const map2 = mapState.map;
+  const userPrefs = getUserPrefs();
+  const trackFleet = getLegPlayersTracksFleet();
+  const displayMarkers = userPrefs.map.showMarkers;
+  const displayTracks = userPrefs.map.showTracks;
+  if (mapState.fleetLayer)
+    map2.removeLayer(mapState.fleetLayer);
+  if (mapState.fleetLayerMarkers)
+    map2.removeLayer(mapState.fleetLayerMarkers);
+  if (mapState.fleetLayerTracks)
+    map2.removeLayer(mapState.fleetLayerTracks);
+  mapState.fleetLayer = L.layerGroup();
+  mapState.fleetLayerMarkers = L.layerGroup();
+  mapState.fleetLayerTracks = L.layerGroup();
+  Object.entries(raceItesFleet).map(([userId, playerFleetInfos]) => {
+    var _a;
+    const playerIte = playerFleetInfos.ite;
+    if (playerIte && userId && userId != connectedPlayerId2 && isDisplayEnabled(playerIte, userId, connectedPlayerId2)) {
+      let zi;
+      if (playerIte.type == "top") {
+        zi = 49;
+      } else if (playerIte.team) {
+        zi = 48;
+      } else if (playerIte.followed == true || playerIte.isFollowed == true) {
+        zi = 47;
+      } else if (playerIte.type == "sponsor") {
+        zi = 46;
+      } else {
+        zi = 44;
+      }
+      const pos3 = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
+      let skipperName = playerIte.displayName;
+      if ((_a = playerIte.extendedInfos) == null ? void 0 : _a.skipperName)
+        skipperName += '<span class="txtUpper">' + playerIte.extendedInfos.boatName + "</span><br><b>" + playerIte.extendedInfos.skipperName + "</b>";
+      let info = "";
+      if (playerIte.type == "real") {
+        info = skipperName + "<br>HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b> | Speed: " + roundTo(playerIte.speed, 3) + " kts";
+        if (playerIte.twa > 0)
+          info += "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>";
+        if (playerIte.sail != "-")
+          info += " | Sail: " + sailNames[playerIte];
+        if (playerIte.tws > 0)
+          info += "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts";
+        if (playerIte.twd > 0)
+          info += " | TWD: " + roundTo(playerIte.twd, 3) + "°";
+      } else {
+        info = skipperName + "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.heading, 2) + "°</b><br>Sail: " + sailNames[playerIte] || "- | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+      }
+      if (raceInfo2.type == "record") {
+        info += "<br>Elapsed: <b>" + formatDHMS(playerIte.iteDate - playerIte.startDate) + "</b>";
+      }
+      const categoryIdx = category.indexOf(playerIte.type);
+      const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx] : categoryStyle[categoryIdx];
+      const sailStyle = sailColors[playerIte.sail];
+      buildMarker(pos3, mapState.fleetLayer, buildBoatIcon(nameStyle, sailStyle, 0.8), info, zi, 0.8, playerIte.hdg);
+      if (trackFleet[userId].track && trackFleet[userId].length != 0) {
+        ({ lat: playerIte.pos.lat, lon: playerIte.pos.lon });
+        let playerTrackPts = [];
+        let isFirst = false;
+        let prevPt = null;
+        trackFleet[userId].track.forEach(({ lat, lon, ts, tag }) => {
+          playerTrackPts.push({ lat, lon });
+          if (isFirst) {
+            const title = skipperName + "<br><b>" + formatShortDate(ts, void 0, localTimes) + "</b> | Speed: " + roundTo(Math.abs(gcDistance(playerPos, { lat, lon }) / ((ts - prevPt.ts) / 1e3) * 3600), 2) + " kts<br>" + formatPosition(lat, lon) + (tag ? "<br>(Type: " + tag + ")" : "");
+            buildCircle(pos2, mapState.fleetLayerMarkers, nameStyle, 1.5, 1, title);
+            mapState.refPoints.push({ lat, lon });
+          }
+          isFirst = true;
+          prevPt = { lat, lon, ts };
+        });
+        if (playerPos.lat && playerPos.lon) {
+          const myTrackpath = buildPath(playerTrackPts, void 0, void 0, playerPos.lat, playerPos.lon);
+          buildTrace(myTrackpath, mapState.fleetLayerTracks, mapState.refPoints, nameStyle, 1.5, 1);
+          mapState.fleetLayerTracks.addTo(map2);
+        }
+      }
+    }
+  });
+  mapState.fleetLayer.addTo(map2);
+  if (displayMarkers)
+    mapState.fleetLayerMarkers.addTo(map2);
+  if (displayTracks)
+    mapState.fleetLayerTracks.addTo(map2);
+  if (!mapState.userZoom)
+    updateBounds();
+}
+function getOrCreateMapContainer() {
+  const tab = document.getElementById("tab-content3");
+  if (!tab)
+    return null;
+  let divMap = document.getElementById(MAP_CONTAINER_ID);
+  if (!divMap) {
+    divMap = document.createElement("div");
+    divMap.id = MAP_CONTAINER_ID;
+    divMap.style.height = "100%";
+    divMap.style.display = "flex";
+    divMap.style.width = "90%";
+    tab.appendChild(divMap);
+  }
+  divMap.style.visibility = "visible";
+  divMap.style.height = "100%";
+  divMap.style.width = "90%";
+  return divMap;
+}
+async function initializeMap() {
+  var _a;
+  function set_userCustomZoom(e) {
+    if (mapState.resetUserZoom > 0)
+      mapState.userZoom = true;
+    else
+      mapState.resetUserZoom += 1;
+    if (e && e.target) {
+      if (e.target._zoom > 5) {
+        const mapcenter = mapState.map.getCenter();
+        mapcenter.lng;
+      }
+    }
+  }
+  const tab = document.getElementById("tab-content3");
+  if (!tab)
+    return;
+  if (getComputedStyle(tab).display === "none") {
+    return;
+  }
+  const raceInfo2 = getRaceInfo();
+  const playerItes = getLegPlayerInfos();
+  const raceItesFleet = getLegFleetInfos();
+  const connectedPlayerId2 = getConnectedPlayerId();
+  if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+    playerItes.ite = playerItes.ites[0];
+  }
+  const rid = raceInfo2.raceId + "_" + raceInfo2.legNum;
+  const divMap = getOrCreateMapContainer();
+  if (!divMap)
+    return;
+  if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0)
+    return;
+  if (mapState.map && mapState.raceId === rid) {
+    mapState.map.invalidateSize();
+    applyBoundsForCurrentMode(mapState.map);
+    updateBounds();
+    updateMapCheckpoints(raceInfo2, playerItes.ite);
+    updateMapWaypoints(playerItes.ite);
+    updateMapMe(connectedPlayerId2, playerItes.ite);
+    updateMapLeader(playerItes.ite);
+    updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2);
+    initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+    enableCoordinateCopyingWithShortcut();
+    return;
+  }
+  if (mapState.map) {
+    mapState.map.off();
+    mapState.map.remove();
+    mapState.map = null;
+  }
+  mapState.refPoints = [];
+  mapState.refLayer = L.layerGroup();
+  mapState.resetUserZoom = 0;
+  mapState.userZoom = false;
+  mapState.raceId = race.id;
+  let mapTileColorFilterDarkMode = [
+    "invert:100%",
+    "bright:106%",
+    "contrast:121%",
+    "hue:195deg",
+    "saturate:43%"
+  ];
+  const Esri_WorldImagery = L.tileLayer(
+    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      minZoom: 2,
+      maxZoom: 40,
+      maxNativeZoom: 40,
+      attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+    }
+  );
+  const OSM_Layer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    minZoom: 2,
+    maxZoom: 40,
+    maxNativeZoom: 40,
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  });
+  const OSM_DarkLayer = L.tileLayer.colorFilter("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    minZoom: 2,
+    maxZoom: 40,
+    maxNativeZoom: 40,
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    filter: mapTileColorFilterDarkMode
+  });
+  const Arctic_WMS = createArcticWMS();
+  const baseLayers = {
+    "Carte": OSM_Layer,
+    "Dark": OSM_DarkLayer,
+    "Satellite": Esri_WorldImagery
+  };
+  if (Arctic_WMS) {
+    baseLayers["Arctic (EPSG:3413)"] = Arctic_WMS;
+  }
+  const userPrefs = getUserPrefs();
+  const userBaseMap = userPrefs.map.selectBaseMap;
+  let selectBaseMap = OSM_Layer;
+  if (userBaseMap === "Dark")
+    selectBaseMap = OSM_DarkLayer;
+  else if (userBaseMap === "Satellite")
+    selectBaseMap = Esri_WorldImagery;
+  else if (userBaseMap === "Arctic (EPSG:3413)" && Arctic_WMS)
+    selectBaseMap = Arctic_WMS;
+  const usingPolar = selectBaseMap === Arctic_WMS && !!POLAR.crs;
+  POLAR.enabled = usingPolar;
+  let map2 = L.map(MAP_CONTAINER_ID, {
+    layers: [selectBaseMap],
+    crs: usingPolar ? POLAR.crs : L.CRS.EPSG3857
+  });
+  mapState.map = map2;
+  const layerControl = L.control.layers(baseLayers, null, { position: "topright" });
+  layerControl.addTo(map2);
+  ensureLayerControlClickable(layerControl);
+  async function onBaseLayerChange(e) {
+    await saveLocal("selectBaseMap", e.name);
+    const isArctic = e.layer === Arctic_WMS;
+    const wasArctic = !!POLAR.enabled;
+    if (hasProj4Leaflet() && isArctic !== wasArctic) {
+      const center = map2.getCenter();
+      const zoom = map2.getZoom();
+      map2.off("baselayerchange", onBaseLayerChange);
+      map2.off("zoomend", set_userCustomZoom);
+      map2.remove();
+      POLAR.enabled = isArctic;
+      const activeBase = isArctic ? Arctic_WMS : e.name === "Dark" ? OSM_DarkLayer : e.name === "Satellite" ? Esri_WorldImagery : OSM_Layer;
+      const newMap = L.map(MAP_CONTAINER_ID, {
+        crs: isArctic ? POLAR.crs || buildPolarCRS() : L.CRS.EPSG3857,
+        layers: [activeBase],
+        zoomAnimation: false,
+        fadeAnimation: false
+      });
+      mapState.map = newMap;
+      map2 = newMap;
+      newMap.once("load", () => newMap.invalidateSize());
+      const comfy = computeComfortView(isArctic, center, zoom);
+      requestAnimationFrame(() => {
+        newMap.setView(comfy.center, comfy.zoom, { animate: false });
+        newMap.invalidateSize();
+        setTimeout(() => newMap.invalidateSize(), 0);
+      });
+      const newBaseLayers = {
+        "Carte": OSM_Layer,
+        "Dark": OSM_DarkLayer,
+        "Satellite": Esri_WorldImagery
+      };
+      if (Arctic_WMS)
+        newBaseLayers["Arctic (EPSG:3413)"] = Arctic_WMS;
+      const newLayerControl = L.control.layers(newBaseLayers);
+      newLayerControl.addTo(newMap);
+      ensureLayerControlClickable(newLayerControl);
+      newMap.addControl(new L.Control.ScaleNautic({
+        metric: true,
+        imperial: false,
+        nautic: true
+      }));
+      const optionsRuler2 = {
+        position: "topleft",
+        maxPoints: 2,
+        lengthUnit: {
+          factor: 0.539956803,
+          display: "nm",
+          decimal: 2,
+          label: "Distance:"
+        }
+      };
+      L.control.ruler(optionsRuler2).addTo(newMap);
+      L.control.coordinates({
+        useDMS: true,
+        labelTemplateLat: "Lat: {y}",
+        labelTemplateLng: " Lng: {x}",
+        useLatLngOrder: true,
+        labelFormatterLat: function(lat) {
+          let latFormatted = L.NumberFormatter.toDMS(lat);
+          latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith("-") ? " S" : " N");
+          return latFormatted.replace(/^-/, "");
+        },
+        labelFormatterLng: function(lng) {
+          let lngFormatted = L.NumberFormatter.toDMS(lng);
+          lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
+          return '<span class="labelGeo">' + lngFormatted.replace(/^-/, "") + "</span>";
+        }
+      }).addTo(newMap);
+      if (mapState.refLayer)
+        mapState.refLayer.addTo(newMap);
+      applyBoundsForCurrentMode(newMap);
+      newMap.on("zoomend", set_userCustomZoom);
+      newMap.on("baselayerchange", onBaseLayerChange);
+      const raceInfo3 = getRaceInfo();
+      const playerItes2 = getLegPlayerInfos();
+      const raceItesFleet2 = getLegFleetInfos();
+      const connectedPlayerId3 = getConnectedPlayerId();
+      if (playerItes2 && playerItes2.ites && playerItes2.ites.length > 0) {
+        playerItes2.ite = playerItes2.ites[0];
+      }
+      updateBounds();
+      updateMapCheckpoints(raceInfo3, playerItes2.ite);
+      updateMapWaypoints(playerItes2.ite);
+      updateMapMe(connectedPlayerId3, playerItes2.ite);
+      updateMapFleet(raceInfo3, raceItesFleet2, connectedPlayerId3);
+      updateMapLeader(playerItes2.ite);
+      return;
+    }
+    POLAR.enabled = isArctic;
+    applyBoundsForCurrentMode(map2);
+  }
+  map2.addControl(new L.Control.ScaleNautic({
+    metric: true,
+    imperial: false,
+    nautic: true
+  }));
+  const optionsRuler = {
+    position: "topleft",
+    maxPoints: 2,
+    lengthUnit: {
+      factor: 0.539956803,
+      display: "nm",
+      decimal: 2,
+      label: "Distance:"
+    }
+  };
+  L.control.ruler(optionsRuler).addTo(map2);
+  L.control.coordinates({
+    useDMS: true,
+    labelTemplateLat: "Lat: {y}",
+    labelTemplateLng: " Lng: {x}",
+    useLatLngOrder: true,
+    labelFormatterLat: function(lat) {
+      let latFormatted = L.NumberFormatter.toDMS(lat);
+      latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith("-") ? " S" : " N");
+      return latFormatted.replace(/^-/, "");
+    },
+    labelFormatterLng: function(lng) {
+      let lngFormatted = L.NumberFormatter.toDMS(lng);
+      lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
+      return '<span class="labelGeo">' + lngFormatted.replace(/^-/, "") + "</span>";
+    }
+  }).addTo(map2);
+  map2.attributionControl.addAttribution("&copy;SkipperDuMad / Trait de cotes &copy;Kurun56");
+  mapState.refLayer = L.layerGroup();
+  const title1 = "Start: <b>" + raceInfo2.start.name + "</b><br>" + formatPosition(raceInfo2.start.lat, raceInfo2.start.lon);
+  const latlng = buildPt2(raceInfo2.start.lat, raceInfo2.start.lon);
+  buildMarker(latlng, mapState.refLayer, buildTextIcon("", "white", "blue", "S"), title1, 0);
+  mapState.refPoints.push(latlng[1]);
+  title1 = "Finish: <b>" + raceInfo2.end.name + "</b><br>" + formatPosition(raceInfo2.end.lat, raceInfo2.end.lon);
+  latlng = buildPt2(raceInfo2.end.lat, raceInfo2.end.lon);
+  buildMarker(latlng, mapState.refLayer, buildTextIcon("", "yellow", "red", "F"), title1, 0);
+  mapState.refPoints.push(latlng[1]);
+  buildCircleEndRace(latlng, mapState.refLayer, "red", raceInfo2.end.radius * 1852);
+  const cpath = buildPath_bspline(raceInfo2.course, raceInfo2.start.lat, raceInfo2.start.lon, raceInfo2.end.lat, raceInfo2.end.lon);
+  const raceLine = buildTrace(cpath, mapState.refLayer, mapState.refPoints, "white", 1, 0.5);
+  for (var i = 0; i < raceLine.length; i++) {
+    L.polylineDecorator(raceLine[i], {
+      patterns: [
+        { offset: "5%", repeat: "10%", symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { fillOpacity: 0.5, weight: 1, color: "white" } }) }
+      ]
+    }).addTo(mapState.refLayer);
+  }
+  const south = (_a = raceInfo2 == null ? void 0 : raceInfo2.ice_limits) == null ? void 0 : _a.south;
+  if (Array.isArray(south) && south.length !== 0) {
+    const isDummy = south.length === 5 && south[0].lat === -90 && south[0].lon === -180 && south[2].lat === -90 && south[2].lon === 0 && south[4].lat === -90 && south[4].lon === 180;
+    if (!isDummy) {
+      const iceDataMiddleIndex = Math.ceil(iceData.length / 2);
+      const iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
+      const iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
+      buildTrace(buildPath(iceDataFirstHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+      buildTrace(buildPath(iceDataSecondHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+      if (Util.isOdd(iceData.length))
+        buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+    }
+  }
+  const rz = raceInfo2 == null ? void 0 : raceInfo2.restrictedZones;
+  if (Array.isArray(rz) && rz.length !== 0) {
+    for (const z of rz) {
+      let polygonPts0 = [];
+      let polygonPts1 = [];
+      let polygonPts2 = [];
+      let restrictedZoneColor = "red";
+      if (z.color)
+        restrictedZoneColor = z.color;
+      for (const p of z.vertices || []) {
+        polygonPts0.push([p.lat, p.lon]);
+        polygonPts1.push([p.lat, p.lon - 360]);
+        polygonPts2.push([p.lat, p.lon + 360]);
+      }
+      L.polygon(
+        polygonPts0,
+        {
+          color: restrictedZoneColor,
+          stroke: 0.35,
+          weight: 1
+        }
+      ).addTo(mapState.refLayer);
+      L.polygon(
+        polygonPts1,
+        {
+          color: restrictedZoneColor,
+          stroke: 0.35,
+          weight: 1
+        }
+      ).addTo(mapState.refLayer);
+      L.polygon(
+        polygonPts2,
+        {
+          color: restrictedZoneColor,
+          stroke: 0.35,
+          weight: 1
+        }
+      ).addTo(mapState.refLayer);
+    }
+  }
+  mapState.refLayer.addTo(map2);
+  updateBounds();
+  updateMapCheckpoints(raceInfo2, playerItes.ite);
+  updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2);
+  if (mapState.route[rid] && mapState.route[rid].length !== 0) {
+    Object.keys(mapState.route[rid]).forEach(function(name) {
+      var lMapRoute = mapState.route[rid][name];
+      var map3 = mapState.map;
+      if (lMapRoute.displayed) {
+        if (lMapRoute.traceLayer)
+          lMapRoute.traceLayer.addTo(map3);
+        if (lMapRoute.markersLayer && document.getElementById("sel_showMarkersLmap").checked)
+          lMapRoute.markersLayer.addTo(map3);
+      }
+    });
+  }
+  updateMapWaypoints(playerItes.ite);
+  updateMapLeader(playerItes.ite);
+  updateMapMe(connectedPlayerId2, playerItes.ite);
+  set_userCustomZoom(false);
+  applyBoundsForCurrentMode(map2);
+  map2.on("baselayerchange", onBaseLayerChange);
+  map2.on("zoomend", set_userCustomZoom);
+  mapState.map = map2;
+  initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+  enableCoordinateCopyingWithShortcut();
+}
 let activeTab = 1;
 const tabList = Object.freeze({
   1: "raceLog",
@@ -1404,6 +2539,7 @@ function tabSwitch(tabId = null) {
       buildRaceFleetHtml();
       break;
     case "raceMap":
+      initializeMap();
       display_selbox("visible");
       break;
     case "raceBook":
