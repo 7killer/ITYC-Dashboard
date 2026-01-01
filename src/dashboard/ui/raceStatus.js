@@ -61,7 +61,7 @@ export function buildRaceStatusHtml()
         
     raceStatusHeader += '</tr>';
     
-    let tableContent = buildRaceStatusHtmlLine(raceInfo ,raceItes.ites[0]);
+    let tableContent = buildRaceStatusHtmlLine(raceInfo ,raceItes?.ites?.[0] ?? null);
 
     const openedRaceIdHistory = getOpenedRaceHistory();
     const legPlayerInfosHistory =getLegPlayerInfosHistory();
@@ -125,7 +125,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
         }
     }
     if (raceInfo.record?.lastRankingGateName) {
-        info += '<br/><span>@ ' + r.record.lastRankingGateName + '</span>';
+        info += '<br/><span>@ ' + raceInfo.record.lastRankingGateName + '</span>';
     }
 
     let trstyle = "hov";
@@ -145,11 +145,11 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
 
     const manoeuver = raceIte.metaDash?.manoeuver;
     const tack = manoeuver?("<p>-" +  manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p>"
-             +  "<p>-" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>"):'-';
+             +  "<p>" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>"):'-';
     const gybe =  manoeuver?("<p>-" + manoeuver.gybe.pena.dist + "nm | " + manoeuver.gybe.pena.time + "s</p>" 
-             + "<p>-"+manoeuver.gybe.energyLoose + "% | " + manoeuver.gybe.energyRecovery + "min</p>"):'-';
+             + "<p>"+manoeuver.gybe.energyLoose + "% | " + manoeuver.gybe.energyRecovery + "min</p>"):'-';
     const sail =  manoeuver?("<p>-" + manoeuver.sail.pena.dist + "nm | " + manoeuver.sail.pena.time + "s</p>" 
-             + "<p>-"+manoeuver.sail.energyLoose + "% | " + manoeuver.sail.energyRecovery + "min</p>"):'-';    
+             + "<p>"+manoeuver.sail.energyLoose + "% | " + manoeuver.sail.energyRecovery + "min</p>"):'-';    
     let staminaStyle = "";
     let staminaTxt = "-";
 

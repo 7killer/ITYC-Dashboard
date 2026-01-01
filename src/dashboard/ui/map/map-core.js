@@ -1,6 +1,7 @@
+import L from '@/dashboard/ui/map/leaflet-setup';
 
 
-function ensureLayerControlClickable(ctrl) {
+export function ensureLayerControlClickable(ctrl) {
   const c = ctrl && ctrl._container;
   if (!c) return;
   c.style.zIndex = '10050';

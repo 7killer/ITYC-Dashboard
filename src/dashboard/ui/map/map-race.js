@@ -1,17 +1,16 @@
 
 import {getUserPrefs} from '../../../common/userPrefs.js'
-import {applyBoundsForCurrentMode, buildPolarCRS, createArcticWMS, computeComfortView} from './map-core.js'
+import {ensureLayerControlClickable,applyBoundsForCurrentMode, buildPolarCRS, createArcticWMS, computeComfortView} from './map-core.js'
 import {initButtonToCenterViewMap,enableCoordinateCopyingWithShortcut} from './map-shortcuts.js'
 import {buildPt2, buildMarker,
     buildTextIcon,buildCircleEndRace,
-    buildPath_bspline,buildTrace,
+    buildPath_bspline,buildTrace,buildPath,buildBoatIcon,
     yellowRLIconP, yellowRRIconP, yellowRLIcon, yellowRRIcon,
     redRLIconP, redRLIcon, greenRRIconP, greenRRIcon
 } from './map-utils.js'
 import {formatPosition,formatShortDate,formatTimestampToReadableDate,formatDHMS
 } from '../common.js';
-
-import {sailNames} from "../constant.js"
+import {sailNames,sailColors,categoryStyle, categoryStyleDark,category} from "../constant.js"
 
 import {getConnectedPlayerId,
         getRaceInfo,
@@ -19,11 +18,15 @@ import {getConnectedPlayerId,
         getLegFleetInfos,
         getLegPlayersTracksFleet,
         getLegPlayersTrackLeader,
+        getLegPlayersOrder
 } from '../../app/memoData.js'
+import {isDisplayEnabled} from '../../app/sortManager.js'
 
 import { gcDistance, roundTo} from '../../../common/utils.js';
 
 import {drawProjectionLine} from './map-proj.js'
+
+import L from '@/dashboard/ui/map/leaflet-setup';
 
 export const mapState = {
     raceId: null,       // id de la course actuellement affichée
@@ -119,11 +122,11 @@ function updateMapCheckpoints(raceInfo,playerIte) {
 
 function updateMapWaypoints(playerIte) {
     const raceOrder = getLegPlayersOrder();
-    if (!mapState || !mapState.map || !mapState.gdiv) return;
+    if (!mapState || !mapState.map) return;
     const map = mapState.map;
 
     if (!playerIte) return; // current position unknown
-    if(!raceOrder && raceOrder[0].action.type !== "wp") return; //last order not wp
+    if(!raceOrder || raceOrder.lenght==0 || raceOrder[0]?.action?.type !== "wp") return; //last order not wp
 
     if(mapState.wayPointLayer)
     {
@@ -168,8 +171,8 @@ function updateMapMe(connectedPlayerId,playerIte) {
     const localTimes = userPrefs.global.localTime;
     const displayMarkers = userPrefs.map.showMarkers;
 
-    if (!mapState|| !mapState.map || !mapState.gdiv || !trackFleet || !trackFleet[connectedPlayerId]) return;
-    
+    if (!mapState|| !mapState.map) return;
+    /*todo scinder trace et position*/
     const map = mapState.map;
     const myTrack = trackFleet[connectedPlayerId].track;
 
@@ -184,46 +187,49 @@ function updateMapMe(connectedPlayerId,playerIte) {
     mapState.meLayerMarkers  = L.layerGroup();
     mapState.meBoatLayer  = L.layerGroup();
     
-    const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon}
-    let myTrackPts = [];
-    let isFirst = false;
-    let prevPt = null;
-    myTrack.forEach(({ lat, lon, ts,tag}) => {
-        myTrackPts.push({lat,lon});
-        if(isFirst)
-        {
-            const title =  "Me " 
-                        + "<br><b>" 
-                        + formatShortDate(ts,undefined,localTimes) 
-                        + "</b> | Speed: " 
-                        + roundTo(Math.abs(gcDistance(myPos, {lat, lon}) / ((ts -  prevPt.ts) / 1000) * 3600), 2) 
-                        + " kts<br>" + formatPosition(lat, lon) 
-                        + (tag ? "<br>(Type: " + tag + ")" : "");
-            buildCircle({lat,lon}, mapState.meLayerMarkers,"#b86dff", 1.5 ,1, title);
-            mapState.refPoints.push({lat,lon});
-        }
-        isFirst = true;
-        prevPt = {lat:lat, lon:lon, ts:ts};
-    });
-    
-    if(displayMarkers) mapState.meLayerMarkers.addTo(map);
-
-    if(myPos.lat && myPos.lon)
+    const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon};
+    if(trackFleet && trackFleet.lenght !=0 && trackFleet[connectedPlayerId]?.track)
     {
+        let myTrackPts = [];
+        let isFirst = false;
+        let prevPt = null;
+        myTrack.forEach(({ lat, lon, ts,tag}) => {
+            myTrackPts.push({lat,lon});
+            if(isFirst)
+            {
+                const title =  "Me " 
+                            + "<br><b>" 
+                            + formatShortDate(ts,undefined,localTimes) 
+                            + "</b> | Speed: " 
+                            + roundTo(Math.abs(gcDistance(myPos, {lat, lon}) / ((ts -  prevPt.ts) / 1000) * 3600), 2) 
+                            + " kts<br>" + formatPosition(lat, lon) 
+                            + (tag ? "<br>(Type: " + tag + ")" : "");
+                buildCircle({lat,lon}, mapState.meLayerMarkers,"#b86dff", 1.5 ,1, title);
+                mapState.refPoints.push({lat,lon});
+            }
+            isFirst = true;
+            prevPt = {lat:lat, lon:lon, ts:ts};
+        });
         const myTrackpath = buildPath(myTrackPts, undefined, undefined, myPos.lat, myPos.lon);
         buildTrace(myTrackpath, mapState.meLayer, mapState.refPoints, "#b86dff", 1.5, 1);
-        mapState.meLayer.addTo(map);
-
-        const myPosPt = buildPt2(myPos.lat, myPos.lon);
-        const title = "Me (Last position: " 
-                    + formatTimestampToReadableDate(playerIte.iteDate, 1) 
-                    + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>"
-                    + " | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b>"
-                    + "<br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts"
-                    + "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
-        buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,playerIte.hdg);
-        drawProjectionLine(myPosPt,playerIte.hdg,playerIte.speed) ;
     }
+    
+    mapState.meLayer.addTo(map);
+    if(displayMarkers) mapState.meLayerMarkers.addTo(map);
+
+//    if(myPos.lat && myPos.lon)
+//    {
+        
+    const myPosPt = buildPt2(myPos.lat, myPos.lon);
+    const title = "Me (Last position: " 
+                + formatTimestampToReadableDate(playerIte.iteDate, 1) 
+                + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>"
+                + " | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b>"
+                + "<br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts"
+                + "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+    buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,playerIte.hdg);
+    drawProjectionLine(myPosPt,playerIte.hdg,playerIte.speed) ;
+//   }
     mapState.meBoatLayer.addTo(map);
 
     if(!mapState.userZoom) updateBounds();  
@@ -231,7 +237,7 @@ function updateMapMe(connectedPlayerId,playerIte) {
 
 function updateMapLeader(playerIte) {
     
-    if (!mapState|| !mapState.map || !mapState.gdiv) return;
+    if (!mapState|| !mapState.map) return;
 
     if(mapState.leaderLayer) map.removeLayer(mapState.leaderLayer);
     if(mapState.leaderMeLayer) map.removeLayer(mapState.leaderMeLayer);
@@ -259,7 +265,7 @@ function addGhostTrack (ghostTrack, title, offset, color,layer) {
     const userPrefs = getUserPrefs();
     const displayMarkers = userPrefs.map.showMarkers;
     
-    if (!ghostTrack || !mapState|| !mapState.map || !mapState.gdiv) return;
+    if (!ghostTrack || !mapState|| !mapState.map) return;
     
     const ghostStartTS = ghostTrack[0].ts;
     const ghostPosTS = ghostStartTS + offset;
@@ -298,7 +304,7 @@ function addGhostTrack (ghostTrack, title, offset, color,layer) {
 
 function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
 
-    if (!race || !mapState|| !mapState.map  || !mapState.gdiv) return;
+    if (!raceInfo || !raceItesFleet ||!mapState|| !mapState.map) return;
     
     const map = mapState.map;
     const userPrefs = getUserPrefs();
@@ -341,7 +347,7 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
             const pos = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
          
             // Add names to real skippers if data exists
-            let skipperName = playerIte.displayName;
+            let skipperName = playerFleetInfos.info.name;
             if (playerIte.extendedInfos?.skipperName) 
                 skipperName += '<span class="txtUpper">' 
                             + playerIte.extendedInfos.boatName 
@@ -372,7 +378,7 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
             }
 
             
-            if(raceInfo.type == "record") {
+            if(raceInfo.raceType == "record") {
                 info += "<br>Elapsed: <b>" + formatDHMS(playerIte.iteDate - playerIte.startDate) + "</b>";
             }
 
@@ -385,7 +391,7 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
 
 
             // track
-            if (trackFleet[userId].track && trackFleet[userId].length != 0) {
+            if (trackFleet[userId]?.track && trackFleet[userId]?.length != 0) {
 
                 const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon}
                 let playerTrackPts = [];
@@ -538,7 +544,7 @@ export async function initializeMap()
 
     mapState.resetUserZoom = 0;
     mapState.userZoom = false;
-    mapState.raceId = race.id;
+    mapState.raceId = rid;
 
     let mapTileColorFilterDarkMode = [
         'invert:100%',
@@ -756,10 +762,10 @@ export async function initializeMap()
     mapState.refLayer = L.layerGroup();
 
     //start end
-    const title1 = "Start: <b>" + raceInfo.start.name + "</b><br>"
+    let title1 = "Start: <b>" + raceInfo.start.name + "</b><br>"
                 + formatPosition(raceInfo.start.lat, raceInfo.start.lon);
     
-    const latlng = buildPt2(raceInfo.start.lat, raceInfo.start.lon);
+    let latlng = buildPt2(raceInfo.start.lat, raceInfo.start.lon);
     buildMarker(latlng,mapState.refLayer,buildTextIcon('','white','blue',"S"),title1,0);
     mapState.refPoints.push(latlng[1]);
     

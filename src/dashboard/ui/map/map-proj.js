@@ -30,7 +30,7 @@ function computeNextPos(pos,hdg,speed,time) {
 export function drawProjectionLine(pos,hdg,speed) {
 
     if(!hdg || !speed) return;
-    if(!mapState|| !mapState.map || !mapState.gdiv) return;
+    if(!mapState|| !mapState.map ) return;
     
     const userPrefs = getUserPrefs();
     const map = mapState.map;

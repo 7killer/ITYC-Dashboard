@@ -1,8 +1,8 @@
 
-
+import L from '@/dashboard/ui/map/leaflet-setup';
 
 function importRoute(route,race,name) {
-    if (!race || !race.lMap|| !race.lMap.map || !race.lMap.gdiv) return;
+    if (!race || !race.lMap|| !race.lMap.map) return;
     
     var map = race.lMap.map;
 
@@ -49,7 +49,7 @@ function importRoute(route,race,name) {
 
 function hideRoute(race,name) {
 
-    if (!race || !race.lMap|| !race.lMap.map || !race.lMap.gdiv) return;
+    if (!race || !race.lMap|| !race.lMap.map) return;
     if(!race.lMap.route[name]) return;
     var lmapRoute = race.lMap.route[name];
     var map = race.lMap.map;
@@ -64,7 +64,7 @@ function hideRoute(race,name) {
 }
 
 function showRoute(race,name) {
-    if (!race || !race.lMap|| !race.lMap.map|| !race.lMap.route || !race.lMap.gdiv) return;
+    if (!race || !race.lMap|| !race.lMap.map|| !race.lMap.route) return;
     if(!race.lMap.route[name]) return;
     var lmapRoute = race.lMap.route[name];
     var map = race.lMap.map;
@@ -77,7 +77,7 @@ function showRoute(race,name) {
 }
 
 function deleteRoute(race,name) {
-    if (!race || !race.lMap || !race.lMap.gdiv) return;
+    if (!race || !race.lMap) return;
     if(!race.lMap.route || !race.lMap.route[name]) return;
     var lMapRoute = race.lMap.route[name];
 
@@ -98,7 +98,7 @@ function deleteRoute(race,name) {
 function onMarkersChange(race,markerHideShow) {
 
 
-    if (!race || !race.lMap|| !race.lMap.map || !race.lMap.gdiv) return;
+    if (!race || !race.lMap|| !race.lMap.map) return;
     
     var map = race.lMap.map;
 
@@ -129,7 +129,7 @@ function onMarkersChange(race,markerHideShow) {
 }
 
 function hideShowTracks(race) {
-    if (!race || !race.lMap|| !race.lMap.map || !race.lMap.gdiv) return;
+    if (!race || !race.lMap|| !race.lMap.map) return;
     
     var map = race.lMap.map;
     if(race.lMap.fleetLayerMarkers)

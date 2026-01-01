@@ -48,16 +48,16 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
 
 
     metaDash.raceTime = null;
-    if(legInfos.type == "record")
+    if(legInfos.raceType == "record")
     {
         if(latest.state == "racing" && latest.distanceToEnd)
         {
             try {
-                metaDash.raceTime = latest.dateIte - latest.startDate;
-                const estimatedSpeed = latest.distanceFromStart / (raceTime / 3600000);
+                metaDash.raceTime = latest.iteDate - latest.startDate;
+                const estimatedSpeed = latest.distanceFromStart / (metaDash.raceTime / 3600000);
                 const eTtF = (latest.distanceToEnd / estimatedSpeed) * 3600000;
                 metaDash.avgSpeed = estimatedSpeed;
-                metaDash.eRT = raceTime + eTtF;
+                metaDash.eRT = metaDash.raceTime + eTtF;
             } catch (e) {
                 metaDash.eRT = e.toString();
             }

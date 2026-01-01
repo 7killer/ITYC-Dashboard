@@ -1,7 +1,4 @@
-import { Q as processDBOperations, g as getData, R as cfg, e as roundTo, S as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, T as saveData, J as gcDistance, U as courseAngle, V as angle, W as toRad, X as toDeg, Y as calculateCOGLoxo, F as guessOptionBits, E as isBitSet, s as sailNames, p as getxFactorStyle, Z as twaBackGround, f as formatHM, t as getBG, h as formatTimeNotif, j as infoSail, n as formatPosition, k as getUserPrefs, P as createKeyChangeListener } from "./common-eb028e3b.js";
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
+import { K as getDefaultExportFromCjs, T as processDBOperations, g as getData, U as cfg, f as roundTo, V as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, W as saveData, M as gcDistance, X as courseAngle, Y as angle, Z as toRad, _ as toDeg, $ as calculateCOGLoxo, G as guessOptionBits, F as isBitSet, s as sailNames, q as getxFactorStyle, a0 as twaBackGround, h as formatHM, u as getBG, i as formatTimeNotif, k as infoSail, o as formatPosition, l as getUserPrefs, S as createKeyChangeListener } from "./_commonjsHelpers-8eeb55b8.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -2655,7 +2652,7 @@ const legSchema = create$3({
     magicFurler: create$5().required(),
     vrtexJacket: create$5().required()
   }).required(),
-  pilotBoatCredits: create$5().required(),
+  pilotBoatCredits: create$5().optional(),
   priceLevel: create$5().required(),
   race: create$3({
     name: create$6().required(),
@@ -2805,7 +2802,12 @@ const getBoatInfosBoatTrackSchema = create$3({
       ts: create$5().required(),
       tag: create$6().required()
     })
-  )
+  ),
+  _id: create$3({
+    user_id: create$6().required(),
+    race_id: create$5().required(),
+    leg_num: create$5().required()
+  }).required()
 });
 const numberRecord = create$3().test(
   "is-number-record",
@@ -3403,26 +3405,29 @@ async function ingestBoatInfos(boatData) {
           ]
         });
       }
-      if (boatInfos.res.track) {
-        ope.push({
-          type: "putOrUpdate",
-          playersTracks: [
-            {
-              raceId,
-              legNum,
-              userId,
-              type: "fleet",
-              track: boatInfos.res.track
-            }
-          ],
-          internal: [
-            {
-              id: "playersTracksUpdate",
-              ts: Date.now()
-            }
-          ]
-        });
-      }
+    }
+    if (boatInfos.res.track) {
+      raceId = boatInfos.res.track._id.race_id;
+      legNum = boatInfos.res.track._id.leg_num;
+      userId = boatInfos.res.track._id.user_id;
+      ope.push({
+        type: "putOrUpdate",
+        playersTracks: [
+          {
+            raceId,
+            legNum,
+            userId,
+            type: "fleet",
+            track: boatInfos.res.track.track
+          }
+        ],
+        internal: [
+          {
+            id: "playersTracksUpdate",
+            ts: Date.now()
+          }
+        ]
+      });
     }
     processDBOperations(ope);
     return {
@@ -3906,14 +3911,8 @@ async function ingestGhostTrack(request, response) {
         },
         ...(ghostPlayerTrack || leaderId && leaderTrack) && {
           internal: [
-            {
-              id: "playersTracksUpdate",
-              ts: Date.now()
-            },
-            ...ghostPlayerTrack && {
-              id: "playersUpdate",
-              ts: Date.now()
-            }
+            ...ghostPlayerTrack || leaderId && leaderTrack ? [{ id: "playersTracksUpdate", ts: Date.now() }] : [],
+            ...ghostPlayerTrack ? [{ id: "playersUpdate", ts: Date.now() }] : []
           ]
         }
       }
@@ -4314,14 +4313,14 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
     metaDash.dtf = metaDash.dtfC;
   }
   metaDash.raceTime = null;
-  if (legInfos.type == "record") {
+  if (legInfos.raceType == "record") {
     if (latest.state == "racing" && latest.distanceToEnd) {
       try {
-        metaDash.raceTime = latest.dateIte - latest.startDate;
-        const estimatedSpeed = latest.distanceFromStart / (raceTime / 36e5);
+        metaDash.raceTime = latest.iteDate - latest.startDate;
+        const estimatedSpeed = latest.distanceFromStart / (metaDash.raceTime / 36e5);
         const eTtF = latest.distanceToEnd / estimatedSpeed * 36e5;
         metaDash.avgSpeed = estimatedSpeed;
-        metaDash.eRT = raceTime + eTtF;
+        metaDash.eRT = metaDash.raceTime + eTtF;
       } catch (e) {
         metaDash.eRT = e.toString();
       }

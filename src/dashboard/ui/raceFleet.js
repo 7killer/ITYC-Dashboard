@@ -53,7 +53,7 @@ export function buildRaceFleetHtml() {
         + genth("th_name", "Skipper", undefined,                   sortField == "displayName",    sortAsc)
         + genth("th_teamname", "Team", undefined,                  sortField == "teamname",       sortAsc)
         + genth("th_rank", "Rank", undefined,                      sortField == "rank",           sortAsc)
-        + ((raceInfo.type !== "record")
+        + ((raceInfo.raceType !== "record")
             ? genth("th_racetime", "RaceTime", "Current Race Time", sortField == "raceTime",     sortAsc)
             : "")
         + genth("th_dtu", "DTU", "Distance to Us",                 sortField == "distanceToUs",  sortAsc)
@@ -68,7 +68,7 @@ export function buildRaceFleetHtml() {
         + genth("th_factor", "Factor", "Speed factor over no-options boat", sortField == "xfactor", sortAsc)
         + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", sortField == "xoption_foils", sortAsc);
 
-    if (raceInfo.type === "record") {
+    if (raceInfo.raceType === "record") {
         raceFleetTableHeader +=
               genth("th_sd","Race Time", "Current Race Time",       sortField == "startDate",     sortAsc)
             + genth("th_eRT","ERT", "Estimated Total Race Time",    sortField == "eRT",           sortAsc)
@@ -232,18 +232,18 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
     const name = (playerIte.type == "sponsor")?
                     (playerIte.branding?.name?(playerFleetInfos.info.name + "(" + playerIte.branding.name + ")"):playerFleetInfos.info.name):playerFleetInfos.info.name;
     
-    const sailStyle = sailColors[playerIte.sail];
+    const sailStyle = 'style="color:'+sailColors[playerIte.sail]+'"';
     const sailName = sailNames[playerIte.sail%10] || "-";
     const foils = iteDash?.realFoilFactor==null?(foilsType?"no":"?"):(roundTo(iteDash.realFoilFactor,1)+"%")
     
 
     return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '">'
         + '<td class="tdc">' + routerIcon + '</td>'
-        + gentd("Time","",null, formatTime(playerIte.dateIte, 1))
+        + gentd("Time","",null, formatTime(playerIte.iteDate, 1))
         + '<td class="Skipper" style="' + nameStyle + '"><div class="bull">' + bull + "</div> " + name + '</td>'
         + gentd("Team","",null, teamName )
         + gentd("Rank","",null, (playerIte.rank ? playerIte.rank : "-"))
-        + ((raceInfo.type !== "record")?gentd("RaceTime","",null, (iteDash.raceTime ? formatDHMS(iteDash.raceTime) : "-")):"")
+        + ((raceInfo.raceType !== "record")?gentd("RaceTime","",null, (iteDash.raceTime ? formatDHMS(iteDash.raceTime) : "-")):"")
         + gentd("DTU","",null, (iteDash.DTU ? roundTo(iteDash.DTU, 3) : '-') )
         + gentd("DTF","",null, ((iteDash.dtf==iteDash.dtfC)?"(" + roundTo(iteDash.dtfC,3) + ")":roundTo(iteDash.dtf,3)) )
         + gentd("TWD","",null, roundTo(playerIte.twd?playerIte.twd:iteDash.twd, 3) )
@@ -268,19 +268,19 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
 
 function recordRaceFields (raceInfo, playerIte) {
     const userPrefs = getUserPrefs();
-    if (raceInfo.type === "record") {
+    if (raceInfo.raceType === "record") {
         const localTimes = userPrefs.global.localTime;
         if (playerIte.state === "racing" && playerIte.distanceToEnd) {
             let t ;
-            if(iteDash.eRT) t = '<td class="eRT" title= "End : ' + formatShortDate(iteDash.eRT,undefined,localTimes) + '">' + formatDHMS(iteDash.eRT, 2) + '</td>';
+            if(playerIte.metaDash.eRT) t = '<td class="eRT" title= "End : ' + formatShortDate(playerIte.metaDash.eRT,undefined,localTimes) + '">' + formatDHMS(playerIte.metaDash.eRT, 2) + '</td>';
             else t = '<td class="eRT" title= "End : unknow"></td>';
-            return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate,undefined,localTimes) + '">' + formatDHMS(raceTime) + '</td>'
+            return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate,undefined,localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + '</td>'
                 + t
-                + '<td class="avg">' + roundTo(iteDash.avgSpeed, 2) + '</td>';
+                + '<td class="avg">' + roundTo(playerIte.metaDash.avgSpeed, 2) + '</td>';
         } else {
             if(playerIte.startDate && playerIte.state === "racing" && playerIte.startDate!="-") {
                 //r.dtf can replace 
-                let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate,undefined,localTimes) + '">' + formatDHMS(raceTime) + '</td>';
+                let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate,undefined,localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + '</td>';
         
                 /* if(r.dtf)
                 {

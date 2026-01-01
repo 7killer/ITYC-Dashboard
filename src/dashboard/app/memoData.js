@@ -50,6 +50,8 @@ export async function initMemo()
         await updateLegPlayerInfos();
         await updateLegPlayersOrder();
         await updateLegPlayersOptions();
+        await updateLegPlayersTracks();
+
     } else
     {
         raceList = [];
@@ -59,6 +61,7 @@ export async function initMemo()
         legPlayerInfos = [];
         legPlayerInfosHistory = [];
         legPlayersOptions = [];
+        legPlayersTracks = [];
     }
     openedRaceIdHistory = [];
     legPlayerInfosHistory = [];
@@ -464,7 +467,7 @@ export async function updateLegPlayersOptions()
 }
 
 
-export function getLegPlayerTracksUpdate()
+export function getLegPlayersTracksUpdate()
 {
     return legPlayersTracksUpdate;
 }
@@ -494,7 +497,7 @@ export function getLegPlayersTracksGhost()
     return legPlayersTracks.ghosts[connectedPlayerId];
 }
 
-export async function updateLegPlayerTracks()
+export async function updateLegPlayersTracks()
 {
     if(raceInfo?.raceId && raceInfo?.legNum)
     { 
@@ -502,7 +505,21 @@ export async function updateLegPlayerTracks()
         const legNum = raceInfo.legNum;
 
         legPlayersTracks = {};
-        const { items, meta } = await getLegPlayersTracksByType(    raceId,legNum,'fleet',{ asMap: true });
+        const fleetTracksList = await getLegPlayersTracksByType(raceId,legNum,'fleet',{ asMap: true })
+                .catch(error => {console.error("fleetTracksList error :", error);});
+        legPlayersTracks.fleet  = (fleetTracksList && fleetTracksList.length !=0)?fleetTracksList:[]; 
+        const leaderTrackList = await getLegPlayersTracksByType(raceId,legNum,'leader',{ asMap: true })
+                .catch(error => {console.error("leaderTrackList error :", error);});
+        legPlayersTracks.leader  = (leaderTrackList && leaderTrackList.length !=0)?leaderTrackList:[]; 
+        const goshtTrackList = await getLegPlayersTracksByType(raceId,legNum,'ghost',{ asMap: true })
+                .catch(error => {console.error("goshtTrackList error :", error);});
+        legPlayersTracks.ghosts  = (goshtTrackList && goshtTrackList.length !=0)?goshtTrackList:[]; 
+        
+        
+        
+        
+        
+    /*    const { items, meta } = await getLegPlayersTracksByType(    raceId,legNum,'fleet',{ asMap: true });
         if(meta.timeout || !items || items.length == 0) legPlayersTracks.fleet = [];
         else legPlayersTracks.fleet = items;
 
@@ -512,7 +529,7 @@ export async function updateLegPlayerTracks()
 
         const { items3, meta3 } = await getLegPlayersTracksByType(    raceId,legNum,'ghost');
         if(meta3.timeout || !items3 || items3.length == 0) legPlayersTracks.ghosts = [];
-        else legPlayersTracks.ghosts = items3;
+        else legPlayersTracks.ghosts = items3;*/
     }
 }
 

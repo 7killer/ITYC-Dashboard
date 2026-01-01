@@ -12,6 +12,7 @@ getLegPlayersInfosUpdate, setLegPlayersInfosUpdate, updateLegPlayerInfos,
 getLegPlayersOrderUpdate, setLegPlayersOrderUpdate, updateLegPlayersOrder,
 getLegFleetInfosUpdate, setLegFleetInfosUpdate, updateLegFleetInfos,
 getLegPlayersOptionsUpdate, setLegPlayersOptionsUpdate, updateLegPlayersOptions,
+getLegPlayersTracksUpdate, setLegPlayersTracksUpdate,updateLegPlayersTracks,
 getOpenedRaceId, setOpenedRaceId, updateOpenedRaceId,
 initMemo
 
@@ -191,8 +192,9 @@ legPlayersOrdersListener.start({
     referenceValue: {ts : getLegPlayersOrderUpdate()},
 
   onChange: async ({ oldValue, newValue }) => {
-    if(newValue?.ts != getLegPlayersOptionsUpdate() && initDone)
+    if(newValue?.ts != getLegPlayersOrderUpdate() && initDone)
     {   //updated infos
+        setLegPlayersOrderUpdate(newValue.ts)
         await updateLegPlayersOrder();
         buildRaceStatusHtml();
         tabSwitch();
@@ -227,6 +229,7 @@ connectedRaceListener.start({
       await updateLegFleetInfos();
       await updateLegPlayerInfos();
       await updateLegPlayersOrder();
+      await updateLegPlayersTracks();
       onRaceOpen();
       buildRaceStatusHtml();
       tabSwitch();
@@ -234,6 +237,20 @@ connectedRaceListener.start({
   },
 });
 }
+const legPlayersTracksListener = createKeyChangeListener('internal', 'legPlayersOrderUpdate');
+legPlayersTracksListener.start({
+    referenceValue: {ts : getLegPlayersTracksUpdate()},
+
+  onChange: async ({ oldValue, newValue }) => {
+    if(newValue?.ts != getLegPlayersTracksUpdate() && initDone)
+    {   //updated infos
+        setLegPlayersTracksUpdate(newValue.ts);
+        await updateLegPlayersTracks();
+        tabSwitch();
+        //update display raceLog map,raceStatus
+    }
+  },
+});
 /* */
 //updateRaceList
 

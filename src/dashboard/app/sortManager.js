@@ -96,7 +96,7 @@ function getFleetSortValue(pInfos, sortField) {
 
     switch (sortField) {
         case "lastCalcDate":   // Date
-            return ite?.dateIte ?? 0;
+            return ite?.iteDate ?? 0;
 
         case "displayName":    // Skipper
             return pInfos.info?.name ?? "";

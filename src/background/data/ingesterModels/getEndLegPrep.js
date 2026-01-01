@@ -72,7 +72,7 @@ export const legSchema = Yup.object({
     magicFurler: Yup.number().required(),
     vrtexJacket: Yup.number().required()
   }).required(),
-   pilotBoatCredits: Yup.number().required(),
+   pilotBoatCredits: Yup.number().optional(),
   priceLevel: Yup.number().required(),
   race: Yup.object({
     name: Yup.string().required(),

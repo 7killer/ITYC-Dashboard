@@ -142,4 +142,9 @@ export const getBoatInfosBoatTrackSchema = Yup.object({
       tag: Yup.string().required(),
     }),
   ),
+  _id: Yup.object({
+    user_id: Yup.string().required(),
+    race_id: Yup.number().required(),
+    leg_num: Yup.number().required()
+  }).required(),
 });

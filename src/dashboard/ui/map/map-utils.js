@@ -1,3 +1,4 @@
+import L from '@/dashboard/ui/map/leaflet-setup';
 
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
@@ -111,7 +112,7 @@ export function buildTextIcon(icon,iconColor,markerColor,text)
         html: text,
     });
 }
-function buildBoatIcon(fillColor,borderColor,opacity)
+export function buildBoatIcon(fillColor,borderColor,opacity)
 {
     const MARKER = encodeURIComponent(`<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -259,7 +260,7 @@ export function buildPt2(lat,lon)
     return ret;
 }
 
-function buildPath(pathEntry,initLat,initLng,finishLat,finshLng)
+export function buildPath(pathEntry,initLat,initLng,finishLat,finshLng)
 {
 
     let cpath = [];
@@ -355,7 +356,7 @@ export function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
                 const  dy = (paths[i - 2].lon + 4 * paths[i - 1].lon + paths[i].lon) / 6;
                 const lat = ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx;
                 const lon = ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy;
-                pos = buildPt(lat, lon);
+                const pos = buildPt(lat, lon);
                 cpath[cpathNum].push(pos);
             }
         }

@@ -334,28 +334,31 @@ export async function ingestBoatInfos(boatData)
           ]
         });        
       }
-      
-      if(boatInfos.res.track)
-      {
-        ope.push( {
-          type : "putOrUpdate",
-          playersTracks : [
-            {
-              raceId : raceId,
-              legNum : legNum,
-              userId : userId,
-              type : 'fleet',
-              track : boatInfos.res.track
-            }
-          ],
-          internal: [
-            {
-              id: "playersTracksUpdate",
-              ts: Date.now(),
-            },
-          ]
-         });        
-      }
+    }
+    if(boatInfos.res.track)
+    {
+      raceId = boatInfos.res.track._id.race_id;
+      legNum = boatInfos.res.track._id.leg_num;
+      userId = boatInfos.res.track._id.user_id;
+
+      ope.push( {
+        type : "putOrUpdate",
+        playersTracks : [
+          {
+            raceId : raceId,
+            legNum : legNum,
+            userId : userId,
+            type : 'fleet',
+            track : boatInfos.res.track.track
+          }
+        ],
+        internal: [
+          {
+            id: "playersTracksUpdate",
+            ts: Date.now(),
+          },
+        ]
+        });        
     }
     processDBOperations(ope);
     return {rstTimer: rstTimer,
@@ -901,17 +904,12 @@ export async function ingestGhostTrack(request, response) {
             }
           ],
         }),
-        ...((ghostPlayerTrack || (leaderId && leaderTrack))   && {
+        ...((ghostPlayerTrack || (leaderId && leaderTrack)) && {
           internal: [
-            {
-              id: "playersTracksUpdate",
-              ts: Date.now(),
-            },
-            ...(ghostPlayerTrack && 
-            {
-              id: "playersUpdate",
-              ts: Date.now(),
-            }), 
+            ...(ghostPlayerTrack || (leaderId && leaderTrack)
+              ? [{ id: "playersTracksUpdate", ts: Date.now() }]
+              : []),
+            ...(ghostPlayerTrack ? [{ id: "playersUpdate", ts: Date.now() }] : []),
           ],
         }),
       },
