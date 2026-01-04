@@ -1,4 +1,5 @@
 import L from '@/dashboard/ui/map/leaflet-setup';
+import {formatPosition,formatShortDate,formatDHMS} from '../common.js';
 
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
@@ -80,7 +81,7 @@ export function buildMarker( pos, layer, icond,title, zi, op,heading)
     {
         if(!heading) heading=0;
         if(heading == 180) heading = 179.9; //or boat icon are drawn at 0° when 180° :s
-        const marker1 = L.marker(pos[i],{icon:icond,rotationAngle: heading/2});
+        const marker1 = L.marker(pos[i],{icon:icond,rotationAngle: heading});
         if(op) marker1.opacity = op;
         if(zi)  marker1.zIndexOffset = zi;
         if(title)
@@ -366,7 +367,7 @@ export function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
 
 
 
-function createProjectionPoint(ts,lat,lon)
+export function createProjectionPoint(ts,lat,lon)
 {
     return  {
         timeStamp : ts,
@@ -375,3 +376,66 @@ function createProjectionPoint(ts,lat,lon)
     };
 }
 
+export function darkenColor(hexColor, amount) {
+    const color = hexColor.replace("#", "");
+    // Extract RGB comp.
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    // Calculer les nouvelles valeurs RVB avec une luminosité réduite
+    const darkenedR = Math.max(0, r - amount);
+    const darkenedG = Math.max(0, g - amount);
+    const darkenedB = Math.max(0, b - amount);
+
+    // Convertir les nouvelles valeurs RVB en format hexadécimal
+    const darkenedHexColor = `#${componentToHex(darkenedR)}${componentToHex(darkenedG)}${componentToHex(darkenedB)}`;
+    return darkenedHexColor;
+}
+function componentToHex(component) {
+    const hex = component.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+}
+
+
+export function buildMarkerTitle(point)
+{
+
+    const userPrefs = getUserPrefs();
+    const localTimes = userPrefs.global.localTime;
+
+    let  position = formatPosition(point.lat, point.lon);
+    const currentDate = new Date();
+    const currentTs = currentDate.getTime();
+
+    let newDate =   currentDate;  
+    if(point.timestamp!="-")
+        newDate = formatShortDate(point.timestamp,undefined,localTimes);
+
+
+    const ttw = point.timestamp-currentTs;
+
+    const textHDG = point.heading ? "HDG: <b>" + point.heading.replace(/&deg;/g, "°") + "</b><br>" : "";
+    const textTWS = point.tws ? "TWS: " + point.tws + "<br>" : "";
+    const textSpeed = point.speed ? "Speed: " + point.speed : "";
+    // Data visual separator
+    let textTWA = point.twa ? "TWA: <b>" + point.twa.replace(/&deg;/g, "°") + "</b>" : "";
+    textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
+
+    let textTWD = point.twd ? "TWD: " + point.twd.replace(/&deg;/g, "°") : "";
+    textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
+
+    let textSail = point.sail ? "Sail: " + point.sail : "";
+    if (point.boost && point.boost > 0) textSail += "⚠️";
+    textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+
+    if (point.desc) position += '<br>' + point.desc.replace(/�/g, "°");
+    let textStamina = '';
+    if (point.stamina && point.stamina > 0) textStamina = "🔋 " + point.stamina + "%";
+
+        return "<b>" + newDate + "</b> (" + formatDHMS(ttw) + ")<br>"
+        + position + "<br>"
+        + textTWA + textHDG
+        + textTWD + textTWS
+        + textSail + textSpeed + "<br>"
+        + textStamina;
+}

@@ -182,4 +182,59 @@ export function isCurrent(timestamp, previousTimeStamp = 0) {
     return (timestamp && (timestamp > previousTimeStamp));
 }
 
+const RULES = [
+  ['a', /[àâ]/g],
+  ['A', /[ÀÂ]/g],
+  ['e', /[èéêë]/g],
+  ['E', /[ÈÉÊË]/g],
+  ['i', /[îï]/g],
+  ['I', /[ÎÏ]/g],
+  ['o', /[ô]/g],
+  ['O', /[Ô]/g],
+  ['u', /[ùû]/g],
+  ['U', /[ÙÛ]/g],
+  ['c', /[ç]/g],
+  ['C', /[Ç]/g],
+  [',', /[;]/g],
+  ['', /(\r\n|\n|\r)/g],
+  ['', /[\/|\s|-]/g],
+  ['', / +/g],
+];
 
+export function cleanSpecial(input = '') {
+  let str = String(input);
+  for (const [latin, re] of RULES) str = str.replace(re, latin);
+  return str;
+}
+
+export function convertDMS2Dec(lat,lon)
+{
+    const regex = /(\d+)[^A-Za-z0-9](\d+)'((\d+)|(\d+(\.|,)\d+)) ([NSEW])/;
+    
+    const match = lat.match(regex);
+    const match1 = lon.match(regex);
+    
+    if (match && match1) {
+        const latDegrees = parseInt(match[1]);
+        const latMinutes = parseInt(match[2]);
+        const latSeconds = parseFloat(match[3]);
+        const latDirection = match[7];
+        const latitude = latDegrees + latMinutes / 60 + latSeconds / 3600;
+        
+        const lonDegrees = parseInt(match1[1]);
+        const lonMinutes = parseInt(match1[2]);
+        const lonSeconds = parseFloat(match1[3]);
+        const lonDirection = match1[7];
+        const longitude = lonDegrees + lonMinutes / 60 + lonSeconds / 3600;    
+        return {
+            lat: latDirection === 'N' ? latitude : -latitude,
+            lon: lonDirection === 'E' ? longitude : -longitude
+        };       
+    } else {
+        return {
+            lat:0,
+            lon:0
+        }; // Coordonnées invalides
+    }
+
+}

@@ -174,7 +174,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
     {
         
         fullStamina += '><div class="textMini">';
-        if(raceIte.metaDash.chocoBoost != 0) {
+        if(raceIte.metaDash?.chocoBoost != 0) {
             fullStamina += '🍫+'+ roundTo(raceIte.metaDash.chocoBoost, 2)+'%';
             fullStamina += ' ⌚'+ formatHM(raceIte.metaDash.chocoExp-Date.now());
         }
@@ -184,7 +184,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
         fullStamina += staminaTxt;
         fullStamina += '</div>';
         fullStamina += '<div class="textMini">';
-        if(raceIte.metaDash.coffeeBoost != 0) {
+        if(raceIte.metaDash?.coffeeBoost != 0) {
             fullStamina += '☕+'+ roundTo(raceIte.metaDash.coffeeBoost, 2)+'%';
             fullStamina += ' ⌚'+ formatHM(raceIte.metaDash.coffeeExp-Date.now());
         }

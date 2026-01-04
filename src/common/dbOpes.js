@@ -4,7 +4,7 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 
 export async function openDatabase() {
     try {
@@ -123,7 +123,8 @@ export async function openDatabase() {
                 if (!db.objectStoreNames.contains('playersTracks')) {
                     const store = db.createObjectStore('playersTracks', {
                          keyPath: ['raceId', 'legNum', 'userId', 'type' ]  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'type'], { unique: false });
+                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                    store.createIndex('byType', ['raceId', 'legNum', 'type'], { unique: false });
                     
                     if(cfg.debugDB) console.log('Created "playersTracks" object store');
                 }

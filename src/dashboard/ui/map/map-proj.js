@@ -1,21 +1,15 @@
 
-import {buildPt2, buildCircle,buildTrace} from './map-utils.js'
+import {buildPt2, buildCircle,buildTrace,buildPath} from './map-utils.js'
 import {getUserPrefs} from '../../../common/userPrefs.js'
 import { mapState } from './map-race.js';
-
+import { toRad } from '../../../common/utils.js';
 function computeNextPos(pos,hdg,speed,time) {
-    var dist5 = speed*time/(3600*60);
-    var alpha = 360 - ( hdg - 90);
-    var lat5 = pos.lat;
-    var lng5 = pos.lng;
-    var latrad1 = Util.toRad(lat5);
-    var latrad2;
-    var phi;
+    const dist5 = speed*time/(3600*60);
+    const alpha = 360 - ( hdg - 90);
+    const lat5 =  pos.lat + dist5*Math.sin(toRad(alpha));
+    let lng5 = pos.lng;
 
-    lat5 += dist5*Math.sin(Util.toRad(alpha));
-    latrad2 = Util.toRad(lat5);
-    phi = Math.cos((latrad1+latrad2)/2);
-    lng5 += (dist5*Math.cos(Util.toRad(alpha))) / phi ;
+    lng5 += (dist5*Math.cos(toRad(alpha))) / Math.cos((toRad(lat5)+toRad(lat5))/2) ;
     if(lng5 > 180) {
         lng5 = lng5 - 360;
     }
@@ -47,10 +41,10 @@ export function drawProjectionLine(pos,hdg,speed) {
         pos = computeNextPos(pos[1],hdg,speed,2*60);
         tpath.push(pos[1]);
         const title = 2*(i+1)+"min";
-        buildCircle(pos,layer,userPrefs.map.projectionColor, 1.5,1,title); 
+        buildCircle(pos,mapState.me_PlLayer,userPrefs.map.projectionColor, 1.5,1,title); 
     }  
     buildTrace(buildPath(tpath) ,mapState.me_PlLayer, mapState.refPoints,userPrefs.map.projectionColor,1,0.4,'10, 10','5');
-    layer.addTo(map); 
+    mapState.me_PlLayer.addTo(map); 
 
 }
 

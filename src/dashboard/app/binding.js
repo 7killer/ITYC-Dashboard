@@ -3,6 +3,7 @@ import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 
 import {switchTheme} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
+import {hideShowTracks,onMarkersChange} from "../ui/map/map-routes.js"
 
 
 /**
@@ -226,12 +227,12 @@ export function uiBindingInit() {
     },
     {
       selector: '#sel_showMarkersLmap',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showMarkers = checked;saveUserPrefs(userPrefs);},
+      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showMarkers = checked?false:true;await saveUserPrefs(userPrefs);onMarkersChange(checked);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showMarkers }
     },
     {
       selector: '#sel_showTracksLmap',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked;saveUserPrefs(userPrefs);},
+      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked?false:true;await saveUserPrefs(userPrefs);hideShowTracks(checked);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showTracks }
     },  
     {

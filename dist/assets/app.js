@@ -1,5 +1,5 @@
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, e as getLegPlayersTracksByType, r as raceTableHeaders, f as roundTo, h as formatHM, i as formatTimeNotif, j as raceTableLines, k as infoSail, l as getUserPrefs, m as genthRacelog, n as dateUTCSmall, D as DateUTC, s as sailNames, o as formatPosition, p as formatSeconds, q as getxFactorStyle, t as gentdRacelog, u as getBG, v as genth, w as category, x as sailColors, y as gentd, z as formatTime, A as formatDHMS, B as formatShortDate, C as categoryStyleDark, E as categoryStyle, F as isBitSet, G as guessOptionBits, H as getRankingCategory, I as creditsMaxAwardedByPriceLevel, J as commonjsGlobal, K as getDefaultExportFromCjs, L as formatTimestampToReadableDate, M as gcDistance, N as display_selbox, O as changeState, P as saveUserPrefs, Q as switchTheme, R as loadUserPrefs, S as createKeyChangeListener } from "./_commonjsHelpers-8eeb55b8.js";
+import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, e as getLegPlayersTracksByType, r as raceTableHeaders, f as roundTo, h as formatHM, i as formatTimeNotif, j as raceTableLines, k as infoSail, l as getUserPrefs, m as genthRacelog, n as dateUTCSmall, D as DateUTC, s as sailNames, o as formatPosition, p as formatSeconds, q as getxFactorStyle, t as gentdRacelog, u as getBG, v as genth, w as category, x as categoryStyleDark, y as categoryStyle, z as sailColors, A as gentd, B as formatTime, C as formatDHMS, E as formatShortDate, F as isBitSet, G as guessOptionBits, H as getRankingCategory, I as creditsMaxAwardedByPriceLevel, J as commonjsGlobal, K as getDefaultExportFromCjs, L as toRad, M as formatTimestampToReadableDate, N as gcDistance, O as courseAngle, P as display_selbox, Q as changeState, R as saveUserPrefs, S as switchTheme, T as loadUserPrefs, U as createKeyChangeListener } from "./_commonjsHelpers-d4c5a4a6.js";
 const style = "";
 let connectedPlayerId;
 let connectedPlayerInfos = [];
@@ -128,11 +128,11 @@ async function updateLegList() {
       const db = new Date(((_b = b == null ? void 0 : b.start) == null ? void 0 : _b.date) || 0);
       return da - db;
     });
-    const map2 = /* @__PURE__ */ Object.create(null);
+    const map = /* @__PURE__ */ Object.create(null);
     let foundRaceInfo = null;
     for (const leg of filtered) {
       const fullRaceId = `${leg.raceId}-${leg.legNum}`;
-      map2[fullRaceId] = {
+      map[fullRaceId] = {
         raceId: leg.raceId,
         legNum: leg.legNum,
         name: leg.legName
@@ -141,7 +141,7 @@ async function updateLegList() {
         foundRaceInfo = leg;
       }
     }
-    raceList = map2;
+    raceList = map;
     raceInfo = foundRaceInfo ?? null;
     console.log("[updateLegList] races:", Object.keys(raceList).length, "raceInfo:", !!raceInfo);
     return { raceList, raceInfo };
@@ -157,6 +157,9 @@ function getPlayersUpdate() {
 }
 function setPlayersUpdate(ts) {
   playersUpdate = ts;
+}
+function getPlayersList() {
+  return playersList;
 }
 async function updatePlayersList() {
   const playersDatas = await getAllData("players").catch((error) => {
@@ -324,6 +327,11 @@ function getLegPlayersTracksFleet() {
 }
 function getLegPlayersTrackLeader() {
   return legPlayersTracks.leader ? legPlayersTracks.leader : [];
+}
+function getLegPlayersTracksGhost() {
+  if (!connectedPlayerId || !legPlayersTracks.ghosts || legPlayersTracks.ghosts.lenght == 0 || legPlayersTracks.ghosts[connectedPlayerId] == 0)
+    return [];
+  return legPlayersTracks.ghosts[connectedPlayerId];
 }
 async function updateLegPlayersTracks() {
   if ((raceInfo == null ? void 0 : raceInfo.raceId) && (raceInfo == null ? void 0 : raceInfo.legNum)) {
@@ -494,7 +502,7 @@ function buildRaceStatusHtml() {
   tablecontainer.innerHTML = '<table id="raceStatusTable"><thead>' + raceStatusHeader + "</thead><tbody>" + tableContent + "</tbody></table>";
 }
 function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
   if (!raceIte || !raceInfo2)
     return "";
   const userPrefs = getUserPrefs();
@@ -553,7 +561,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
   let fullStamina = '<td class="stamina" ';
   if (((_h = raceIte.metaDash) == null ? void 0 : _h.coffeeBoost) != 0 || ((_i = raceIte.metaDash) == null ? void 0 : _i.chocoBoost) != 0) {
     fullStamina += '><div class="textMini">';
-    if (raceIte.metaDash.chocoBoost != 0) {
+    if (((_j = raceIte.metaDash) == null ? void 0 : _j.chocoBoost) != 0) {
       fullStamina += "🍫+" + roundTo(raceIte.metaDash.chocoBoost, 2) + "%";
       fullStamina += " ⌚" + formatHM(raceIte.metaDash.chocoExp - Date.now());
     }
@@ -562,7 +570,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
     fullStamina += staminaTxt;
     fullStamina += "</div>";
     fullStamina += '<div class="textMini">';
-    if (raceIte.metaDash.coffeeBoost != 0) {
+    if (((_k = raceIte.metaDash) == null ? void 0 : _k.coffeeBoost) != 0) {
       fullStamina += "☕+" + roundTo(raceIte.metaDash.coffeeBoost, 2) + "%";
       fullStamina += " ⌚" + formatHM(raceIte.metaDash.coffeeExp - Date.now());
     }
@@ -586,7 +594,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
   returnVal += raceTableLines(raceIte, best);
   returnVal += infoSail(raceIte, false);
   returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + "</td>";
-  returnVal += '<td class="speed2">' + (((_j = raceIte.metaDash) == null ? void 0 : _j.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
+  returnVal += '<td class="speed2">' + (((_l = raceIte.metaDash) == null ? void 0 : _l.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
   returnVal += '<td class="bvmg"><p>' + bestVMGString + "</p>";
   if (userPrefs.raceData.VMGSpeed)
     returnVal += "<p>(" + bestVMGTilte + ")</p>";
@@ -597,7 +605,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
   returnVal += '<td class="gybe">' + gybe + "</td>";
   returnVal += '<td class="sailPenalties">' + sail + "</td>";
   returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + "</td>";
-  returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_k = raceIte.metaDash) == null ? void 0 : _k.manoeuvering) ? "Yes" : "No") + "</td>";
+  returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_m = raceIte.metaDash) == null ? void 0 : _m.manoeuvering) ? "Yes" : "No") + "</td>";
   if (userPrefs.raceData.lastCmd)
     returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
   returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
@@ -1022,7 +1030,7 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
       routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
   const nameClass = userId == connectedPlayerId2 ? "highlightMe" : "";
   const categoryIdx = category.indexOf(playerIte.type);
-  const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : darkTheme ? categoryStyleDark[categoryIdx] : categoryStyle[categoryIdx];
+  const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : "color:" + (darkTheme ? categoryStyleDark[categoryIdx].nameStyle : categoryStyle[categoryIdx].nameStyle) + ";";
   const autoSail = playerIte.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : "";
   const name = playerIte.type == "sponsor" ? ((_b = playerIte.branding) == null ? void 0 : _b.name) ? playerFleetInfos.info.name + "(" + playerIte.branding.name + ")" : playerFleetInfos.info.name : playerFleetInfos.info.name;
   const sailStyle = 'style="color:' + sailColors[playerIte.sail] + '"';
@@ -1033,17 +1041,17 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo2, connectedPlayerId2) {
 function recordRaceFields(raceInfo2, playerIte) {
   const userPrefs = getUserPrefs();
   if (raceInfo2.raceType === "record") {
-    const localTimes2 = userPrefs.global.localTime;
+    const localTimes = userPrefs.global.localTime;
     if (playerIte.state === "racing" && playerIte.distanceToEnd) {
       let t;
       if (playerIte.metaDash.eRT)
-        t = '<td class="eRT" title= "End : ' + formatShortDate(playerIte.metaDash.eRT, void 0, localTimes2) + '">' + formatDHMS(playerIte.metaDash.eRT) + "</td>";
+        t = '<td class="eRT" title= "End : ' + formatShortDate(playerIte.metaDash.eRT, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.eRT) + "</td>";
       else
         t = '<td class="eRT" title= "End : unknow"></td>';
-      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes2) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>" + t + '<td class="avg">' + roundTo(playerIte.metaDash.avgSpeed, 2) + "</td>";
+      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>" + t + '<td class="avg">' + roundTo(playerIte.metaDash.avgSpeed, 2) + "</td>";
     } else {
       if (playerIte.startDate && playerIte.state === "racing" && playerIte.startDate != "-") {
-        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes2) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>";
+        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>";
         retVal += '<td class="eRT"> - </td><td class="avg"> - </td>';
         return retVal;
       } else
@@ -4593,13 +4601,13 @@ function requireLeafletSrc() {
         // @method setPosition(position: string): this
         // Sets the position of the control.
         setPosition: function(position) {
-          var map2 = this._map;
-          if (map2) {
-            map2.removeControl(this);
+          var map = this._map;
+          if (map) {
+            map.removeControl(this);
           }
           this.options.position = position;
-          if (map2) {
-            map2.addControl(this);
+          if (map) {
+            map.addControl(this);
           }
           return this;
         },
@@ -4610,10 +4618,10 @@ function requireLeafletSrc() {
         },
         // @method addTo(map: Map): this
         // Adds the control to the given map.
-        addTo: function(map2) {
+        addTo: function(map) {
           this.remove();
-          this._map = map2;
-          var container = this._container = this.onAdd(map2), pos = this.getPosition(), corner = map2._controlCorners[pos];
+          this._map = map;
+          var container = this._container = this.onAdd(map), pos = this.getPosition(), corner = map._controlCorners[pos];
           addClass(container, "leaflet-control");
           if (pos.indexOf("bottom") !== -1) {
             corner.insertBefore(container, corner.firstChild);
@@ -4721,18 +4729,18 @@ function requireLeafletSrc() {
             this._addLayer(overlays[i], i, true);
           }
         },
-        onAdd: function(map2) {
+        onAdd: function(map) {
           this._initLayout();
           this._update();
-          this._map = map2;
-          map2.on("zoomend", this._checkDisabledLayers, this);
+          this._map = map;
+          map.on("zoomend", this._checkDisabledLayers, this);
           for (var i = 0; i < this._layers.length; i++) {
             this._layers[i].layer.on("add remove", this._onLayerChange, this);
           }
           return this._container;
         },
-        addTo: function(map2) {
-          Control.prototype.addTo.call(this, map2);
+        addTo: function(map) {
+          Control.prototype.addTo.call(this, map);
           return this._expandIfNotCollapsed();
         },
         onRemove: function() {
@@ -4743,21 +4751,21 @@ function requireLeafletSrc() {
         },
         // @method addBaseLayer(layer: Layer, name: String): this
         // Adds a base layer (radio button entry) with the given name to the control.
-        addBaseLayer: function(layer2, name) {
-          this._addLayer(layer2, name);
+        addBaseLayer: function(layer, name) {
+          this._addLayer(layer, name);
           return this._map ? this._update() : this;
         },
         // @method addOverlay(layer: Layer, name: String): this
         // Adds an overlay (checkbox entry) with the given name to the control.
-        addOverlay: function(layer2, name) {
-          this._addLayer(layer2, name, true);
+        addOverlay: function(layer, name) {
+          this._addLayer(layer, name, true);
           return this._map ? this._update() : this;
         },
         // @method removeLayer(layer: Layer): this
         // Remove the given layer from the control.
-        removeLayer: function(layer2) {
-          layer2.off("add remove", this._onLayerChange, this);
-          var obj = this._getLayer(stamp(layer2));
+        removeLayer: function(layer) {
+          layer.off("add remove", this._onLayerChange, this);
+          var obj = this._getLayer(stamp(layer));
           if (obj) {
             this._layers.splice(this._layers.indexOf(obj), 1);
           }
@@ -4828,12 +4836,12 @@ function requireLeafletSrc() {
             }
           }
         },
-        _addLayer: function(layer2, name, overlay) {
+        _addLayer: function(layer, name, overlay) {
           if (this._map) {
-            layer2.on("add remove", this._onLayerChange, this);
+            layer.on("add remove", this._onLayerChange, this);
           }
           this._layers.push({
-            layer: layer2,
+            layer,
             name,
             overlay
           });
@@ -4842,9 +4850,9 @@ function requireLeafletSrc() {
               return this.options.sortFunction(a.layer, b.layer, a.name, b.name);
             }, this));
           }
-          if (this.options.autoZIndex && layer2.setZIndex) {
+          if (this.options.autoZIndex && layer.setZIndex) {
             this._lastZIndex++;
-            layer2.setZIndex(this._lastZIndex);
+            layer.setZIndex(this._lastZIndex);
           }
           this._expandIfNotCollapsed();
         },
@@ -4915,16 +4923,16 @@ function requireLeafletSrc() {
           if (this._preventClick) {
             return;
           }
-          var inputs = this._layerControlInputs, input, layer2;
+          var inputs = this._layerControlInputs, input, layer;
           var addedLayers = [], removedLayers = [];
           this._handlingClick = true;
           for (var i = inputs.length - 1; i >= 0; i--) {
             input = inputs[i];
-            layer2 = this._getLayer(input.layerId).layer;
+            layer = this._getLayer(input.layerId).layer;
             if (input.checked) {
-              addedLayers.push(layer2);
+              addedLayers.push(layer);
             } else if (!input.checked) {
-              removedLayers.push(layer2);
+              removedLayers.push(layer);
             }
           }
           for (i = 0; i < removedLayers.length; i++) {
@@ -4941,11 +4949,11 @@ function requireLeafletSrc() {
           this._refocusOnMap();
         },
         _checkDisabledLayers: function() {
-          var inputs = this._layerControlInputs, input, layer2, zoom2 = this._map.getZoom();
+          var inputs = this._layerControlInputs, input, layer, zoom2 = this._map.getZoom();
           for (var i = inputs.length - 1; i >= 0; i--) {
             input = inputs[i];
-            layer2 = this._getLayer(input.layerId).layer;
-            input.disabled = layer2.options.minZoom !== void 0 && zoom2 < layer2.options.minZoom || layer2.options.maxZoom !== void 0 && zoom2 > layer2.options.maxZoom;
+            layer = this._getLayer(input.layerId).layer;
+            input.disabled = layer.options.minZoom !== void 0 && zoom2 < layer.options.minZoom || layer.options.maxZoom !== void 0 && zoom2 > layer.options.maxZoom;
           }
         },
         _expandIfNotCollapsed: function() {
@@ -4987,7 +4995,7 @@ function requireLeafletSrc() {
           // The title set on the 'zoom out' button.
           zoomOutTitle: "Zoom out"
         },
-        onAdd: function(map2) {
+        onAdd: function(map) {
           var zoomName = "leaflet-control-zoom", container = create$1("div", zoomName + " leaflet-bar"), options = this.options;
           this._zoomInButton = this._createButton(
             options.zoomInText,
@@ -5004,11 +5012,11 @@ function requireLeafletSrc() {
             this._zoomOut
           );
           this._updateDisabled();
-          map2.on("zoomend zoomlevelschange", this._updateDisabled, this);
+          map.on("zoomend zoomlevelschange", this._updateDisabled, this);
           return container;
         },
-        onRemove: function(map2) {
-          map2.off("zoomend zoomlevelschange", this._updateDisabled, this);
+        onRemove: function(map) {
+          map.off("zoomend zoomlevelschange", this._updateDisabled, this);
         },
         disable: function() {
           this._disabled = true;
@@ -5044,16 +5052,16 @@ function requireLeafletSrc() {
           return link;
         },
         _updateDisabled: function() {
-          var map2 = this._map, className = "leaflet-disabled";
+          var map = this._map, className = "leaflet-disabled";
           removeClass(this._zoomInButton, className);
           removeClass(this._zoomOutButton, className);
           this._zoomInButton.setAttribute("aria-disabled", "false");
           this._zoomOutButton.setAttribute("aria-disabled", "false");
-          if (this._disabled || map2._zoom === map2.getMinZoom()) {
+          if (this._disabled || map._zoom === map.getMinZoom()) {
             addClass(this._zoomOutButton, className);
             this._zoomOutButton.setAttribute("aria-disabled", "true");
           }
-          if (this._disabled || map2._zoom === map2.getMaxZoom()) {
+          if (this._disabled || map._zoom === map.getMaxZoom()) {
             addClass(this._zoomInButton, className);
             this._zoomInButton.setAttribute("aria-disabled", "true");
           }
@@ -5088,15 +5096,15 @@ function requireLeafletSrc() {
           // @option updateWhenIdle: Boolean = false
           // If `true`, the control is updated on [`moveend`](#map-moveend), otherwise it's always up-to-date (updated on [`move`](#map-move)).
         },
-        onAdd: function(map2) {
+        onAdd: function(map) {
           var className = "leaflet-control-scale", container = create$1("div", className), options = this.options;
           this._addScales(options, className + "-line", container);
-          map2.on(options.updateWhenIdle ? "moveend" : "move", this._update, this);
-          map2.whenReady(this._update, this);
+          map.on(options.updateWhenIdle ? "moveend" : "move", this._update, this);
+          map.whenReady(this._update, this);
           return container;
         },
-        onRemove: function(map2) {
-          map2.off(this.options.updateWhenIdle ? "moveend" : "move", this._update, this);
+        onRemove: function(map) {
+          map.off(this.options.updateWhenIdle ? "moveend" : "move", this._update, this);
         },
         _addScales: function(options, className, container) {
           if (options.metric) {
@@ -5107,10 +5115,10 @@ function requireLeafletSrc() {
           }
         },
         _update: function() {
-          var map2 = this._map, y = map2.getSize().y / 2;
-          var maxMeters = map2.distance(
-            map2.containerPointToLatLng([0, y]),
-            map2.containerPointToLatLng([this.options.maxWidth, y])
+          var map = this._map, y = map.getSize().y / 2;
+          var maxMeters = map.distance(
+            map.containerPointToLatLng([0, y]),
+            map.containerPointToLatLng([this.options.maxWidth, y])
           );
           this._updateScales(maxMeters);
         },
@@ -5164,21 +5172,21 @@ function requireLeafletSrc() {
           setOptions(this, options);
           this._attributions = {};
         },
-        onAdd: function(map2) {
-          map2.attributionControl = this;
+        onAdd: function(map) {
+          map.attributionControl = this;
           this._container = create$1("div", "leaflet-control-attribution");
           disableClickPropagation(this._container);
-          for (var i in map2._layers) {
-            if (map2._layers[i].getAttribution) {
-              this.addAttribution(map2._layers[i].getAttribution());
+          for (var i in map._layers) {
+            if (map._layers[i].getAttribution) {
+              this.addAttribution(map._layers[i].getAttribution());
             }
           }
           this._update();
-          map2.on("layeradd", this._addAttribution, this);
+          map.on("layeradd", this._addAttribution, this);
           return this._container;
         },
-        onRemove: function(map2) {
-          map2.off("layeradd", this._addAttribution, this);
+        onRemove: function(map) {
+          map.off("layeradd", this._addAttribution, this);
         },
         _addAttribution: function(ev) {
           if (ev.layer.getAttribution) {
@@ -5260,8 +5268,8 @@ function requireLeafletSrc() {
       control.scale = scale;
       control.attribution = attribution;
       var Handler = Class.extend({
-        initialize: function(map2) {
-          this._map = map2;
+        initialize: function(map) {
+          this._map = map;
         },
         // @method enable(): this
         // Enables the handler
@@ -5295,8 +5303,8 @@ function requireLeafletSrc() {
         // @method removeHooks()
         // Called when the handler is disabled, should remove the event hooks added previously.
       });
-      Handler.addTo = function(map2, name) {
-        map2.addHandler(name, this);
+      Handler.addTo = function(map, name) {
+        map.addHandler(name, this);
         return this;
       };
       var Mixin = { Events };
@@ -5806,8 +5814,8 @@ function requireLeafletSrc() {
          * @method addTo(map: Map|LayerGroup): this
          * Adds the layer to the given map or layer group.
          */
-        addTo: function(map2) {
-          map2.addLayer(this);
+        addTo: function(map) {
+          map.addLayer(this);
           return this;
         },
         // @method remove: this
@@ -5846,65 +5854,65 @@ function requireLeafletSrc() {
           return this.options.attribution;
         },
         _layerAdd: function(e) {
-          var map2 = e.target;
-          if (!map2.hasLayer(this)) {
+          var map = e.target;
+          if (!map.hasLayer(this)) {
             return;
           }
-          this._map = map2;
-          this._zoomAnimated = map2._zoomAnimated;
+          this._map = map;
+          this._zoomAnimated = map._zoomAnimated;
           if (this.getEvents) {
             var events = this.getEvents();
-            map2.on(events, this);
+            map.on(events, this);
             this.once("remove", function() {
-              map2.off(events, this);
+              map.off(events, this);
             }, this);
           }
-          this.onAdd(map2);
+          this.onAdd(map);
           this.fire("add");
-          map2.fire("layeradd", { layer: this });
+          map.fire("layeradd", { layer: this });
         }
       });
       Map.include({
         // @method addLayer(layer: Layer): this
         // Adds the given layer to the map
-        addLayer: function(layer2) {
-          if (!layer2._layerAdd) {
+        addLayer: function(layer) {
+          if (!layer._layerAdd) {
             throw new Error("The provided object is not a Layer.");
           }
-          var id = stamp(layer2);
+          var id = stamp(layer);
           if (this._layers[id]) {
             return this;
           }
-          this._layers[id] = layer2;
-          layer2._mapToAdd = this;
-          if (layer2.beforeAdd) {
-            layer2.beforeAdd(this);
+          this._layers[id] = layer;
+          layer._mapToAdd = this;
+          if (layer.beforeAdd) {
+            layer.beforeAdd(this);
           }
-          this.whenReady(layer2._layerAdd, layer2);
+          this.whenReady(layer._layerAdd, layer);
           return this;
         },
         // @method removeLayer(layer: Layer): this
         // Removes the given layer from the map.
-        removeLayer: function(layer2) {
-          var id = stamp(layer2);
+        removeLayer: function(layer) {
+          var id = stamp(layer);
           if (!this._layers[id]) {
             return this;
           }
           if (this._loaded) {
-            layer2.onRemove(this);
+            layer.onRemove(this);
           }
           delete this._layers[id];
           if (this._loaded) {
-            this.fire("layerremove", { layer: layer2 });
-            layer2.fire("remove");
+            this.fire("layerremove", { layer });
+            layer.fire("remove");
           }
-          layer2._map = layer2._mapToAdd = null;
+          layer._map = layer._mapToAdd = null;
           return this;
         },
         // @method hasLayer(layer: Layer): Boolean
         // Returns `true` if the given layer is currently added to the map
-        hasLayer: function(layer2) {
-          return stamp(layer2) in this._layers;
+        hasLayer: function(layer) {
+          return stamp(layer) in this._layers;
         },
         /* @method eachLayer(fn: Function, context?: Object): this
          * Iterates over the layers of the map, optionally specifying context of the iterator function.
@@ -5926,14 +5934,14 @@ function requireLeafletSrc() {
             this.addLayer(layers2[i]);
           }
         },
-        _addZoomLimit: function(layer2) {
-          if (!isNaN(layer2.options.maxZoom) || !isNaN(layer2.options.minZoom)) {
-            this._zoomBoundLayers[stamp(layer2)] = layer2;
+        _addZoomLimit: function(layer) {
+          if (!isNaN(layer.options.maxZoom) || !isNaN(layer.options.minZoom)) {
+            this._zoomBoundLayers[stamp(layer)] = layer;
             this._updateZoomLevels();
           }
         },
-        _removeZoomLimit: function(layer2) {
-          var id = stamp(layer2);
+        _removeZoomLimit: function(layer) {
+          var id = stamp(layer);
           if (this._zoomBoundLayers[id]) {
             delete this._zoomBoundLayers[id];
             this._updateZoomLevels();
@@ -5972,11 +5980,11 @@ function requireLeafletSrc() {
         },
         // @method addLayer(layer: Layer): this
         // Adds the given layer to the group.
-        addLayer: function(layer2) {
-          var id = this.getLayerId(layer2);
-          this._layers[id] = layer2;
+        addLayer: function(layer) {
+          var id = this.getLayerId(layer);
+          this._layers[id] = layer;
           if (this._map) {
-            this._map.addLayer(layer2);
+            this._map.addLayer(layer);
           }
           return this;
         },
@@ -5985,8 +5993,8 @@ function requireLeafletSrc() {
         // @alternative
         // @method removeLayer(id: Number): this
         // Removes the layer with the given internal ID from the group.
-        removeLayer: function(layer2) {
-          var id = layer2 in this._layers ? layer2 : this.getLayerId(layer2);
+        removeLayer: function(layer) {
+          var id = layer in this._layers ? layer : this.getLayerId(layer);
           if (this._map && this._layers[id]) {
             this._map.removeLayer(this._layers[id]);
           }
@@ -5998,8 +6006,8 @@ function requireLeafletSrc() {
         // @alternative
         // @method hasLayer(id: Number): Boolean
         // Returns `true` if the given internal ID is currently added to the group.
-        hasLayer: function(layer2) {
-          var layerId = typeof layer2 === "number" ? layer2 : this.getLayerId(layer2);
+        hasLayer: function(layer) {
+          var layerId = typeof layer === "number" ? layer : this.getLayerId(layer);
           return layerId in this._layers;
         },
         // @method clearLayers(): this
@@ -6012,20 +6020,20 @@ function requireLeafletSrc() {
         // additional parameters. Has no effect if the layers contained do not
         // implement `methodName`.
         invoke: function(methodName) {
-          var args = Array.prototype.slice.call(arguments, 1), i, layer2;
+          var args = Array.prototype.slice.call(arguments, 1), i, layer;
           for (i in this._layers) {
-            layer2 = this._layers[i];
-            if (layer2[methodName]) {
-              layer2[methodName].apply(layer2, args);
+            layer = this._layers[i];
+            if (layer[methodName]) {
+              layer[methodName].apply(layer, args);
             }
           }
           return this;
         },
-        onAdd: function(map2) {
-          this.eachLayer(map2.addLayer, map2);
+        onAdd: function(map) {
+          this.eachLayer(map.addLayer, map);
         },
-        onRemove: function(map2) {
-          this.eachLayer(map2.removeLayer, map2);
+        onRemove: function(map) {
+          this.eachLayer(map.removeLayer, map);
         },
         // @method eachLayer(fn: Function, context?: Object): this
         // Iterates over the layers of the group, optionally specifying context of the iterator function.
@@ -6059,32 +6067,32 @@ function requireLeafletSrc() {
         },
         // @method getLayerId(layer: Layer): Number
         // Returns the internal ID for a layer
-        getLayerId: function(layer2) {
-          return stamp(layer2);
+        getLayerId: function(layer) {
+          return stamp(layer);
         }
       });
       var layerGroup = function(layers2, options) {
         return new LayerGroup(layers2, options);
       };
       var FeatureGroup = LayerGroup.extend({
-        addLayer: function(layer2) {
-          if (this.hasLayer(layer2)) {
+        addLayer: function(layer) {
+          if (this.hasLayer(layer)) {
             return this;
           }
-          layer2.addEventParent(this);
-          LayerGroup.prototype.addLayer.call(this, layer2);
-          return this.fire("layeradd", { layer: layer2 });
+          layer.addEventParent(this);
+          LayerGroup.prototype.addLayer.call(this, layer);
+          return this.fire("layeradd", { layer });
         },
-        removeLayer: function(layer2) {
-          if (!this.hasLayer(layer2)) {
+        removeLayer: function(layer) {
+          if (!this.hasLayer(layer)) {
             return this;
           }
-          if (layer2 in this._layers) {
-            layer2 = this._layers[layer2];
+          if (layer in this._layers) {
+            layer = this._layers[layer];
           }
-          layer2.removeEventParent(this);
-          LayerGroup.prototype.removeLayer.call(this, layer2);
-          return this.fire("layerremove", { layer: layer2 });
+          layer.removeEventParent(this);
+          LayerGroup.prototype.removeLayer.call(this, layer);
+          return this.fire("layerremove", { layer });
         },
         // @method setStyle(style: Path options): this
         // Sets the given path options to each layer of the group that has a `setStyle` method.
@@ -6106,8 +6114,8 @@ function requireLeafletSrc() {
         getBounds: function() {
           var bounds = new LatLngBounds();
           for (var id in this._layers) {
-            var layer2 = this._layers[id];
-            bounds.extend(layer2.getBounds ? layer2.getBounds() : layer2.getLatLng());
+            var layer = this._layers[id];
+            bounds.extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
           }
           return bounds;
         }
@@ -6294,7 +6302,7 @@ function requireLeafletSrc() {
           return this._draggable && this._draggable._moved;
         },
         _adjustPan: function(e) {
-          var marker2 = this._marker, map2 = marker2._map, speed = this._marker.options.autoPanSpeed, padding = this._marker.options.autoPanPadding, iconPos = getPosition(marker2._icon), bounds = map2.getPixelBounds(), origin = map2.getPixelOrigin();
+          var marker2 = this._marker, map = marker2._map, speed = this._marker.options.autoPanSpeed, padding = this._marker.options.autoPanPadding, iconPos = getPosition(marker2._icon), bounds = map.getPixelBounds(), origin = map.getPixelOrigin();
           var panBounds = toBounds(
             bounds.min._subtract(origin).add(padding),
             bounds.max._subtract(origin).subtract(padding)
@@ -6304,7 +6312,7 @@ function requireLeafletSrc() {
               (Math.max(panBounds.max.x, iconPos.x) - panBounds.max.x) / (bounds.max.x - panBounds.max.x) - (Math.min(panBounds.min.x, iconPos.x) - panBounds.min.x) / (bounds.min.x - panBounds.min.x),
               (Math.max(panBounds.max.y, iconPos.y) - panBounds.max.y) / (bounds.max.y - panBounds.max.y) - (Math.min(panBounds.min.y, iconPos.y) - panBounds.min.y) / (bounds.min.y - panBounds.min.y)
             ).multiplyBy(speed);
-            map2.panBy(movement, { animate: false });
+            map.panBy(movement, { animate: false });
             this._draggable._newPos._add(movement);
             this._draggable._startPos._add(movement);
             setPosition(marker2._icon, this._draggable._newPos);
@@ -6411,22 +6419,22 @@ function requireLeafletSrc() {
           setOptions(this, options);
           this._latlng = toLatLng(latlng);
         },
-        onAdd: function(map2) {
-          this._zoomAnimated = this._zoomAnimated && map2.options.markerZoomAnimation;
+        onAdd: function(map) {
+          this._zoomAnimated = this._zoomAnimated && map.options.markerZoomAnimation;
           if (this._zoomAnimated) {
-            map2.on("zoomanim", this._animateZoom, this);
+            map.on("zoomanim", this._animateZoom, this);
           }
           this._initIcon();
           this.update();
         },
-        onRemove: function(map2) {
+        onRemove: function(map) {
           if (this.dragging && this.dragging.enabled()) {
             this.options.draggable = true;
             this.dragging.removeHooks();
           }
           delete this.dragging;
           if (this._zoomAnimated) {
-            map2.off("zoomanim", this._animateZoom, this);
+            map.off("zoomanim", this._animateZoom, this);
           }
           this._removeIcon();
           this._removeShadow();
@@ -6617,14 +6625,14 @@ function requireLeafletSrc() {
           this._updateZIndex(0);
         },
         _panOnFocus: function() {
-          var map2 = this._map;
-          if (!map2) {
+          var map = this._map;
+          if (!map) {
             return;
           }
           var iconOpts = this.options.icon.options;
           var size = iconOpts.iconSize ? toPoint(iconOpts.iconSize) : toPoint(0, 0);
           var anchor = iconOpts.iconAnchor ? toPoint(iconOpts.iconAnchor) : toPoint(0, 0);
-          map2.panInside(this._latlng, {
+          map.panInside(this._latlng, {
             paddingTopLeft: anchor,
             paddingBottomRight: size.subtract(anchor)
           });
@@ -6687,8 +6695,8 @@ function requireLeafletSrc() {
           // (unless [`L.DomEvent.stopPropagation`](#domevent-stoppropagation) is used).
           bubblingMouseEvents: true
         },
-        beforeAdd: function(map2) {
-          this._renderer = map2.getRenderer(this);
+        beforeAdd: function(map) {
+          this._renderer = map.getRenderer(this);
         },
         onAdd: function() {
           this._renderer._initPath(this);
@@ -6850,19 +6858,19 @@ function requireLeafletSrc() {
         },
         setStyle: Path.prototype.setStyle,
         _project: function() {
-          var lng = this._latlng.lng, lat = this._latlng.lat, map2 = this._map, crs = map2.options.crs;
+          var lng = this._latlng.lng, lat = this._latlng.lat, map = this._map, crs = map.options.crs;
           if (crs.distance === Earth.distance) {
-            var d = Math.PI / 180, latR = this._mRadius / Earth.R / d, top = map2.project([lat + latR, lng]), bottom = map2.project([lat - latR, lng]), p = top.add(bottom).divideBy(2), lat2 = map2.unproject(p).lat, lngR = Math.acos((Math.cos(latR * d) - Math.sin(lat * d) * Math.sin(lat2 * d)) / (Math.cos(lat * d) * Math.cos(lat2 * d))) / d;
+            var d = Math.PI / 180, latR = this._mRadius / Earth.R / d, top = map.project([lat + latR, lng]), bottom = map.project([lat - latR, lng]), p = top.add(bottom).divideBy(2), lat2 = map.unproject(p).lat, lngR = Math.acos((Math.cos(latR * d) - Math.sin(lat * d) * Math.sin(lat2 * d)) / (Math.cos(lat * d) * Math.cos(lat2 * d))) / d;
             if (isNaN(lngR) || lngR === 0) {
               lngR = latR / Math.cos(Math.PI / 180 * lat);
             }
-            this._point = p.subtract(map2.getPixelOrigin());
-            this._radius = isNaN(lngR) ? 0 : p.x - map2.project([lat2, lng - lngR]).x;
+            this._point = p.subtract(map.getPixelOrigin());
+            this._radius = isNaN(lngR) ? 0 : p.x - map.project([lat2, lng - lngR]).x;
             this._radiusY = p.y - top.y;
           } else {
             var latlng2 = crs.unproject(crs.project(this._latlng).subtract([this._mRadius, 0]));
-            this._point = map2.latLngToLayerPoint(this._latlng);
-            this._radius = this._point.x - map2.latLngToLayerPoint(latlng2).x;
+            this._point = map.latLngToLayerPoint(this._latlng);
+            this._radius = this._point.x - map.latLngToLayerPoint(latlng2).x;
           }
           this._updateBounds();
         }
@@ -7220,42 +7228,42 @@ function requireLeafletSrc() {
           if (options.filter && !options.filter(geojson)) {
             return this;
           }
-          var layer2 = geometryToLayer(geojson, options);
-          if (!layer2) {
+          var layer = geometryToLayer(geojson, options);
+          if (!layer) {
             return this;
           }
-          layer2.feature = asFeature(geojson);
-          layer2.defaultOptions = layer2.options;
-          this.resetStyle(layer2);
+          layer.feature = asFeature(geojson);
+          layer.defaultOptions = layer.options;
+          this.resetStyle(layer);
           if (options.onEachFeature) {
-            options.onEachFeature(geojson, layer2);
+            options.onEachFeature(geojson, layer);
           }
-          return this.addLayer(layer2);
+          return this.addLayer(layer);
         },
         // @method resetStyle( <Path> layer? ): this
         // Resets the given vector layer's style to the original GeoJSON style, useful for resetting style after hover events.
         // If `layer` is omitted, the style of all features in the current layer is reset.
-        resetStyle: function(layer2) {
-          if (layer2 === void 0) {
+        resetStyle: function(layer) {
+          if (layer === void 0) {
             return this.eachLayer(this.resetStyle, this);
           }
-          layer2.options = extend({}, layer2.defaultOptions);
-          this._setLayerStyle(layer2, this.options.style);
+          layer.options = extend({}, layer.defaultOptions);
+          this._setLayerStyle(layer, this.options.style);
           return this;
         },
         // @method setStyle( <Function> style ): this
         // Changes styles of GeoJSON vector layers with the given style function.
         setStyle: function(style3) {
-          return this.eachLayer(function(layer2) {
-            this._setLayerStyle(layer2, style3);
+          return this.eachLayer(function(layer) {
+            this._setLayerStyle(layer, style3);
           }, this);
         },
-        _setLayerStyle: function(layer2, style3) {
-          if (layer2.setStyle) {
+        _setLayerStyle: function(layer, style3) {
+          if (layer.setStyle) {
             if (typeof style3 === "function") {
-              style3 = style3(layer2.feature);
+              style3 = style3(layer.feature);
             }
-            layer2.setStyle(style3);
+            layer.setStyle(style3);
           }
         }
       });
@@ -7334,8 +7342,8 @@ function requireLeafletSrc() {
         }
         return coords;
       }
-      function getFeature(layer2, newGeometry) {
-        return layer2.feature ? extend({}, layer2.feature, { geometry: newGeometry }) : asFeature(newGeometry);
+      function getFeature(layer, newGeometry) {
+        return layer.feature ? extend({}, layer.feature, { geometry: newGeometry }) : asFeature(newGeometry);
       }
       function asFeature(geojson) {
         if (geojson.type === "Feature" || geojson.type === "FeatureCollection") {
@@ -7384,8 +7392,8 @@ function requireLeafletSrc() {
       LayerGroup.include({
         toMultiPoint: function(precision) {
           var coords = [];
-          this.eachLayer(function(layer2) {
-            coords.push(layer2.toGeoJSON(precision).geometry.coordinates);
+          this.eachLayer(function(layer) {
+            coords.push(layer.toGeoJSON(precision).geometry.coordinates);
           });
           return getFeature(this, {
             type: "MultiPoint",
@@ -7401,9 +7409,9 @@ function requireLeafletSrc() {
             return this.toMultiPoint(precision);
           }
           var isGeometryCollection = type === "GeometryCollection", jsons = [];
-          this.eachLayer(function(layer2) {
-            if (layer2.toGeoJSON) {
-              var json = layer2.toGeoJSON(precision);
+          this.eachLayer(function(layer) {
+            if (layer.toGeoJSON) {
+              var json = layer.toGeoJSON(precision);
               if (isGeometryCollection) {
                 jsons.push(json.geometry);
               } else {
@@ -7750,10 +7758,10 @@ function requireLeafletSrc() {
         // @method openOn(map: Map): this
         // Adds the overlay to the map.
         // Alternative to `map.openPopup(popup)`/`.openTooltip(tooltip)`.
-        openOn: function(map2) {
-          map2 = arguments.length ? map2 : this._source._map;
-          if (!map2.hasLayer(this)) {
-            map2.addLayer(this);
+        openOn: function(map) {
+          map = arguments.length ? map : this._source._map;
+          if (!map.hasLayer(this)) {
+            map.addLayer(this);
           }
           return this;
         },
@@ -7771,32 +7779,32 @@ function requireLeafletSrc() {
         // Opens or closes the overlay bound to layer depending on its current state.
         // Argument may be omitted only for overlay bound to layer.
         // Alternative to `layer.togglePopup()`/`.toggleTooltip()`.
-        toggle: function(layer2) {
+        toggle: function(layer) {
           if (this._map) {
             this.close();
           } else {
             if (arguments.length) {
-              this._source = layer2;
+              this._source = layer;
             } else {
-              layer2 = this._source;
+              layer = this._source;
             }
             this._prepareOpen();
-            this.openOn(layer2._map);
+            this.openOn(layer._map);
           }
           return this;
         },
-        onAdd: function(map2) {
-          this._zoomAnimated = map2._zoomAnimated;
+        onAdd: function(map) {
+          this._zoomAnimated = map._zoomAnimated;
           if (!this._container) {
             this._initLayout();
           }
-          if (map2._fadeAnimated) {
+          if (map._fadeAnimated) {
             setOpacity(this._container, 0);
           }
           clearTimeout(this._removeTimeout);
           this.getPane().appendChild(this._container);
           this.update();
-          if (map2._fadeAnimated) {
+          if (map._fadeAnimated) {
             setOpacity(this._container, 1);
           }
           this.bringToFront();
@@ -7805,8 +7813,8 @@ function requireLeafletSrc() {
             this.addInteractiveTarget(this._container);
           }
         },
-        onRemove: function(map2) {
-          if (map2._fadeAnimated) {
+        onRemove: function(map) {
+          if (map._fadeAnimated) {
             setOpacity(this._container, 0);
             this._removeTimeout = setTimeout(bind(remove, void 0, this._container), 200);
           } else {
@@ -8054,17 +8062,17 @@ function requireLeafletSrc() {
         // @method openOn(map: Map): this
         // Alternative to `map.openPopup(popup)`.
         // Adds the popup to the map and closes the previous one.
-        openOn: function(map2) {
-          map2 = arguments.length ? map2 : this._source._map;
-          if (!map2.hasLayer(this) && map2._popup && map2._popup.options.autoClose) {
-            map2.removeLayer(map2._popup);
+        openOn: function(map) {
+          map = arguments.length ? map : this._source._map;
+          if (!map.hasLayer(this) && map._popup && map._popup.options.autoClose) {
+            map.removeLayer(map._popup);
           }
-          map2._popup = this;
-          return DivOverlay.prototype.openOn.call(this, map2);
+          map._popup = this;
+          return DivOverlay.prototype.openOn.call(this, map);
         },
-        onAdd: function(map2) {
-          DivOverlay.prototype.onAdd.call(this, map2);
-          map2.fire("popupopen", { popup: this });
+        onAdd: function(map) {
+          DivOverlay.prototype.onAdd.call(this, map);
+          map.fire("popupopen", { popup: this });
           if (this._source) {
             this._source.fire("popupopen", { popup: this }, true);
             if (!(this._source instanceof Path)) {
@@ -8072,9 +8080,9 @@ function requireLeafletSrc() {
             }
           }
         },
-        onRemove: function(map2) {
-          DivOverlay.prototype.onRemove.call(this, map2);
-          map2.fire("popupclose", { popup: this });
+        onRemove: function(map) {
+          DivOverlay.prototype.onRemove.call(this, map);
+          map.fire("popupclose", { popup: this });
           if (this._source) {
             this._source.fire("popupclose", { popup: this }, true);
             if (!(this._source instanceof Path)) {
@@ -8150,9 +8158,9 @@ function requireLeafletSrc() {
             this._autopanning = false;
             return;
           }
-          var map2 = this._map, marginBottom = parseInt(getStyle(this._container, "marginBottom"), 10) || 0, containerHeight = this._container.offsetHeight + marginBottom, containerWidth = this._containerWidth, layerPos = new Point(this._containerLeft, -containerHeight - this._containerBottom);
+          var map = this._map, marginBottom = parseInt(getStyle(this._container, "marginBottom"), 10) || 0, containerHeight = this._container.offsetHeight + marginBottom, containerWidth = this._containerWidth, layerPos = new Point(this._containerLeft, -containerHeight - this._containerBottom);
           layerPos._add(getPosition(this._container));
-          var containerPos = map2.layerPointToContainerPoint(layerPos), padding = toPoint(this.options.autoPanPadding), paddingTL = toPoint(this.options.autoPanPaddingTopLeft || padding), paddingBR = toPoint(this.options.autoPanPaddingBottomRight || padding), size = map2.getSize(), dx = 0, dy = 0;
+          var containerPos = map.layerPointToContainerPoint(layerPos), padding = toPoint(this.options.autoPanPadding), paddingTL = toPoint(this.options.autoPanPaddingTopLeft || padding), paddingBR = toPoint(this.options.autoPanPaddingBottomRight || padding), size = map.getSize(), dx = 0, dy = 0;
           if (containerPos.x + containerWidth + paddingBR.x > size.x) {
             dx = containerPos.x + containerWidth - size.x + paddingBR.x;
           }
@@ -8169,7 +8177,7 @@ function requireLeafletSrc() {
             if (this.options.keepInView) {
               this._autopanning = true;
             }
-            map2.fire("autopanstart").panBy([dx, dy]);
+            map.fire("autopanstart").panBy([dx, dy]);
           }
         },
         _getAnchor: function() {
@@ -8334,18 +8342,18 @@ function requireLeafletSrc() {
           // Tooltip container opacity.
           opacity: 0.9
         },
-        onAdd: function(map2) {
-          DivOverlay.prototype.onAdd.call(this, map2);
+        onAdd: function(map) {
+          DivOverlay.prototype.onAdd.call(this, map);
           this.setOpacity(this.options.opacity);
-          map2.fire("tooltipopen", { tooltip: this });
+          map.fire("tooltipopen", { tooltip: this });
           if (this._source) {
             this.addEventParent(this._source);
             this._source.fire("tooltipopen", { tooltip: this }, true);
           }
         },
-        onRemove: function(map2) {
-          DivOverlay.prototype.onRemove.call(this, map2);
-          map2.fire("tooltipclose", { tooltip: this });
+        onRemove: function(map) {
+          DivOverlay.prototype.onRemove.call(this, map);
+          map.fire("tooltipclose", { tooltip: this });
           if (this._source) {
             this.removeEventParent(this._source);
             this._source.fire("tooltipclose", { tooltip: this }, true);
@@ -8369,7 +8377,7 @@ function requireLeafletSrc() {
         _adjustPan: function() {
         },
         _setPosition: function(pos) {
-          var subX, subY, map2 = this._map, container = this._container, centerPoint = map2.latLngToContainerPoint(map2.getCenter()), tooltipPoint = map2.layerPointToContainerPoint(pos), direction = this.options.direction, tooltipWidth = container.offsetWidth, tooltipHeight = container.offsetHeight, offset = toPoint(this.options.offset), anchor = this._getAnchor();
+          var subX, subY, map = this._map, container = this._container, centerPoint = map.latLngToContainerPoint(map.getCenter()), tooltipPoint = map.layerPointToContainerPoint(pos), direction = this.options.direction, tooltipWidth = container.offsetWidth, tooltipHeight = container.offsetHeight, offset = toPoint(this.options.offset), anchor = this._getAnchor();
           if (direction === "top") {
             subX = tooltipWidth / 2;
             subY = tooltipHeight;
@@ -8550,18 +8558,18 @@ function requireLeafletSrc() {
             this.eachLayer(this._addFocusListenersOnLayer, this);
           }
         },
-        _addFocusListenersOnLayer: function(layer2) {
-          var el = typeof layer2.getElement === "function" && layer2.getElement();
+        _addFocusListenersOnLayer: function(layer) {
+          var el = typeof layer.getElement === "function" && layer.getElement();
           if (el) {
             on(el, "focus", function() {
-              this._tooltip._source = layer2;
+              this._tooltip._source = layer;
               this.openTooltip();
             }, this);
             on(el, "blur", this.closeTooltip, this);
           }
         },
-        _setAriaDescribedByOnLayer: function(layer2) {
-          var el = typeof layer2.getElement === "function" && layer2.getElement();
+        _setAriaDescribedByOnLayer: function(layer) {
+          var el = typeof layer.getElement === "function" && layer.getElement();
           if (el) {
             el.setAttribute("aria-describedby", this._tooltip._container.id);
           }
@@ -8702,13 +8710,13 @@ function requireLeafletSrc() {
           this._tiles = {};
           this._resetView();
         },
-        beforeAdd: function(map2) {
-          map2._addZoomLimit(this);
+        beforeAdd: function(map) {
+          map._addZoomLimit(this);
         },
-        onRemove: function(map2) {
+        onRemove: function(map) {
           this._removeAllTiles();
           remove(this._container);
-          map2._removeZoomLimit(this);
+          map._removeZoomLimit(this);
           this._container = null;
           this._tileZoom = void 0;
         },
@@ -8884,14 +8892,14 @@ function requireLeafletSrc() {
               delete this._levels[z];
             }
           }
-          var level = this._levels[zoom2], map2 = this._map;
+          var level = this._levels[zoom2], map = this._map;
           if (!level) {
             level = this._levels[zoom2] = {};
             level.el = create$1("div", "leaflet-tile-container leaflet-zoom-animated", this._container);
             level.el.style.zIndex = maxZoom;
-            level.origin = map2.project(map2.unproject(map2.getPixelOrigin()), zoom2).round();
+            level.origin = map.project(map.unproject(map.getPixelOrigin()), zoom2).round();
             level.zoom = zoom2;
-            this._setZoomTransform(level, map2.getCenter(), map2.getZoom());
+            this._setZoomTransform(level, map.getCenter(), map.getZoom());
             falseFn(level.el.offsetWidth);
             this._onCreateLevel(level);
           }
@@ -9041,18 +9049,18 @@ function requireLeafletSrc() {
           }
         },
         _resetGrid: function() {
-          var map2 = this._map, crs = map2.options.crs, tileSize = this._tileSize = this.getTileSize(), tileZoom = this._tileZoom;
+          var map = this._map, crs = map.options.crs, tileSize = this._tileSize = this.getTileSize(), tileZoom = this._tileZoom;
           var bounds = this._map.getPixelWorldBounds(this._tileZoom);
           if (bounds) {
             this._globalTileRange = this._pxBoundsToTileRange(bounds);
           }
           this._wrapX = crs.wrapLng && !this.options.noWrap && [
-            Math.floor(map2.project([0, crs.wrapLng[0]], tileZoom).x / tileSize.x),
-            Math.ceil(map2.project([0, crs.wrapLng[1]], tileZoom).x / tileSize.y)
+            Math.floor(map.project([0, crs.wrapLng[0]], tileZoom).x / tileSize.x),
+            Math.ceil(map.project([0, crs.wrapLng[1]], tileZoom).x / tileSize.y)
           ];
           this._wrapY = crs.wrapLat && !this.options.noWrap && [
-            Math.floor(map2.project([crs.wrapLat[0], 0], tileZoom).y / tileSize.x),
-            Math.ceil(map2.project([crs.wrapLat[1], 0], tileZoom).y / tileSize.y)
+            Math.floor(map.project([crs.wrapLat[0], 0], tileZoom).y / tileSize.x),
+            Math.ceil(map.project([crs.wrapLat[1], 0], tileZoom).y / tileSize.y)
           ];
         },
         _onMoveEnd: function() {
@@ -9062,18 +9070,18 @@ function requireLeafletSrc() {
           this._update();
         },
         _getTiledPixelBounds: function(center) {
-          var map2 = this._map, mapZoom = map2._animatingZoom ? Math.max(map2._animateToZoom, map2.getZoom()) : map2.getZoom(), scale2 = map2.getZoomScale(mapZoom, this._tileZoom), pixelCenter = map2.project(center, this._tileZoom).floor(), halfSize = map2.getSize().divideBy(scale2 * 2);
+          var map = this._map, mapZoom = map._animatingZoom ? Math.max(map._animateToZoom, map.getZoom()) : map.getZoom(), scale2 = map.getZoomScale(mapZoom, this._tileZoom), pixelCenter = map.project(center, this._tileZoom).floor(), halfSize = map.getSize().divideBy(scale2 * 2);
           return new Bounds(pixelCenter.subtract(halfSize), pixelCenter.add(halfSize));
         },
         // Private method to load tiles in the grid's active zoom level according to map bounds
         _update: function(center) {
-          var map2 = this._map;
-          if (!map2) {
+          var map = this._map;
+          if (!map) {
             return;
           }
-          var zoom2 = this._clampZoom(map2.getZoom());
+          var zoom2 = this._clampZoom(map.getZoom());
           if (center === void 0) {
-            center = map2.getCenter();
+            center = map.getCenter();
           }
           if (this._tileZoom === void 0) {
             return;
@@ -9143,7 +9151,7 @@ function requireLeafletSrc() {
           return this._tileCoordsToBounds(this._keyToTileCoords(key));
         },
         _tileCoordsToNwSe: function(coords) {
-          var map2 = this._map, tileSize = this.getTileSize(), nwPoint = coords.scaleBy(tileSize), sePoint = nwPoint.add(tileSize), nw = map2.unproject(nwPoint, coords.z), se = map2.unproject(sePoint, coords.z);
+          var map = this._map, tileSize = this.getTileSize(), nwPoint = coords.scaleBy(tileSize), sePoint = nwPoint.add(tileSize), nw = map.unproject(nwPoint, coords.z), se = map.unproject(sePoint, coords.z);
           return [nw, se];
         },
         // converts tile coordinates to its geographical bounds
@@ -9510,12 +9518,12 @@ function requireLeafletSrc() {
           wmsParams.height = tileSize.y * realRetina;
           this.wmsParams = wmsParams;
         },
-        onAdd: function(map2) {
-          this._crs = this.options.crs || map2.options.crs;
+        onAdd: function(map) {
+          this._crs = this.options.crs || map.options.crs;
           this._wmsVersion = parseFloat(this.wmsParams.version);
           var projectionKey = this._wmsVersion >= 1.3 ? "crs" : "srs";
           this.wmsParams[projectionKey] = this._crs.code;
-          TileLayer.prototype.onAdd.call(this, map2);
+          TileLayer.prototype.onAdd.call(this, map);
         },
         getTileUrl: function(coords) {
           var tileBounds = this._tileCoordsToNwSe(coords), crs = this._crs, bounds = toBounds(crs.project(tileBounds[0]), crs.project(tileBounds[1])), min = bounds.min, max = bounds.max, bbox = (this._wmsVersion >= 1.3 && this._crs === EPSG4326 ? [min.y, min.x, max.y, max.x] : [min.x, min.y, max.x, max.y]).join(","), url = TileLayer.prototype.getTileUrl.call(this, coords);
@@ -9652,11 +9660,11 @@ function requireLeafletSrc() {
           if (this._postponeUpdatePaths) {
             return;
           }
-          var layer2;
+          var layer;
           this._redrawBounds = null;
           for (var id in this._layers) {
-            layer2 = this._layers[id];
-            layer2._update();
+            layer = this._layers[id];
+            layer._update();
           }
           this._redraw();
         },
@@ -9684,11 +9692,11 @@ function requireLeafletSrc() {
             this._updatePaths();
           }
         },
-        _initPath: function(layer2) {
-          this._updateDashArray(layer2);
-          this._layers[stamp(layer2)] = layer2;
-          var order = layer2._order = {
-            layer: layer2,
+        _initPath: function(layer) {
+          this._updateDashArray(layer);
+          this._layers[stamp(layer)] = layer;
+          var order = layer._order = {
+            layer,
             prev: this._drawLast,
             next: null
           };
@@ -9698,11 +9706,11 @@ function requireLeafletSrc() {
           this._drawLast = order;
           this._drawFirst = this._drawFirst || this._drawLast;
         },
-        _addPath: function(layer2) {
-          this._requestRedraw(layer2);
+        _addPath: function(layer) {
+          this._requestRedraw(layer);
         },
-        _removePath: function(layer2) {
-          var order = layer2._order;
+        _removePath: function(layer) {
+          var order = layer._order;
           var next = order.next;
           var prev = order.prev;
           if (next) {
@@ -9715,23 +9723,23 @@ function requireLeafletSrc() {
           } else {
             this._drawFirst = next;
           }
-          delete layer2._order;
-          delete this._layers[stamp(layer2)];
-          this._requestRedraw(layer2);
+          delete layer._order;
+          delete this._layers[stamp(layer)];
+          this._requestRedraw(layer);
         },
-        _updatePath: function(layer2) {
-          this._extendRedrawBounds(layer2);
-          layer2._project();
-          layer2._update();
-          this._requestRedraw(layer2);
+        _updatePath: function(layer) {
+          this._extendRedrawBounds(layer);
+          layer._project();
+          layer._update();
+          this._requestRedraw(layer);
         },
-        _updateStyle: function(layer2) {
-          this._updateDashArray(layer2);
-          this._requestRedraw(layer2);
+        _updateStyle: function(layer) {
+          this._updateDashArray(layer);
+          this._requestRedraw(layer);
         },
-        _updateDashArray: function(layer2) {
-          if (typeof layer2.options.dashArray === "string") {
-            var parts = layer2.options.dashArray.split(/[, ]+/), dashArray = [], dashValue, i;
+        _updateDashArray: function(layer) {
+          if (typeof layer.options.dashArray === "string") {
+            var parts = layer.options.dashArray.split(/[, ]+/), dashArray = [], dashValue, i;
             for (i = 0; i < parts.length; i++) {
               dashValue = Number(parts[i]);
               if (isNaN(dashValue)) {
@@ -9739,24 +9747,24 @@ function requireLeafletSrc() {
               }
               dashArray.push(dashValue);
             }
-            layer2.options._dashArray = dashArray;
+            layer.options._dashArray = dashArray;
           } else {
-            layer2.options._dashArray = layer2.options.dashArray;
+            layer.options._dashArray = layer.options.dashArray;
           }
         },
-        _requestRedraw: function(layer2) {
+        _requestRedraw: function(layer) {
           if (!this._map) {
             return;
           }
-          this._extendRedrawBounds(layer2);
+          this._extendRedrawBounds(layer);
           this._redrawRequest = this._redrawRequest || requestAnimFrame(this._redraw, this);
         },
-        _extendRedrawBounds: function(layer2) {
-          if (layer2._pxBounds) {
-            var padding = (layer2.options.weight || 0) + 1;
+        _extendRedrawBounds: function(layer) {
+          if (layer._pxBounds) {
+            var padding = (layer.options.weight || 0) + 1;
             this._redrawBounds = this._redrawBounds || new Bounds();
-            this._redrawBounds.extend(layer2._pxBounds.min.subtract([padding, padding]));
-            this._redrawBounds.extend(layer2._pxBounds.max.add([padding, padding]));
+            this._redrawBounds.extend(layer._pxBounds.min.subtract([padding, padding]));
+            this._redrawBounds.extend(layer._pxBounds.max.add([padding, padding]));
           }
         },
         _redraw: function() {
@@ -9782,7 +9790,7 @@ function requireLeafletSrc() {
           }
         },
         _draw: function() {
-          var layer2, bounds = this._redrawBounds;
+          var layer, bounds = this._redrawBounds;
           this._ctx.save();
           if (bounds) {
             var size = bounds.getSize();
@@ -9792,19 +9800,19 @@ function requireLeafletSrc() {
           }
           this._drawing = true;
           for (var order = this._drawFirst; order; order = order.next) {
-            layer2 = order.layer;
-            if (!bounds || layer2._pxBounds && layer2._pxBounds.intersects(bounds)) {
-              layer2._updatePath();
+            layer = order.layer;
+            if (!bounds || layer._pxBounds && layer._pxBounds.intersects(bounds)) {
+              layer._updatePath();
             }
           }
           this._drawing = false;
           this._ctx.restore();
         },
-        _updatePoly: function(layer2, closed) {
+        _updatePoly: function(layer, closed) {
           if (!this._drawing) {
             return;
           }
-          var i, j, len2, p, parts = layer2._parts, len = parts.length, ctx = this._ctx;
+          var i, j, len2, p, parts = layer._parts, len = parts.length, ctx = this._ctx;
           if (!len) {
             return;
           }
@@ -9818,13 +9826,13 @@ function requireLeafletSrc() {
               ctx.closePath();
             }
           }
-          this._fillStroke(ctx, layer2);
+          this._fillStroke(ctx, layer);
         },
-        _updateCircle: function(layer2) {
-          if (!this._drawing || layer2._empty()) {
+        _updateCircle: function(layer) {
+          if (!this._drawing || layer._empty()) {
             return;
           }
-          var p = layer2._point, ctx = this._ctx, r2 = Math.max(Math.round(layer2._radius), 1), s = (Math.max(Math.round(layer2._radiusY), 1) || r2) / r2;
+          var p = layer._point, ctx = this._ctx, r2 = Math.max(Math.round(layer._radius), 1), s = (Math.max(Math.round(layer._radiusY), 1) || r2) / r2;
           if (s !== 1) {
             ctx.save();
             ctx.scale(1, s);
@@ -9834,10 +9842,10 @@ function requireLeafletSrc() {
           if (s !== 1) {
             ctx.restore();
           }
-          this._fillStroke(ctx, layer2);
+          this._fillStroke(ctx, layer);
         },
-        _fillStroke: function(ctx, layer2) {
-          var options = layer2.options;
+        _fillStroke: function(ctx, layer) {
+          var options = layer.options;
           if (options.fill) {
             ctx.globalAlpha = options.fillOpacity;
             ctx.fillStyle = options.fillColor || options.color;
@@ -9845,7 +9853,7 @@ function requireLeafletSrc() {
           }
           if (options.stroke && options.weight !== 0) {
             if (ctx.setLineDash) {
-              ctx.setLineDash(layer2.options && layer2.options._dashArray || []);
+              ctx.setLineDash(layer.options && layer.options._dashArray || []);
             }
             ctx.globalAlpha = options.opacity;
             ctx.lineWidth = options.weight;
@@ -9858,12 +9866,12 @@ function requireLeafletSrc() {
         // Canvas obviously doesn't have mouse events for individual drawn objects,
         // so we emulate that by calculating what's under the mouse on mousemove/click manually
         _onClick: function(e) {
-          var point = this._map.mouseEventToLayerPoint(e), layer2, clickedLayer;
+          var point = this._map.mouseEventToLayerPoint(e), layer, clickedLayer;
           for (var order = this._drawFirst; order; order = order.next) {
-            layer2 = order.layer;
-            if (layer2.options.interactive && layer2._containsPoint(point)) {
-              if (!(e.type === "click" || e.type === "preclick") || !this._map._draggableMoved(layer2)) {
-                clickedLayer = layer2;
+            layer = order.layer;
+            if (layer.options.interactive && layer._containsPoint(point)) {
+              if (!(e.type === "click" || e.type === "preclick") || !this._map._draggableMoved(layer)) {
+                clickedLayer = layer;
               }
             }
           }
@@ -9877,10 +9885,10 @@ function requireLeafletSrc() {
           this._handleMouseHover(e, point);
         },
         _handleMouseOut: function(e) {
-          var layer2 = this._hoveredLayer;
-          if (layer2) {
+          var layer = this._hoveredLayer;
+          if (layer) {
             removeClass(this._container, "leaflet-interactive");
-            this._fireEvent([layer2], e, "mouseout");
+            this._fireEvent([layer], e, "mouseout");
             this._hoveredLayer = null;
             this._mouseHoverThrottled = false;
           }
@@ -9889,11 +9897,11 @@ function requireLeafletSrc() {
           if (this._mouseHoverThrottled) {
             return;
           }
-          var layer2, candidateHoveredLayer;
+          var layer, candidateHoveredLayer;
           for (var order = this._drawFirst; order; order = order.next) {
-            layer2 = order.layer;
-            if (layer2.options.interactive && layer2._containsPoint(point)) {
-              candidateHoveredLayer = layer2;
+            layer = order.layer;
+            if (layer.options.interactive && layer._containsPoint(point)) {
+              candidateHoveredLayer = layer;
             }
           }
           if (candidateHoveredLayer !== this._hoveredLayer) {
@@ -9913,8 +9921,8 @@ function requireLeafletSrc() {
         _fireEvent: function(layers2, e, type) {
           this._map._fireDOMEvent(e, type || e.type, layers2);
         },
-        _bringToFront: function(layer2) {
-          var order = layer2._order;
+        _bringToFront: function(layer) {
+          var order = layer._order;
           if (!order) {
             return;
           }
@@ -9934,10 +9942,10 @@ function requireLeafletSrc() {
           this._drawLast.next = order;
           order.next = null;
           this._drawLast = order;
-          this._requestRedraw(layer2);
+          this._requestRedraw(layer);
         },
-        _bringToBack: function(layer2) {
-          var order = layer2._order;
+        _bringToBack: function(layer) {
+          var order = layer._order;
           if (!order) {
             return;
           }
@@ -9957,7 +9965,7 @@ function requireLeafletSrc() {
           order.next = this._drawFirst;
           this._drawFirst.prev = order;
           this._drawFirst = order;
-          this._requestRedraw(layer2);
+          this._requestRedraw(layer);
         }
       });
       function canvas(options) {
@@ -9986,35 +9994,35 @@ function requireLeafletSrc() {
           Renderer.prototype._update.call(this);
           this.fire("update");
         },
-        _initPath: function(layer2) {
-          var container = layer2._container = vmlCreate("shape");
+        _initPath: function(layer) {
+          var container = layer._container = vmlCreate("shape");
           addClass(container, "leaflet-vml-shape " + (this.options.className || ""));
           container.coordsize = "1 1";
-          layer2._path = vmlCreate("path");
-          container.appendChild(layer2._path);
-          this._updateStyle(layer2);
-          this._layers[stamp(layer2)] = layer2;
+          layer._path = vmlCreate("path");
+          container.appendChild(layer._path);
+          this._updateStyle(layer);
+          this._layers[stamp(layer)] = layer;
         },
-        _addPath: function(layer2) {
-          var container = layer2._container;
+        _addPath: function(layer) {
+          var container = layer._container;
           this._container.appendChild(container);
-          if (layer2.options.interactive) {
-            layer2.addInteractiveTarget(container);
+          if (layer.options.interactive) {
+            layer.addInteractiveTarget(container);
           }
         },
-        _removePath: function(layer2) {
-          var container = layer2._container;
+        _removePath: function(layer) {
+          var container = layer._container;
           remove(container);
-          layer2.removeInteractiveTarget(container);
-          delete this._layers[stamp(layer2)];
+          layer.removeInteractiveTarget(container);
+          delete this._layers[stamp(layer)];
         },
-        _updateStyle: function(layer2) {
-          var stroke = layer2._stroke, fill = layer2._fill, options = layer2.options, container = layer2._container;
+        _updateStyle: function(layer) {
+          var stroke = layer._stroke, fill = layer._fill, options = layer.options, container = layer._container;
           container.stroked = !!options.stroke;
           container.filled = !!options.fill;
           if (options.stroke) {
             if (!stroke) {
-              stroke = layer2._stroke = vmlCreate("stroke");
+              stroke = layer._stroke = vmlCreate("stroke");
             }
             container.appendChild(stroke);
             stroke.weight = options.weight + "px";
@@ -10029,32 +10037,32 @@ function requireLeafletSrc() {
             stroke.joinstyle = options.lineJoin;
           } else if (stroke) {
             container.removeChild(stroke);
-            layer2._stroke = null;
+            layer._stroke = null;
           }
           if (options.fill) {
             if (!fill) {
-              fill = layer2._fill = vmlCreate("fill");
+              fill = layer._fill = vmlCreate("fill");
             }
             container.appendChild(fill);
             fill.color = options.fillColor || options.color;
             fill.opacity = options.fillOpacity;
           } else if (fill) {
             container.removeChild(fill);
-            layer2._fill = null;
+            layer._fill = null;
           }
         },
-        _updateCircle: function(layer2) {
-          var p = layer2._point.round(), r2 = Math.round(layer2._radius), r22 = Math.round(layer2._radiusY || r2);
-          this._setPath(layer2, layer2._empty() ? "M0 0" : "AL " + p.x + "," + p.y + " " + r2 + "," + r22 + " 0," + 65535 * 360);
+        _updateCircle: function(layer) {
+          var p = layer._point.round(), r2 = Math.round(layer._radius), r22 = Math.round(layer._radiusY || r2);
+          this._setPath(layer, layer._empty() ? "M0 0" : "AL " + p.x + "," + p.y + " " + r2 + "," + r22 + " 0," + 65535 * 360);
         },
-        _setPath: function(layer2, path) {
-          layer2._path.v = path;
+        _setPath: function(layer, path) {
+          layer._path.v = path;
         },
-        _bringToFront: function(layer2) {
-          toFront(layer2._container);
+        _bringToFront: function(layer) {
+          toFront(layer._container);
         },
-        _bringToBack: function(layer2) {
-          toBack(layer2._container);
+        _bringToBack: function(layer) {
+          toBack(layer._container);
         }
       };
       var create = Browser.vml ? vmlCreate : svgCreate;
@@ -10088,35 +10096,35 @@ function requireLeafletSrc() {
           this.fire("update");
         },
         // methods below are called by vector layers implementations
-        _initPath: function(layer2) {
-          var path = layer2._path = create("path");
-          if (layer2.options.className) {
-            addClass(path, layer2.options.className);
+        _initPath: function(layer) {
+          var path = layer._path = create("path");
+          if (layer.options.className) {
+            addClass(path, layer.options.className);
           }
-          if (layer2.options.interactive) {
+          if (layer.options.interactive) {
             addClass(path, "leaflet-interactive");
           }
-          this._updateStyle(layer2);
-          this._layers[stamp(layer2)] = layer2;
+          this._updateStyle(layer);
+          this._layers[stamp(layer)] = layer;
         },
-        _addPath: function(layer2) {
+        _addPath: function(layer) {
           if (!this._rootGroup) {
             this._initContainer();
           }
-          this._rootGroup.appendChild(layer2._path);
-          layer2.addInteractiveTarget(layer2._path);
+          this._rootGroup.appendChild(layer._path);
+          layer.addInteractiveTarget(layer._path);
         },
-        _removePath: function(layer2) {
-          remove(layer2._path);
-          layer2.removeInteractiveTarget(layer2._path);
-          delete this._layers[stamp(layer2)];
+        _removePath: function(layer) {
+          remove(layer._path);
+          layer.removeInteractiveTarget(layer._path);
+          delete this._layers[stamp(layer)];
         },
-        _updatePath: function(layer2) {
-          layer2._project();
-          layer2._update();
+        _updatePath: function(layer) {
+          layer._project();
+          layer._update();
         },
-        _updateStyle: function(layer2) {
-          var path = layer2._path, options = layer2.options;
+        _updateStyle: function(layer) {
+          var path = layer._path, options = layer.options;
           if (!path) {
             return;
           }
@@ -10147,23 +10155,23 @@ function requireLeafletSrc() {
             path.setAttribute("fill", "none");
           }
         },
-        _updatePoly: function(layer2, closed) {
-          this._setPath(layer2, pointsToPath(layer2._parts, closed));
+        _updatePoly: function(layer, closed) {
+          this._setPath(layer, pointsToPath(layer._parts, closed));
         },
-        _updateCircle: function(layer2) {
-          var p = layer2._point, r2 = Math.max(Math.round(layer2._radius), 1), r22 = Math.max(Math.round(layer2._radiusY), 1) || r2, arc = "a" + r2 + "," + r22 + " 0 1,0 ";
-          var d = layer2._empty() ? "M0 0" : "M" + (p.x - r2) + "," + p.y + arc + r2 * 2 + ",0 " + arc + -r2 * 2 + ",0 ";
-          this._setPath(layer2, d);
+        _updateCircle: function(layer) {
+          var p = layer._point, r2 = Math.max(Math.round(layer._radius), 1), r22 = Math.max(Math.round(layer._radiusY), 1) || r2, arc = "a" + r2 + "," + r22 + " 0 1,0 ";
+          var d = layer._empty() ? "M0 0" : "M" + (p.x - r2) + "," + p.y + arc + r2 * 2 + ",0 " + arc + -r2 * 2 + ",0 ";
+          this._setPath(layer, d);
         },
-        _setPath: function(layer2, path) {
-          layer2._path.setAttribute("d", path);
+        _setPath: function(layer, path) {
+          layer._path.setAttribute("d", path);
         },
         // SVG does not have the concept of zIndex so we resort to changing the DOM order of elements
-        _bringToFront: function(layer2) {
-          toFront(layer2._path);
+        _bringToFront: function(layer) {
+          toFront(layer._path);
         },
-        _bringToBack: function(layer2) {
-          toBack(layer2._path);
+        _bringToBack: function(layer) {
+          toBack(layer._path);
         }
       });
       if (Browser.vml) {
@@ -10177,8 +10185,8 @@ function requireLeafletSrc() {
         // Returns the instance of `Renderer` that should be used to render the given
         // `Path`. It will ensure that the `renderer` options of the map and paths
         // are respected, and that the renderers do exist on the map.
-        getRenderer: function(layer2) {
-          var renderer = layer2.options.renderer || this._getPaneRenderer(layer2.options.pane) || this.options.renderer || this._renderer;
+        getRenderer: function(layer) {
+          var renderer = layer.options.renderer || this._getPaneRenderer(layer.options.pane) || this.options.renderer || this._renderer;
           if (!renderer) {
             renderer = this._renderer = this._createRenderer();
           }
@@ -10240,12 +10248,12 @@ function requireLeafletSrc() {
         boxZoom: true
       });
       var BoxZoom = Handler.extend({
-        initialize: function(map2) {
-          this._map = map2;
-          this._container = map2._container;
-          this._pane = map2._panes.overlayPane;
+        initialize: function(map) {
+          this._map = map;
+          this._container = map._container;
+          this._pane = map._panes.overlayPane;
           this._resetStateTimeout = 0;
-          map2.on("unload", this._destroy, this);
+          map.on("unload", this._destroy, this);
         },
         addHooks: function() {
           on(this._container, "mousedown", this._onMouseDown, this);
@@ -10354,11 +10362,11 @@ function requireLeafletSrc() {
           this._map.off("dblclick", this._onDoubleClick, this);
         },
         _onDoubleClick: function(e) {
-          var map2 = this._map, oldZoom = map2.getZoom(), delta = map2.options.zoomDelta, zoom2 = e.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
-          if (map2.options.doubleClickZoom === "center") {
-            map2.setZoom(zoom2);
+          var map = this._map, oldZoom = map.getZoom(), delta = map.options.zoomDelta, zoom2 = e.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
+          if (map.options.doubleClickZoom === "center") {
+            map.setZoom(zoom2);
           } else {
-            map2.setZoomAround(e.containerPoint, zoom2);
+            map.setZoomAround(e.containerPoint, zoom2);
           }
         }
       });
@@ -10401,18 +10409,18 @@ function requireLeafletSrc() {
       var Drag = Handler.extend({
         addHooks: function() {
           if (!this._draggable) {
-            var map2 = this._map;
-            this._draggable = new Draggable(map2._mapPane, map2._container);
+            var map = this._map;
+            this._draggable = new Draggable(map._mapPane, map._container);
             this._draggable.on({
               dragstart: this._onDragStart,
               drag: this._onDrag,
               dragend: this._onDragEnd
             }, this);
             this._draggable.on("predrag", this._onPreDragLimit, this);
-            if (map2.options.worldCopyJump) {
+            if (map.options.worldCopyJump) {
               this._draggable.on("predrag", this._onPreDragWrap, this);
-              map2.on("zoomend", this._onZoomEnd, this);
-              map2.whenReady(this._onZoomEnd, this);
+              map.on("zoomend", this._onZoomEnd, this);
+              map.whenReady(this._onZoomEnd, this);
             }
           }
           addClass(this._map._container, "leaflet-grab leaflet-touch-drag");
@@ -10432,8 +10440,8 @@ function requireLeafletSrc() {
           return this._draggable && this._draggable._moving;
         },
         _onDragStart: function() {
-          var map2 = this._map;
-          map2._stop();
+          var map = this._map;
+          map._stop();
           if (this._map.options.maxBounds && this._map.options.maxBoundsViscosity) {
             var bounds = toLatLngBounds(this._map.options.maxBounds);
             this._offsetLimit = toBounds(
@@ -10444,8 +10452,8 @@ function requireLeafletSrc() {
           } else {
             this._offsetLimit = null;
           }
-          map2.fire("movestart").fire("dragstart");
-          if (map2.options.inertia) {
+          map.fire("movestart").fire("dragstart");
+          if (map.options.inertia) {
             this._positions = [];
             this._times = [];
           }
@@ -10499,19 +10507,19 @@ function requireLeafletSrc() {
           this._draggable._newPos.x = newX;
         },
         _onDragEnd: function(e) {
-          var map2 = this._map, options = map2.options, noInertia = !options.inertia || e.noInertia || this._times.length < 2;
-          map2.fire("dragend", e);
+          var map = this._map, options = map.options, noInertia = !options.inertia || e.noInertia || this._times.length < 2;
+          map.fire("dragend", e);
           if (noInertia) {
-            map2.fire("moveend");
+            map.fire("moveend");
           } else {
             this._prunePositions(+/* @__PURE__ */ new Date());
             var direction = this._lastPos.subtract(this._positions[0]), duration = (this._lastTime - this._times[0]) / 1e3, ease = options.easeLinearity, speedVector = direction.multiplyBy(ease / duration), speed = speedVector.distanceTo([0, 0]), limitedSpeed = Math.min(options.inertiaMaxSpeed, speed), limitedSpeedVector = speedVector.multiplyBy(limitedSpeed / speed), decelerationDuration = limitedSpeed / (options.inertiaDeceleration * ease), offset = limitedSpeedVector.multiplyBy(-decelerationDuration / 2).round();
             if (!offset.x && !offset.y) {
-              map2.fire("moveend");
+              map.fire("moveend");
             } else {
-              offset = map2._limitOffset(offset, map2.options.maxBounds);
+              offset = map._limitOffset(offset, map.options.maxBounds);
               requestAnimFrame(function() {
-                map2.panBy(offset, {
+                map.panBy(offset, {
                   duration: decelerationDuration,
                   easeLinearity: ease,
                   noMoveStart: true,
@@ -10541,10 +10549,10 @@ function requireLeafletSrc() {
           zoomIn: [187, 107, 61, 171],
           zoomOut: [189, 109, 54, 173]
         },
-        initialize: function(map2) {
-          this._map = map2;
-          this._setPanDelta(map2.options.keyboardPanDelta);
-          this._setZoomDelta(map2.options.zoomDelta);
+        initialize: function(map) {
+          this._map = map;
+          this._setPanDelta(map.options.keyboardPanDelta);
+          this._setZoomDelta(map.options.zoomDelta);
         },
         addHooks: function() {
           var container = this._map._container;
@@ -10623,27 +10631,27 @@ function requireLeafletSrc() {
           if (e.altKey || e.ctrlKey || e.metaKey) {
             return;
           }
-          var key = e.keyCode, map2 = this._map, offset;
+          var key = e.keyCode, map = this._map, offset;
           if (key in this._panKeys) {
-            if (!map2._panAnim || !map2._panAnim._inProgress) {
+            if (!map._panAnim || !map._panAnim._inProgress) {
               offset = this._panKeys[key];
               if (e.shiftKey) {
                 offset = toPoint(offset).multiplyBy(3);
               }
-              if (map2.options.maxBounds) {
-                offset = map2._limitOffset(toPoint(offset), map2.options.maxBounds);
+              if (map.options.maxBounds) {
+                offset = map._limitOffset(toPoint(offset), map.options.maxBounds);
               }
-              if (map2.options.worldCopyJump) {
-                var newLatLng = map2.wrapLatLng(map2.unproject(map2.project(map2.getCenter()).add(offset)));
-                map2.panTo(newLatLng);
+              if (map.options.worldCopyJump) {
+                var newLatLng = map.wrapLatLng(map.unproject(map.project(map.getCenter()).add(offset)));
+                map.panTo(newLatLng);
               } else {
-                map2.panBy(offset);
+                map.panBy(offset);
               }
             }
           } else if (key in this._zoomKeys) {
-            map2.setZoom(map2.getZoom() + (e.shiftKey ? 3 : 1) * this._zoomKeys[key]);
-          } else if (key === 27 && map2._popup && map2._popup.options.closeOnEscapeKey) {
-            map2.closePopup();
+            map.setZoom(map.getZoom() + (e.shiftKey ? 3 : 1) * this._zoomKeys[key]);
+          } else if (key === 27 && map._popup && map._popup.options.closeOnEscapeKey) {
+            map.closePopup();
           } else {
             return;
           }
@@ -10689,18 +10697,18 @@ function requireLeafletSrc() {
           stop(e);
         },
         _performZoom: function() {
-          var map2 = this._map, zoom2 = map2.getZoom(), snap = this._map.options.zoomSnap || 0;
-          map2._stop();
-          var d2 = this._delta / (this._map.options.wheelPxPerZoomLevel * 4), d3 = 4 * Math.log(2 / (1 + Math.exp(-Math.abs(d2)))) / Math.LN2, d4 = snap ? Math.ceil(d3 / snap) * snap : d3, delta = map2._limitZoom(zoom2 + (this._delta > 0 ? d4 : -d4)) - zoom2;
+          var map = this._map, zoom2 = map.getZoom(), snap = this._map.options.zoomSnap || 0;
+          map._stop();
+          var d2 = this._delta / (this._map.options.wheelPxPerZoomLevel * 4), d3 = 4 * Math.log(2 / (1 + Math.exp(-Math.abs(d2)))) / Math.LN2, d4 = snap ? Math.ceil(d3 / snap) * snap : d3, delta = map._limitZoom(zoom2 + (this._delta > 0 ? d4 : -d4)) - zoom2;
           this._delta = 0;
           this._startTime = null;
           if (!delta) {
             return;
           }
-          if (map2.options.scrollWheelZoom === "center") {
-            map2.setZoom(zoom2 + delta);
+          if (map.options.scrollWheelZoom === "center") {
+            map.setZoom(zoom2 + delta);
           } else {
-            map2.setZoomAround(this._lastMousePos, zoom2 + delta);
+            map.setZoomAround(this._lastMousePos, zoom2 + delta);
           }
         }
       });
@@ -10799,21 +10807,21 @@ function requireLeafletSrc() {
           off(this._map._container, "touchstart", this._onTouchStart, this);
         },
         _onTouchStart: function(e) {
-          var map2 = this._map;
-          if (!e.touches || e.touches.length !== 2 || map2._animatingZoom || this._zooming) {
+          var map = this._map;
+          if (!e.touches || e.touches.length !== 2 || map._animatingZoom || this._zooming) {
             return;
           }
-          var p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]);
-          this._centerPoint = map2.getSize()._divideBy(2);
-          this._startLatLng = map2.containerPointToLatLng(this._centerPoint);
-          if (map2.options.touchZoom !== "center") {
-            this._pinchStartLatLng = map2.containerPointToLatLng(p1.add(p2)._divideBy(2));
+          var p1 = map.mouseEventToContainerPoint(e.touches[0]), p2 = map.mouseEventToContainerPoint(e.touches[1]);
+          this._centerPoint = map.getSize()._divideBy(2);
+          this._startLatLng = map.containerPointToLatLng(this._centerPoint);
+          if (map.options.touchZoom !== "center") {
+            this._pinchStartLatLng = map.containerPointToLatLng(p1.add(p2)._divideBy(2));
           }
           this._startDist = p1.distanceTo(p2);
-          this._startZoom = map2.getZoom();
+          this._startZoom = map.getZoom();
           this._moved = false;
           this._zooming = true;
-          map2._stop();
+          map._stop();
           on(document, "touchmove", this._onTouchMove, this);
           on(document, "touchend touchcancel", this._onTouchEnd, this);
           preventDefault(e);
@@ -10822,12 +10830,12 @@ function requireLeafletSrc() {
           if (!e.touches || e.touches.length !== 2 || !this._zooming) {
             return;
           }
-          var map2 = this._map, p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
-          this._zoom = map2.getScaleZoom(scale2, this._startZoom);
-          if (!map2.options.bounceAtZoomLimits && (this._zoom < map2.getMinZoom() && scale2 < 1 || this._zoom > map2.getMaxZoom() && scale2 > 1)) {
-            this._zoom = map2._limitZoom(this._zoom);
+          var map = this._map, p1 = map.mouseEventToContainerPoint(e.touches[0]), p2 = map.mouseEventToContainerPoint(e.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
+          this._zoom = map.getScaleZoom(scale2, this._startZoom);
+          if (!map.options.bounceAtZoomLimits && (this._zoom < map.getMinZoom() && scale2 < 1 || this._zoom > map.getMaxZoom() && scale2 > 1)) {
+            this._zoom = map._limitZoom(this._zoom);
           }
-          if (map2.options.touchZoom === "center") {
+          if (map.options.touchZoom === "center") {
             this._center = this._startLatLng;
             if (scale2 === 1) {
               return;
@@ -10837,14 +10845,14 @@ function requireLeafletSrc() {
             if (scale2 === 1 && delta.x === 0 && delta.y === 0) {
               return;
             }
-            this._center = map2.unproject(map2.project(this._pinchStartLatLng, this._zoom).subtract(delta), this._zoom);
+            this._center = map.unproject(map.project(this._pinchStartLatLng, this._zoom).subtract(delta), this._zoom);
           }
           if (!this._moved) {
-            map2._moveStart(true, false);
+            map._moveStart(true, false);
             this._moved = true;
           }
           cancelAnimFrame(this._animRequest);
-          var moveFn = bind(map2._move, map2, this._center, this._zoom, { pinch: true, round: false }, void 0);
+          var moveFn = bind(map._move, map, this._center, this._zoom, { pinch: true, round: false }, void 0);
           this._animRequest = requestAnimFrame(moveFn, this, true);
           preventDefault(e);
         },
@@ -11051,8 +11059,8 @@ var leafletRuler = { exports: {} };
           label: "Bearing:"
         }
       },
-      onAdd: function(map2) {
-        this._map = map2;
+      onAdd: function(map) {
+        this._map = map;
         this._container = L2.DomUtil.create("div", "leaflet-bar");
         this._container.classList.add("leaflet-ruler");
         L2.DomEvent.disableClickPropagation(this._container);
@@ -11428,17 +11436,17 @@ const Leaflet_Coordinates0_1_5 = "";
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
-      buildSymbol: function buildSymbol(dirPoint, latLngs, map2, index, total) {
+      buildSymbol: function buildSymbol(dirPoint, latLngs, map, index, total) {
         var opts = this.options;
         var d2r = Math.PI / 180;
         if (opts.pixelSize <= 1) {
           return L$12.polyline([dirPoint.latLng, dirPoint.latLng], opts.pathOptions);
         }
-        var midPoint = map2.project(dirPoint.latLng);
+        var midPoint = map.project(dirPoint.latLng);
         var angle = -(dirPoint.heading - 90) * d2r;
         var a = L$12.point(midPoint.x + opts.pixelSize * Math.cos(angle + Math.PI) / 2, midPoint.y + opts.pixelSize * Math.sin(angle) / 2);
         var b = midPoint.add(midPoint.subtract(a));
-        return L$12.polyline([map2.unproject(a), map2.unproject(b)], opts.pathOptions);
+        return L$12.polyline([map.unproject(a), map.unproject(b)], opts.pathOptions);
       }
     });
     L$12.Symbol.dash = function(options) {
@@ -11458,19 +11466,19 @@ const Leaflet_Coordinates0_1_5 = "";
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
-      buildSymbol: function buildSymbol(dirPoint, latLngs, map2, index, total) {
-        return this.options.polygon ? L$12.polygon(this._buildArrowPath(dirPoint, map2), this.options.pathOptions) : L$12.polyline(this._buildArrowPath(dirPoint, map2), this.options.pathOptions);
+      buildSymbol: function buildSymbol(dirPoint, latLngs, map, index, total) {
+        return this.options.polygon ? L$12.polygon(this._buildArrowPath(dirPoint, map), this.options.pathOptions) : L$12.polyline(this._buildArrowPath(dirPoint, map), this.options.pathOptions);
       },
-      _buildArrowPath: function _buildArrowPath(dirPoint, map2) {
+      _buildArrowPath: function _buildArrowPath(dirPoint, map) {
         var d2r = Math.PI / 180;
-        var tipPoint = map2.project(dirPoint.latLng);
+        var tipPoint = map.project(dirPoint.latLng);
         var direction = -(dirPoint.heading - 90) * d2r;
         var radianArrowAngle = this.options.headAngle / 2 * d2r;
         var headAngle1 = direction + radianArrowAngle;
         var headAngle2 = direction - radianArrowAngle;
         var arrowHead1 = L$12.point(tipPoint.x - this.options.pixelSize * Math.cos(headAngle1), tipPoint.y + this.options.pixelSize * Math.sin(headAngle1));
         var arrowHead2 = L$12.point(tipPoint.x - this.options.pixelSize * Math.cos(headAngle2), tipPoint.y + this.options.pixelSize * Math.sin(headAngle2));
-        return [map2.unproject(arrowHead1), dirPoint.latLng, map2.unproject(arrowHead2)];
+        return [map.unproject(arrowHead1), dirPoint.latLng, map.unproject(arrowHead2)];
       }
     });
     L$12.Symbol.arrowHead = function(options) {
@@ -11486,7 +11494,7 @@ const Leaflet_Coordinates0_1_5 = "";
         this.options.markerOptions.clickable = false;
         this.options.markerOptions.draggable = false;
       },
-      buildSymbol: function buildSymbol(directionPoint, latLngs, map2, index, total) {
+      buildSymbol: function buildSymbol(directionPoint, latLngs, map, index, total) {
         if (this.options.rotate) {
           this.options.markerOptions.rotationAngle = directionPoint.heading + (this.options.angleCorrection || 0);
         }
@@ -11570,15 +11578,15 @@ const Leaflet_Coordinates0_1_5 = "";
           repeat: parseRelativeOrAbsoluteValue(patternDef.repeat)
         };
       },
-      onAdd: function onAdd(map2) {
-        this._map = map2;
+      onAdd: function onAdd(map) {
+        this._map = map;
         this._draw();
         this._map.on("moveend", this.redraw, this);
       },
-      onRemove: function onRemove(map2) {
+      onRemove: function onRemove(map) {
         this._map.off("moveend", this.redraw, this);
         this._map = null;
-        L$12.FeatureGroup.prototype.onRemove.call(this, map2);
+        L$12.FeatureGroup.prototype.onRemove.call(this, map);
       },
       /**
       * As real pattern bounds depends on map zoom and bounds,
@@ -12473,9 +12481,9 @@ function createArcticWMS() {
 }
 let mercatorDragHandler = null;
 let mercatorDragHandlerMapId = null;
-function applyBoundsForCurrentMode(map2) {
-  if (mercatorDragHandler && mercatorDragHandlerMapId && map2 && map2._leaflet_id === mercatorDragHandlerMapId) {
-    map2.off("drag", mercatorDragHandler);
+function applyBoundsForCurrentMode(map) {
+  if (mercatorDragHandler && mercatorDragHandlerMapId && map && map._leaflet_id === mercatorDragHandlerMapId) {
+    map.off("drag", mercatorDragHandler);
     mercatorDragHandler = null;
     mercatorDragHandlerMapId = null;
   }
@@ -12484,14 +12492,14 @@ function applyBoundsForCurrentMode(map2) {
       [-89.98155760646617, -270],
       [89.99346179538875, 270]
     ];
-    map2.setMaxBounds(bounds);
+    map.setMaxBounds(bounds);
     mercatorDragHandler = function() {
-      map2.panInsideBounds(bounds, { animate: false });
+      map.panInsideBounds(bounds, { animate: false });
     };
-    map2.on("drag", mercatorDragHandler);
-    mercatorDragHandlerMapId = map2._leaflet_id;
+    map.on("drag", mercatorDragHandler);
+    mercatorDragHandlerMapId = map._leaflet_id;
   } else {
-    map2.setMaxBounds(null);
+    map.setMaxBounds(null);
   }
 }
 function computeComfortView(isArctic, prevCenter, prevZoom) {
@@ -12509,7 +12517,7 @@ function computeComfortView(isArctic, prevCenter, prevZoom) {
   const clampedLat = Math.max(-85, Math.min(85, prevLat));
   return { center: L$1.latLng(clampedLat, normLng), zoom: prevZoom ?? 3 };
 }
-function initButtonToCenterViewMap(lat, lon, map2) {
+function initButtonToCenterViewMap(lat, lon, map) {
   let recenterButton = document.querySelector("#lMap #recenterButton");
   if (recenterButton) {
     updateCoordinatesToCenterViewMap(lat, lon);
@@ -12526,11 +12534,11 @@ function initButtonToCenterViewMap(lat, lon, map2) {
     recenterButton.addEventListener("click", function(e) {
       e.preventDefault();
       let defaultZoom = 10;
-      if (map2.getZoom() >= defaultZoom)
-        defaultZoom = map2.getZoom();
+      if (map.getZoom() >= defaultZoom)
+        defaultZoom = map.getZoom();
       let lat2 = parseFloat(recenterButton.getAttribute("data-lat"));
       let lon2 = parseFloat(recenterButton.getAttribute("data-lon"));
-      map2.setView([lat2, lon2], defaultZoom);
+      map.setView([lat2, lon2], defaultZoom);
     });
   }
 }
@@ -12633,14 +12641,14 @@ const yellowRLIconP = L$1.icon({
   shadowAnchor: [27, 45],
   popupAnchor: [0, -42]
 });
-function buildMarker(pos, layer2, icond, title, zi, op, heading) {
+function buildMarker(pos, layer, icond, title, zi, op, heading) {
   let ret = [];
   for (let i = 0; i < pos.length; i++) {
     if (!heading)
       heading = 0;
     if (heading == 180)
       heading = 179.9;
-    const marker1 = L$1.marker(pos[i], { icon: icond, rotationAngle: heading / 2 });
+    const marker1 = L$1.marker(pos[i], { icon: icond, rotationAngle: heading });
     if (op)
       marker1.opacity = op;
     if (zi)
@@ -12654,7 +12662,7 @@ function buildMarker(pos, layer2, icond, title, zi, op, heading) {
         e.target.closePopup();
       });
     }
-    marker1.addTo(layer2);
+    marker1.addTo(layer);
     ret.push(marker1);
   }
   return ret;
@@ -12681,7 +12689,7 @@ function buildBoatIcon(fillColor, borderColor, opacity) {
     popupAnchor: [0, -2]
   });
 }
-function buildCircle$1(pos, layer2, trackcolor, size, opacity, title) {
+function buildCircle(pos, layer, trackcolor, size, opacity, title) {
   let ret = [];
   for (let i = 0; i < pos.length; i++) {
     const circleMark = L$1.circleMarker(
@@ -12702,12 +12710,12 @@ function buildCircle$1(pos, layer2, trackcolor, size, opacity, title) {
         e.target.closePopup();
       });
     }
-    circleMark.addTo(layer2);
+    circleMark.addTo(layer);
     ret.push(circleMark);
   }
   return ret;
 }
-function buildCircleEndRace(pos, layer2, trackcolor, size) {
+function buildCircleEndRace(pos, layer, trackcolor, size) {
   let ret = [];
   for (let i = 0; i < pos.length; i++) {
     const circleMark = L$1.circle(pos[i], {
@@ -12716,12 +12724,12 @@ function buildCircleEndRace(pos, layer2, trackcolor, size) {
       fill: false,
       radius: size
     });
-    circleMark.addTo(layer2);
+    circleMark.addTo(layer);
     ret.push(circleMark);
   }
   return ret;
 }
-function buildTrace(tpath, layer2, pointsContainer, color, weight, opacity, dashArray, dashOffset, mode = true) {
+function buildTrace(tpath, layer, pointsContainer, color, weight, opacity, dashArray, dashOffset, mode = true) {
   let nbTrackLine = 0;
   let trackLine = [];
   for (let i = 0; i < tpath.length; i++) {
@@ -12774,7 +12782,7 @@ function buildTrace(tpath, layer2, pointsContainer, color, weight, opacity, dash
         });
       });
       trackLine[nbTrackLine] = trackLineP;
-      trackLine[nbTrackLine].addTo(layer2);
+      trackLine[nbTrackLine].addTo(layer);
       nbTrackLine++;
     }
   }
@@ -12798,7 +12806,7 @@ function buildPt2(lat, lon) {
   ret[2] = L$1.latLng(lat, lon + 360, true);
   return ret;
 }
-function buildPath$1(pathEntry, initLat, initLng, finishLat, finshLng) {
+function buildPath(pathEntry, initLat, initLng, finishLat, finshLng) {
   let cpath = [];
   let cpathNum = 0;
   cpath[cpathNum] = [];
@@ -12886,17 +12894,11 @@ function buildPath_bspline(pathEntry, initLat, initLng, finishLat, finshLng) {
   return cpath;
 }
 function computeNextPos(pos, hdg, speed, time) {
-  var dist5 = speed * time / (3600 * 60);
-  var alpha = 360 - (hdg - 90);
-  var lat5 = pos.lat;
-  var lng5 = pos.lng;
-  var latrad1 = Util.toRad(lat5);
-  var latrad2;
-  var phi;
-  lat5 += dist5 * Math.sin(Util.toRad(alpha));
-  latrad2 = Util.toRad(lat5);
-  phi = Math.cos((latrad1 + latrad2) / 2);
-  lng5 += dist5 * Math.cos(Util.toRad(alpha)) / phi;
+  const dist5 = speed * time / (3600 * 60);
+  const alpha = 360 - (hdg - 90);
+  const lat5 = pos.lat + dist5 * Math.sin(toRad(alpha));
+  let lng5 = pos.lng;
+  lng5 += dist5 * Math.cos(toRad(alpha)) / Math.cos((toRad(lat5) + toRad(lat5)) / 2);
   if (lng5 > 180) {
     lng5 = lng5 - 360;
   }
@@ -12908,12 +12910,12 @@ function computeNextPos(pos, hdg, speed, time) {
 function drawProjectionLine(pos, hdg, speed) {
   if (!hdg || !speed)
     return;
-  if (!mapState || !mapState.map || !mapState.gdiv)
+  if (!mapState || !mapState.map)
     return;
   const userPrefs = getUserPrefs();
-  const map2 = mapState.map;
+  const map = mapState.map;
   if (mapState.me_PlLayer)
-    map2.removeLayer(mapState.me_PlLayer);
+    map.removeLayer(mapState.me_PlLayer);
   mapState.me_PlLayer = L.layerGroup();
   let tpath = [];
   tpath.push(pos[1]);
@@ -12921,10 +12923,10 @@ function drawProjectionLine(pos, hdg, speed) {
     pos = computeNextPos(pos[1], hdg, speed, 2 * 60);
     tpath.push(pos[1]);
     const title = 2 * (i + 1) + "min";
-    buildCircle$1(pos, layer, userPrefs.map.projectionColor, 1.5, 1, title);
+    buildCircle(pos, mapState.me_PlLayer, userPrefs.map.projectionColor, 1.5, 1, title);
   }
   buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs.map.projectionColor, 1, 0.4, "10, 10", "5");
-  layer.addTo(map2);
+  mapState.me_PlLayer.addTo(map);
 }
 const mapState = {
   raceId: null,
@@ -12963,11 +12965,11 @@ function updateMapCheckpoints(raceInfo2, playerIte) {
   var _a;
   if (!mapState.map)
     return;
-  const map2 = mapState.map;
-  if (!raceInfo2 || !map2)
+  const map = mapState.map;
+  if (!raceInfo2 || !map)
     return;
   if (mapState.checkPointLayer) {
-    map2.removeLayer(mapState.checkPointLayer);
+    map.removeLayer(mapState.checkPointLayer);
   }
   mapState.checkPointLayer = L$1.layerGroup();
   const userPrefs = getUserPrefs();
@@ -13006,10 +13008,10 @@ function updateMapCheckpoints(raceInfo2, playerIte) {
       const tpath = [];
       tpath.push(position_e[1]);
       tpath.push(position_s[1]);
-      buildTrace(buildPath$1(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10");
+      buildTrace(buildPath(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10");
     }
   }
-  mapState.checkPointLayer.addTo(map2);
+  mapState.checkPointLayer.addTo(map);
   if (!mapState.userZoom)
     updateBounds();
 }
@@ -13018,13 +13020,13 @@ function updateMapWaypoints(playerIte) {
   const raceOrder = getLegPlayersOrder();
   if (!mapState || !mapState.map)
     return;
-  const map2 = mapState.map;
+  const map = mapState.map;
   if (!playerIte)
     return;
   if (!raceOrder || raceOrder.lenght == 0 || ((_b = (_a = raceOrder[0]) == null ? void 0 : _a.action) == null ? void 0 : _b.type) !== "wp")
     return;
   if (mapState.wayPointLayer) {
-    map2.removeLayer(mapState.wayPointLayer);
+    map.removeLayer(mapState.wayPointLayer);
   }
   mapState.wayPointLayer = L$1.layerGroup();
   const wpOrder = raceOrder[0].action.action;
@@ -13035,14 +13037,14 @@ function updateMapWaypoints(playerIte) {
     if (idx <= lastWpIdx)
       wpPts.push({ lat, lon });
   });
-  let cpath = buildPath$1(wpPts, null, null, currPos.lat, currPos.lon);
+  let cpath = buildPath(wpPts, null, null, currPos.lat, currPos.lon);
   buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7, [0, 1, 0, 1]);
   wpPts = [];
   wpOrder.forEach(({ lat, lon, idx }) => {
     if (idx > lastWpIdx)
       wpPts.push({ lat, lon });
   });
-  cpath = buildPath$1(wpOrder, currPos.lat, currPos.lon);
+  cpath = buildPath(wpOrder, currPos.lat, currPos.lon);
   buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7);
   wpOrder.forEach(({ lat, lon, idx }) => {
     const pos = buildPt2(lat, lon);
@@ -13050,7 +13052,7 @@ function updateMapWaypoints(playerIte) {
     buildCircle(pos, mapState.wayPointLayer, "#FF00FF", 2, 1, title);
     mapState.refPoints.push(pos[1]);
   });
-  mapState.wayPointLayer.addTo(map2);
+  mapState.wayPointLayer.addTo(map);
   if (!mapState.userZoom)
     updateBounds();
 }
@@ -13058,11 +13060,11 @@ function updateMapMe(connectedPlayerId2, playerIte) {
   var _a;
   const trackFleet = getLegPlayersTracksFleet();
   const userPrefs = getUserPrefs();
-  const localTimes2 = userPrefs.global.localTime;
+  const localTimes = userPrefs.global.localTime;
   const displayMarkers = userPrefs.map.showMarkers;
   if (!mapState || !mapState.map)
     return;
-  const map2 = mapState.map;
+  const map = mapState.map;
   const myTrack = trackFleet[connectedPlayerId2].track;
   if (!mapState.meLayer)
     mapState.meLayer = L$1.layerGroup();
@@ -13071,11 +13073,11 @@ function updateMapMe(connectedPlayerId2, playerIte) {
   if (!mapState.meLayerMarkers)
     mapState.meLayerMarkers = L$1.layerGroup();
   if (mapState.meLayer)
-    map2.removeLayer(mapState.meLayer);
+    map.removeLayer(mapState.meLayer);
   if (mapState.meLayerMarkers)
-    map2.removeLayer(mapState.meLayerMarkers);
+    map.removeLayer(mapState.meLayerMarkers);
   if (mapState.meBoatLayer)
-    map2.removeLayer(mapState.meBoatLayer);
+    map.removeLayer(mapState.meBoatLayer);
   mapState.meLayer = L$1.layerGroup();
   mapState.meLayerMarkers = L$1.layerGroup();
   mapState.meBoatLayer = L$1.layerGroup();
@@ -13087,30 +13089,31 @@ function updateMapMe(connectedPlayerId2, playerIte) {
     myTrack.forEach(({ lat, lon, ts, tag }) => {
       myTrackPts.push({ lat, lon });
       if (isFirst) {
-        const title2 = "Me <br><b>" + formatShortDate(ts, void 0, localTimes2) + "</b> | Speed: " + roundTo(Math.abs(gcDistance(myPos, { lat, lon }) / ((ts - prevPt.ts) / 1e3) * 3600), 2) + " kts<br>" + formatPosition(lat, lon) + (tag ? "<br>(Type: " + tag + ")" : "");
+        const title2 = "Me <br><b>" + formatShortDate(ts, void 0, localTimes) + "</b> | Speed: " + roundTo(Math.abs(gcDistance(myPos, { lat, lon }) / ((ts - prevPt.ts) / 1e3) * 3600), 2) + " kts<br>" + formatPosition(lat, lon) + (tag ? "<br>(Type: " + tag + ")" : "");
         buildCircle({ lat, lon }, mapState.meLayerMarkers, "#b86dff", 1.5, 1, title2);
         mapState.refPoints.push({ lat, lon });
       }
       isFirst = true;
       prevPt = { lat, lon, ts };
     });
-    const myTrackpath = buildPath$1(myTrackPts, void 0, void 0, myPos.lat, myPos.lon);
+    const myTrackpath = buildPath(myTrackPts, void 0, void 0, myPos.lat, myPos.lon);
     buildTrace(myTrackpath, mapState.meLayer, mapState.refPoints, "#b86dff", 1.5, 1);
   }
-  mapState.meLayer.addTo(map2);
+  mapState.meLayer.addTo(map);
   if (displayMarkers)
-    mapState.meLayerMarkers.addTo(map2);
+    mapState.meLayerMarkers.addTo(map);
   const myPosPt = buildPt2(myPos.lat, myPos.lon);
   const title = "Me (Last position: " + formatTimestampToReadableDate(playerIte.iteDate, 1) + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
   buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff", "#000000", 0.4), title, 200, 0.5, playerIte.hdg);
   drawProjectionLine(myPosPt, playerIte.hdg, playerIte.speed);
-  mapState.meBoatLayer.addTo(map2);
+  mapState.meBoatLayer.addTo(map);
   if (!mapState.userZoom)
     updateBounds();
 }
 function updateMapLeader(playerIte) {
   if (!mapState || !mapState.map)
     return;
+  const map = mapState.map;
   if (mapState.leaderLayer)
     map.removeLayer(mapState.leaderLayer);
   if (mapState.leaderMeLayer)
@@ -13118,21 +13121,21 @@ function updateMapLeader(playerIte) {
   mapState.leaderLayer = L$1.layerGroup();
   mapState.leaderMeLayer = L$1.layerGroup();
   const offset = (playerIte == null ? void 0 : playerIte.startDate) ? /* @__PURE__ */ new Date() - playerIte.startDate : /* @__PURE__ */ new Date();
-  const trackLeader = getLegPlayersTrackLeader();
+  const trackLeaderMap = getLegPlayersTrackLeader();
+  const trackLeader = trackLeaderMap && typeof trackLeaderMap === "object" ? Object.values(trackLeaderMap)[0] : null;
   if (trackLeader && trackLeader.track.length > 0) {
     const playersList2 = getPlayersList();
-    const title = "Leader: <b>" + playersList2[trackLeader.userId] + "</b><br>Elapsed: " + formatDHMS(offset);
+    const title = "Leader: <b>" + playersList2[trackLeader.userId].name + "</b><br>Elapsed: " + formatDHMS(offset);
     addGhostTrack(trackLeader.track, title, offset, "#FF8C00", mapState.leaderLayer);
   }
-  const trackGhost = getLegPlayersTrackLeader();
+  const trackGhostMap = getLegPlayersTracksGhost();
+  const trackGhost = trackGhostMap && typeof trackGhostMap === "object" ? Object.values(trackGhostMap)[0] : null;
   if (trackGhost && trackGhost.track.length > 0) {
     const title = "<b>Best Attempt</b><br>Elapsed: " + formatDHMS(offset);
     addGhostTrack(trackGhost.track, title, offset, "#b86dff", mapState.leaderMeLayer);
   }
 }
-function addGhostTrack(ghostTrack, title, offset, color, layer2) {
-  const userPrefs = getUserPrefs();
-  const displayMarkers = userPrefs.map.showMarkers;
+function addGhostTrack(ghostTrack, title, offset, color, layer) {
   if (!ghostTrack || !mapState || !mapState.map)
     return;
   const ghostStartTS = ghostTrack[0].ts;
@@ -13147,37 +13150,38 @@ function addGhostTrack(ghostTrack, title, offset, color, layer2) {
       }
     }
   }
-  buildTrace(buildPath$1(ghostTrack), layer2, mapState.refPoints, color, 1, 0.6, "10, 10", "5");
-  if (ghostPos && displayMarkers) {
+  buildTrace(buildPath(ghostTrack), layer, mapState.refPoints, color, 1, 0.6, "10, 10", "5");
+  if (ghostPos) {
     const lat1 = ghostTrack[ghostPos].lat;
     const lon1 = ghostTrack[ghostPos].lon;
     const lat0 = ghostTrack[Math.max(ghostPos - 1, 0)].lat;
     const lon0 = ghostTrack[Math.max(ghostPos - 1, 0)].lon;
-    const heading = Util.courseAngle(lat0, lon0, lat1, lon1) * 180 / Math.PI;
+    const heading = courseAngle(lat0, lon0, lat1, lon1) * 180 / Math.PI;
     const d = (ghostPosTS - ghostTrack[ghostPos - 1].ts) / (ghostTrack[ghostPos].ts - ghostTrack[ghostPos - 1].ts);
     const lat = lat0 + (lat1 - lat0) * d;
     const lon = lon0 + (lon1 - lon0) * d;
     const pos = buildPt2(lat, lon);
-    buildMarker(pos, layer2, buildBoatIcon(color, color, 0.6), title, 20, 0.4, heading);
+    buildMarker(pos, layer, buildBoatIcon(color, color, 0.6), title, 20, 0.4, heading);
   }
-  layer2.addTo(mapState.map);
+  layer.addTo(mapState.map);
   if (!mapState.userZoom)
     updateBounds();
 }
 function updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2) {
   if (!raceInfo2 || !raceItesFleet || !mapState || !mapState.map)
     return;
-  const map2 = mapState.map;
-  const userPrefs = getUserPrefs();
+  const map = mapState.map;
   const trackFleet = getLegPlayersTracksFleet();
+  const userPrefs = getUserPrefs();
   const displayMarkers = userPrefs.map.showMarkers;
   const displayTracks = userPrefs.map.showTracks;
+  const localTimes = userPrefs.global.localTime;
   if (mapState.fleetLayer)
-    map2.removeLayer(mapState.fleetLayer);
+    map.removeLayer(mapState.fleetLayer);
   if (mapState.fleetLayerMarkers)
-    map2.removeLayer(mapState.fleetLayerMarkers);
+    map.removeLayer(mapState.fleetLayerMarkers);
   if (mapState.fleetLayerTracks)
-    map2.removeLayer(mapState.fleetLayerTracks);
+    map.removeLayer(mapState.fleetLayerTracks);
   mapState.fleetLayer = L$1.layerGroup();
   mapState.fleetLayerMarkers = L$1.layerGroup();
   mapState.fleetLayerTracks = L$1.layerGroup();
@@ -13213,43 +13217,62 @@ function updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2) {
         if (playerIte.twd > 0)
           info += " | TWD: " + roundTo(playerIte.twd, 3) + "°";
       } else {
-        info = skipperName + "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.heading, 2) + "°</b><br>Sail: " + sailNames[playerIte] || "- | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+        info = skipperName + "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte.sail] || "- | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
       }
-      if (raceInfo2.raceType == "record") {
+      if (raceInfo2.raceType == "record" && playerIte.startDate) {
         info += "<br>Elapsed: <b>" + formatDHMS(playerIte.iteDate - playerIte.startDate) + "</b>";
       }
       const categoryIdx = category.indexOf(playerIte.type);
-      const nameStyle = userId == connectedPlayerId2 ? "color: #b86dff; font-weight: bold; " : userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx] : categoryStyle[categoryIdx];
-      const sailStyle = sailColors[playerIte.sail];
-      buildMarker(pos, mapState.fleetLayer, buildBoatIcon(nameStyle, sailStyle, 0.8), info, zi, 0.8, playerIte.hdg);
+      let boatColor = "";
+      let borderBoatColor = "";
+      if (userId == connectedPlayerId2) {
+        boatColor = "#b86dff";
+        borderBoatColor = "#b86dff";
+      } else {
+        boatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bcolor : categoryStyle[categoryIdx].bcolor;
+        borderBoatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bbcolor : categoryStyle[categoryIdx].bbcolor;
+        if (playerIte.type2 == "followed" && (playerIte.type == "normal" || playerIte.type == "sponsor")) {
+          boatColor = "#32cd32";
+          borderBoatColor = "#000000";
+          if (playerIte.team)
+            borderBoatColor = "#ae1030";
+        } else if (playerIte.team && playerIte.type != "top") {
+          boatColor = "#ae1030";
+          borderBoatColor = "#000000";
+          if (playerIte.type2 == "followed") {
+            borderBoatColor = "#32cd32";
+          }
+        }
+      }
+      buildMarker(pos, mapState.fleetLayer, buildBoatIcon(boatColor, borderBoatColor, 0.8), info, zi, 0.8, playerIte.hdg);
       if (((_b = trackFleet[userId]) == null ? void 0 : _b.track) && ((_c = trackFleet[userId]) == null ? void 0 : _c.length) != 0) {
-        ({ lat: playerIte.pos.lat, lon: playerIte.pos.lon });
+        const playerPos = { lat: playerIte.pos.lat, lon: playerIte.pos.lon };
         let playerTrackPts = [];
         let isFirst = false;
         let prevPt = null;
         trackFleet[userId].track.forEach(({ lat, lon, ts, tag }) => {
           playerTrackPts.push({ lat, lon });
+          var pos2 = buildPt2(lat, lon);
           if (isFirst) {
             const title = skipperName + "<br><b>" + formatShortDate(ts, void 0, localTimes) + "</b> | Speed: " + roundTo(Math.abs(gcDistance(playerPos, { lat, lon }) / ((ts - prevPt.ts) / 1e3) * 3600), 2) + " kts<br>" + formatPosition(lat, lon) + (tag ? "<br>(Type: " + tag + ")" : "");
-            buildCircle(pos2, mapState.fleetLayerMarkers, nameStyle, 1.5, 1, title);
+            buildCircle(pos2, mapState.fleetLayerMarkers, boatColor, 1.5, 1, title);
             mapState.refPoints.push({ lat, lon });
           }
           isFirst = true;
           prevPt = { lat, lon, ts };
         });
         if (playerPos.lat && playerPos.lon) {
-          const myTrackpath = buildPath$1(playerTrackPts, void 0, void 0, playerPos.lat, playerPos.lon);
-          buildTrace(myTrackpath, mapState.fleetLayerTracks, mapState.refPoints, nameStyle, 1.5, 1);
-          mapState.fleetLayerTracks.addTo(map2);
+          const myTrackpath = buildPath(playerTrackPts, void 0, void 0, playerPos.lat, playerPos.lon);
+          buildTrace(myTrackpath, mapState.fleetLayerTracks, mapState.refPoints, boatColor, 1.5, 1);
         }
       }
     }
   });
-  mapState.fleetLayer.addTo(map2);
+  mapState.fleetLayer.addTo(map);
   if (displayMarkers)
-    mapState.fleetLayerMarkers.addTo(map2);
+    mapState.fleetLayerMarkers.addTo(map);
   if (displayTracks)
-    mapState.fleetLayerTracks.addTo(map2);
+    mapState.fleetLayerTracks.addTo(map);
   if (!mapState.userZoom)
     updateBounds();
 }
@@ -13307,7 +13330,8 @@ async function initializeMap() {
   if (mapState.map && mapState.raceId === rid) {
     mapState.map.invalidateSize();
     applyBoundsForCurrentMode(mapState.map);
-    updateBounds();
+    if (!mapState.userZoom)
+      updateBounds();
     updateMapCheckpoints(raceInfo2, playerItes.ite);
     updateMapWaypoints(playerItes.ite);
     updateMapMe(connectedPlayerId2, playerItes.ite);
@@ -13376,24 +13400,24 @@ async function initializeMap() {
     selectBaseMap = Arctic_WMS;
   const usingPolar = selectBaseMap === Arctic_WMS && !!POLAR.crs;
   POLAR.enabled = usingPolar;
-  let map2 = L$1.map(MAP_CONTAINER_ID, {
+  let map = L$1.map(MAP_CONTAINER_ID, {
     layers: [selectBaseMap],
     crs: usingPolar ? POLAR.crs : L$1.CRS.EPSG3857
   });
-  mapState.map = map2;
+  mapState.map = map;
   const layerControl = L$1.control.layers(baseLayers, null, { position: "topright" });
-  layerControl.addTo(map2);
+  layerControl.addTo(map);
   ensureLayerControlClickable(layerControl);
   async function onBaseLayerChange(e) {
     await saveLocal("selectBaseMap", e.name);
     const isArctic = e.layer === Arctic_WMS;
     const wasArctic = !!POLAR.enabled;
     if (hasProj4Leaflet() && isArctic !== wasArctic) {
-      const center = map2.getCenter();
-      const zoom = map2.getZoom();
-      map2.off("baselayerchange", onBaseLayerChange);
-      map2.off("zoomend", set_userCustomZoom);
-      map2.remove();
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      map.off("baselayerchange", onBaseLayerChange);
+      map.off("zoomend", set_userCustomZoom);
+      map.remove();
       POLAR.enabled = isArctic;
       const activeBase = isArctic ? Arctic_WMS : e.name === "Dark" ? OSM_DarkLayer : e.name === "Satellite" ? Esri_WorldImagery : OSM_Layer;
       const newMap = L$1.map(MAP_CONTAINER_ID, {
@@ -13403,7 +13427,7 @@ async function initializeMap() {
         fadeAnimation: false
       });
       mapState.map = newMap;
-      map2 = newMap;
+      map = newMap;
       newMap.once("load", () => newMap.invalidateSize());
       const comfy = computeComfortView(isArctic, center, zoom);
       requestAnimationFrame(() => {
@@ -13474,9 +13498,9 @@ async function initializeMap() {
       return;
     }
     POLAR.enabled = isArctic;
-    applyBoundsForCurrentMode(map2);
+    applyBoundsForCurrentMode(map);
   }
-  map2.addControl(new L$1.Control.ScaleNautic({
+  map.addControl(new L$1.Control.ScaleNautic({
     metric: true,
     imperial: false,
     nautic: true
@@ -13491,7 +13515,7 @@ async function initializeMap() {
       label: "Distance:"
     }
   };
-  L$1.control.ruler(optionsRuler).addTo(map2);
+  L$1.control.ruler(optionsRuler).addTo(map);
   L$1.control.coordinates({
     useDMS: true,
     labelTemplateLat: "Lat: {y}",
@@ -13507,8 +13531,8 @@ async function initializeMap() {
       lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
       return '<span class="labelGeo">' + lngFormatted.replace(/^-/, "") + "</span>";
     }
-  }).addTo(map2);
-  map2.attributionControl.addAttribution("&copy;SkipperDuMad / Trait de cotes &copy;Kurun56");
+  }).addTo(map);
+  map.attributionControl.addAttribution("&copy;SkipperDuMad / Trait de cotes &copy;Kurun56");
   mapState.refLayer = L$1.layerGroup();
   let title1 = "Start: <b>" + raceInfo2.start.name + "</b><br>" + formatPosition(raceInfo2.start.lat, raceInfo2.start.lon);
   let latlng = buildPt2(raceInfo2.start.lat, raceInfo2.start.lon);
@@ -13535,10 +13559,10 @@ async function initializeMap() {
       const iceDataMiddleIndex = Math.ceil(iceData.length / 2);
       const iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
       const iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
-      buildTrace(buildPath$1(iceDataFirstHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
-      buildTrace(buildPath$1(iceDataSecondHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+      buildTrace(buildPath(iceDataFirstHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+      buildTrace(buildPath(iceDataSecondHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
       if (Util.isOdd(iceData.length))
-        buildTrace(buildPath$1([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+        buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
     }
   }
   const rz = raceInfo2 == null ? void 0 : raceInfo2.restrictedZones;
@@ -13581,19 +13605,19 @@ async function initializeMap() {
       ).addTo(mapState.refLayer);
     }
   }
-  mapState.refLayer.addTo(map2);
+  mapState.refLayer.addTo(map);
   updateBounds();
   updateMapCheckpoints(raceInfo2, playerItes.ite);
   updateMapFleet(raceInfo2, raceItesFleet, connectedPlayerId2);
   if (mapState.route[rid] && mapState.route[rid].length !== 0) {
     Object.keys(mapState.route[rid]).forEach(function(name) {
       var lMapRoute = mapState.route[rid][name];
-      var map3 = mapState.map;
+      var map2 = mapState.map;
       if (lMapRoute.displayed) {
         if (lMapRoute.traceLayer)
-          lMapRoute.traceLayer.addTo(map3);
+          lMapRoute.traceLayer.addTo(map2);
         if (lMapRoute.markersLayer && document.getElementById("sel_showMarkersLmap").checked)
-          lMapRoute.markersLayer.addTo(map3);
+          lMapRoute.markersLayer.addTo(map2);
       }
     });
   }
@@ -13601,10 +13625,10 @@ async function initializeMap() {
   updateMapLeader(playerItes.ite);
   updateMapMe(connectedPlayerId2, playerItes.ite);
   set_userCustomZoom(false);
-  applyBoundsForCurrentMode(map2);
-  map2.on("baselayerchange", onBaseLayerChange);
-  map2.on("zoomend", set_userCustomZoom);
-  mapState.map = map2;
+  applyBoundsForCurrentMode(map);
+  map.on("baselayerchange", onBaseLayerChange);
+  map.on("zoomend", set_userCustomZoom);
+  mapState.map = map;
   initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
   enableCoordinateCopyingWithShortcut();
 }
@@ -13708,6 +13732,48 @@ function clickManager(ev) {
   else if (cbox) {
     changeState(ev_lbl);
     tabSwitch();
+  }
+}
+function onMarkersChange() {
+  if (!mapState || !mapState.map)
+    return;
+  const map = mapState.map;
+  const userPrefs = getUserPrefs();
+  const displayMarkers = userPrefs.map.showMarkers;
+  document.getElementById("sel_showMarkersLmap").checked = displayMarkers;
+  Object.keys(mapState.route).forEach(function(name) {
+    if (mapState.route[name].markersLayer) {
+      if (displayMarkers && mapState.route[name].displayed == true)
+        mapState.route[name].markersLayer.addTo(map);
+      else
+        map.removeLayer(mapState.route[name].markersLayer);
+    }
+  });
+  if (mapState.meLayerMarkers) {
+    if (displayMarkers)
+      mapState.meLayerMarkers.addTo(map);
+    else
+      map.removeLayer(mapState.meLayerMarkers);
+  }
+  if (mapState.fleetLayerMarkers) {
+    if (displayMarkers)
+      mapState.fleetLayerMarkers.addTo(map);
+    else
+      map.removeLayer(mapState.fleetLayerMarkers);
+  }
+}
+function hideShowTracks() {
+  if (!mapState || !mapState.map)
+    return;
+  const map = mapState.map;
+  const userPrefs = getUserPrefs();
+  const displayTracks = userPrefs.map.showTracks;
+  document.getElementById("sel_showTracksLmap").checked = displayTracks;
+  if (mapState.fleetLayerTracks) {
+    if (displayTracks)
+      mapState.fleetLayerTracks.addTo(map);
+    else
+      map.removeLayer(mapState.fleetLayerTracks);
   }
 }
 function initUIBindings(items) {
@@ -14138,10 +14204,11 @@ function uiBindingInit() {
     },
     {
       selector: "#sel_showMarkersLmap",
-      onChange: (checked) => {
+      onChange: async (checked) => {
         const userPrefs = getUserPrefs();
-        userPrefs.map.showMarkers = checked;
-        saveUserPrefs(userPrefs);
+        userPrefs.map.showMarkers = checked ? false : true;
+        await saveUserPrefs(userPrefs);
+        onMarkersChange();
       },
       onInit: (checked, el) => {
         const userPrefs = getUserPrefs();
@@ -14150,10 +14217,11 @@ function uiBindingInit() {
     },
     {
       selector: "#sel_showTracksLmap",
-      onChange: (checked) => {
+      onChange: async (checked) => {
         const userPrefs = getUserPrefs();
-        userPrefs.map.showTracks = checked;
-        saveUserPrefs(userPrefs);
+        userPrefs.map.showTracks = checked ? false : true;
+        await saveUserPrefs(userPrefs);
+        hideShowTracks();
       },
       onInit: (checked, el) => {
         const userPrefs = getUserPrefs();

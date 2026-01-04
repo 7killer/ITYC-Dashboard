@@ -1,4 +1,4 @@
-import { K as getDefaultExportFromCjs, T as processDBOperations, g as getData, U as cfg, f as roundTo, V as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, W as saveData, M as gcDistance, X as courseAngle, Y as angle, Z as toRad, _ as toDeg, $ as calculateCOGLoxo, G as guessOptionBits, F as isBitSet, s as sailNames, q as getxFactorStyle, a0 as twaBackGround, h as formatHM, u as getBG, i as formatTimeNotif, k as infoSail, o as formatPosition, l as getUserPrefs, S as createKeyChangeListener } from "./_commonjsHelpers-8eeb55b8.js";
+import { K as getDefaultExportFromCjs, V as processDBOperations, g as getData, W as cfg, f as roundTo, X as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, Y as saveData, N as gcDistance, O as courseAngle, Z as angle, L as toRad, _ as toDeg, $ as calculateCOGLoxo, G as guessOptionBits, F as isBitSet, s as sailNames, q as getxFactorStyle, a0 as twaBackGround, h as formatHM, u as getBG, i as formatTimeNotif, k as infoSail, o as formatPosition, l as getUserPrefs, U as createKeyChangeListener } from "./_commonjsHelpers-d4c5a4a6.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -3867,7 +3867,7 @@ async function ingestGhostTrack(request, response) {
     stripUnknown: true
   });
   ghostTrackResponseSchema.validate(response, { stripUnknown: true }).then((validGhostTracks) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     const raceId = req == null ? void 0 : req.race_id;
     const legNum = req == null ? void 0 : req.leg_num;
     if (!raceId || !legNum)
@@ -3876,45 +3876,39 @@ async function ingestGhostTrack(request, response) {
     const leaderId = (_b = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _b.leaderId;
     const leaderTrack = (_c = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _c.leaderTrack;
     const ghostPlayerId = req == null ? void 0 : req.playerId;
-    const ghostPlayerTrack = (_d = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _d.myTrack;
+    const ghostPlayerTrack = ((_e = (_d = validGhostTracks == null ? void 0 : validGhostTracks.scriptData) == null ? void 0 : _d.myTrack) == null ? void 0 : _e.length) > 0 ? validGhostTracks.scriptData.myTrack : null;
+    const now = Date.now();
+    const playersTracks = [
+      ...leaderId && leaderTrack ? [{
+        raceId,
+        legNum,
+        userId: leaderId,
+        type: "leader",
+        track: leaderTrack
+      }] : [],
+      ...ghostPlayerTrack ? [{
+        raceId,
+        legNum,
+        userId: ghostPlayerId,
+        type: "ghost",
+        track: ghostPlayerTrack
+      }] : []
+    ];
+    const players = leaderId && leaderTrack ? [{
+      id: leaderId,
+      name: leaderName,
+      timestamp: now
+    }] : [];
+    const internal = playersTracks.length > 0 ? [
+      { id: "playersTracksUpdate", ts: now },
+      ...ghostPlayerTrack ? [{ id: "playersUpdate", ts: now }] : []
+    ] : [];
     const dbOpe = [
       {
         type: "putOrUpdate",
-        ...leaderId && leaderTrack && {
-          players: [
-            {
-              id: leaderId,
-              name: leaderName,
-              timestamp: Date.now()
-            }
-          ],
-          playersTracks: [
-            {
-              raceId,
-              legNum,
-              userId: leaderId,
-              type: "leader",
-              track: leaderTrack
-            }
-          ]
-        },
-        ...ghostPlayerTrack && {
-          playersTracks: [
-            {
-              raceId,
-              legNum,
-              userId: ghostPlayerId,
-              type: "ghost",
-              track: ghostPlayerTrack
-            }
-          ]
-        },
-        ...(ghostPlayerTrack || leaderId && leaderTrack) && {
-          internal: [
-            ...ghostPlayerTrack || leaderId && leaderTrack ? [{ id: "playersTracksUpdate", ts: Date.now() }] : [],
-            ...ghostPlayerTrack ? [{ id: "playersUpdate", ts: Date.now() }] : []
-          ]
-        }
+        ...players.length ? { players } : {},
+        ...playersTracks.length ? { playersTracks } : {},
+        ...internal.length ? { internal } : {}
       }
     ];
     processDBOperations(dbOpe);

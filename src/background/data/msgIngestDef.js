@@ -870,50 +870,51 @@ export async function ingestGhostTrack(request, response) {
     const leaderTrack = validGhostTracks?.scriptData?.leaderTrack;
     
     const ghostPlayerId = req?.playerId;
-    const ghostPlayerTrack = validGhostTracks?.scriptData?.myTrack;
+    const ghostPlayerTrack =
+      validGhostTracks?.scriptData?.myTrack?.length > 0
+        ? validGhostTracks.scriptData.myTrack
+        : null;
+
+    const now = Date.now();
+
+    const playersTracks = [
+      ...(leaderId && leaderTrack ? [{
+        raceId,
+        legNum,
+        userId: leaderId,
+        type: "leader",
+        track: leaderTrack,
+      }] : []),
+
+      ...(ghostPlayerTrack ? [{
+        raceId,
+        legNum,
+        userId: ghostPlayerId,
+        type: "ghost",
+        track: ghostPlayerTrack,
+      }] : []),
+    ];
+
+    const players = leaderId && leaderTrack ? [{
+      id: leaderId,
+      name: leaderName,
+      timestamp: now,
+    }] : [];
+
+    const internal = (playersTracks.length > 0) ? [
+      { id: "playersTracksUpdate", ts: now },
+      ...(ghostPlayerTrack ? [{ id: "playersUpdate", ts: now }] : []),
+    ] : [];
+
     const dbOpe = [
       {
         type: "putOrUpdate",
-        ...(leaderId && leaderTrack  && {
-          players: [
-            {
-            id : leaderId,
-            name : leaderName,
-            timestamp: Date.now(),
-          
-            }
-          ],
-          playersTracks : [
-            {
-              raceId : raceId,
-              legNum : legNum,
-              userId : leaderId,
-              type : 'leader',
-              track : leaderTrack
-            }
-          ]
-        }),
-        ...(ghostPlayerTrack  && {
-          playersTracks : [
-            {
-              raceId : raceId,
-              legNum : legNum,
-              userId : ghostPlayerId,
-              type : 'ghost',
-              track : ghostPlayerTrack
-            }
-          ],
-        }),
-        ...((ghostPlayerTrack || (leaderId && leaderTrack)) && {
-          internal: [
-            ...(ghostPlayerTrack || (leaderId && leaderTrack)
-              ? [{ id: "playersTracksUpdate", ts: Date.now() }]
-              : []),
-            ...(ghostPlayerTrack ? [{ id: "playersUpdate", ts: Date.now() }] : []),
-          ],
-        }),
+        ...(players.length ? { players } : {}),
+        ...(playersTracks.length ? { playersTracks } : {}),
+        ...(internal.length ? { internal } : {}),
       },
     ];
+
 
     processDBOperations(dbOpe);
     return true;

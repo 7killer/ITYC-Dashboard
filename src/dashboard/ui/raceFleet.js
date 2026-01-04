@@ -226,7 +226,9 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
     const nameClass = (userId == connectedPlayerId)?'highlightMe':"";
     const categoryIdx = category.indexOf(playerIte.type);
     const nameStyle = (userId == connectedPlayerId)?"color: #b86dff; font-weight: bold; "
-                    :(darkTheme?categoryStyleDark[categoryIdx]:categoryStyle[categoryIdx]);
+                    :("color:"+(darkTheme?categoryStyleDark[categoryIdx].nameStyle:categoryStyle[categoryIdx].nameStyle)+";");
+
+    
     const autoSail = (playerIte.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : "")
    
     const name = (playerIte.type == "sponsor")?
