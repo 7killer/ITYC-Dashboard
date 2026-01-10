@@ -4539,7 +4539,7 @@ async function initializeMap(race) {
         await getOption("fullScreen_Game",false);
         await getOption("view_InvisibleDoors", false);
 
-        await getOption("sel_polarSite",1);
+        await getOptionN("sel_polarSite",1);
     
         await getOptionN("fullScreen_Size",80);
 
