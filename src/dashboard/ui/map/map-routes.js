@@ -1,21 +1,11 @@
 
-import L from '@/dashboard/ui/map/leaflet-setup';
+
 import {getUserPrefs} from '../../../common/userPrefs.js'
 import { mapState,updateBounds } from './map-race.js';
-import {buildPt2, buildMarker,darkenColor,buildMarkerTitle,
-    buildTextIcon,buildCircleEndRace,buildCircle,
-    buildPath_bspline,buildTrace,buildPath,buildBoatIcon,createProjectionPoint
+import {buildPt2, darkenColor,buildMarkerTitle,buildCircle,
+    buildTrace,buildPath,createProjectionPoint
 } from './map-utils.js'
-import {getConnectedPlayerId,
-        getRaceInfo,
-        getLegPlayerInfos,
-        getLegFleetInfos,
-        getLegPlayersTracksFleet,
-        getLegPlayersTrackLeader,
-        getLegPlayersTracksGhost,
-        getLegPlayersOrder,
-        getPlayersList
-} from '../../app/memoData.js'
+import {getRaceInfo} from '../../app/memoData.js'
 export function importRoute(route,name) {
     
     const raceInfo = getRaceInfo();

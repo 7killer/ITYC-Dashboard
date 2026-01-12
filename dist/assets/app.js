@@ -12980,6 +12980,7 @@ function drawProjectionLine(pos, hdg, speed) {
   mapState.me_PlLayer.addTo(map);
 }
 let cachedTileList = [];
+let coastDrawnState = false;
 async function initCachedTilesList() {
   cachedTileList = [];
   await chrome.runtime.getPackageDirectoryEntry((dir) => {
@@ -13009,7 +13010,7 @@ async function showCoastTiles() {
     return;
   const map = mapState.map;
   const center = map.getCenter();
-  const RANGE = 6;
+  const RANGE = 3;
   const GRID = 3;
   const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
   const wrapLng = (lng) => {
@@ -13097,18 +13098,28 @@ function coastDrawAllLayers(map, force = false) {
         mapCoast.layer = null;
       if (!mapCoast.layer) {
         mapCoast.layer = L$1.layerGroup();
+        mapCoast.layer.__tag = "coastLines";
         L$1.geoJSON(mapCoast.json, { style: styleLines }).addTo(mapCoast.layer);
       }
       mapCoast.layer.addTo(map);
     }
   });
+  coastDrawnState = true;
 }
-function coastLayersCleanAll(map) {
-  mapState.coasts.forEach((mapCoast) => {
-    mapCoast.displayed = false;
-    if (mapCoast.layer)
-      map.removeLayer(mapCoast.layer);
+function coastLayersCleanAll(map, force = false) {
+  map = map ? map : mapState.map;
+  if (!map || !coastDrawnState && !force)
+    return;
+  map.eachLayer((l) => {
+    if (l.__tag && l.__tag === "coastLines") {
+      map.removeLayer(l);
+    }
   });
+  mapState.coasts.forEach((mapCoast) => {
+    if (!force)
+      mapCoast.displayed = false;
+  });
+  coastDrawnState = false;
 }
 function styleLines(feature) {
   const userPrefs = getUserPrefs();
@@ -13124,7 +13135,7 @@ function onCoastColorChange() {
   if (!mapState || !mapState.map || !raceInfo2)
     return;
   const map = mapState.map;
-  coastLayersCleanAll(map);
+  coastLayersCleanAll(map, true);
   coastDrawAllLayers(map, true);
 }
 const mapState = {
@@ -13152,9 +13163,11 @@ const mapState = {
   meBoatLayer: null,
   leaderLayer: null,
   leaderMeLayer: null,
-  coasts: /* @__PURE__ */ new Map()
+  coasts: /* @__PURE__ */ new Map(),
+  mapCurrentZoom: 0
 };
 const MAP_CONTAINER_ID = "lMap";
+const COAST_MIN_ZOOM = 7;
 function updateBounds() {
   if (!mapState.map)
     return;
@@ -13497,14 +13510,23 @@ function getOrCreateMapContainer() {
 async function initializeMap() {
   var _a;
   async function set_userCustomZoom(e) {
-    if (mapState.resetUserZoom > 0)
-      mapState.userZoom = true;
-    else
-      mapState.resetUserZoom += 1;
-    if (e && e.target) {
-      if (e.target._zoom > 5) {
-        await showCoastTiles();
+    if (!e || e.type === "zoomend") {
+      if (mapState.resetUserZoom > 0)
+        mapState.userZoom = true;
+      else
+        mapState.resetUserZoom += 1;
+      if (e && e.target) {
+        if (e.target._zoom > COAST_MIN_ZOOM)
+          await showCoastTiles();
+        else
+          await coastLayersCleanAll();
+        mapState.mapCurrentZoom = e.target._zoom;
       }
+    } else if (e.type === "moveend") {
+      if (mapState.mapCurrentZoom > COAST_MIN_ZOOM)
+        await showCoastTiles();
+      else
+        await coastLayersCleanAll();
     }
   }
   const tab = document.getElementById("tab-content3");
@@ -13616,6 +13638,7 @@ async function initializeMap() {
       const zoom = map.getZoom();
       map.off("baselayerchange", onBaseLayerChange);
       map.off("zoomend", set_userCustomZoom);
+      map.off("moveend", set_userCustomZoom);
       map.remove();
       POLAR.enabled = isArctic;
       const activeBase = isArctic ? Arctic_WMS : e.name === "Dark" ? OSM_DarkLayer : e.name === "Satellite" ? Esri_WorldImagery : OSM_Layer;
@@ -13680,6 +13703,7 @@ async function initializeMap() {
         mapState.refLayer.addTo(newMap);
       applyBoundsForCurrentMode(newMap);
       newMap.on("zoomend", set_userCustomZoom);
+      newMap.on("moveend", set_userCustomZoom);
       newMap.on("baselayerchange", onBaseLayerChange);
       const raceInfo3 = getRaceInfo$1();
       const playerItes2 = getLegPlayerInfos();
@@ -13827,6 +13851,7 @@ async function initializeMap() {
   applyBoundsForCurrentMode(map);
   map.on("baselayerchange", onBaseLayerChange);
   map.on("zoomend", set_userCustomZoom);
+  map.on("moveend", set_userCustomZoom);
   mapState.map = map;
   initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
   enableCoordinateCopyingWithShortcut();
@@ -13945,9 +13970,9 @@ function importRoute(route, name) {
   mapState.route[rid][name] = mapState.route[rid][name] || [];
   const lmapRoute = mapState.route[rid][name];
   if (!lmapRoute.traceLayer)
-    lmapRoute.traceLayer = L$1.layerGroup();
+    lmapRoute.traceLayer = L.layerGroup();
   if (!lmapRoute.markersLayer)
-    lmapRoute.markersLayer = L$1.layerGroup();
+    lmapRoute.markersLayer = L.layerGroup();
   lmapRoute.color = route.color;
   lmapRoute.displayedName = route.displayedName;
   lmapRoute.projectionData = [];

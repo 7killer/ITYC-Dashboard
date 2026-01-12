@@ -5,6 +5,7 @@ import { mapState} from './map-race.js';
 import {getRaceInfo} from '../../app/memoData.js'
 
 let cachedTileList = [];
+let coastDrawnState = false;
 
 export async function initCachedTilesList()
 {
@@ -39,7 +40,7 @@ export async function showCoastTiles()
     const map = mapState.map;
 
     const center = map.getCenter();
-    const RANGE = 6;
+    const RANGE = 3;
     const GRID = 3;
 
     const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
@@ -138,24 +139,33 @@ export async function showCoastTiles()
 function coastDrawAllLayers(map,force=false)
 {
     mapState.coasts.forEach(mapCoast =>  {
-    if(mapCoast.displayed)
-    {
-        if(force) mapCoast.layer = null;
-        if(!mapCoast.layer) {
-            mapCoast.layer =  L.layerGroup();
-            L.geoJSON(mapCoast.json,{style: styleLines}).addTo(mapCoast.layer);
+        if(mapCoast.displayed)
+        {
+            if(force) mapCoast.layer = null;
+            if(!mapCoast.layer) {
+                mapCoast.layer =  L.layerGroup();
+                mapCoast.layer.__tag = 'coastLines';
+                L.geoJSON(mapCoast.json,{style: styleLines}).addTo(mapCoast.layer);
+            }
+            mapCoast.layer.addTo(map);
         }
-        mapCoast.layer.addTo(map);
-    }
-});
+    });
+    coastDrawnState = true;
 }
 
-function coastLayersCleanAll(map)
+export function coastLayersCleanAll(map,force=false)
 {
-    mapState.coasts.forEach(mapCoast => {
-        mapCoast.displayed = false;
-        if(mapCoast.layer) map.removeLayer(mapCoast.layer);
+    map = map?map:mapState.map;
+    if(!map || (!coastDrawnState && !force)) return;
+
+    map.eachLayer(l => {
+        if (l.__tag && l.__tag === 'coastLines') {map.removeLayer(l);}
     });
+    mapState.coasts.forEach(mapCoast => {
+        if(!force) mapCoast.displayed = false;
+    //    if(mapCoast.layer) map.removeLayer(mapCoast.layer);
+    });
+    coastDrawnState = false;
 }
 function styleLines(feature) {
     
@@ -172,7 +182,7 @@ export function onCoastColorChange() {
     const raceInfo = getRaceInfo();
     if(!mapState|| !mapState.map ||!raceInfo) return;
     const map = mapState.map;
-    coastLayersCleanAll(map);
+    coastLayersCleanAll(map,true);
     coastDrawAllLayers(map,true);
 
 }

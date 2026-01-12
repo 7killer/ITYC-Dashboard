@@ -27,7 +27,7 @@ import {isDisplayEnabled} from '../../app/sortManager.js'
 import { gcDistance, roundTo, courseAngle} from '../../../common/utils.js';
 
 import {drawProjectionLine} from './map-proj.js'
-import {showCoastTiles} from './map-coasts.js'
+import {showCoastTiles, coastLayersCleanAll} from './map-coasts.js'
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 
@@ -52,9 +52,11 @@ export const mapState = {
     leaderLayer: null,
     leaderMeLayer: null,
     coasts :  new Map(),
+    mapCurrentZoom : 0
     
 };
 const MAP_CONTAINER_ID = 'lMap';
+const COAST_MIN_ZOOM = 7;
 
 export function updateBounds()
 {
@@ -510,13 +512,19 @@ export async function initializeMap()
 {
     async function set_userCustomZoom(e)
     {
-        if(mapState.resetUserZoom > 0)
-            mapState.userZoom = true;
-        else    mapState.resetUserZoom += 1;
-        
-        if(e && e.target) if(e.target._zoom > 5 ) 
-        {
-            await showCoastTiles();
+        if(!e ||e.type === 'zoomend') {
+            if(mapState.resetUserZoom > 0)
+                mapState.userZoom = true;
+            else    mapState.resetUserZoom += 1;
+            
+            if(e && e.target) {
+                if(e.target._zoom > COAST_MIN_ZOOM) await showCoastTiles();
+                else await coastLayersCleanAll();
+                mapState.mapCurrentZoom = e.target._zoom;
+            }
+        }  else if (e.type === 'moveend') {
+            if(mapState.mapCurrentZoom > COAST_MIN_ZOOM) await showCoastTiles();
+            else await coastLayersCleanAll();
         }
     }
 
@@ -647,6 +655,7 @@ export async function initializeMap()
 
             map.off('baselayerchange', onBaseLayerChange);
             map.off('zoomend', set_userCustomZoom);
+            map.off('moveend', set_userCustomZoom);
             map.remove();
 
             POLAR.enabled = isArctic;
@@ -725,6 +734,7 @@ export async function initializeMap()
             applyBoundsForCurrentMode(newMap);
 
             newMap.on('zoomend', set_userCustomZoom);
+            newMap.on('moveend', set_userCustomZoom);
             newMap.on('baselayerchange', onBaseLayerChange);
 
             // re-appliquer les couches dynamiques pour la course courante
@@ -895,6 +905,7 @@ export async function initializeMap()
 
     map.on('baselayerchange', onBaseLayerChange);
     map.on('zoomend',set_userCustomZoom);
+    map.on('moveend', set_userCustomZoom);
 
     mapState.map = map;
     initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
