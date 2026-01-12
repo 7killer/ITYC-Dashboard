@@ -27,6 +27,7 @@ import {isDisplayEnabled} from '../../app/sortManager.js'
 import { gcDistance, roundTo, courseAngle} from '../../../common/utils.js';
 
 import {drawProjectionLine} from './map-proj.js'
+import {showCoastTiles} from './map-coasts.js'
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 
@@ -50,11 +51,12 @@ export const mapState = {
     meBoatLayer: null,
     leaderLayer: null,
     leaderMeLayer: null,
+    coasts :  new Map(),
     
 };
 const MAP_CONTAINER_ID = 'lMap';
 
-function updateBounds()
+export function updateBounds()
 {
     if (!mapState.map) return;
     mapState.bounds = L.latLngBounds(mapState.refPoints);
@@ -506,7 +508,7 @@ function getOrCreateMapContainer() {
 
 export async function initializeMap()
 {
-    function set_userCustomZoom(e)
+    async function set_userCustomZoom(e)
     {
         if(mapState.resetUserZoom > 0)
             mapState.userZoom = true;
@@ -514,9 +516,7 @@ export async function initializeMap()
         
         if(e && e.target) if(e.target._zoom > 5 ) 
         {
-            const mapcenter = mapState.map.getCenter();
-            const lon = mapcenter.lng; 
-//            EX.loadBorder(race,mapcenter.lat,lon);
+            await showCoastTiles();
         }
     }
 

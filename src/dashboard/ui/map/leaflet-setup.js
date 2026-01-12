@@ -5,7 +5,8 @@ globalThis.L = L;
 
 import 'leaflet.tilelayer.colorfilter';
 import 'leaflet.nauticscale/dist/leaflet.nauticscale.js';
-import 'leaflet-ruler';
+import 'leaflet-ruler/src/leaflet-ruler.js';
+import 'leaflet-ruler/src/leaflet-ruler.css';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css';
 import 'leaflet-polylinedecorator';

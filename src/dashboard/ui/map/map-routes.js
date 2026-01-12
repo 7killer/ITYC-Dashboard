@@ -1,12 +1,21 @@
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 import {getUserPrefs} from '../../../common/userPrefs.js'
-import { mapState } from './map-race.js';
+import { mapState,updateBounds } from './map-race.js';
 import {buildPt2, buildMarker,darkenColor,buildMarkerTitle,
     buildTextIcon,buildCircleEndRace,buildCircle,
     buildPath_bspline,buildTrace,buildPath,buildBoatIcon,createProjectionPoint
 } from './map-utils.js'
-
+import {getConnectedPlayerId,
+        getRaceInfo,
+        getLegPlayerInfos,
+        getLegFleetInfos,
+        getLegPlayersTracksFleet,
+        getLegPlayersTrackLeader,
+        getLegPlayersTracksGhost,
+        getLegPlayersOrder,
+        getPlayersList
+} from '../../app/memoData.js'
 export function importRoute(route,name) {
     
     const raceInfo = getRaceInfo();
@@ -17,7 +26,8 @@ export function importRoute(route,name) {
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
 
-    if(!mapState.route[rid][name]) mapState.route[rid][name] = [];
+    mapState.route[rid] = mapState.route[rid] || {};
+    mapState.route[rid][name] = mapState.route[rid][name] || [];
 
     const lmapRoute = mapState.route[rid][name];
     if(!lmapRoute.traceLayer) lmapRoute.traceLayer = L.layerGroup();
@@ -44,11 +54,11 @@ export function importRoute(route,name) {
         }
         buildCircle(pos, lmapRoute.markersLayer, circleColor, 2, 1, buildMarkerTitle(route.points[i]));
     }
-    buildTrace(buildPath(route.points), lmapRoute.traceLayer,race, lmapRoute.color,1,1.5);
+    buildTrace(buildPath(route.points), lmapRoute.traceLayer,mapState.refPoints, lmapRoute.color,1,1.5);
     lmapRoute.traceLayer.addTo(map); 
     
     if(displayMarkers) lmapRoute.markersLayer.addTo(map);
-    if(!mapState.userZoom) updateBounds(race);
+    if(!mapState.userZoom) updateBounds();
     lmapRoute.displayed = true;
 }
 
@@ -59,7 +69,7 @@ export function hideRoute(name) {
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
 
-    if(!mapState.route[rid][name]) return;
+    if (!mapState.route?.[rid]?.[name]) return;
     const lmapRoute = mapState.route[rid][name];
     
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer); /*delete lmapRoute.traceLayer;*/}
@@ -76,7 +86,7 @@ export function showRoute(name) {
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
 
-    if(!mapState.route[rid][name]) return;
+    if (!mapState.route?.[rid]?.[name]) return;
     const lmapRoute = mapState.route[rid][name];
 
     const userPrefs = getUserPrefs();
@@ -95,7 +105,7 @@ export function deleteRoute(name) {
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
 
-    if(!mapState.route[rid][name]) return;
+    if (!mapState.route?.[rid]?.[name]) return;
     const lmapRoute = mapState.route[rid][name];
 
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer);}
@@ -104,6 +114,17 @@ export function deleteRoute(name) {
 
     delete mapState.route[rid][name];
 
+}
+
+export function deleteAllRoutes()
+{
+    const raceInfo = getRaceInfo();
+    if(!raceInfo) return;
+    const rid = raceInfo.raceId+"-"+raceInfo.legNum;
+    Object.keys(mapState?.route?.[rid]).forEach(function (name) {
+        deleteRoute(name); 
+    });
+    
 }
 
 export function onMarkersChange() {
@@ -117,16 +138,20 @@ export function onMarkersChange() {
 
     document.getElementById('sel_showMarkersLmap').checked=displayMarkers;
 
-    Object.keys(mapState.route[rid]).forEach(function (name) {
+    if(mapState.route[rid])
+    {
+        Object.keys(mapState.route[rid]).forEach(function (name) {
 
-        if(mapState.route[rid][name].markersLayer )
-        {
-            if(displayMarkers && mapState.route[rid][name].displayed == true)  
-                mapState.route[rid][name].markersLayer.addTo(map);
-            else
-                map.removeLayer(mapState.route[rid][name].markersLayer);
-         }
-    });
+            if(mapState.route[rid][name].markersLayer )
+            {
+                if(displayMarkers && mapState.route[rid][name].displayed == true)  
+                    mapState.route[rid][name].markersLayer.addTo(map);
+                else
+                    map.removeLayer(mapState.route[rid][name].markersLayer);
+            }
+        });
+    }
+
     if(mapState.meLayerMarkers)
     {
         if(displayMarkers )  
@@ -154,7 +179,10 @@ export function hideShowTracks() {
     {
         if(displayTracks)  
             mapState.fleetLayerTracks.addTo(map);
-        else
+        else {
             map.removeLayer(mapState.fleetLayerTracks);
+            if(mapState.fleetLayerMarkers) 
+                    map.removeLayer(mapState.fleetLayerMarkers);
+        } 
     }
 }

@@ -1,4 +1,4 @@
-import { K as getDefaultExportFromCjs, V as processDBOperations, g as getData, W as cfg, f as roundTo, X as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, Y as saveData, N as gcDistance, O as courseAngle, Z as angle, L as toRad, _ as toDeg, $ as calculateCOGLoxo, G as guessOptionBits, F as isBitSet, s as sailNames, q as getxFactorStyle, a0 as twaBackGround, h as formatHM, u as getBG, i as formatTimeNotif, k as infoSail, o as formatPosition, l as getUserPrefs, U as createKeyChangeListener } from "./_commonjsHelpers-d4c5a4a6.js";
+import { K as getDefaultExportFromCjs, X as processDBOperations, g as getData, Y as cfg, f as roundTo, Z as getLatestAndPreviousByTriplet, b as getLatestEntriesPerUser, _ as saveData, N as gcDistance, O as courseAngle, $ as angle, L as toRad, a0 as toDeg, a1 as calculateCOGLoxo, G as guessOptionBits, F as isBitSet, s as sailNames, q as getxFactorStyle, a2 as twaBackGround, h as formatHM, u as getBG, i as formatTimeNotif, k as infoSail, o as formatPosition, l as getUserPrefs, W as createKeyChangeListener } from "./_commonjsHelpers-e72aeee2.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -2964,7 +2964,15 @@ const getFleetResponseSchema = create$3({
       extendedInfos: create$3({
         boatName: create$6().notRequired(),
         skipperName: create$6().notRequired()
-      }).notRequired().nullable()
+      }).notRequired().nullable(),
+      track: create$2(
+        create$3({
+          lat: create$5().required(),
+          lon: create$5().required(),
+          ts: create$5().required(),
+          tag: create$6().required()
+        })
+      ).notRequired().nullable()
     })
   )
 });
@@ -3713,11 +3721,19 @@ async function ingestFleetData(request, response) {
       timestamp: Date.now(),
       ...p.team && currentTeamId ? { teamId: currentTeamId } : {}
     }));
+    const playersTracks = res.res.filter((p) => Array.isArray(p.track) && p.track.length !== 0).map((p) => ({
+      id: p.userId,
+      raceId: req.race_id,
+      legNum: req.leg_num,
+      userId: p.userId,
+      type: "fleet"
+    }));
     const dbOpe = [
       {
         type: "putOrUpdate",
         legFleetInfos,
         players,
+        ...playersTracks.length ? { playersTracks } : {},
         internal: [
           {
             id: "legFleetInfosUpdate",
@@ -3726,7 +3742,8 @@ async function ingestFleetData(request, response) {
           {
             id: "playersUpdate",
             ts: Date.now()
-          }
+          },
+          ...(playersTracks == null ? void 0 : playersTracks.length) ? [{ id: "playersTracksUpdate", ts: Date.now() }] : []
         ]
       }
     ];

@@ -50,6 +50,7 @@ export function getSortOrder()
     return sortOrder;
 }
 
+
 export function isDisplayEnabled(playerIte, userId, connectPlayerId) {
     const userPrefs = getUserPrefs();
     const userFilters = userPrefs.filters;

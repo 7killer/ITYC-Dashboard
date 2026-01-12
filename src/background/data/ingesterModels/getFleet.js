@@ -36,7 +36,15 @@ export const getFleetResponseSchema = Yup.object({
       extendedInfos : Yup.object({
           boatName : Yup.string().notRequired(),
           skipperName : Yup.string().notRequired(),
-      }).notRequired().nullable()
+      }).notRequired().nullable(),
+      track: Yup.array(
+        Yup.object({
+          lat: Yup.number().required(),
+          lon: Yup.number().required(),
+          ts: Yup.number().required(),
+          tag: Yup.string().required(),
+        }),
+      ).notRequired().nullable(),
     }),
   ),
 });

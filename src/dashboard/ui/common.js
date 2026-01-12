@@ -22,6 +22,8 @@ export function switchTheme(theme)
 }
 
 export function getBG(timestamp, previousTimeStamp) {
+    const userPrefs = getUserPrefs();
+    const darkTheme = userPrefs.theme=="dark";
     return isCurrent(timestamp) ? ('style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"') : "";
 }
 

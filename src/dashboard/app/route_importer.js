@@ -1,11 +1,10 @@
 
 
 import {getUserPrefs} from './../../common/userPrefs.js'
-import { mapState } from './map-race.js';
+import { mapState } from './../ui/map/map-race.js';
 import { cleanSpecial,roundTo,convertDMS2Dec} from './../../common/utils.js';
 import GPXParser from "gpxparser";
-
-const routeInfosmodel =
+export const routeInfosmodel =
 {
     lat : "",
     lon : "",
@@ -36,15 +35,15 @@ export function createEmptyRoute(rid,name,skipperName,color,displayedName)
 {
     
     if(!rid || !name) return;
-    if(!mapState[rid]) mapState[rid] = [];
-    if(mapState[rid][name]) delete mapState[rid][name]; 
+    if(!mapState.route[rid]) mapState.route[rid] = [];
+    if(mapState.route[rid][name]) delete mapState.route[rid][name]; 
 
-    mapState[rid][name] = [];
+    mapState.route[rid][name] = [];
 
-    const currentRoute = mapState[rid][name];
+    const currentRoute = mapState.route[rid][name];
     currentRoute.points = [];
     
-    currentRoute.displayed = false;
+    currentRoute.displayed = true;
     currentRoute.displayedName = displayedName;
     
     currentRoute.loaded = false;
@@ -55,17 +54,12 @@ export function createEmptyRoute(rid,name,skipperName,color,displayedName)
 }
 
 export function addNewPoints(rid,name,routeInfoData) {
-    const hasRoute = !!mapState?.[rid]?.[name];
+    const hasRoute = !!mapState?.route?.[rid]?.[name];
     if (!hasRoute || !routeInfoData) return;
-    mapState[rid][name].points.push(routeInfoData);
+    mapState.route[rid][name].points.push(routeInfoData);
 
 }
 
-export function getRoute(rid,name)
-{
-    if(!!mapState?.[rid]?.[name]) return;    
-    return myRoute[raceId][name];
-}
 
 export function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
 
@@ -85,7 +79,7 @@ export function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     else return "";
 
     const routeName = cleanSpecial(routerName + " " + skipperName);
-    createEmptyRoute(rid,routeName,skipperName,color,routeName);
+    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
 
     gpxPoints.forEach(function (pt) {
         
@@ -127,7 +121,7 @@ export function importExternalRouter(rid,fileTxt,routerName,skipperName,color,mo
         return "" ;//File not available
     }
     const routeName = cleanSpecial(routerName + " " + skipperName);
-    createEmptyRoute(rid,routeName,skipperName,color,routeName);
+    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
 
     let currentYear = new Date();
     currentYear = currentYear.getFullYear();
@@ -209,38 +203,35 @@ export function importExternalRouter(rid,fileTxt,routerName,skipperName,color,mo
                 lon = Number(poi[2]);    
             } else //new avalon format pos in xx°xx'xxss
             {
-               let posDec =  Util.convertDMS2Dec(poi[1],poi[2]);
+               let posDec =  convertDMS2Dec(poi[1],poi[2]);
                lat = posDec.lat;
                lon = posDec.lon
             }
             hdg = poi[3]+ "°";
-            tws = Util.roundTo(poi[8], 2)+ " kts";
-            stw = Util.roundTo(poi[4], 2) + " kts";
+            tws = roundTo(poi[8], 2)+ " kts";
+            stw = roundTo(poi[4], 2) + " kts";
     
-            
             splitDate = poi[0].split(" ");
-            var heure = splitDate[1]+":00";
-            var date = splitDate[0].split("/");
+            heure = splitDate[1]+":00";
+            date = splitDate[0].split("/");
 
             if(previousMonth==0) previousMonth = date[1];
             if(previousMonth==12 && date[1] == 1) currentYear+1;
 
             isoDate = currentYear+"-"+ date[1]+"-"+date[0]+ " " + heure;
             if(poi[6]>180) poi[6] -=360;
-            twa = Util.roundTo(poi[6], 2)+ "°";
-            twd = Util.roundTo(poi[7], 2) + "°";
+            twa = roundTo(poi[6], 2)+ "°";
+            twd = roundTo(poi[7], 2) + "°";
             if(isNumber(poi[5]))
                 sail = "(" + poi[5] + ")"; //todo found link between avalon number and sail (temporarily, display the id)
             else
                 sail = renameSailFromRoutes(poi[5]);
-            stamina = Util.roundTo(poi[9], 2);
-            boost = Util.roundTo(poi[10], 2);
+            stamina = roundTo(poi[9], 2);
+            boost = roundTo(poi[10], 2);
             
         }
         
-        
-
-        var routeData = Object.create(routeInfosmodel);
+        const routeData = Object.create(routeInfosmodel);
 
         routeData.lat = lat;
         routeData.lon =  lon;
@@ -253,11 +244,48 @@ export function importExternalRouter(rid,fileTxt,routerName,skipperName,color,mo
         routeData.speed = stw;
         routeData.stamina = stamina;
         routeData.boost = boost;
-        addNewPoints(race.id,routeName.cleanSpecial(),routeData);
+        addNewPoints(rid,routeName,routeData);
         
     }
-    return routeName.cleanSpecial();
+    return routeName;
+}
 
+export function importExtraPattern(rid,fileTxt,routerName,skipperName,color) {
+
+    if (!rid || !fileTxt) return "";
+    
+
+    //Mode 0 Avalon
+    //Mode 1 VRZen
+    let poi = new Array();
+    let i = 0;
+    fileTxt = fileTxt.replace('\r','');
+    let lineAvl = fileTxt.split('\n');
+
+    if(lineAvl.length<= 1) return "" ;//empty file or file not exits 
+
+    const routeName = cleanSpecial(routerName + " " + skipperName);
+    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
+
+    while (i < lineAvl.length-2) {
+        i = i + 1;
+        if(i > lineAvl.length-2) i = lineAvl.length-2;
+        poi = lineAvl[i].replace(/\,/g,".").split(";"); //Fix To Accept VRZEN File or manually modified csv on US configured computer
+
+        const routeData = Object.create(routeInfosmodel);
+        routeData.lat = Number(poi[0]);
+        routeData.lon =  Number(poi[1]);
+        routeData.timestamp = "-";
+        routeData.heading = "-";
+        routeData.tws = "-";
+        routeData.twa = "-";
+        routeData.twd = "-";
+        routeData.sail = "-";
+        routeData.speed = "-";
+        addNewPoints(race.id,routeName,routeData);
+        
+    }
+    return routeName;
 }
 
 function renameSailFromRoutes(sailName) {
@@ -320,3 +348,4 @@ function renameSailFromRoutes(sailName) {
     }
     return sailName;
 }
+

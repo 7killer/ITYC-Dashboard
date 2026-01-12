@@ -4,6 +4,10 @@ import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 import {switchTheme} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
 import {hideShowTracks,onMarkersChange} from "../ui/map/map-routes.js"
+import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
+  onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick
+} from '../ui/raceMap.js'
+import {onCoastColorChange} from "../ui/map/map-coasts.js"
 
 
 /**
@@ -22,40 +26,55 @@ function initUIBindings(items) {
     }
 
     // --- Détermine le type d'événement à écouter ---
-    let eventType = 'change';
-    if (el.tagName === 'BUTTON' || el.tagName === 'IMG') {
-      eventType = 'click';
-    } else if (el.tagName === 'INPUT') {
+    let eventTypes = [];
+
+    if (el.tagName === 'TABLE') {
+      eventTypes = ['click', 'change'];
+    }
+    else if (['BUTTON', 'IMG', 'A', 'LABEL', 'DIV', 'SPAN'].includes(el.tagName)) {
+      eventTypes = ['click'];
+    }
+    else if (el.tagName === 'INPUT') {
       const type = el.getAttribute('type') || 'text';
-      if (['button', 'submit', 'image'].includes(type)) eventType = 'click';
-      else if (['number', 'text', 'range'].includes(type)) eventType = 'input';
-      else eventType = 'change';
+      if (['button', 'submit', 'image'].includes(type)) eventTypes = ['click'];
+      else if (['number', 'text', 'range'].includes(type)) eventTypes = ['input'];
+      else eventTypes = ['change'];
+    }
+    else if (el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+      eventTypes = ['change', 'input'];
+    }
+    else {
+      eventTypes = ['click'];
     }
 
     // --- Fonction pour extraire la valeur cohérente ---
-    const getValue = () => {
-      if (el.tagName === 'IMG') return el.src;
-      if (el.tagName === 'SELECT') return el.value;
-      if (el.tagName === 'BUTTON') return el.value || el.textContent;
-      if (el.tagName === 'INPUT') {
-        switch (el.type) {
-          case 'checkbox': return el.checked;
-          case 'number': return parseFloat(el.value);
-          default: return el.value;
+    const getValue = (target = el) => {
+      if (!target) return null;
+      if (target.tagName === 'IMG') return target.src;
+      if (target.tagName === 'SELECT') return target.value;
+      if (target.tagName === 'BUTTON') return target.value || target.textContent;
+      if (target.tagName === 'INPUT') {
+        switch (target.type) {
+          case 'checkbox': return target.checked;
+          case 'number': return parseFloat(target.value);
+          default: return target.value;
         }
       }
       return null;
     };
 
     // --- Ajout du listener ---
-    el.addEventListener(eventType, () => {
-      const val = getValue();
-      onChange?.(val, el);
+    eventTypes.forEach(eventType => {
+      el.addEventListener(eventType, (ev) => {
+        const target = ev.target;
+        const val = getValue(target);
+        onChange?.(val, ev, target);   // ✅ target réel + event
+      });
     });
 
-    // --- Exécution du callback d'init ---
+    // --- Callback d'init ---
     if (typeof onInit === 'function') {
-      onInit(getValue(), el);
+      onInit(getValue(el), el);
     }
   });
 }
@@ -214,7 +233,7 @@ export function uiBindingInit() {
       selector: '#track_infos',
       onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.trace = checked;saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.trace }
-    },    
+    },
     {
       selector: '#projectionLine_Size',
       onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionLineLenght = value;saveUserPrefs(userPrefs);},
@@ -224,26 +243,6 @@ export function uiBindingInit() {
       selector: '#view_InvisibleDoors',
       onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.invisibleBuoy = checked;saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.invisibleBuoy }
-    },
-    {
-      selector: '#sel_showMarkersLmap',
-      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showMarkers = checked?false:true;await saveUserPrefs(userPrefs);onMarkersChange(checked);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showMarkers }
-    },
-    {
-      selector: '#sel_showTracksLmap',
-      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked?false:true;await saveUserPrefs(userPrefs);hideShowTracks(checked);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showTracks }
-    },  
-    {
-      selector: '#sel_borderColorLmap',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.borderColor = value;saveUserPrefs(userPrefs);},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.borderColor}
-    },  
-    {
-      selector: '#sel_projectionColorLmap',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionColor = value;saveUserPrefs(userPrefs);},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionColor}
     },
     {
       selector: '#abbreviatedOption',
@@ -364,6 +363,63 @@ export function uiBindingInit() {
       selector: '#bt_router',
       onChange: () => {/*todo call routerPage*/}
     },
-
+    {
+      selector: '#sel_showMarkersLmap',
+      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showMarkers = checked?false:true;await saveUserPrefs(userPrefs);onMarkersChange(checked);},
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showMarkers }
+    },
+    {
+      selector: '#sel_showTracksLmap',
+      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked?false:true;await saveUserPrefs(userPrefs);hideShowTracks(checked);},
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showTracks }
+    },  
+    {
+      selector: '#sel_borderColorLmap',
+      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.borderColor = value;await saveUserPrefs(userPrefs);onCoastColorChange()},
+      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.borderColor}
+    },  
+    {
+      selector: '#sel_projectionColorLmap',
+      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionColor = value;await saveUserPrefs(userPrefs);/*onProjectionColorChange()*/},
+      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionColor}
+    },
+    {
+      selector: '#projectionLine_Size',
+      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionLineLenght = value;await saveUserPrefs(userPrefs);/*onProjectionSizeChange()*/},
+      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionLineLenght}
+    },
+    {
+      selector: '#lbl_rt_openLmap',
+      onChange: () => {onPopupOpenLmap();}
+    },
+    {
+      selector: '#rt_close_popupLmap',
+      onChange: () => {onPopupCloseLmap();}
+    },  
+    {
+      selector: '#sel_routeTypeLmap',
+      onChange: (value) => {onChangeRouteTypeLmap();},
+      onInit: (value, el) => {}
+    },
+    {
+      selector: '#lbl_helpLmap',
+      onChange: () => {showsMapHelp();}
+    },
+    {
+      selector: '#route_list_tableLmap',
+      onChange: (value,el,target) => {onRouteListClick(target);}
+    },
+    {
+      selector: '#bt_rt_addLmap',
+      onChange: async () => {await onAddRouteLmap();}
+    },
+    {
+      selector: '#lbl_rt_cleanLmap',
+      onChange: () => {onCleanAllRoute();}
+    },
+    {
+      selector: '#sel_rt_skipperLmap',
+      onChange: (value) => {onSkipperSelectedChange('Lmap');}
+    }
   ]);
 }

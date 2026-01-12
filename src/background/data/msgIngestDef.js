@@ -670,11 +670,18 @@ export async function ingestFleetData(request, response) {
     }));
 
     const players = res.res.map(p => ({
-
       id : p.userId,
       name : p.displayName,
       timestamp: Date.now(),
       ...(p.team &&currentTeamId?{teamId:currentTeamId}:{})
+    }));
+    const playersTracks = res.res.filter(p => Array.isArray(p.track) && p.track.length !== 0) 
+    .map(p => ({
+      id: p.userId,
+      raceId: req.race_id,
+      legNum: req.leg_num,
+      userId: p.userId,
+      type: 'fleet'
     }));
 
     const dbOpe = [
@@ -682,6 +689,7 @@ export async function ingestFleetData(request, response) {
         type: "putOrUpdate",
         legFleetInfos,
         players,
+        ...(playersTracks.length ? { playersTracks } : {}),
         internal: [
           {
             id: "legFleetInfosUpdate",
@@ -691,6 +699,7 @@ export async function ingestFleetData(request, response) {
             id: "playersUpdate",
             ts: Date.now(),
           },
+          ...((playersTracks?.length) ? [{ id: "playersTracksUpdate", ts:  Date.now() }] : []),
         ]
       }
     ];

@@ -1,5 +1,6 @@
 import L from '@/dashboard/ui/map/leaflet-setup';
 import {formatPosition,formatShortDate,formatDHMS} from '../common.js';
+import {getUserPrefs, saveUserPrefs} from "../../../common/userPrefs.js"
 
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',

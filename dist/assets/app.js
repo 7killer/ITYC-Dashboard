@@ -1,5 +1,5 @@
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, e as getLegPlayersTracksByType, r as raceTableHeaders, f as roundTo, h as formatHM, i as formatTimeNotif, j as raceTableLines, k as infoSail, l as getUserPrefs, m as genthRacelog, n as dateUTCSmall, D as DateUTC, s as sailNames, o as formatPosition, p as formatSeconds, q as getxFactorStyle, t as gentdRacelog, u as getBG, v as genth, w as category, x as categoryStyleDark, y as categoryStyle, z as sailColors, A as gentd, B as formatTime, C as formatDHMS, E as formatShortDate, F as isBitSet, G as guessOptionBits, H as getRankingCategory, I as creditsMaxAwardedByPriceLevel, J as commonjsGlobal, K as getDefaultExportFromCjs, L as toRad, M as formatTimestampToReadableDate, N as gcDistance, O as courseAngle, P as display_selbox, Q as changeState, R as saveUserPrefs, S as switchTheme, T as loadUserPrefs, U as createKeyChangeListener } from "./_commonjsHelpers-d4c5a4a6.js";
+import { g as getData, a as getAllData, b as getLatestEntriesPerUser, c as getEntriesForTriplet, d as getLegPlayersOptionsByRaceLeg, e as getLegPlayersTracksByType, r as raceTableHeaders, f as roundTo, h as formatHM, i as formatTimeNotif, j as raceTableLines, k as infoSail, l as getUserPrefs, m as genthRacelog, n as dateUTCSmall, D as DateUTC, s as sailNames, o as formatPosition, p as formatSeconds, q as getxFactorStyle, t as gentdRacelog, u as getBG, v as genth, w as category, x as categoryStyleDark, y as categoryStyle, z as sailColors, A as gentd, B as formatTime, C as formatDHMS, E as formatShortDate, F as isBitSet, G as guessOptionBits, H as getRankingCategory, I as creditsMaxAwardedByPriceLevel, J as commonjsGlobal, K as getDefaultExportFromCjs, L as toRad, M as formatTimestampToReadableDate, N as gcDistance, O as courseAngle, P as display_selbox, Q as changeState, R as cleanSpecial, S as convertDMS2Dec, T as saveUserPrefs, U as switchTheme, V as loadUserPrefs, W as createKeyChangeListener } from "./_commonjsHelpers-e72aeee2.js";
 const style = "";
 let connectedPlayerId;
 let connectedPlayerInfos = [];
@@ -75,7 +75,7 @@ async function updateParamStamina() {
   if (setting == null ? void 0 : setting.paramStamina)
     paramStamina = setting.paramStamina;
 }
-function getRaceInfo() {
+function getRaceInfo$1() {
   return raceInfo;
 }
 function getParamStamina() {
@@ -434,7 +434,7 @@ function onPlayerConnect() {
   }
 }
 function onRaceOpen() {
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   if ((raceInfo2 == null ? void 0 : raceInfo2.raceId) == null || (raceInfo2 == null ? void 0 : raceInfo2.legNum) == null)
     return;
   const raceKey = raceInfo2.raceId + "-" + raceInfo2.legNum;
@@ -470,7 +470,7 @@ function buildRaceStatusHtml() {
   var _a;
   const userPrefs = getUserPrefs();
   const connectedRace = getOpenedRaceId();
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   const raceItes = getLegPlayerInfos();
   const raceList2 = getLegList();
   if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0 || !raceItes)
@@ -614,7 +614,7 @@ function buildRaceStatusHtmlLine(raceInfo2, raceIte) {
 }
 function buildRaceLogHtml() {
   const userPrefs = getUserPrefs();
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   const racePlayerInfos = getLegPlayerInfos();
   const raceOrder = getLegPlayersOrder();
   if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0 || !(racePlayerInfos == null ? void 0 : racePlayerInfos.ites))
@@ -627,8 +627,8 @@ function buildRaceLogHtml() {
   let raceLogContent = "";
   if (raceItes.length == 0)
     return;
-  for (let idx = 0; idx < raceItes.length; idx++) {
-    const raceLogLine = raceItes[idx];
+  for (let idx2 = 0; idx2 < raceItes.length; idx2++) {
+    const raceLogLine = raceItes[idx2];
     if ("action" in raceLogLine) {
       raceLogContent += buildRaceLogLineCmd(raceLogLine);
     } else {
@@ -893,7 +893,7 @@ function compareFleetPlayers(pA, pB, sortField2, sortAsc) {
   return sortAsc ? cmp : -cmp;
 }
 function buildRaceFleetHtml() {
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   const raceItes = getLegPlayerInfos();
   const raceItesFleet = getLegFleetInfos();
   const connectedPlayerId2 = getConnectedPlayerId();
@@ -1390,7 +1390,7 @@ function buildRaceBookHtml() {
   const host = document.getElementById("raceBook");
   if (!host)
     return;
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   const playerIte = getLegPlayerInfos();
   if (!raceInfo2 || (raceInfo2 == null ? void 0 : raceInfo2.length) == 0) {
     host.replaceChildren(
@@ -2625,9 +2625,9 @@ function requireLeafletSrc() {
       var webkitVer = parseInt(/WebKit\/([0-9]+)|$/.exec(navigator.userAgent)[1], 10);
       var androidStock = android && userAgentContains("Google") && webkitVer < 537 && !("AudioNode" in window);
       var opera = !!window.opera;
-      var chrome = !edge && userAgentContains("chrome");
+      var chrome2 = !edge && userAgentContains("chrome");
       var gecko = userAgentContains("gecko") && !webkit && !opera && !ie;
-      var safari = !chrome && userAgentContains("safari");
+      var safari = !chrome2 && userAgentContains("safari");
       var phantom = userAgentContains("phantom");
       var opera12 = "OTransition" in style2;
       var win = navigator.platform.indexOf("Win") === 0;
@@ -2693,7 +2693,7 @@ function requireLeafletSrc() {
         android23,
         androidStock,
         opera,
-        chrome,
+        chrome: chrome2,
         gecko,
         safari,
         phantom,
@@ -3361,7 +3361,7 @@ function requireLeafletSrc() {
           return 1 - Math.pow(1 - t, this._easeOutPower);
         }
       });
-      var Map = Evented.extend({
+      var Map2 = Evented.extend({
         options: {
           // @section Map State Options
           // @option crs: CRS = L.CRS.EPSG3857
@@ -4575,7 +4575,7 @@ function requireLeafletSrc() {
         }
       });
       function createMap(id, options) {
-        return new Map(id, options);
+        return new Map2(id, options);
       }
       var Control = Class.extend({
         // @section
@@ -4654,7 +4654,7 @@ function requireLeafletSrc() {
       var control = function(options) {
         return new Control(options);
       };
-      Map.include({
+      Map2.include({
         // @method addControl(control: Control): this
         // Adds the given control to the map
         addControl: function(control2) {
@@ -5067,10 +5067,10 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.mergeOptions({
+      Map2.mergeOptions({
         zoomControl: true
       });
-      Map.addInitHook(function() {
+      Map2.addInitHook(function() {
         if (this.options.zoomControl) {
           this.zoomControl = new Zoom();
           this.addControl(this.zoomControl);
@@ -5248,10 +5248,10 @@ function requireLeafletSrc() {
           this._container.innerHTML = prefixAndAttribs.join(' <span aria-hidden="true">|</span> ');
         }
       });
-      Map.mergeOptions({
+      Map2.mergeOptions({
         attributionControl: true
       });
-      Map.addInitHook(function() {
+      Map2.addInitHook(function() {
         if (this.options.attributionControl) {
           new Attribution().addTo(this);
         }
@@ -5872,7 +5872,7 @@ function requireLeafletSrc() {
           map.fire("layeradd", { layer: this });
         }
       });
-      Map.include({
+      Map2.include({
         // @method addLayer(layer: Layer): this
         // Adds the given layer to the map
         addLayer: function(layer) {
@@ -6248,9 +6248,9 @@ function requireLeafletSrc() {
           return (this.options.imagePath || IconDefault.imagePath) + Icon.prototype._getIconUrl.call(this, name);
         },
         _stripUrl: function(path) {
-          var strip = function(str, re, idx) {
+          var strip = function(str, re, idx2) {
             var match = re.exec(str);
-            return match && match[idx];
+            return match && match[idx2];
           };
           path = strip(path, /^url\((['"])?(.+)\1\)$/, 2);
           return path && strip(path, /^(.*)marker-icon\.png$/, 1);
@@ -7974,7 +7974,7 @@ function requireLeafletSrc() {
           return [0, 0];
         }
       });
-      Map.include({
+      Map2.include({
         _initOverlay: function(OverlayClass, content, latlng, options) {
           var overlay = content;
           if (!(overlay instanceof OverlayClass)) {
@@ -8187,10 +8187,10 @@ function requireLeafletSrc() {
       var popup = function(options, source) {
         return new Popup(options, source);
       };
-      Map.mergeOptions({
+      Map2.mergeOptions({
         closePopupOnClick: true
       });
-      Map.include({
+      Map2.include({
         // @method openPopup(popup: Popup): this
         // Opens the specified popup while closing the previously opened (to make sure only one is opened at one time for usability).
         // @alternative
@@ -8431,7 +8431,7 @@ function requireLeafletSrc() {
       var tooltip = function(options, source) {
         return new Tooltip(options, source);
       };
-      Map.include({
+      Map2.include({
         // @method openTooltip(tooltip: Tooltip): this
         // Opens the specified tooltip.
         // @alternative
@@ -10180,7 +10180,7 @@ function requireLeafletSrc() {
       function svg(options) {
         return Browser.svg || Browser.vml ? new SVG(options) : null;
       }
-      Map.include({
+      Map2.include({
         // @namespace Map; @method getRenderer(layer: Path): Renderer
         // Returns the instance of `Renderer` that should be used to render the given
         // `Path`. It will ensure that the `renderer` options of the map and paths
@@ -10241,7 +10241,7 @@ function requireLeafletSrc() {
       GeoJSON.latLngsToCoords = latLngsToCoords;
       GeoJSON.getFeature = getFeature;
       GeoJSON.asFeature = asFeature;
-      Map.mergeOptions({
+      Map2.mergeOptions({
         // @option boxZoom: Boolean = true
         // Whether the map can be zoomed to a rectangular area specified by
         // dragging the mouse while pressing the shift key.
@@ -10345,8 +10345,8 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.addInitHook("addHandler", "boxZoom", BoxZoom);
-      Map.mergeOptions({
+      Map2.addInitHook("addHandler", "boxZoom", BoxZoom);
+      Map2.mergeOptions({
         // @option doubleClickZoom: Boolean|String = true
         // Whether the map can be zoomed in by double clicking on it and
         // zoomed out by double clicking while holding shift. If passed
@@ -10370,8 +10370,8 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.addInitHook("addHandler", "doubleClickZoom", DoubleClickZoom);
-      Map.mergeOptions({
+      Map2.addInitHook("addHandler", "doubleClickZoom", DoubleClickZoom);
+      Map2.mergeOptions({
         // @option dragging: Boolean = true
         // Whether the map is draggable with mouse/touch or not.
         dragging: true,
@@ -10530,8 +10530,8 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.addInitHook("addHandler", "dragging", Drag);
-      Map.mergeOptions({
+      Map2.addInitHook("addHandler", "dragging", Drag);
+      Map2.mergeOptions({
         // @option keyboard: Boolean = true
         // Makes the map focusable and allows users to navigate the map with keyboard
         // arrows and `+`/`-` keys.
@@ -10658,8 +10658,8 @@ function requireLeafletSrc() {
           stop(e);
         }
       });
-      Map.addInitHook("addHandler", "keyboard", Keyboard);
-      Map.mergeOptions({
+      Map2.addInitHook("addHandler", "keyboard", Keyboard);
+      Map2.mergeOptions({
         // @section Mouse wheel options
         // @option scrollWheelZoom: Boolean|String = true
         // Whether the map can be zoomed by using the mouse wheel. If passed `'center'`,
@@ -10712,9 +10712,9 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.addInitHook("addHandler", "scrollWheelZoom", ScrollWheelZoom);
+      Map2.addInitHook("addHandler", "scrollWheelZoom", ScrollWheelZoom);
       var tapHoldDelay = 600;
-      Map.mergeOptions({
+      Map2.mergeOptions({
         // @section Touch interaction options
         // @option tapHold: Boolean
         // Enables simulation of `contextmenu` event, default is `true` for mobile Safari.
@@ -10783,8 +10783,8 @@ function requireLeafletSrc() {
           e.target.dispatchEvent(simulatedEvent);
         }
       });
-      Map.addInitHook("addHandler", "tapHold", TapHold);
-      Map.mergeOptions({
+      Map2.addInitHook("addHandler", "tapHold", TapHold);
+      Map2.mergeOptions({
         // @section Touch interaction options
         // @option touchZoom: Boolean|String = *
         // Whether the map can be zoomed by touch-dragging with two fingers. If
@@ -10872,14 +10872,14 @@ function requireLeafletSrc() {
           }
         }
       });
-      Map.addInitHook("addHandler", "touchZoom", TouchZoom);
-      Map.BoxZoom = BoxZoom;
-      Map.DoubleClickZoom = DoubleClickZoom;
-      Map.Drag = Drag;
-      Map.Keyboard = Keyboard;
-      Map.ScrollWheelZoom = ScrollWheelZoom;
-      Map.TapHold = TapHold;
-      Map.TouchZoom = TouchZoom;
+      Map2.addInitHook("addHandler", "touchZoom", TouchZoom);
+      Map2.BoxZoom = BoxZoom;
+      Map2.DoubleClickZoom = DoubleClickZoom;
+      Map2.Drag = Drag;
+      Map2.Keyboard = Keyboard;
+      Map2.ScrollWheelZoom = ScrollWheelZoom;
+      Map2.TapHold = TapHold;
+      Map2.TouchZoom = TouchZoom;
       exports2.Bounds = Bounds;
       exports2.Browser = Browser;
       exports2.CRS = CRS;
@@ -10905,7 +10905,7 @@ function requireLeafletSrc() {
       exports2.Layer = Layer;
       exports2.LayerGroup = LayerGroup;
       exports2.LineUtil = LineUtil;
-      exports2.Map = Map;
+      exports2.Map = Map2;
       exports2.Marker = Marker;
       exports2.Mixin = Mixin;
       exports2.Path = Path;
@@ -11025,7 +11025,7 @@ L.Control.ScaleNautic = L.Control.Scale.extend({
 L.control.scalenautic = function(options) {
   return new L.Control.ScaleNautic(options);
 };
-var leafletRuler = { exports: {} };
+var leafletRuler$1 = { exports: {} };
 (function(module, exports) {
   (function(factory, window2) {
     {
@@ -11190,7 +11190,8 @@ var leafletRuler = { exports: {} };
       return new L2.Control.Ruler(options);
     };
   }, window);
-})(leafletRuler);
+})(leafletRuler$1);
+const leafletRuler = "";
 /*! Leaflet.Coordinates 02-03-2016 */
 L.Control.Coordinates = L.Control.extend({ options: { position: "bottomright", decimals: 4, decimalSeperator: ".", labelTemplateLat: "Lat: {y}", labelTemplateLng: "Lng: {x}", labelFormatterLat: void 0, labelFormatterLng: void 0, enableUserInput: true, useDMS: false, useLatLngOrder: false, centerUserCoordinates: false, markerType: L.marker, markerProps: {} }, onAdd: function(a) {
   this._map = a;
@@ -11319,9 +11320,9 @@ const Leaflet_Coordinates0_1_5 = "";
       return a.x === b.x && a.y === b.y;
     };
     function pointsToSegments(pts) {
-      return pts.reduce(function(segments, b, idx, points) {
-        if (idx > 0 && !pointsEqual(b, points[idx - 1])) {
-          var a = points[idx - 1];
+      return pts.reduce(function(segments, b, idx2, points) {
+        if (idx2 > 0 && !pointsEqual(b, points[idx2 - 1])) {
+          var a = points[idx2 - 1];
           var distA = segments.length > 0 ? segments[segments.length - 1].distB : 0;
           var distAB = pointDistance(a, b);
           segments.push({
@@ -11335,16 +11336,16 @@ const Leaflet_Coordinates0_1_5 = "";
         return segments;
       }, []);
     }
-    function projectPatternOnPointPath(pts, pattern) {
+    function projectPatternOnPointPath(pts, pattern2) {
       var segments = pointsToSegments(pts);
       var nbSegments = segments.length;
       if (nbSegments === 0) {
         return [];
       }
       var totalPathLength = segments[nbSegments - 1].distB;
-      var offset = asRatioToPathLength(pattern.offset, totalPathLength);
-      var endOffset = asRatioToPathLength(pattern.endOffset, totalPathLength);
-      var repeat = asRatioToPathLength(pattern.repeat, totalPathLength);
+      var offset = asRatioToPathLength(pattern2.offset, totalPathLength);
+      var endOffset = asRatioToPathLength(pattern2.endOffset, totalPathLength);
+      var repeat = asRatioToPathLength(pattern2.repeat, totalPathLength);
       var repeatIntervalPixels = totalPathLength * repeat;
       var startOffsetPixels = offset > 0 ? totalPathLength * offset : 0;
       var endOffsetPixels = endOffset > 0 ? totalPathLength * endOffset : 0;
@@ -11614,7 +11615,7 @@ const Leaflet_Coordinates0_1_5 = "";
       * Compute pairs of LatLng and heading angle,
       * that define positions and directions of the symbols on the path
       */
-      _getDirectionPoints: function _getDirectionPoints(latLngs, pattern) {
+      _getDirectionPoints: function _getDirectionPoints(latLngs, pattern2) {
         var _this3 = this;
         if (latLngs.length < 2) {
           return [];
@@ -11622,7 +11623,7 @@ const Leaflet_Coordinates0_1_5 = "";
         var pathAsPoints = latLngs.map(function(latLng) {
           return _this3._map.project(latLng);
         });
-        return projectPatternOnPointPath(pathAsPoints, pattern).map(function(point) {
+        return projectPatternOnPointPath(pathAsPoints, pattern2).map(function(point) {
           return {
             latLng: _this3._map.unproject(L$12.point(point.pt)),
             heading: point.heading
@@ -11639,14 +11640,14 @@ const Leaflet_Coordinates0_1_5 = "";
       /**
       * Returns all symbols for a given pattern as an array of FeatureGroup
       */
-      _getPatternLayers: function _getPatternLayers(pattern) {
+      _getPatternLayers: function _getPatternLayers(pattern2) {
         var _this4 = this;
         var mapBounds = this._map.getBounds().pad(0.1);
         return this._paths.map(function(path) {
-          var directionPoints = _this4._getDirectionPoints(path, pattern).filter(function(point) {
+          var directionPoints = _this4._getDirectionPoints(path, pattern2).filter(function(point) {
             return mapBounds.contains(point.latLng);
           });
-          return L$12.featureGroup(_this4._buildSymbols(path, pattern.symbolFactory, directionPoints));
+          return L$12.featureGroup(_this4._buildSymbols(path, pattern2.symbolFactory, directionPoints));
         });
       },
       /**
@@ -11654,8 +11655,8 @@ const Leaflet_Coordinates0_1_5 = "";
       */
       _draw: function _draw() {
         var _this5 = this;
-        this._patterns.map(function(pattern) {
-          return _this5._getPatternLayers(pattern);
+        this._patterns.map(function(pattern2) {
+          return _this5._getPatternLayers(pattern2);
         }).forEach(function(layers) {
           _this5.addLayer(L$12.featureGroup(layers));
         });
@@ -12893,6 +12894,56 @@ function buildPath_bspline(pathEntry, initLat, initLng, finishLat, finshLng) {
   }
   return cpath;
 }
+function createProjectionPoint(ts, lat, lon) {
+  return {
+    timeStamp: ts,
+    lat,
+    lon
+  };
+}
+function darkenColor(hexColor, amount) {
+  const color = hexColor.replace("#", "");
+  const r2 = parseInt(color.substring(0, 2), 16);
+  const g = parseInt(color.substring(2, 4), 16);
+  const b = parseInt(color.substring(4, 6), 16);
+  const darkenedR = Math.max(0, r2 - amount);
+  const darkenedG = Math.max(0, g - amount);
+  const darkenedB = Math.max(0, b - amount);
+  const darkenedHexColor = `#${componentToHex(darkenedR)}${componentToHex(darkenedG)}${componentToHex(darkenedB)}`;
+  return darkenedHexColor;
+}
+function componentToHex(component) {
+  const hex = component.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+}
+function buildMarkerTitle(point) {
+  const userPrefs = getUserPrefs();
+  const localTimes = userPrefs.global.localTime;
+  let position = formatPosition(point.lat, point.lon);
+  const currentDate = /* @__PURE__ */ new Date();
+  const currentTs = currentDate.getTime();
+  let newDate = currentDate;
+  if (point.timestamp != "-")
+    newDate = formatShortDate(point.timestamp, void 0, localTimes);
+  const ttw = point.timestamp - currentTs;
+  const textHDG = point.heading ? "HDG: <b>" + point.heading.replace(/&deg;/g, "°") + "</b><br>" : "";
+  const textTWS = point.tws ? "TWS: " + point.tws + "<br>" : "";
+  const textSpeed = point.speed ? "Speed: " + point.speed : "";
+  let textTWA = point.twa ? "TWA: <b>" + point.twa.replace(/&deg;/g, "°") + "</b>" : "";
+  textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
+  let textTWD = point.twd ? "TWD: " + point.twd.replace(/&deg;/g, "°") : "";
+  textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";
+  let textSail = point.sail ? "Sail: " + point.sail : "";
+  if (point.boost && point.boost > 0)
+    textSail += "⚠️";
+  textSail += point.sail && point.speed ? "&nbsp;|&nbsp;" : "";
+  if (point.desc)
+    position += "<br>" + point.desc.replace(/�/g, "°");
+  let textStamina = "";
+  if (point.stamina && point.stamina > 0)
+    textStamina = "🔋 " + point.stamina + "%";
+  return "<b>" + newDate + "</b> (" + formatDHMS(ttw) + ")<br>" + position + "<br>" + textTWA + textHDG + textTWD + textTWS + textSail + textSpeed + "<br>" + textStamina;
+}
 function computeNextPos(pos, hdg, speed, time) {
   const dist5 = speed * time / (3600 * 60);
   const alpha = 360 - (hdg - 90);
@@ -12928,6 +12979,154 @@ function drawProjectionLine(pos, hdg, speed) {
   buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs.map.projectionColor, 1, 0.4, "10, 10", "5");
   mapState.me_PlLayer.addTo(map);
 }
+let cachedTileList = [];
+async function initCachedTilesList() {
+  cachedTileList = [];
+  await chrome.runtime.getPackageDirectoryEntry((dir) => {
+    dir.getDirectory("coasts", {}, function(cachedTilesDir) {
+      new Promise((resolve) => {
+        let dirReader = cachedTilesDir.createReader();
+        let getEntries = () => {
+          dirReader.readEntries(
+            (entries) => {
+              if (entries.length) {
+                for (var i = 0; i < entries.length; ++i) {
+                  cachedTileList.push(entries[i].name);
+                }
+                getEntries();
+              }
+            }
+          );
+        };
+        getEntries();
+      });
+    });
+  });
+}
+async function showCoastTiles() {
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const map = mapState.map;
+  const center = map.getCenter();
+  const RANGE = 6;
+  const GRID = 3;
+  const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
+  const wrapLng = (lng) => {
+    let x = lng;
+    while (x > 180)
+      x -= 360;
+    while (x < -180)
+      x += 360;
+    return x;
+  };
+  const south = clampLat(center.lat - RANGE);
+  const north = clampLat(center.lat + RANGE);
+  const west = wrapLng(center.lng - RANGE);
+  const east = wrapLng(center.lng + RANGE);
+  const crossesDateline = west > east;
+  const snapDown = (v) => Math.floor(v / GRID) * GRID;
+  const snapUp = (v) => Math.ceil(v / GRID) * GRID;
+  const latitudeStart = snapDown(Math.min(south, north));
+  const latitudeEnd = snapUp(Math.max(south, north));
+  const coastsToLoad = [];
+  const pushIfExists = (x, y) => {
+    const id = `coast_polygons_${x}_${y}.geojson.gzip`;
+    if (cachedTileList.includes(id))
+      coastsToLoad.push(id);
+  };
+  if (!crossesDateline) {
+    const longitudeStart = snapDown(Math.min(west, east));
+    const longitudeEnd = snapUp(Math.max(west, east));
+    for (let x = longitudeStart; x <= longitudeEnd; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+  } else {
+    const start1 = snapDown(west);
+    const end1 = 180;
+    const start2 = -180;
+    const end2 = snapUp(east);
+    for (let x = start1; x <= end1; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+    for (let x = start2; x <= end2; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+  }
+  coastLayersCleanAll(map);
+  await Promise.all(
+    coastsToLoad.map(async (id) => {
+      const existing = mapState.coasts.get(id);
+      if (existing) {
+        existing.displayed = true;
+        return;
+      }
+      try {
+        const resp = await fetch(`../coasts/${id}`);
+        if (!resp.ok)
+          return;
+        const blob = await resp.blob();
+        const ds = new DecompressionStream("gzip");
+        const decompressedStream = blob.stream().pipeThrough(ds);
+        const jsonText = await new Response(decompressedStream).text();
+        if (!jsonText)
+          return;
+        mapState.coasts.set(id, {
+          id,
+          json: JSON.parse(jsonText),
+          layer: null,
+          displayed: true
+        });
+      } catch (e) {
+        console.warn("coast fetch failed", id, e);
+      }
+    })
+  );
+  coastDrawAllLayers(map);
+}
+function coastDrawAllLayers(map, force = false) {
+  mapState.coasts.forEach((mapCoast) => {
+    if (mapCoast.displayed) {
+      if (force)
+        mapCoast.layer = null;
+      if (!mapCoast.layer) {
+        mapCoast.layer = L$1.layerGroup();
+        L$1.geoJSON(mapCoast.json, { style: styleLines }).addTo(mapCoast.layer);
+      }
+      mapCoast.layer.addTo(map);
+    }
+  });
+}
+function coastLayersCleanAll(map) {
+  mapState.coasts.forEach((mapCoast) => {
+    mapCoast.displayed = false;
+    if (mapCoast.layer)
+      map.removeLayer(mapCoast.layer);
+  });
+}
+function styleLines(feature) {
+  const userPrefs = getUserPrefs();
+  const borderColor = userPrefs.map.borderColor;
+  return {
+    color: borderColor,
+    weight: 1,
+    opacity: 0.7
+  };
+}
+function onCoastColorChange() {
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const map = mapState.map;
+  coastLayersCleanAll(map);
+  coastDrawAllLayers(map, true);
+}
 const mapState = {
   raceId: null,
   // id de la course actuellement affichée
@@ -12952,7 +13151,8 @@ const mapState = {
   meLayerMarkers: null,
   meBoatLayer: null,
   leaderLayer: null,
-  leaderMeLayer: null
+  leaderMeLayer: null,
+  coasts: /* @__PURE__ */ new Map()
 };
 const MAP_CONTAINER_ID = "lMap";
 function updateBounds() {
@@ -13033,20 +13233,20 @@ function updateMapWaypoints(playerIte) {
   const lastWpIdx = playerIte.lastWpIdx;
   const currPos = playerIte.pos;
   let wpPts = [];
-  wpOrder.forEach(({ lat, lon, idx }) => {
-    if (idx <= lastWpIdx)
+  wpOrder.forEach(({ lat, lon, idx: idx2 }) => {
+    if (idx2 <= lastWpIdx)
       wpPts.push({ lat, lon });
   });
   let cpath = buildPath(wpPts, null, null, currPos.lat, currPos.lon);
   buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7, [0, 1, 0, 1]);
   wpPts = [];
-  wpOrder.forEach(({ lat, lon, idx }) => {
-    if (idx > lastWpIdx)
+  wpOrder.forEach(({ lat, lon, idx: idx2 }) => {
+    if (idx2 > lastWpIdx)
       wpPts.push({ lat, lon });
   });
   cpath = buildPath(wpOrder, currPos.lat, currPos.lon);
   buildTrace(cpath, mapState.wayPointLayer, mapState.refPoints, "#FF00FF", 1.5, 0.7);
-  wpOrder.forEach(({ lat, lon, idx }) => {
+  wpOrder.forEach(({ lat, lon, idx: idx2 }) => {
     const pos = buildPt2(lat, lon);
     const title = formatPosition(lat, lon);
     buildCircle(pos, mapState.wayPointLayer, "#FF00FF", 2, 1, title);
@@ -13296,15 +13496,14 @@ function getOrCreateMapContainer() {
 }
 async function initializeMap() {
   var _a;
-  function set_userCustomZoom(e) {
+  async function set_userCustomZoom(e) {
     if (mapState.resetUserZoom > 0)
       mapState.userZoom = true;
     else
       mapState.resetUserZoom += 1;
     if (e && e.target) {
       if (e.target._zoom > 5) {
-        const mapcenter = mapState.map.getCenter();
-        mapcenter.lng;
+        await showCoastTiles();
       }
     }
   }
@@ -13314,7 +13513,7 @@ async function initializeMap() {
   if (getComputedStyle(tab).display === "none") {
     return;
   }
-  const raceInfo2 = getRaceInfo();
+  const raceInfo2 = getRaceInfo$1();
   const playerItes = getLegPlayerInfos();
   const raceItesFleet = getLegFleetInfos();
   const connectedPlayerId2 = getConnectedPlayerId();
@@ -13482,7 +13681,7 @@ async function initializeMap() {
       applyBoundsForCurrentMode(newMap);
       newMap.on("zoomend", set_userCustomZoom);
       newMap.on("baselayerchange", onBaseLayerChange);
-      const raceInfo3 = getRaceInfo();
+      const raceInfo3 = getRaceInfo$1();
       const playerItes2 = getLegPlayerInfos();
       const raceItesFleet2 = getLegFleetInfos();
       const connectedPlayerId3 = getConnectedPlayerId();
@@ -13734,21 +13933,135 @@ function clickManager(ev) {
     tabSwitch();
   }
 }
-function onMarkersChange() {
-  if (!mapState || !mapState.map)
+function importRoute(route, name) {
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const userPrefs = getUserPrefs();
+  const displayMarkers = userPrefs.map.showMarkers;
+  const map = mapState.map;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  mapState.route[rid] = mapState.route[rid] || {};
+  mapState.route[rid][name] = mapState.route[rid][name] || [];
+  const lmapRoute = mapState.route[rid][name];
+  if (!lmapRoute.traceLayer)
+    lmapRoute.traceLayer = L$1.layerGroup();
+  if (!lmapRoute.markersLayer)
+    lmapRoute.markersLayer = L$1.layerGroup();
+  lmapRoute.color = route.color;
+  lmapRoute.displayedName = route.displayedName;
+  lmapRoute.projectionData = [];
+  let currentSail = "";
+  for (let i = 0; i < route.points.length; i++) {
+    const pos = buildPt2(route.points[i].lat, route.points[i].lon);
+    mapState.refPoints.push(pos[1]);
+    lmapRoute.projectionData.push(createProjectionPoint(route.points[i].timestamp, route.points[i].lat, route.points[i].lon));
+    let circleColor = lmapRoute.color;
+    if (currentSail != route.points[i].sail) {
+      if (currentSail != "") {
+        circleColor = darkenColor(lmapRoute.color, 110);
+      }
+      currentSail = route.points[i].sail;
+    }
+    buildCircle(pos, lmapRoute.markersLayer, circleColor, 2, 1, buildMarkerTitle(route.points[i]));
+  }
+  buildTrace(buildPath(route.points), lmapRoute.traceLayer, mapState.refPoints, lmapRoute.color, 1, 1.5);
+  lmapRoute.traceLayer.addTo(map);
+  if (displayMarkers)
+    lmapRoute.markersLayer.addTo(map);
+  if (!mapState.userZoom)
+    updateBounds();
+  lmapRoute.displayed = true;
+}
+function hideRoute(name) {
+  var _a, _b;
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
     return;
   const map = mapState.map;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  if (!((_b = (_a = mapState.route) == null ? void 0 : _a[rid]) == null ? void 0 : _b[name]))
+    return;
+  const lmapRoute = mapState.route[rid][name];
+  if (lmapRoute.traceLayer) {
+    map.removeLayer(lmapRoute.traceLayer);
+  }
+  if (lmapRoute.markersLayer) {
+    map.removeLayer(lmapRoute.markersLayer);
+  }
+  if (lmapRoute.projectionLayer) {
+    map.removeLayer(lmapRoute.projectionLayer);
+  }
+  lmapRoute.displayed = false;
+}
+function showRoute(name) {
+  var _a, _b;
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const map = mapState.map;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  if (!((_b = (_a = mapState.route) == null ? void 0 : _a[rid]) == null ? void 0 : _b[name]))
+    return;
+  const lmapRoute = mapState.route[rid][name];
+  const userPrefs = getUserPrefs();
+  const displayMarkers = userPrefs.map.showMarkers;
+  if (lmapRoute.traceLayer)
+    lmapRoute.traceLayer.addTo(map);
+  if (lmapRoute.markersLayer && displayMarkers)
+    lmapRoute.markersLayer.addTo(map);
+  lmapRoute.displayed = true;
+}
+function deleteRoute(name) {
+  var _a, _b;
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const map = mapState.map;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  if (!((_b = (_a = mapState.route) == null ? void 0 : _a[rid]) == null ? void 0 : _b[name]))
+    return;
+  const lmapRoute = mapState.route[rid][name];
+  if (lmapRoute.traceLayer) {
+    map.removeLayer(lmapRoute.traceLayer);
+  }
+  if (lmapRoute.markersLayer) {
+    map.removeLayer(lmapRoute.markersLayer);
+  }
+  if (lmapRoute.projectionLayer) {
+    map.removeLayer(lmapRoute.projectionLayer);
+  }
+  delete mapState.route[rid][name];
+}
+function deleteAllRoutes() {
+  var _a;
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2)
+    return;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  Object.keys((_a = mapState == null ? void 0 : mapState.route) == null ? void 0 : _a[rid]).forEach(function(name) {
+    deleteRoute(name);
+  });
+}
+function onMarkersChange() {
+  const raceInfo2 = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo2)
+    return;
+  const map = mapState.map;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
   const userPrefs = getUserPrefs();
   const displayMarkers = userPrefs.map.showMarkers;
   document.getElementById("sel_showMarkersLmap").checked = displayMarkers;
-  Object.keys(mapState.route).forEach(function(name) {
-    if (mapState.route[name].markersLayer) {
-      if (displayMarkers && mapState.route[name].displayed == true)
-        mapState.route[name].markersLayer.addTo(map);
-      else
-        map.removeLayer(mapState.route[name].markersLayer);
-    }
-  });
+  if (mapState.route[rid]) {
+    Object.keys(mapState.route[rid]).forEach(function(name) {
+      if (mapState.route[rid][name].markersLayer) {
+        if (displayMarkers && mapState.route[rid][name].displayed == true)
+          mapState.route[rid][name].markersLayer.addTo(map);
+        else
+          map.removeLayer(mapState.route[rid][name].markersLayer);
+      }
+    });
+  }
   if (mapState.meLayerMarkers) {
     if (displayMarkers)
       mapState.meLayerMarkers.addTo(map);
@@ -13772,9 +14085,969 @@ function hideShowTracks() {
   if (mapState.fleetLayerTracks) {
     if (displayTracks)
       mapState.fleetLayerTracks.addTo(map);
-    else
+    else {
       map.removeLayer(mapState.fleetLayerTracks);
+      if (mapState.fleetLayerMarkers)
+        map.removeLayer(mapState.fleetLayerMarkers);
+    }
   }
+}
+var GPXParser_min = { exports: {} };
+var browser;
+var hasRequiredBrowser;
+function requireBrowser() {
+  if (hasRequiredBrowser)
+    return browser;
+  hasRequiredBrowser = 1;
+  browser = function() {
+    return noop;
+  };
+  function noop() {
+  }
+  return browser;
+}
+(function(module) {
+  let gpxParser = function() {
+    this.xmlSource = "", this.metadata = {}, this.waypoints = [], this.tracks = [], this.routes = [];
+  };
+  gpxParser.prototype.parse = function(e) {
+    let t = this, l = new window.DOMParser();
+    this.xmlSource = l.parseFromString(e, "text/xml");
+    let r2 = this.xmlSource.querySelector("metadata");
+    if (null != r2) {
+      this.metadata.name = this.getElementValue(r2, "name"), this.metadata.desc = this.getElementValue(r2, "desc"), this.metadata.time = this.getElementValue(r2, "time");
+      let e2 = {}, t2 = r2.querySelector("author");
+      if (null != t2) {
+        e2.name = this.getElementValue(t2, "name"), e2.email = {};
+        let l3 = t2.querySelector("email");
+        null != l3 && (e2.email.id = l3.getAttribute("id"), e2.email.domain = l3.getAttribute("domain"));
+        let r3 = {}, a3 = t2.querySelector("link");
+        null != a3 && (r3.href = a3.getAttribute("href"), r3.text = this.getElementValue(a3, "text"), r3.type = this.getElementValue(a3, "type")), e2.link = r3;
+      }
+      this.metadata.author = e2;
+      let l2 = {}, a2 = this.queryDirectSelector(r2, "link");
+      null != a2 && (l2.href = a2.getAttribute("href"), l2.text = this.getElementValue(a2, "text"), l2.type = this.getElementValue(a2, "type"), this.metadata.link = l2);
+    }
+    var a = [].slice.call(this.xmlSource.querySelectorAll("wpt"));
+    for (let e2 in a) {
+      var n = a[e2];
+      let l2 = {};
+      l2.name = t.getElementValue(n, "name"), l2.sym = t.getElementValue(n, "sym"), l2.lat = parseFloat(n.getAttribute("lat")), l2.lon = parseFloat(n.getAttribute("lon"));
+      let r3 = parseFloat(t.getElementValue(n, "ele"));
+      l2.ele = isNaN(r3) ? null : r3, l2.cmt = t.getElementValue(n, "cmt"), l2.desc = t.getElementValue(n, "desc");
+      let i2 = t.getElementValue(n, "time");
+      l2.time = null == i2 ? null : new Date(i2), t.waypoints.push(l2);
+    }
+    var i = [].slice.call(this.xmlSource.querySelectorAll("rte"));
+    for (let e2 in i) {
+      let l2 = i[e2], r3 = {};
+      r3.name = t.getElementValue(l2, "name"), r3.cmt = t.getElementValue(l2, "cmt"), r3.desc = t.getElementValue(l2, "desc"), r3.src = t.getElementValue(l2, "src"), r3.number = t.getElementValue(l2, "number");
+      let a2 = t.queryDirectSelector(l2, "type");
+      r3.type = null != a2 ? a2.innerHTML : null;
+      let n2 = {}, o2 = l2.querySelector("link");
+      null != o2 && (n2.href = o2.getAttribute("href"), n2.text = t.getElementValue(o2, "text"), n2.type = t.getElementValue(o2, "type")), r3.link = n2;
+      let u2 = [];
+      var s = [].slice.call(l2.querySelectorAll("rtept"));
+      for (let e3 in s) {
+        let l3 = s[e3], r4 = {};
+        r4.lat = parseFloat(l3.getAttribute("lat")), r4.lon = parseFloat(l3.getAttribute("lon"));
+        let a3 = parseFloat(t.getElementValue(l3, "ele"));
+        r4.ele = isNaN(a3) ? null : a3;
+        let n3 = t.getElementValue(l3, "time");
+        r4.time = null == n3 ? null : new Date(n3), u2.push(r4);
+      }
+      r3.distance = t.calculDistance(u2), r3.elevation = t.calcElevation(u2), r3.slopes = t.calculSlope(u2, r3.distance.cumul), r3.points = u2, t.routes.push(r3);
+    }
+    var o = [].slice.call(this.xmlSource.querySelectorAll("trk"));
+    for (let e2 in o) {
+      let l2 = o[e2], r3 = {};
+      r3.name = t.getElementValue(l2, "name"), r3.cmt = t.getElementValue(l2, "cmt"), r3.desc = t.getElementValue(l2, "desc"), r3.src = t.getElementValue(l2, "src"), r3.number = t.getElementValue(l2, "number");
+      let a2 = t.queryDirectSelector(l2, "type");
+      r3.type = null != a2 ? a2.innerHTML : null;
+      let n2 = {}, i2 = l2.querySelector("link");
+      null != i2 && (n2.href = i2.getAttribute("href"), n2.text = t.getElementValue(i2, "text"), n2.type = t.getElementValue(i2, "type")), r3.link = n2;
+      let s2 = [], p = [].slice.call(l2.querySelectorAll("trkpt"));
+      for (let e3 in p) {
+        var u = p[e3];
+        let l3 = {};
+        l3.lat = parseFloat(u.getAttribute("lat")), l3.lon = parseFloat(u.getAttribute("lon"));
+        let r4 = parseFloat(t.getElementValue(u, "ele"));
+        l3.ele = isNaN(r4) ? null : r4;
+        let a3 = t.getElementValue(u, "time");
+        l3.time = null == a3 ? null : new Date(a3), s2.push(l3);
+      }
+      r3.distance = t.calculDistance(s2), r3.elevation = t.calcElevation(s2), r3.slopes = t.calculSlope(s2, r3.distance.cumul), r3.points = s2, t.tracks.push(r3);
+    }
+  }, gpxParser.prototype.getElementValue = function(e, t) {
+    let l = e.querySelector(t);
+    return null != l ? null != l.innerHTML ? l.innerHTML : l.childNodes[0].data : l;
+  }, gpxParser.prototype.queryDirectSelector = function(e, t) {
+    let l = e.querySelectorAll(t), r2 = l[0];
+    if (l.length > 1) {
+      let l2 = e.childNodes;
+      for (idx in l2)
+        elem = l2[idx], elem.tagName === t && (r2 = elem);
+    }
+    return r2;
+  }, gpxParser.prototype.calculDistance = function(e) {
+    let t = {}, l = 0, r2 = [];
+    for (var a = 0; a < e.length - 1; a++)
+      l += this.calcDistanceBetween(e[a], e[a + 1]), r2[a] = l;
+    return r2[e.length - 1] = l, t.total = l, t.cumul = r2, t;
+  }, gpxParser.prototype.calcDistanceBetween = function(e, t) {
+    let l = {};
+    l.lat = e.lat, l.lon = e.lon;
+    let r2 = {};
+    r2.lat = t.lat, r2.lon = t.lon;
+    var a = Math.PI / 180, n = l.lat * a, i = r2.lat * a, s = Math.sin((r2.lat - l.lat) * a / 2), o = Math.sin((r2.lon - l.lon) * a / 2), u = s * s + Math.cos(n) * Math.cos(i) * o * o;
+    return 6371e3 * (2 * Math.atan2(Math.sqrt(u), Math.sqrt(1 - u)));
+  }, gpxParser.prototype.calcElevation = function(e) {
+    for (var t = 0, l = 0, r2 = {}, a = 0; a < e.length - 1; a++) {
+      let r3 = e[a + 1].ele, n2 = e[a].ele;
+      if (null !== r3 && null !== n2) {
+        let e2 = parseFloat(r3) - parseFloat(n2);
+        e2 < 0 ? l += e2 : e2 > 0 && (t += e2);
+      }
+    }
+    for (var n = [], i = 0, s = (a = 0, e.length); a < s; a++) {
+      if (null !== e[a].ele) {
+        var o = parseFloat(e[a].ele);
+        n.push(o), i += o;
+      }
+    }
+    return r2.max = Math.max.apply(null, n) || null, r2.min = Math.min.apply(null, n) || null, r2.pos = Math.abs(t) || null, r2.neg = Math.abs(l) || null, r2.avg = i / n.length || null, r2;
+  }, gpxParser.prototype.calculSlope = function(e, t) {
+    let l = [];
+    for (var r2 = 0; r2 < e.length - 1; r2++) {
+      let a = e[r2], n = 100 * (e[r2 + 1].ele - a.ele) / (t[r2 + 1] - t[r2]);
+      l.push(n);
+    }
+    return l;
+  }, gpxParser.prototype.toGeoJSON = function() {
+    var e = { type: "FeatureCollection", features: [], properties: { name: this.metadata.name, desc: this.metadata.desc, time: this.metadata.time, author: this.metadata.author, link: this.metadata.link } };
+    for (idx in this.tracks) {
+      let r2 = this.tracks[idx];
+      var t = { type: "Feature", geometry: { type: "LineString", coordinates: [] }, properties: {} };
+      for (idx in t.properties.name = r2.name, t.properties.cmt = r2.cmt, t.properties.desc = r2.desc, t.properties.src = r2.src, t.properties.number = r2.number, t.properties.link = r2.link, t.properties.type = r2.type, r2.points) {
+        let e2 = r2.points[idx];
+        (l = []).push(e2.lon), l.push(e2.lat), l.push(e2.ele), t.geometry.coordinates.push(l);
+      }
+      e.features.push(t);
+    }
+    for (idx in this.routes) {
+      let r2 = this.routes[idx];
+      t = { type: "Feature", geometry: { type: "LineString", coordinates: [] }, properties: {} };
+      for (idx in t.properties.name = r2.name, t.properties.cmt = r2.cmt, t.properties.desc = r2.desc, t.properties.src = r2.src, t.properties.number = r2.number, t.properties.link = r2.link, t.properties.type = r2.type, r2.points) {
+        let e2 = r2.points[idx];
+        var l;
+        (l = []).push(e2.lon), l.push(e2.lat), l.push(e2.ele), t.geometry.coordinates.push(l);
+      }
+      e.features.push(t);
+    }
+    for (idx in this.waypoints) {
+      let l2 = this.waypoints[idx];
+      (t = { type: "Feature", geometry: { type: "Point", coordinates: [] }, properties: {} }).properties.name = l2.name, t.properties.sym = l2.sym, t.properties.cmt = l2.cmt, t.properties.desc = l2.desc, t.geometry.coordinates = [l2.lon, l2.lat, l2.ele], e.features.push(t);
+    }
+    return e;
+  }, requireBrowser()(), module.exports = gpxParser;
+})(GPXParser_min);
+var GPXParser_minExports = GPXParser_min.exports;
+const GPXParser = /* @__PURE__ */ getDefaultExportFromCjs(GPXParser_minExports);
+const routeInfosmodel = {
+  lat: "",
+  lon: "",
+  timestamp: "",
+  heading: "",
+  tws: "",
+  twa: "",
+  twd: "",
+  sail: "",
+  speed: "",
+  stamina: "",
+  boost: ""
+};
+function createEmptyRoute(rid, name, skipperName, color, displayedName) {
+  if (!rid || !name)
+    return;
+  if (!mapState.route[rid])
+    mapState.route[rid] = [];
+  if (mapState.route[rid][name])
+    delete mapState.route[rid][name];
+  mapState.route[rid][name] = [];
+  const currentRoute = mapState.route[rid][name];
+  currentRoute.points = [];
+  currentRoute.displayed = true;
+  currentRoute.displayedName = displayedName;
+  currentRoute.loaded = false;
+  currentRoute.skipperName = skipperName;
+  currentRoute.color = color;
+}
+function addNewPoints(rid, name, routeInfoData) {
+  var _a, _b;
+  const hasRoute = !!((_b = (_a = mapState == null ? void 0 : mapState.route) == null ? void 0 : _a[rid]) == null ? void 0 : _b[name]);
+  if (!hasRoute || !routeInfoData)
+    return;
+  mapState.route[rid][name].points.push(routeInfoData);
+}
+function importGPXRoute(race2, gpxFile, routerName, skipperName, color) {
+  var _a, _b;
+  const raceInfo2 = getRaceInfo();
+  if (!raceInfo2 || !gpxFile)
+    return;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  let gpx = new GPXParser();
+  gpx.parse(gpxFile);
+  let gpxPoints;
+  if (!gpx || !gpx.routes && !gpx.tracks && !gpx.waypoints)
+    return "";
+  if (Array.isArray(gpx.routes) && ((_a = gpx.routes[0]) == null ? void 0 : _a.points))
+    gpxPoints = gpx.routes[0].points;
+  else if (Array.isArray(gpx.tracks) && ((_b = gpx.tracks[0]) == null ? void 0 : _b.points))
+    gpxPoints = gpx.tracks[0].points;
+  else if (Array.isArray(gpx.waypoints))
+    gpxPoints = gpx.waypoints;
+  else
+    return "";
+  const routeName = cleanSpecial(routerName + " " + skipperName);
+  createEmptyRoute(rid, routeName, skipperName, color, routerName + " " + skipperName);
+  gpxPoints.forEach(function(pt) {
+    const lat = Number(pt.lat);
+    const lon = Number(pt.lon);
+    const routeData = Object.create(routeInfosmodel);
+    routeData.lat = lat;
+    routeData.lon = lon;
+    routeData.timestamp = Date.parse(pt.time);
+    routeData.heading = "";
+    routeData.tws = "";
+    routeData.twa = "";
+    routeData.twd = "";
+    routeData.sail = "";
+    routeData.speed = "";
+    routeData.stamina = "";
+    routeData.boost = "";
+    routeData.desc = pt.desc;
+    addNewPoints(rid, routeName, routeData);
+  });
+  return routeName;
+}
+function importExternalRouter(rid, fileTxt, routerName, skipperName, color, mode) {
+  if (!rid || !fileTxt)
+    return "";
+  let poi = new Array();
+  let i = 0;
+  fileTxt = fileTxt.replace("\r", "");
+  const lineAvl = fileTxt.split("\n");
+  if (lineAvl.length <= 1) {
+    return "";
+  }
+  const routeName = cleanSpecial(routerName + " " + skipperName);
+  createEmptyRoute(rid, routeName, skipperName, color, routerName + " " + skipperName);
+  let currentYear = /* @__PURE__ */ new Date();
+  currentYear = currentYear.getFullYear();
+  let previousMonth = 0;
+  const totalLines = lineAvl.length - 2;
+  if (mode == 1)
+    totalLines = lineAvl.length - 1;
+  while (i < totalLines) {
+    i = i + 1;
+    if (i > totalLines)
+      i = totalLines;
+    poi = lineAvl[i].replace(/\,/g, ".").split(";");
+    let isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
+    if (mode == 1) {
+      lat = Number(poi[3]);
+      lon = Number(poi[4]);
+      hdg = poi[5] + "°";
+      tws = roundTo(poi[12], 2) + " kts";
+      stw = roundTo(poi[10], 2) + " kts";
+      splitDate = poi[0].split(" ");
+      heure = splitDate[1];
+      if (splitDate[0].includes("/")) {
+        date = splitDate[0].split("/");
+        if (date[0].length > 2)
+          isoDate = splitDate[0] + " " + heure;
+        else
+          isoDate = date[2] + "-" + date[1] + "-" + date[0] + " " + heure;
+        isoDate += " GMT";
+      } else if (splitDate[0].includes("-")) {
+        date = splitDate[0].split("-");
+        if (date[0].length > 2)
+          isoDate = splitDate[0] + " " + heure;
+        else
+          isoDate = date[2] + "-" + date[1] + "-" + date[0] + " " + heure;
+        isoDate += " GMT";
+      } else
+        isoDate = poi[0] + " GMT";
+      sail = renameSailFromRoutes(poi[15]);
+      twa = roundTo(poi[6], 2) + "°";
+      twd = roundTo(poi[11], 2) + "°";
+      stamina = roundTo(poi[24], 2);
+      boost = roundTo(poi[16], 2);
+    } else if (mode == 4) {
+      splitDate = poi[0].split(" ");
+      let latB = splitDate[0].replace("�", "°").replace(".", "'") + " " + splitDate[1];
+      let lonB = splitDate[3].replace("�", "°").replace(".", "'") + " " + splitDate[4];
+      const posDec = convertDMS2Dec(latB, lonB);
+      lat = posDec.lat;
+      lon = posDec.lon;
+      hdg = poi[4] + "°";
+      tws = roundTo(poi[5], 2) + " kts";
+      twd = roundTo(poi[6], 2) + "°";
+      stw = roundTo(poi[3], 2) + " kts";
+      twa = "-";
+      sail = "-";
+      splitDate = poi[1].split(" ");
+      heure = splitDate[1];
+      date = splitDate[0].split("/");
+      isoDate = date[0] + "-" + date[1] + "-" + date[2] + " " + heure;
+    } else {
+      const isNumber = (n) => (typeof n === "number" || n instanceof Number || typeof n === "string" && !isNaN(n)) && isFinite(n);
+      if (isNumber(poi[1])) {
+        lat = Number(poi[1]);
+        lon = Number(poi[2]);
+      } else {
+        let posDec = convertDMS2Dec(poi[1], poi[2]);
+        lat = posDec.lat;
+        lon = posDec.lon;
+      }
+      hdg = poi[3] + "°";
+      tws = roundTo(poi[8], 2) + " kts";
+      stw = roundTo(poi[4], 2) + " kts";
+      splitDate = poi[0].split(" ");
+      heure = splitDate[1] + ":00";
+      date = splitDate[0].split("/");
+      if (previousMonth == 0)
+        previousMonth = date[1];
+      if (previousMonth == 12 && date[1] == 1)
+        ;
+      isoDate = currentYear + "-" + date[1] + "-" + date[0] + " " + heure;
+      if (poi[6] > 180)
+        poi[6] -= 360;
+      twa = roundTo(poi[6], 2) + "°";
+      twd = roundTo(poi[7], 2) + "°";
+      if (isNumber(poi[5]))
+        sail = "(" + poi[5] + ")";
+      else
+        sail = renameSailFromRoutes(poi[5]);
+      stamina = roundTo(poi[9], 2);
+      boost = roundTo(poi[10], 2);
+    }
+    const routeData = Object.create(routeInfosmodel);
+    routeData.lat = lat;
+    routeData.lon = lon;
+    routeData.timestamp = Date.parse(isoDate);
+    routeData.heading = hdg;
+    routeData.tws = tws;
+    routeData.twa = twa;
+    routeData.twd = twd;
+    routeData.sail = sail;
+    routeData.speed = stw;
+    routeData.stamina = stamina;
+    routeData.boost = boost;
+    addNewPoints(rid, routeName, routeData);
+  }
+  return routeName;
+}
+function importExtraPattern(rid, fileTxt, routerName, skipperName, color) {
+  if (!rid || !fileTxt)
+    return "";
+  let poi = new Array();
+  let i = 0;
+  fileTxt = fileTxt.replace("\r", "");
+  let lineAvl = fileTxt.split("\n");
+  if (lineAvl.length <= 1)
+    return "";
+  const routeName = cleanSpecial(routerName + " " + skipperName);
+  createEmptyRoute(rid, routeName, skipperName, color, routerName + " " + skipperName);
+  while (i < lineAvl.length - 2) {
+    i = i + 1;
+    if (i > lineAvl.length - 2)
+      i = lineAvl.length - 2;
+    poi = lineAvl[i].replace(/\,/g, ".").split(";");
+    const routeData = Object.create(routeInfosmodel);
+    routeData.lat = Number(poi[0]);
+    routeData.lon = Number(poi[1]);
+    routeData.timestamp = "-";
+    routeData.heading = "-";
+    routeData.tws = "-";
+    routeData.twa = "-";
+    routeData.twd = "-";
+    routeData.sail = "-";
+    routeData.speed = "-";
+    addNewPoints(race.id, routeName, routeData);
+  }
+  return routeName;
+}
+function renameSailFromRoutes(sailName) {
+  if (sailName && sailName !== void 0) {
+    switch (sailName) {
+      case '"HeavyGnk-foils"':
+      case '"HeavyGnk"':
+      case "Spi lourd":
+      case '"HEAVY_GNK"':
+      case '"HEAVY_GNK-foils"':
+        sailName = "HG";
+        break;
+      case '"LightGnk-foils"':
+      case '"LightGnk"':
+      case "Spi leger":
+      case '"LIGHT_GNK"':
+      case '"LIGHT_GNK-foils"':
+        sailName = "LG";
+        break;
+      case '"Code0-foils"':
+      case '"Code0"':
+      case "Code 0":
+      case '"CODE_0"':
+      case '"CODE_0-foils"':
+        sailName = "C0";
+        break;
+      case '"Staysail-foils"':
+      case '"Staysail"':
+      case "Staysail":
+      case '"Trinquette"':
+      case '"STAYSAIL"':
+      case '"STAYSAIL-foils"':
+        sailName = "Stay";
+        break;
+      case '"LightJib-foils"':
+      case '"LightJib"':
+      case "Genois leger":
+      case '"LIGHT_JIB"':
+      case '"LIGHT_JIB-foils"':
+        sailName = "LJ";
+        break;
+      case '"Jib-foils"':
+      case '"Jib"':
+      case "Jib":
+      case '"JIB"':
+      case '"JIB-foils"':
+        sailName = "Jib";
+        break;
+      case '"Spi-foils"':
+      case '"Spi"':
+      case "Spi":
+      case '"SPI"':
+      case '"SPI-foils"':
+        sailName = "Spi";
+        break;
+    }
+  }
+  return sailName;
+}
+const pattern = /1;\sleft\s:([-]{0,1}[0-9]{1,})px;\stop:([0-9]{1,})px;"\s*onmouseover="updi\(event,'([0-9]{4}-[0-9]{2}-[0-9]{2})\s([0-9]{2}:[0-9]{2})\s([A-Z]{3,4})\s\((T[+]{1}\s?[0-9]{1,3}:[0-9]{2})\)<br>Distances:&nbsp;([0-9]{1,4}.[0-9]{1}nm)\/([0-9]{1,4}.[0-9]{1}nm)<br><b>Wind:<\/b>\s([0-9]{1,3})&deg;\s([0-9]{1,2}.[0-9]{1}\skt)\s\(<b>TWA\s([-]{0,1}[0-9]{1,3})&deg;<\/b>\)<br><b>Heading:<\/b>\s([0-9]{1,3})&deg;<b>Sail:<\/b>\s([a-zA-Z0]{2,4})<br><b>Boat\sSpeed:<\/b>\s([0-9]{1,3}.[0-9]{1,2}\skts)/;
+let rtx_idx = [];
+function getLatitude(top, scale) {
+  return 90 - (parseInt(top) + 2) / scale;
+}
+function getLongitude(left, scale) {
+  left = parseInt(left);
+  if (left + 2 / scale >= -180 || left + 2 / scale <= 180) {
+    return (left + 2) / scale;
+  } else {
+    return (left + 2) / scale - 360;
+  }
+}
+function zezoCall(rid, playerIte, color, raceUrl, timeoutMs = 1e4) {
+  const baseURL = "http://zezo.org";
+  const url = baseURL + "/" + raceUrl + "/chart.pl?lat=" + playerIte.pos.lat + "&lon=" + playerIte.pos.lon + (playerIte.iteDate ? "&ts=" + playerIte.iteDate / 1e3 : "") + "&o=" + playerIte.options + "&twa=" + playerIte.twa + "&userid=" + playerIte.userId + "&auto=no";
+  const btn = document.getElementById("bt_rt_addLmap");
+  const setBusy = (busy) => {
+    if (!btn)
+      return;
+    btn.innerText = busy ? "Import..." : "Import";
+    btn.disabled = !!busy;
+  };
+  setBusy(true);
+  let controller, timeoutId;
+  try {
+    controller = new AbortController();
+    timeoutId = setTimeout(() => controller.abort("timeout"), timeoutMs);
+    return fetch(url, { cache: "no-store", signal: controller.signal }).then((res) => res.ok ? res.text() : false).then((text) => {
+      if (!text)
+        return false;
+      const result = text.split(pattern);
+      let routeName = "zezo " + playerIte.info.name;
+      let routeNameClean = cleanSpecial(routeName);
+      rtx_idx[rid] ?? (rtx_idx[rid] = {});
+      const idxForRace = rtx_idx[rid];
+      idxForRace[routeNameClean] = (idxForRace[routeNameClean] ?? -1) + 1;
+      const n = idxForRace[routeNameClean];
+      if (n > 0) {
+        routeName += " " + n;
+        routeNameClean = cleanSpecial(routeName);
+      }
+      createEmptyRoute(rid, routeNameClean, playerIte.info.name, color, routeName);
+      const mScale = /var scale = ([0-9]+)/.exec(result[0] ?? "");
+      const scale = (mScale == null ? void 0 : mScale[1]) ? Number(mScale[1]) : null;
+      if (!scale)
+        return false;
+      for (let i = 0; i < result.length - 1; i += 15) {
+        const datas = result.slice(i + 1, i + 15);
+        if (datas.length < 14)
+          continue;
+        const [left, top, date, time, timezone, ttw, dtw, dtg, twd, tws, twa, btw, sail, stw] = datas;
+        let isoDate = String(date).replaceAll("/", "-");
+        isoDate += "T" + time + ":00";
+        if (timezone == "UTC")
+          isoDate += ".000+00:00";
+        const routeData = Object.create(routeInfosmodel);
+        routeData.lat = getLatitude(top, scale);
+        routeData.lon = getLongitude(left, scale);
+        routeData.timestamp = Date.parse(isoDate);
+        routeData.heading = btw + "°";
+        routeData.tws = tws + "s";
+        routeData.twa = twa + "°";
+        routeData.twd = twd + "°";
+        routeData.sail = sail;
+        routeData.speed = stw;
+        addNewPoints(rid, routeNameClean, routeData);
+      }
+      updateRouteListHTML();
+      displayMapTrace(rid, routeNameClean);
+      return true;
+    }).catch((err) => {
+      if ((err == null ? void 0 : err.name) === "AbortError") {
+        console.warn(`zezoCall: timeout after ${timeoutMs}ms`, err);
+        return false;
+      }
+      console.error("zezoCall error:", err);
+      return false;
+    }).finally(() => {
+      clearTimeout(timeoutId);
+      setBusy(false);
+    });
+  } catch (err) {
+    console.error("zezoCall sync error:", err);
+    clearTimeout(timeoutId);
+    setBusy(false);
+    return Promise.resolve(false);
+  }
+}
+let popupStateLmap = false;
+var actualZezoColor = "#AA0000";
+var actualAvalon06Color = "#005500";
+var actualVRZenColor = "#499300";
+var actualgpxColor = "#009349";
+function loadRacingSkipperList(elt) {
+  const selectobject = document.getElementById(elt);
+  const options = selectobject.getElementsByTagName("OPTION");
+  const optionsSelect = selectobject.value;
+  let optionsSelectStillExist = false;
+  for (let i = 0; i < options.length; i++) {
+    selectobject.removeChild(options[i]);
+    i--;
+  }
+  const raceItesFleet = getLegFleetInfos();
+  const connectedPlayerId2 = getConnectedPlayerId();
+  const fln = Object.fromEntries(
+    Object.entries(raceItesFleet).filter(([, p]) => p.state !== "Arrived").sort(
+      ([, a], [, b]) => a.info.name.localeCompare(b.info.name, "fr", { sensitivity: "base" })
+    ).map(([userId, p]) => [userId, {
+      userId,
+      name: p.info.name,
+      options: p.options,
+      type: p.ite.type,
+      type2: p.ite.type2,
+      choice: p.ite.choice,
+      state: p.ite.state
+    }])
+  );
+  Object.entries(fln).forEach(([key, value]) => {
+    if (isDisplayEnabled(value, key, connectedPlayerId2)) {
+      const option = document.createElement("option");
+      let optionK = "";
+      if (!value.options || value.options == "?")
+        optionK = " (*)";
+      option.text = value.name + optionK;
+      option.value = value.userId;
+      if (key == optionsSelect)
+        optionsSelectStillExist = true;
+      document.getElementById(elt).appendChild(option);
+    }
+  });
+  if (optionsSelectStillExist)
+    selectobject.value = optionsSelect;
+  onSkipperSelectedChange("Lmap");
+}
+function onPopupOpenLmap() {
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2 || popupStateLmap)
+    return;
+  popupStateLmap = true;
+  document.getElementById("rt_popupLmap").style.display = "block";
+  document.getElementById("sel_rt_skipperLmap").style.display = "block";
+  document.getElementById("rt_nameSkipperLmap").style.display = "none";
+  document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
+  document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
+  document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
+  document.getElementById("route_colorLmap").value = actualZezoColor;
+  loadRacingSkipperList("sel_rt_skipperLmap");
+  onChangeRouteTypeLmap();
+}
+function onPopupCloseLmap() {
+  popupStateLmap = false;
+  document.getElementById("rt_popupLmap").style.display = "none";
+}
+function onCleanAllRoute() {
+  deleteAllRoutes();
+  document.getElementById("route_list_tableLmap").innerHTML = "";
+}
+function onChangeRouteTypeLmap() {
+  const routeType = document.getElementById("sel_routeTypeLmap").value;
+  switch (routeType) {
+    default:
+      return;
+    case "rt_Zezo":
+      document.getElementById("sel_rt_skipperLmap").style.display = "block";
+      document.getElementById("rt_nameSkipperLmap").style.display = "none";
+      document.getElementById("route_colorLmap").value = actualZezoColor;
+      document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
+      document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
+      document.getElementById("rt_popupLmap").style.height = "9.5em";
+      break;
+    case "rt_Avalon":
+      document.getElementById("sel_rt_skipperLmap").style.display = "none";
+      document.getElementById("rt_nameSkipperLmap").style.display = "block";
+      document.getElementById("rt_nameSkipperLmap").value = document.getElementById("lb_boatname").textContent;
+      document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
+      document.getElementById("route_colorLmap").value = actualAvalon06Color;
+      document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+      document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+      document.getElementById("rt_popupLmap").style.height = "6em";
+      break;
+    case "rt_VRZen":
+      document.getElementById("sel_rt_skipperLmap").style.display = "none";
+      document.getElementById("rt_nameSkipperLmap").style.display = "block";
+      document.getElementById("rt_nameSkipperLmap").value = document.getElementById("lb_boatname").textContent;
+      document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
+      document.getElementById("route_colorLmap").value = actualVRZenColor;
+      document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+      document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+      document.getElementById("rt_popupLmap").style.height = "6em";
+      break;
+    case "rt_gpx":
+      document.getElementById("sel_rt_skipperLmap").style.display = "none";
+      document.getElementById("rt_nameSkipperLmap").style.display = "block";
+      document.getElementById("rt_nameSkipperLmap").value = document.getElementById("lb_boatname").textContent;
+      document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
+      document.getElementById("route_colorLmap").value = actualgpxColor;
+      document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+      document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+      document.getElementById("rt_popupLmap").style.height = "6em";
+      break;
+  }
+}
+async function loadExternalFile(rid, type) {
+  let tf = ".gpx";
+  let routeType = "Gpx";
+  let routeFormat = 3;
+  if (type == "rt_Avalon") {
+    tf = ".csv";
+    routeType = "Avalon ";
+    routeFormat = 0;
+  } else if (type == "rt_VRZen") {
+    tf = ".csv";
+    routeType = "VR Zen ";
+    routeFormat = 1;
+  } else if (type == "rt_gpx") {
+    tf = ".gpx";
+    routeType = "Gpx ";
+    routeFormat = 3;
+  } else if (type == "rt_Pattern") {
+    tf = ".csv";
+  } else if (type == "rt_dorado") {
+    tf = ".csv";
+    routeType = "Dorado ";
+    routeFormat = 4;
+  }
+  const pickerOpts = {
+    types: [
+      {
+        description: "Routage",
+        accept: {
+          "track/*": [tf]
+        }
+      }
+    ],
+    excludeAcceptAllOption: true,
+    multiple: false
+  };
+  let fileHandle;
+  [fileHandle] = await window.showOpenFilePicker(pickerOpts);
+  const fileH = await fileHandle.getFile();
+  const fileData = await fileH.text();
+  if (type == "rt_Avalon" || type == "rt_VRZen" || type == "rt_dorado") {
+    return importExternalRouter(
+      rid,
+      fileData,
+      routeType,
+      document.getElementById("rt_nameSkipperLmap").value,
+      document.getElementById("route_colorLmap").value,
+      routeFormat
+    );
+  } else if (type == "rt_gpx") {
+    return importGPXRoute(
+      rid,
+      fileData,
+      "Gpx",
+      document.getElementById("rt_nameSkipperLmap").value,
+      document.getElementById("route_colorLmap").value
+    );
+  } else if (type == "rt_Pattern") {
+    return importExtraPattern(
+      rid,
+      fileData,
+      "contour",
+      document.getElementById("rt_nameSkipperLmap").value,
+      document.getElementById("route_colorLmap").value
+    );
+  }
+}
+function buildPlayerOption(type) {
+  const pOptions = {
+    reach: false,
+    light: false,
+    heavy: false,
+    hull: false,
+    foil: false,
+    winch: false,
+    comfortLoungePug: false,
+    magicFurler: false,
+    vrtexJacket: false
+  };
+  if (getCheckbox("opt_FP_" + type)) {
+    pOptions.reach = true;
+    pOptions.light = true;
+    pOptions.heavy = true;
+    pOptions.hull = true;
+    pOptions.foil = true;
+    pOptions.winch = true;
+    pOptions.comfortLoungePug = true;
+    pOptions.magicFurler = true;
+    pOptions.vrtexJacket = true;
+  } else {
+    if (getCheckbox("opt_hgss_" + type))
+      pOptions.heavy = true;
+    if (getCheckbox("opt_ljg_" + type))
+      pOptions.light = true;
+    if (getCheckbox("opt_c0_" + type))
+      pOptions.reach = true;
+    if (getCheckbox("opt_foils_" + type))
+      pOptions.foil = true;
+    if (getCheckbox("opt_hull_" + type))
+      pOptions.hull = true;
+    if (getCheckbox("opt_winch_" + type))
+      pOptions.winch = true;
+  }
+  return pOptions;
+}
+async function onAddRouteLmap() {
+  const routeType = document.getElementById("sel_routeTypeLmap").value;
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2)
+    return;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  let routeName = "";
+  switch (routeType) {
+    default:
+      return;
+    case "rt_Zezo":
+      if (!raceInfo2.url) {
+        alert("Unknown race - no routing available");
+        return;
+      }
+      const raceItesFleet = getLegFleetInfos();
+      const playerId = document.getElementById("sel_rt_skipperLmap").value;
+      if (!raceItesFleet || !raceItesFleet[playerId]) {
+        alert("Unknown player - no routing available");
+        return;
+      }
+      const playerIte = raceItesFleet[playerId];
+      playerIte.options = buildPlayerOption("Lmap");
+      const raceUrl = raceInfo2.url + (raceInfo2.betaflag ? "b" : "");
+      document.getElementById("bt_rt_addLmap").innerText = "Loading";
+      document.getElementById("bt_rt_addLmap").disabled = true;
+      zezoCall(rid, playerIte, document.getElementById("route_colorLmap").value, raceUrl);
+      actualZezoColor = "#" + Math.floor(Math.random() * 16777216).toString(16).padStart(6, "0");
+      document.getElementById("route_colorLmap").value = actualZezoColor;
+      break;
+    case "rt_Avalon":
+      routeName = await loadExternalFile(rid, "rt_Avalon");
+      break;
+    case "rt_VRZen":
+      routeName = await loadExternalFile(rid, "rt_VRZen");
+      break;
+    case "rt_gpx":
+      routeName = await loadExternalFile(rid, "rt_gpx");
+      break;
+  }
+  if (routeName != "") {
+    updateRouteListHTML();
+    displayMapTrace(rid, routeName);
+  }
+}
+function upDateCheckbox(elt, value) {
+  var checkBox = document.getElementById(elt);
+  if (checkBox) {
+    checkBox.checked = value;
+    var event = new Event("change");
+    checkBox.dispatchEvent(event);
+  }
+}
+function getCheckbox(elt) {
+  var checkBox = document.getElementById(elt);
+  if (checkBox)
+    return checkBox.checked;
+  else
+    return null;
+}
+function onSkipperSelectedChange(type) {
+  var _a;
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2)
+    return;
+  const raceItesFleet = getLegFleetInfos();
+  const playerId = document.getElementById("sel_rt_skipperLmap").value;
+  if (!raceItesFleet || !raceItesFleet[playerId]) {
+    alert("Unknown player - no routing available");
+    return;
+  }
+  upDateCheckbox("opt_c0_" + type, false);
+  upDateCheckbox("opt_ljg_" + type, false);
+  upDateCheckbox("opt_hgss_" + type, false);
+  upDateCheckbox("opt_hull_" + type, false);
+  upDateCheckbox("opt_foils_" + type, false);
+  upDateCheckbox("opt_winch_" + type, false);
+  upDateCheckbox("opt_FP_" + type, false);
+  const playerIteOpt = (_a = raceItesFleet[playerId]) == null ? void 0 : _a.options;
+  if (playerIteOpt.options) {
+    const pOptions = playerIteOpt.options;
+    if (pOptions.options.reach)
+      upDateCheckbox("opt_c0_" + type, true);
+    if (pOptions.options.light)
+      upDateCheckbox("opt_ljg_" + type, true);
+    if (pOptions.options.heavy)
+      upDateCheckbox("opt_hgss_" + type, true);
+    if (pOptions.options.hull)
+      upDateCheckbox("opt_hull_" + type, true);
+    if (pOptions.options.foil)
+      upDateCheckbox("opt_foils_" + type, true);
+    if (pOptions.options.winch)
+      upDateCheckbox("opt_winch_" + type, true);
+    if (pOptions.options.reach && pOptions.options.light && pOptions.options.heavy && pOptions.options.hull && pOptions.options.foil && pOptions.options.winch && pOptions.options.comfortLoungePug && pOptions.options.magicFurler && pOptions.options.vrtexJacket)
+      upDateCheckbox("opt_FP_" + type, true);
+    else
+      upDateCheckbox("opt_FP_" + type, false);
+  } else if (playerIteOpt.guessOptions && playerIteOpt.guessOptions != 0) {
+    const pOptions = playerIteOpt.guessOptions;
+    if (isBitSet(pOptions, guessOptionBits["reach"]))
+      upDateCheckbox("opt_c0_" + type, true);
+    if (isBitSet(pOptions, guessOptionBits["light"]))
+      upDateCheckbox("opt_ljg_" + type, true);
+    if (isBitSet(pOptions, guessOptionBits["heavy"]))
+      upDateCheckbox("opt_hgss_" + type, true);
+    if (isBitSet(pOptions, guessOptionBits["winchDetected"]) && isBitSet(pOptions, guessOptionBits["winch"]))
+      upDateCheckbox("opt_winch_" + type, true);
+    if (isBitSet(pOptions, guessOptionBits["foilDetected"]) && isBitSet(pOptions, guessOptionBits["foil"]))
+      upDateCheckbox("opt_foils_" + type, true);
+    if (isBitSet(pOptions, guessOptionBits["hullDetected"]) && isBitSet(pOptions, guessOptionBits["hull"]))
+      upDateCheckbox("opt_hull_" + type, true);
+  }
+}
+function onRouteListClick(target) {
+  var _a, _b;
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2)
+    return;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  const lbl = (_a = target.closest) == null ? void 0 : _a.call(target, 'label[id^="lbl_rt_name_Lmap:"]');
+  if (lbl) {
+    const name = lbl.id.slice("lbl_rt_name_Lmap:".length);
+    if (rid && mapState.route[rid][name]) {
+      if (mapState.route[rid][name].displayed) {
+        mapState.route[rid][name].displayed = false;
+        document.getElementById("sel_rt_name_Lmap:" + name).checked = false;
+        hideRoute(name);
+      } else {
+        mapState.route[rid][name].displayed = true;
+        document.getElementById("sel_rt_name_Lmap:" + name).checked = true;
+        showRoute(name);
+      }
+    }
+    return;
+  }
+  const color = (_b = target.closest) == null ? void 0 : _b.call(target, 'input[type="color"][id^="color_rt_name_Lmap:"]');
+  if (color) {
+    const name = color.id.slice("color_rt_name_Lmap:".length);
+    const value = color.value;
+    if (rid && mapState.route[rid][name]) {
+      if (mapState.route[rid][name].color != value) {
+        mapState.route[rid][name].color = value;
+        document.getElementById("color_rt_name_Lmap:" + name).value = mapState.route[rid][name].color;
+        importRoute(mapState.route[rid][name], name);
+      }
+    }
+    return;
+  }
+}
+function updateRouteListHTML() {
+  const raceInfo2 = getRaceInfo$1();
+  if (!raceInfo2)
+    return;
+  const rid = raceInfo2.raceId + "-" + raceInfo2.legNum;
+  var tableBody = "<tbody>";
+  var routeList = mapState.route[rid];
+  if (routeList) {
+    Object.keys(routeList).forEach(function(name) {
+      tableBody += '<tr class="rt_lst_line">';
+      tableBody += '<td class="rt_lst_name noBorderElt">';
+      tableBody += '<input type="checkbox" id="';
+      tableBody += "sel_rt_name_Lmap:" + name;
+      tableBody += '" name="checkbox3" class="content hidden"';
+      if (routeList[name].displayed)
+        tableBody += "checked";
+      tableBody += ">";
+      tableBody += '<label for:"sel_rt_name_Lmap:' + name + '" id="lbl_rt_name_Lmap:' + name + '">';
+      tableBody += routeList[name].displayedName + "</label>";
+      tableBody += "</td>";
+      tableBody += '<td class="rt_lst_color noBorderElt">';
+      tableBody += '<input  type="color" id="color_rt_name_Lmap:' + name + '" value="';
+      tableBody += routeList[name].color + '">';
+      tableBody += "</td>";
+      tableBody += "</tr>";
+    });
+  }
+  tableBody += "</tbody>";
+  document.getElementById("route_list_tableLmap").innerHTML = tableBody;
+}
+function displayMapTrace(rid, routeName) {
+  var _a, _b;
+  const route = (_b = (_a = mapState == null ? void 0 : mapState.route) == null ? void 0 : _a[rid]) == null ? void 0 : _b[routeName];
+  if (!route)
+    return;
+  importRoute(route, routeName);
+  route.displayed = true;
+  document.getElementById("sel_rt_name_Lmap:" + routeName).checked = true;
+}
+function showsMapHelp() {
+  var msg = `Affichage des traits de côtes :
+- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Ils apparaissent automatiquement en bleu après quelques instants. Pour afficher une zone différente, dézoomez et zommez à l'endroit désiré.
+- La couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')
+
+Importer un routage :
+- Zezo : importer automatiquement la route suggérée par Zezo en cliquant sur 'Import'.
+- Avalon : depuis votre logiciel Avalon, exportez votre route au format CSV et importez le fichier.
+- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.
+- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.
+
+Copier les coordonnées pointées par la souris :
+- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action "Coller" (CTRL + V).
+
+Outil Règle :
+- Pour l'utiliser, il faut activer l'outil en cliquant sur le bouton. Puis, un premier clic gauche sur un emplacement de la carte début le tracé de mesure, un second clic gauche termine le tracé de mesure et permet de débuter un nouveau tracé de mesure. Les tracés terminés restent affichés tant que l'outil est activé.
+- La touche « Echap » annule le tracé de mesure en cours non terminé. Une deuxième pression sur cette touche désactive l'outil.`;
+  alert(msg);
 }
 function initUIBindings(items) {
   items.forEach(({ selector, onChange, onInit }) => {
@@ -13783,43 +15056,54 @@ function initUIBindings(items) {
       console.warn(`⚠️ Élément non trouvé pour ${selector}`);
       return;
     }
-    let eventType = "change";
-    if (el.tagName === "BUTTON" || el.tagName === "IMG") {
-      eventType = "click";
+    let eventTypes = [];
+    if (el.tagName === "TABLE") {
+      eventTypes = ["click", "change"];
+    } else if (["BUTTON", "IMG", "A", "LABEL", "DIV", "SPAN"].includes(el.tagName)) {
+      eventTypes = ["click"];
     } else if (el.tagName === "INPUT") {
       const type = el.getAttribute("type") || "text";
       if (["button", "submit", "image"].includes(type))
-        eventType = "click";
+        eventTypes = ["click"];
       else if (["number", "text", "range"].includes(type))
-        eventType = "input";
+        eventTypes = ["input"];
       else
-        eventType = "change";
+        eventTypes = ["change"];
+    } else if (el.tagName === "SELECT" || el.tagName === "TEXTAREA") {
+      eventTypes = ["change", "input"];
+    } else {
+      eventTypes = ["click"];
     }
-    const getValue = () => {
-      if (el.tagName === "IMG")
-        return el.src;
-      if (el.tagName === "SELECT")
-        return el.value;
-      if (el.tagName === "BUTTON")
-        return el.value || el.textContent;
-      if (el.tagName === "INPUT") {
-        switch (el.type) {
+    const getValue = (target = el) => {
+      if (!target)
+        return null;
+      if (target.tagName === "IMG")
+        return target.src;
+      if (target.tagName === "SELECT")
+        return target.value;
+      if (target.tagName === "BUTTON")
+        return target.value || target.textContent;
+      if (target.tagName === "INPUT") {
+        switch (target.type) {
           case "checkbox":
-            return el.checked;
+            return target.checked;
           case "number":
-            return parseFloat(el.value);
+            return parseFloat(target.value);
           default:
-            return el.value;
+            return target.value;
         }
       }
       return null;
     };
-    el.addEventListener(eventType, () => {
-      const val = getValue();
-      onChange == null ? void 0 : onChange(val, el);
+    eventTypes.forEach((eventType) => {
+      el.addEventListener(eventType, (ev) => {
+        const target = ev.target;
+        const val = getValue(target);
+        onChange == null ? void 0 : onChange(val, ev, target);
+      });
     });
     if (typeof onInit === "function") {
-      onInit(getValue(), el);
+      onInit(getValue(el), el);
     }
   });
 }
@@ -14203,56 +15487,6 @@ function uiBindingInit() {
       }
     },
     {
-      selector: "#sel_showMarkersLmap",
-      onChange: async (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.showMarkers = checked ? false : true;
-        await saveUserPrefs(userPrefs);
-        onMarkersChange();
-      },
-      onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.showMarkers;
-      }
-    },
-    {
-      selector: "#sel_showTracksLmap",
-      onChange: async (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.showTracks = checked ? false : true;
-        await saveUserPrefs(userPrefs);
-        hideShowTracks();
-      },
-      onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.showTracks;
-      }
-    },
-    {
-      selector: "#sel_borderColorLmap",
-      onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.borderColor = value;
-        saveUserPrefs(userPrefs);
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.borderColor;
-      }
-    },
-    {
-      selector: "#sel_projectionColorLmap",
-      onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.projectionColor = value;
-        saveUserPrefs(userPrefs);
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.projectionColor;
-      }
-    },
-    {
       selector: "#abbreviatedOption",
       onChange: (checked) => {
         const userPrefs = getUserPrefs();
@@ -14532,6 +15766,119 @@ function uiBindingInit() {
       selector: "#bt_router",
       onChange: () => {
       }
+    },
+    {
+      selector: "#sel_showMarkersLmap",
+      onChange: async (checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.map.showMarkers = checked ? false : true;
+        await saveUserPrefs(userPrefs);
+        onMarkersChange();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.map.showMarkers;
+      }
+    },
+    {
+      selector: "#sel_showTracksLmap",
+      onChange: async (checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.map.showTracks = checked ? false : true;
+        await saveUserPrefs(userPrefs);
+        hideShowTracks();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.map.showTracks;
+      }
+    },
+    {
+      selector: "#sel_borderColorLmap",
+      onChange: async (value) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.map.borderColor = value;
+        await saveUserPrefs(userPrefs);
+        onCoastColorChange();
+      },
+      onInit: (value, el) => {
+        const userPrefs = getUserPrefs();
+        el.value = userPrefs.map.borderColor;
+      }
+    },
+    {
+      selector: "#sel_projectionColorLmap",
+      onChange: async (value) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.map.projectionColor = value;
+        await saveUserPrefs(userPrefs);
+      },
+      onInit: (value, el) => {
+        const userPrefs = getUserPrefs();
+        el.value = userPrefs.map.projectionColor;
+      }
+    },
+    {
+      selector: "#projectionLine_Size",
+      onChange: async (value) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.map.projectionLineLenght = value;
+        await saveUserPrefs(userPrefs);
+      },
+      onInit: (value, el) => {
+        const userPrefs = getUserPrefs();
+        el.value = userPrefs.map.projectionLineLenght;
+      }
+    },
+    {
+      selector: "#lbl_rt_openLmap",
+      onChange: () => {
+        onPopupOpenLmap();
+      }
+    },
+    {
+      selector: "#rt_close_popupLmap",
+      onChange: () => {
+        onPopupCloseLmap();
+      }
+    },
+    {
+      selector: "#sel_routeTypeLmap",
+      onChange: (value) => {
+        onChangeRouteTypeLmap();
+      },
+      onInit: (value, el) => {
+      }
+    },
+    {
+      selector: "#lbl_helpLmap",
+      onChange: () => {
+        showsMapHelp();
+      }
+    },
+    {
+      selector: "#route_list_tableLmap",
+      onChange: (value, el, target) => {
+        onRouteListClick(target);
+      }
+    },
+    {
+      selector: "#bt_rt_addLmap",
+      onChange: async () => {
+        await onAddRouteLmap();
+      }
+    },
+    {
+      selector: "#lbl_rt_cleanLmap",
+      onChange: () => {
+        onCleanAllRoute();
+      }
+    },
+    {
+      selector: "#sel_rt_skipperLmap",
+      onChange: (value) => {
+        onSkipperSelectedChange("Lmap");
+      }
     }
   ]);
 }
@@ -14540,6 +15887,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ DOM start !");
   await loadUserPrefs();
   await initMemo();
+  await initCachedTilesList();
   onPlayerConnect();
   doDbListener();
   updateRaceListDisplay();
@@ -14547,11 +15895,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   buildRaceStatusHtml();
   tabSwitch();
   onRaceOpen();
+  initializeDom();
   initDone = true;
   const repeater = startRepeating(() => {
   }, 5e3);
   setTimeout(() => repeater.stop(), 2e4);
 });
+function initializeDom() {
+  document.getElementById("rt_popupLmap").style.display = "none";
+  document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
+}
 function doDbListener() {
   const connectedUserListener = createKeyChangeListener("internal", "lastLoggedUser");
   connectedUserListener.start({
@@ -14699,18 +16052,18 @@ function doDbListener() {
       }
     }
   });
-}
-const legPlayersTracksListener = createKeyChangeListener("internal", "legPlayersOrderUpdate");
-legPlayersTracksListener.start({
-  referenceValue: { ts: getLegPlayersTracksUpdate() },
-  onChange: async ({ oldValue, newValue }) => {
-    if ((newValue == null ? void 0 : newValue.ts) != getLegPlayersTracksUpdate() && initDone) {
-      setLegPlayersTracksUpdate(newValue.ts);
-      await updateLegPlayersTracks();
-      tabSwitch();
+  const legPlayersTracksListener = createKeyChangeListener("internal", "playersTracksUpdate");
+  legPlayersTracksListener.start({
+    referenceValue: { ts: getLegPlayersTracksUpdate() },
+    onChange: async ({ oldValue, newValue }) => {
+      if ((newValue == null ? void 0 : newValue.ts) != getLegPlayersTracksUpdate() && initDone) {
+        setLegPlayersTracksUpdate(newValue.ts);
+        await updateLegPlayersTracks();
+        tabSwitch();
+      }
     }
-  }
-});
+  });
+}
 function startRepeating(callback, interval = 5e3) {
   callback();
   const id = setInterval(callback, interval);
