@@ -245,6 +245,8 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     const rid = legInfos.id+"-"+legInfos.legNum;
     const zezoUrl = null; 
     
+    raceIte.twd = raceIte.twd ?? raceIte.metaDash?.twd ?? 0;
+
     retVal = '<tr id="rs:' + rid + '">';
     retVal += '<td class="tdc"><div>';
     retVal += '<span id="vrz:' + rid + '">&#x262F;</span>';

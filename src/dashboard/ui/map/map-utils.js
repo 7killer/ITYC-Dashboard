@@ -415,12 +415,12 @@ export function buildMarkerTitle(point)
 
     const ttw = point.timestamp-currentTs;
 
-    const textHDG = point.heading ? "HDG: <b>" + point.heading.replace(/&deg;/g, "°") + "</b><br>" : "";
+    const textHDG = point.hdg ? "HDG: <b>" + point.hdg.replace(/&deg;/g, "°") + "</b><br>" : "";
     const textTWS = point.tws ? "TWS: " + point.tws + "<br>" : "";
     const textSpeed = point.speed ? "Speed: " + point.speed : "";
     // Data visual separator
     let textTWA = point.twa ? "TWA: <b>" + point.twa.replace(/&deg;/g, "°") + "</b>" : "";
-    textTWA += point.twa && point.heading ? "&nbsp;|&nbsp;" : "";
+    textTWA += point.twa && point.hdg ? "&nbsp;|&nbsp;" : "";
 
     let textTWD = point.twd ? "TWD: " + point.twd.replace(/&deg;/g, "°") : "";
     textTWD += point.twd && point.tws ? "&nbsp;|&nbsp;" : "";

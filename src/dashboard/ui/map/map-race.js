@@ -232,7 +232,7 @@ function updateMapMe(connectedPlayerId,playerIte) {
                 + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>"
                 + " | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b>"
                 + "<br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts"
-                + "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+                + "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo( (playerIte?.twd ?? playerIte?.metaDash?.twd ?? 0), 3) + "°";
     buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff","#000000",0.4), title,  200, 0.5,playerIte.hdg);
     drawProjectionLine(myPosPt,playerIte.hdg,playerIte.speed) ;
 //   }
@@ -365,6 +365,7 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
                             + playerIte.extendedInfos.skipperName + '</b>';
 
             let info = '';
+            playerIte.twd = playerIte.twd ?? playerIte.metaDash?.twd ?? 0;
             if (playerIte.type == 'real') {
                 info = skipperName + "<br>HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b> | Speed: " + roundTo(playerIte.speed, 3) + " kts";
                 if (playerIte.twa > 0) info += "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>";

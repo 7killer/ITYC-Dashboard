@@ -346,7 +346,7 @@ export function raceTableLines(ite,bestTwa,bestDTF) {
     var hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
     if(userPrefs.theme =='dark')
         hdgFG = isTWAMode ? "white" : "darkcyan"; 
-    
+    ite.twd = ite.twd ?? ite.metaDash?.twd ?? 0;
     //TODO compute bestDTF saveit in raceList
     return gentdRacelog("rank", "rank", null, "Rank", (ite.rank ? ite.rank : "-"))
         + gentdRacelog("dtl", "dtl", null, "DTL", bestDTF?roundTo(ite.distanceToEnd - bestDTF, 3):'-')
