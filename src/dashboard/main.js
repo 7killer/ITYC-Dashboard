@@ -23,6 +23,7 @@ import {buildRaceStatusHtml} from './ui/raceStatus.js'
 import {uiBindingInit} from'./app/binding.js'
 import {tabSwitch} from'./app/tab.js'
 import {initCachedTilesList} from './ui/map/map-coasts.js'
+import {raceGraphOnLoad} from'./ui/raceGraph.js'
 
 
 let initDone = null;
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     doDbListener();
     updateRaceListDisplay(); 
     uiBindingInit();
+    raceGraphOnLoad();
     buildRaceStatusHtml();
     tabSwitch();
     onRaceOpen();

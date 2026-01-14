@@ -6,6 +6,8 @@ import {buildRaceLogHtml} from '../ui/raceLog.js'
 import {buildRaceFleetHtml} from '../ui/raceFleet.js'
 import {buildRaceBookHtml} from '../ui/raceBook.js'
 import {initializeMap} from '../ui/map/map-race.js'
+import {upDateGraph} from'../ui/raceGraph.js'
+
 export const tabList = Object.freeze({
     1 : "raceLog",
     2 : "raceFleet",
@@ -63,7 +65,7 @@ export function tabSwitch(tabId = null)
             buildRaceBookHtml();            
             break;
         case "raceGraph":
-            
+            upDateGraph();
             break;
         case "raceAnalyse":
 //            document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;    
