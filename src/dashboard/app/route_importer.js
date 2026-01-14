@@ -9,7 +9,7 @@ export const routeInfosmodel =
     lat : "",
     lon : "",
     timestamp : "",
-    heading : "",
+    hdg : "",
     tws : "",
     twa : "",
     twd : "",
@@ -90,7 +90,7 @@ export function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
         routeData.lat = lat;
         routeData.lon =  lon;
         routeData.timestamp = Date.parse(pt.time);
-        routeData.heading = "";
+        routeData.hdg = "";
         routeData.tws = "";
         routeData.twa = "";
         routeData.twd = "";
@@ -236,7 +236,7 @@ export function importExternalRouter(rid,fileTxt,routerName,skipperName,color,mo
         routeData.lat = lat;
         routeData.lon =  lon;
         routeData.timestamp = Date.parse(isoDate);
-        routeData.heading = hdg;
+        routeData.hdg = hdg;
         routeData.tws = tws;
         routeData.twa = twa;
         routeData.twd = twd;
@@ -276,7 +276,7 @@ export function importExtraPattern(rid,fileTxt,routerName,skipperName,color) {
         routeData.lat = Number(poi[0]);
         routeData.lon =  Number(poi[1]);
         routeData.timestamp = "-";
-        routeData.heading = "-";
+        routeData.hdg = "-";
         routeData.tws = "-";
         routeData.twa = "-";
         routeData.twd = "-";

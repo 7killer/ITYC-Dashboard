@@ -42,7 +42,7 @@ export const getFleetResponseSchema = Yup.object({
           lat: Yup.number().required(),
           lon: Yup.number().required(),
           ts: Yup.number().required(),
-          tag: Yup.string().required(),
+          tag: Yup.string().notRequired(),
         }),
       ).notRequired().nullable(),
     }),
