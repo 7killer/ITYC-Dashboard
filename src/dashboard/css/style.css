@@ -1242,8 +1242,8 @@ table#raceidTable2>tbody>tr>td {
     height : 200px;/*300px;*/
 
 }
-#bt_cleanGraph {
-    margin: 1em;
+.btGraph {
+    margin: 0.2em;
 
 
 }

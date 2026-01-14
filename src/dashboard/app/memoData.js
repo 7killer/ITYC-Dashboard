@@ -587,9 +587,9 @@ export function setOpenedRaceId(rid, legNum) {
             console.log(`[setOpenedRaceId] Ajouté à l'historique : ${key}`);
         }
 
-        if (legPlayersInfos) {
-            legPlayerInfosHistory[key] = structuredClone(legPlayersInfos);
-            console.log(`[setOpenedRaceId] Copie legPlayersInfos -> legPlayerInfosHistory[${key}]`);
+        if (legPlayerInfos) {
+            legPlayerInfosHistory[key] = structuredClone(legPlayerInfos);
+            console.log(`[setOpenedRaceId] Copie legPlayerInfos -> legPlayerInfosHistory[${key}]`);
         } else if (!legPlayerInfosHistory[key]) {
             legPlayerInfosHistory[key] = {};
             console.log(`[setOpenedRaceId] Initialisation legPlayerInfosHistory[${key}] vide`);

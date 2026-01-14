@@ -3,7 +3,9 @@
 import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 import { roundTo ,sign,isCurrent} from "../../common/utils.js";
 import {sailNames,sailColors} from "./constant.js"
+import {getRaceInfo} from '../app/memoData.js'
 
+import {saveData} from '../../common/dbOpes.js';
 export function switchTheme(theme)
 {
 
@@ -505,4 +507,27 @@ export function getRankingCategory(playerOptions)
         return "1/2 Full Pack";  
     else
         return "Full Pack";
+}
+
+
+export async function onUserChangeRace(value)
+{
+    const raceInfo = getRaceInfo();
+    let rid;
+    if(raceInfo?.raceId == null || raceInfo?.legNum == null) rid = null;
+    else rid = raceInfo.raceId + '-' + raceInfo.legNum
+
+    let [raceId,legNum] = value.split('-');
+    raceId = Number(raceId);
+    legNum = Number(legNum);
+    if(!raceId || !legNum) return;
+
+    if((raceInfo?.raceId == null || raceInfo?.legNum == null) || raceId != raceInfo.raceId || legNum != raceInfo.legNum ) {
+        await saveData('internal',{
+                                    id:'lastOpennedRace',
+                                    lastOpennedRace : `${raceId}-${legNum}` ,
+                                    raceId : raceId,
+                                    legNum : legNum,
+        });
+    }
 }

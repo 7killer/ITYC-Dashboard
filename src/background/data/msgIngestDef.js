@@ -677,11 +677,11 @@ export async function ingestFleetData(request, response) {
     }));
     const playersTracks = res.res.filter(p => Array.isArray(p.track) && p.track.length !== 0) 
     .map(p => ({
-      id: p.userId,
       raceId: req.race_id,
       legNum: req.leg_num,
       userId: p.userId,
-      type: 'fleet'
+      type: 'fleet',
+      track :  p.track
     }));
 
     const dbOpe = [

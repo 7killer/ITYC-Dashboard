@@ -1,13 +1,14 @@
 
 import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 
-import {switchTheme} from "../ui/common.js"
+import {switchTheme,onUserChangeRace} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
 import {hideShowTracks,onMarkersChange} from "../ui/map/map-routes.js"
 import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
   onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick
 } from '../ui/raceMap.js'
 import {onCoastColorChange} from "../ui/map/map-coasts.js"
+import {resetAllGraphsZoom} from "../ui/raceGraph.js"
 
 
 /**
@@ -84,9 +85,14 @@ export function uiBindingInit() {
   initUIBindings([
     {
       selector: '#sel_race',
-      onChange: (value) => {/*'internal', 'lastOpennedRace')*/},
+      onChange: async (value) => {onUserChangeRace(value)},
       onInit: (value, el) => { el.value = 0;}
     },
+    {
+      selector: '#bt_resetZoom',
+      onChange: (value) => {resetAllGraphsZoom()},
+    },
+    
 /*    {
       selector: '#sel_lang',
       onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.lang = value;saveUserPrefs(userPrefs);},
