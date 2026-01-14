@@ -15,8 +15,6 @@ getRaceInfo,
 getOpenedRaceId,
 getLegList,
 getParamStamina,
-getOpenedRaceHistory,
-getLegPlayerInfosHistory,
 getLegPlayerInfos,
 getLegPlayersOrder
 } from '../app/memoData.js'
@@ -55,7 +53,7 @@ export function buildRaceLogHtml() {
 
         let raceLogContent = "";
         if(raceItes.length == 0) return; //TODO display empty raceLog
-        for(let idx=0;idx<raceItes.length;idx++)
+ /*       for(let idx=0;idx<raceItes.length;idx++)
         {
             const raceLogLine = raceItes[idx];
             if('action' in raceLogLine)
@@ -66,7 +64,7 @@ export function buildRaceLogHtml() {
             }
             
 
-        }
+        }*/
         Object.keys(raceItes).forEach(key => {
             if(key!="info" && key!="options" && key!="team")
             {
