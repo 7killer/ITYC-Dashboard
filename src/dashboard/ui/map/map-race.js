@@ -177,10 +177,9 @@ function updateMapMe(connectedPlayerId,playerIte) {
     const localTimes = userPrefs.global.localTime;
     const displayMarkers = userPrefs.map.showMarkers;
 
-    if (!mapState|| !mapState.map) return;
+    if (!mapState|| !mapState.map ||!playerIte) return;
     /*todo scinder trace et position*/
     const map = mapState.map;
-    const myTrack = trackFleet[connectedPlayerId].track;
 
     if(!mapState.meLayer) mapState.meLayer  = L.layerGroup();
     if(!mapState.meBoatLayer) mapState.meBoatLayer  = L.layerGroup();
@@ -194,8 +193,10 @@ function updateMapMe(connectedPlayerId,playerIte) {
     mapState.meBoatLayer  = L.layerGroup();
     
     const myPos = {lat :playerIte.pos.lat, lon:playerIte.pos.lon};
+
     if(trackFleet && trackFleet.lenght !=0 && trackFleet[connectedPlayerId]?.track)
     {
+        const myTrack = trackFleet[connectedPlayerId].track;
         let myTrackPts = [];
         let isFirst = false;
         let prevPt = null;
@@ -561,7 +562,7 @@ export async function initializeMap()
         updateMapMe(connectedPlayerId,playerItes.ite);
         updateMapLeader(playerItes.ite);
         updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
-        initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+        if(playerItes?.ite?.pos) initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
         enableCoordinateCopyingWithShortcut();
         return;
     }
@@ -576,7 +577,7 @@ export async function initializeMap()
     mapState.refLayer = L.layerGroup();
     // mapState.route : on peut décider de le conserver par course dans une Map si tu veux,
     // mais pour l’instant on le repart à zéro :
-    //mapState.route = {};
+    mapState.route = [];
 
     mapState.resetUserZoom = 0;
     mapState.userZoom = false;
@@ -909,7 +910,7 @@ export async function initializeMap()
     map.on('moveend', set_userCustomZoom);
 
     mapState.map = map;
-    initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+    if(playerItes?.ite?.pos) initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
     enableCoordinateCopyingWithShortcut();
     
 }

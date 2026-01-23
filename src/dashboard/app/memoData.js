@@ -391,22 +391,31 @@ export function getLegPlayerInfos()
 }
 export async function updateLegPlayerInfos()
 {
-    if(raceInfo?.raceId && raceInfo?.legNum && connectedPlayerId)
-    { 
-        const raceId = raceInfo.raceId;
-        const legNum = raceInfo.legNum;
-        const { items, meta } = await getEntriesForTriplet(    raceId,legNum,connectedPlayerId,{limit:24*10*60,since:Date.now() - 10*24*60 * 60 * 1000, });
-        if(meta.timeout || !items || items.length == 0) return;
+    if(connectedPlayerId)
+    {
         const playerInfo = playersList[connectedPlayerId];
         const teamInfo = playerInfo?.teamId?(teamList[playerInfo.teamId]?teamList[playerInfo.teamId]:{id:null,name:""}):{id:null,name:""};
-        const playerOptionRace = legPlayersOptions[connectedPlayerId]?legPlayersOptions[connectedPlayerId]:{options:[],guessOptions:0};
-        const legPlayerIte = {
-            ites : items,             // ← ton tableau d’entrées
+        legPlayerInfos = {
             info: playerInfo,
             team : teamInfo,
-            options: playerOptionRace,
-        };
-        legPlayerInfos = legPlayerIte;
+        };  
+        if(raceInfo?.raceId && raceInfo?.legNum)
+        {
+            const raceId = raceInfo.raceId;
+            const legNum = raceInfo.legNum;
+            const { items, meta } = await getEntriesForTriplet(    raceId,legNum,connectedPlayerId,{limit:24*10*60,since:Date.now() - 10*24*60 * 60 * 1000, });
+            if(meta.timeout) return;
+                
+            const playerOptionRace = legPlayersOptions[connectedPlayerId]?legPlayersOptions[connectedPlayerId]:{options:[],guessOptions:0};
+            if(items && items.length != 0) {
+                legPlayerInfos = {
+                    ites : items,
+                    info: playerInfo,
+                    team : teamInfo,
+                    options: playerOptionRace,
+                };  
+            }
+        }   
     } else
         legPlayerInfos = [];
 }

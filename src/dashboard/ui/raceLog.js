@@ -28,12 +28,6 @@ export function buildRaceLogHtml() {
     const racePlayerInfos = getLegPlayerInfos();
     const raceOrder = getLegPlayersOrder();
 
-    if(!raceInfo || raceInfo?.length == 0 
-      ||  !racePlayerInfos?.ites) return;
-    let raceItes = racePlayerInfos.ites;
-    if(raceOrder?.length) {
-        raceItes = [...raceItes, ...raceOrder].sort((a, b) => b.iteDate - a.iteDate);
-    }
     const raceLogTableHeader = '<tr>'
         + genthRacelog("th_rl_date", "dateTime", "Time" + dateUTCSmall())
         + raceTableHeaders()
@@ -51,32 +45,29 @@ export function buildRaceLogHtml() {
         + genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining")
         + '</tr>';
 
-        let raceLogContent = "";
-        if(raceItes.length == 0) return; //TODO display empty raceLog
- /*       for(let idx=0;idx<raceItes.length;idx++)
-        {
-            const raceLogLine = raceItes[idx];
-            if('action' in raceLogLine)
-            {
-                raceLogContent += buildRaceLogLineCmd(raceLogLine);
-            } else {
-                raceLogContent += buildRaceLogLine(raceLogLine);
-            }
-            
+    if(!raceInfo || raceInfo?.length == 0 
+      ||  !racePlayerInfos?.ites) {
+        document.getElementById("recordlog").innerHTML = `
+            <table>
+            <thead><tr><th>No infos received for this race.</th></tr></thead>
+            </table>`; 
+        return;
+    }
 
-        }*/
-        Object.keys(raceItes).forEach(key => {
-            if(key!="info" && key!="options" && key!="team")
-            {
-                const raceLogLine = raceItes[key];
-                if('action' in raceLogLine)
-                {
-                    raceLogContent += buildRaceLogLineCmd(raceLogLine);
-                } else {
-                    raceLogContent += buildRaceLogLine(raceLogLine);
-                }
-            }
-        });
+    let raceItes = racePlayerInfos.ites;
+    if(raceOrder?.length) {
+        raceItes = [...raceItes, ...raceOrder].sort((a, b) => b.iteDate - a.iteDate);
+    }
+
+    let raceLogContent = "";
+    Object.keys(raceItes).forEach(key => {
+        if(key!="info" && key!="options" && key!="team")
+        {
+            const raceLogLine = raceItes[key];
+            if('action' in raceLogLine) raceLogContent += buildRaceLogLineCmd(raceLogLine);
+            else raceLogContent += buildRaceLogLine(raceLogLine);
+        }
+    });
 
         
     const utcStyle = userPrefs.global.localTime ? 'display: none;' : '';

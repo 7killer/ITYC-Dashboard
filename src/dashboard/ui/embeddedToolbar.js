@@ -182,11 +182,11 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
 
     let fullStamina = '<td class="stamina" ';
 
-    if(raceIte.metaDash.coffeeBoost != 0 || raceIte.metaDash.chocoBoost != 0)
+    if((raceIte.metaDash?.coffeeBoost ?? 0) !== 0 || (raceIte.metaDash?.chocoBoost ?? 0) !== 0 )
     {
         
         fullStamina += '><div class="textMini">';
-        if(raceIte.metaDash.chocoBoost != 0) {
+        if((raceIte.metaDash?.chocoBoost ?? 0) !== 0) {
             fullStamina += '🍫+'+ roundTo(raceIte.metaDash.chocoBoost, 2)+'%';
             fullStamina += ' ⌚'+ formatHM(raceIte.metaDash.chocoExp-Date.now());
         }
@@ -196,7 +196,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
         fullStamina += staminaTxt;
         fullStamina += '</div>';
         fullStamina += '<div class="textMini">';
-        if(raceIte.metaDash.coffeeBoost != 0) {
+        if((raceIte.metaDash?.coffeeBoost ?? 0) !== 0) {
             fullStamina += '☕+'+ roundTo(raceIte.metaDash.coffeeBoost, 2)+'%';
             fullStamina += ' ⌚'+ formatHM(raceIte.metaDash.coffeeExp-Date.now());
         }

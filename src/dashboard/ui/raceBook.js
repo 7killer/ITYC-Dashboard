@@ -94,7 +94,7 @@ function viewCredits(raceInfo,playerIte) {
   const takenTotal = totalOptionCredits(raceInfo,playerIte?.options?.options);
   const takenCells = optionKeys.map(([k]) => {
     const takenStyle = isTaken(playerIte?.options?.options,k) ? {outline:'2px solid #25d366'} : {};
-    return h('span', {class: 'chip', style: takenStyle}, String(raceInfo?.optionPrices[k] ?? '-'))
+    return h('span', {class: 'chip', style: takenStyle}, String(raceInfo?.optionPrices?.[k] ?? '-'))
   });
   const rows = [[
     String(playerIte?.info?.credits ?? '-'),
