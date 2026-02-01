@@ -26,8 +26,9 @@ import {isDisplayEnabled} from '../../app/sortManager.js'
 
 import { gcDistance, roundTo, courseAngle} from '../../../common/utils.js';
 
-import {drawProjectionLine} from './map-proj.js'
-import {showCoastTiles, coastLayersCleanAll} from './map-coasts.js'
+import {drawProjectionLine} from './map-proj.js';
+import {showCoastTiles, coastLayersCleanAll} from './map-coasts.js';
+import {startWindWorker, buildWindLayer, updateWindLayer} from './map-wind.js';
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 
@@ -52,7 +53,9 @@ export const mapState = {
     leaderLayer: null,
     leaderMeLayer: null,
     coasts :  new Map(),
-    mapCurrentZoom : 0
+    mapCurrentZoom : 0,
+    windyLayer : null,
+    windy_proxy : null
     
 };
 const MAP_CONTAINER_ID = 'lMap';
@@ -913,6 +916,9 @@ export async function initializeMap()
     if(playerItes?.ite?.pos) initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
     enableCoordinateCopyingWithShortcut();
     
+    buildWindLayer();
+    startWindWorker();
+    updateWindLayer();
 }
 
 

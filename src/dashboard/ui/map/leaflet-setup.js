@@ -13,5 +13,8 @@ import 'leaflet-polylinedecorator';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.js';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import 'leaflet.geodesic'
+import '@leaflet-windy/wind-js/windy.js';
+import '@leaflet-windy/L.WindCanvas.js';
+import '@leaflet-windy/L.WindyLayer.js';
 
 export default L;

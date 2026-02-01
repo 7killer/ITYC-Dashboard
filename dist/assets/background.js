@@ -1,4 +1,4 @@
-import { R as getDefaultExportFromCjs, aD as processDBOperations, aE as getData, aF as cfg, c as roundTo, aG as getLatestAndPreviousByTriplet, aH as getLatestEntriesPerUser, aI as saveData, X as gcDistance, Z as courseAngle, aJ as angle, S as toRad, aK as toDeg, aL as calculateCOGLoxo, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aM as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, h as getUserPrefs, aC as createKeyChangeListener } from "./_commonjsHelpers-005ac8ea.js";
+import { R as getDefaultExportFromCjs, aD as processDBOperations, aE as getData, aF as cfg, c as roundTo, aG as getLatestAndPreviousByTriplet, aH as getLatestEntriesPerUser, aI as saveData, X as gcDistance, Z as courseAngle, aJ as angle, S as toRad, aK as toDeg, aL as calculateCOGLoxo, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aM as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, h as getUserPrefs, aC as createKeyChangeListener } from "./_commonjsHelpers-83ee83fe.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -4659,7 +4659,7 @@ function getbuildEmbeddedToolbarContent() {
   return buildEmbeddedToolbarContent;
 }
 async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
-  var _a;
+  var _a, _b, _c, _d, _e;
   let dashState = await getData("internal", "state");
   dashState = (dashState == null ? void 0 : dashState.state) ? dashState.state : "dashInstalled";
   const playerInfo = connectedPlayerId && connectedPlayerId != "" ? await getData("players", connectedPlayerId) : null;
@@ -4750,9 +4750,9 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
     staminaTxt += " (x" + roundTo(manoeuver.staminaFactor, 2) + ")";
   }
   let fullStamina = '<td class="stamina" ';
-  if (raceIte.metaDash.coffeeBoost != 0 || raceIte.metaDash.chocoBoost != 0) {
+  if ((((_a = raceIte.metaDash) == null ? void 0 : _a.coffeeBoost) ?? 0) !== 0 || (((_b = raceIte.metaDash) == null ? void 0 : _b.chocoBoost) ?? 0) !== 0) {
     fullStamina += '><div class="textMini">';
-    if (raceIte.metaDash.chocoBoost != 0) {
+    if ((((_c = raceIte.metaDash) == null ? void 0 : _c.chocoBoost) ?? 0) !== 0) {
       fullStamina += "🍫+" + roundTo(raceIte.metaDash.chocoBoost, 2) + "%";
       fullStamina += " ⌚" + formatHM(raceIte.metaDash.chocoExp - Date.now());
     }
@@ -4761,7 +4761,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
     fullStamina += staminaTxt;
     fullStamina += "</div>";
     fullStamina += '<div class="textMini">';
-    if (raceIte.metaDash.coffeeBoost != 0) {
+    if ((((_d = raceIte.metaDash) == null ? void 0 : _d.coffeeBoost) ?? 0) !== 0) {
       fullStamina += "☕+" + roundTo(raceIte.metaDash.coffeeBoost, 2) + "%";
       fullStamina += " ⌚" + formatHM(raceIte.metaDash.coffeeExp - Date.now());
     }
@@ -4802,7 +4802,7 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
   gybePenaTxt += "</td>";
   const timeLine = "<div>" + formatTimeNotif(raceIte.iteDate) + '</div><div id="dashIntegTime" class="textMini"></div>';
   const rid = legInfos.id + "-" + legInfos.legNum;
-  raceIte.twd = raceIte.twd ?? ((_a = raceIte.metaDash) == null ? void 0 : _a.twd) ?? 0;
+  raceIte.twd = raceIte.twd ?? ((_e = raceIte.metaDash) == null ? void 0 : _e.twd) ?? 0;
   retVal = '<tr id="rs:' + rid + '">';
   retVal += '<td class="tdc"><div>';
   retVal += '<span id="vrz:' + rid + '">&#x262F;</span>';

@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as toRad, T as getLegPlayersTracksFleet, U as formatTimestampToReadableDate, V as getLegPlayersTrackLeader, W as getLegPlayersTracksGhost, X as gcDistance, Y as getPlayersList, Z as courseAngle, _ as display_selbox, $ as changeState, a0 as cleanSpecial, a1 as convertDMS2Dec, a2 as onUserChangeRace, a3 as saveUserPrefs, a4 as switchTheme, a5 as loadUserPrefs, a6 as initMemo, a7 as setConnectedPlayerId, a8 as updatePlayersList, a9 as updateTeamsList, aa as updateConnectedPlayerInfos, ab as updateLegPlayerInfos, ac as updateLegPlayersOrder, ad as getLegListUpdate, ae as setLegListUpdate, af as updateLegList, ag as updatePolar, ah as getPlayersUpdate, ai as setPlayersUpdate, aj as updateLegFleetInfos, ak as getTeamsUpdate, al as setTeamsUpdate, am as getPolarsUpdate, an as setPolarsUpdate, ao as getLegPlayersInfosUpdate, ap as setLegPlayersInfosUpdate, aq as getLegFleetInfosUpdate, ar as setLegFleetInfosUpdate, as as getLegPlayersOptionsUpdate, at as setLegPlayersOptionsUpdate, au as updateLegPlayersOptions, av as getLegPlayersOrderUpdate, aw as setLegPlayersOrderUpdate, ax as setOpenedRaceId, ay as updateOpenedRaceId, az as updateLegPlayersTracks, aA as getLegPlayersTracksUpdate, aB as setLegPlayersTracksUpdate, aC as createKeyChangeListener } from "./_commonjsHelpers-005ac8ea.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as toRad, T as getLegPlayersTracksFleet, U as formatTimestampToReadableDate, V as getLegPlayersTrackLeader, W as getLegPlayersTracksGhost, X as gcDistance, Y as getPlayersList, Z as courseAngle, _ as display_selbox, $ as changeState, a0 as cleanSpecial, a1 as convertDMS2Dec, a2 as onUserChangeRace, a3 as saveUserPrefs, a4 as switchTheme, a5 as loadUserPrefs, a6 as initMemo, a7 as setConnectedPlayerId, a8 as updatePlayersList, a9 as updateTeamsList, aa as updateConnectedPlayerInfos, ab as updateLegPlayerInfos, ac as updateLegPlayersOrder, ad as getLegListUpdate, ae as setLegListUpdate, af as updateLegList, ag as updatePolar, ah as getPlayersUpdate, ai as setPlayersUpdate, aj as updateLegFleetInfos, ak as getTeamsUpdate, al as setTeamsUpdate, am as getPolarsUpdate, an as setPolarsUpdate, ao as getLegPlayersInfosUpdate, ap as setLegPlayersInfosUpdate, aq as getLegFleetInfosUpdate, ar as setLegFleetInfosUpdate, as as getLegPlayersOptionsUpdate, at as setLegPlayersOptionsUpdate, au as updateLegPlayersOptions, av as getLegPlayersOrderUpdate, aw as setLegPlayersOrderUpdate, ax as setOpenedRaceId, ay as updateOpenedRaceId, az as updateLegPlayersTracks, aA as getLegPlayersTracksUpdate, aB as setLegPlayersTracksUpdate, aC as createKeyChangeListener } from "./_commonjsHelpers-83ee83fe.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -94,13 +94,13 @@ function buildRaceStatusHtml() {
   let tableContent = buildRaceStatusHtmlLine(raceInfo, ((_a2 = raceItes == null ? void 0 : raceItes.ites) == null ? void 0 : _a2[0]) ?? null);
   const openedRaceIdHistory = getOpenedRaceHistory();
   const legPlayerInfosHistory = getLegPlayerInfosHistory();
-  for (const legId of Object.entries(openedRaceIdHistory)) {
+  for (const legInfo of Object.entries(openedRaceIdHistory)) {
+    const legId = legInfo[1];
     if (connectedRace.raceId != legId.raceId || connectedRace.legNum != legId.legNum) {
       const key = `${legId.raceId}-${legId.legNum}`;
       const legIte = legPlayerInfosHistory[key];
-      const legInfo = raceList[key];
-      if ((legIte == null ? void 0 : legIte.ites) && legInfo)
-        tableContent += buildRaceStatusHtmlLine(legInfo, legIte.ites[0]);
+      const legInfo2 = raceList[key];
+      tableContent += buildRaceStatusHtmlLine(legInfo2, legIte.ites[0]);
     }
   }
   const tablecontainer = document.getElementById("raceStatus");
@@ -108,17 +108,9 @@ function buildRaceStatusHtml() {
 }
 function buildRaceStatusHtmlLine(raceInfo, raceIte) {
   var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
-  if (!raceIte || !raceInfo)
+  if (!raceInfo)
     return "";
   const userPrefs = getUserPrefs();
-  let lastCommand = "-";
-  let lastCommandBG = "";
-  let agroundBG = raceIte.aground ? "LightRed" : "lightgreen";
-  let mnvrBG = ((_a2 = raceIte.metaDash) == null ? void 0 : _a2.manoeuvering) ? "LightRed" : "lightgreen";
-  if (userPrefs.theme == "dark") {
-    agroundBG = raceIte.aground ? "darkred" : "darkgreen";
-    mnvrBG = ((_b = raceIte.metaDash) == null ? void 0 : _b.manoeuvering) ? "darkred" : "darkgreen";
-  }
   let info = "-";
   if (raceInfo.raceType === "leg") {
     info = "<span>" + raceInfo.legName + "</span>";
@@ -129,62 +121,13 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
       info = "<span>-</span>";
     }
   }
-  if ((_c = raceInfo.record) == null ? void 0 : _c.lastRankingGateName) {
+  if ((_a2 = raceInfo.record) == null ? void 0 : _a2.lastRankingGateName) {
     info += "<br/><span>@ " + raceInfo.record.lastRankingGateName + "</span>";
   }
   let trstyle = "hov";
   const raceIdFull = getOpenedRaceId();
   if (raceInfo.id === raceIdFull.raceId || raceInfo.legNum === raceIdFull.legNum)
     trstyle += " sel";
-  const best = (_d = raceIte.metaDash) == null ? void 0 : _d.bVmg;
-  const bestVMGString = best ? best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>' : "-";
-  const bestVMGTilte = best ? roundTo(best.vmgUp, 3) + '<span class="textMini"> kts</span> | ' + roundTo(Math.abs(best.vmgDown), 3) + '<span class="textMini"> kts</span>' : "-";
-  const bspeedTitle = best ? roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>' : "-";
-  let lastCalcStyle = "";
-  if (((_e = raceIte.metaDash) == null ? void 0 : _e.deltaReceiveCompute) > 9e5) {
-    lastCalcStyle = 'style="background-color: red;';
-    lastCalcStyle += userPrefs.theme == "dark" ? ' color:black;"' : '"';
-  }
-  const manoeuver = (_f = raceIte.metaDash) == null ? void 0 : _f.manoeuver;
-  const tack = manoeuver ? "<p>-" + manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p><p>" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>" : "-";
-  const gybe = manoeuver ? "<p>-" + manoeuver.gybe.pena.dist + "nm | " + manoeuver.gybe.pena.time + "s</p><p>" + manoeuver.gybe.energyLoose + "% | " + manoeuver.gybe.energyRecovery + "min</p>" : "-";
-  const sail = manoeuver ? "<p>-" + manoeuver.sail.pena.dist + "nm | " + manoeuver.sail.pena.time + "s</p><p>" + manoeuver.sail.energyLoose + "% | " + manoeuver.sail.energyRecovery + "min</p>" : "-";
-  let staminaStyle = "";
-  let staminaTxt = "-";
-  const stamina = (_g = raceIte.metaDash) == null ? void 0 : _g.realStamina;
-  const paramStamina = getParamStamina();
-  if (stamina) {
-    if (stamina < (paramStamina == null ? void 0 : paramStamina.tiredness[0]))
-      staminaStyle = 'style="color:red"';
-    else if (stamina < (paramStamina == null ? void 0 : paramStamina.tiredness[1]))
-      staminaStyle = 'style="color:orange"';
-    else
-      staminaStyle = 'style="color:green"';
-    staminaTxt = roundTo(stamina, 2) + "%";
-    staminaTxt += " (x" + roundTo(manoeuver.staminaFactor, 2) + ")";
-  }
-  let fullStamina = '<td class="stamina" ';
-  if (((_h = raceIte.metaDash) == null ? void 0 : _h.coffeeBoost) != 0 || ((_i = raceIte.metaDash) == null ? void 0 : _i.chocoBoost) != 0) {
-    fullStamina += '><div class="textMini">';
-    if (((_j = raceIte.metaDash) == null ? void 0 : _j.chocoBoost) != 0) {
-      fullStamina += "🍫+" + roundTo(raceIte.metaDash.chocoBoost, 2) + "%";
-      fullStamina += " ⌚" + formatHM(raceIte.metaDash.chocoExp - Date.now());
-    }
-    fullStamina += "</div>";
-    fullStamina += "<div " + staminaStyle + ">";
-    fullStamina += staminaTxt;
-    fullStamina += "</div>";
-    fullStamina += '<div class="textMini">';
-    if (((_k = raceIte.metaDash) == null ? void 0 : _k.coffeeBoost) != 0) {
-      fullStamina += "☕+" + roundTo(raceIte.metaDash.coffeeBoost, 2) + "%";
-      fullStamina += " ⌚" + formatHM(raceIte.metaDash.coffeeExp - Date.now());
-    }
-    fullStamina += "</div>";
-    fullStamina += "</td>";
-  } else {
-    fullStamina += staminaStyle + ">" + staminaTxt + "</td>";
-  }
-  let itycLedColor = "LightGrey";
   const rid = raceInfo.raceId + "-" + raceInfo.legNum;
   const zezoUrl = raceInfo.zezoUrl ? raceInfo.zezoUrl : null;
   let returnVal = '<tr class="' + trstyle + '" id="rs:' + rid + '">';
@@ -195,25 +138,86 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
   returnVal += '<td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td>';
   returnVal += '<td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td>';
   returnVal += '<td class="name">' + raceInfo.legName + "</td>";
-  returnVal += '<td class="time" ' + lastCalcStyle + ">" + formatTimeNotif(raceIte.iteDate) + "</td>";
-  returnVal += raceTableLines(raceIte, best);
-  returnVal += infoSail(raceIte, false);
-  returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + "</td>";
-  returnVal += '<td class="speed2">' + (((_l = raceIte.metaDash) == null ? void 0 : _l.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
-  returnVal += '<td class="bvmg"><p>' + bestVMGString + "</p>";
-  if (userPrefs.raceData.VMGSpeed)
-    returnVal += "<p>(" + bestVMGTilte + ")</p>";
-  returnVal += "</td>";
-  returnVal += '<td class="bspeed">' + bspeedTitle + "</td>";
-  returnVal += fullStamina;
-  returnVal += '<td class="tack">' + tack + "</td>";
-  returnVal += '<td class="gybe">' + gybe + "</td>";
-  returnVal += '<td class="sailPenalties">' + sail + "</td>";
-  returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + "</td>";
-  returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_m = raceIte.metaDash) == null ? void 0 : _m.manoeuvering) ? "Yes" : "No") + "</td>";
-  if (userPrefs.raceData.lastCmd)
-    returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
-  returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
+  if (raceIte) {
+    let lastCommand = "-";
+    let lastCommandBG = "";
+    let agroundBG = raceIte.aground ? "LightRed" : "lightgreen";
+    let mnvrBG = ((_b = raceIte.metaDash) == null ? void 0 : _b.manoeuvering) ? "LightRed" : "lightgreen";
+    if (userPrefs.theme == "dark") {
+      agroundBG = raceIte.aground ? "darkred" : "darkgreen";
+      mnvrBG = ((_c = raceIte.metaDash) == null ? void 0 : _c.manoeuvering) ? "darkred" : "darkgreen";
+    }
+    const best = (_d = raceIte.metaDash) == null ? void 0 : _d.bVmg;
+    const bestVMGString = best ? best.twaUp + '<span class="textMini">°</span> | ' + best.twaDown + '<span class="textMini">°</span>' : "-";
+    const bestVMGTilte = best ? roundTo(best.vmgUp, 3) + '<span class="textMini"> kts</span> | ' + roundTo(Math.abs(best.vmgDown), 3) + '<span class="textMini"> kts</span>' : "-";
+    const bspeedTitle = best ? roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>' : "-";
+    let lastCalcStyle = "";
+    if (((_e = raceIte.metaDash) == null ? void 0 : _e.deltaReceiveCompute) > 9e5) {
+      lastCalcStyle = 'style="background-color: red;';
+      lastCalcStyle += userPrefs.theme == "dark" ? ' color:black;"' : '"';
+    }
+    const manoeuver = (_f = raceIte.metaDash) == null ? void 0 : _f.manoeuver;
+    const tack = manoeuver ? "<p>-" + manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p><p>" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>" : "-";
+    const gybe = manoeuver ? "<p>-" + manoeuver.gybe.pena.dist + "nm | " + manoeuver.gybe.pena.time + "s</p><p>" + manoeuver.gybe.energyLoose + "% | " + manoeuver.gybe.energyRecovery + "min</p>" : "-";
+    const sail = manoeuver ? "<p>-" + manoeuver.sail.pena.dist + "nm | " + manoeuver.sail.pena.time + "s</p><p>" + manoeuver.sail.energyLoose + "% | " + manoeuver.sail.energyRecovery + "min</p>" : "-";
+    let staminaStyle = "";
+    let staminaTxt = "-";
+    const stamina = (_g = raceIte.metaDash) == null ? void 0 : _g.realStamina;
+    const paramStamina = getParamStamina();
+    if (stamina) {
+      if (stamina < (paramStamina == null ? void 0 : paramStamina.tiredness[0]))
+        staminaStyle = 'style="color:red"';
+      else if (stamina < (paramStamina == null ? void 0 : paramStamina.tiredness[1]))
+        staminaStyle = 'style="color:orange"';
+      else
+        staminaStyle = 'style="color:green"';
+      staminaTxt = roundTo(stamina, 2) + "%";
+      staminaTxt += " (x" + roundTo(manoeuver.staminaFactor, 2) + ")";
+    }
+    let fullStamina = '<td class="stamina" ';
+    if ((((_h = raceIte.metaDash) == null ? void 0 : _h.coffeeBoost) ?? 0) !== 0 || (((_i = raceIte.metaDash) == null ? void 0 : _i.chocoBoost) ?? 0) !== 0) {
+      fullStamina += '><div class="textMini">';
+      if ((((_j = raceIte.metaDash) == null ? void 0 : _j.chocoBoost) ?? 0) !== 0) {
+        fullStamina += "🍫+" + roundTo(raceIte.metaDash.chocoBoost, 2) + "%";
+        fullStamina += " ⌚" + formatHM(raceIte.metaDash.chocoExp - Date.now());
+      }
+      fullStamina += "</div>";
+      fullStamina += "<div " + staminaStyle + ">";
+      fullStamina += staminaTxt;
+      fullStamina += "</div>";
+      fullStamina += '<div class="textMini">';
+      if ((((_k = raceIte.metaDash) == null ? void 0 : _k.coffeeBoost) ?? 0) !== 0) {
+        fullStamina += "☕+" + roundTo(raceIte.metaDash.coffeeBoost, 2) + "%";
+        fullStamina += " ⌚" + formatHM(raceIte.metaDash.coffeeExp - Date.now());
+      }
+      fullStamina += "</div>";
+      fullStamina += "</td>";
+    } else {
+      fullStamina += staminaStyle + ">" + staminaTxt + "</td>";
+    }
+    let itycLedColor = "LightGrey";
+    returnVal += '<td class="time" ' + lastCalcStyle + ">" + formatTimeNotif(raceIte.iteDate) + "</td>";
+    returnVal += raceTableLines(raceIte, best);
+    returnVal += infoSail(raceIte, false);
+    returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + "</td>";
+    returnVal += '<td class="speed2">' + (((_l = raceIte.metaDash) == null ? void 0 : _l.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
+    returnVal += '<td class="bvmg"><p>' + bestVMGString + "</p>";
+    if (userPrefs.raceData.VMGSpeed)
+      returnVal += "<p>(" + bestVMGTilte + ")</p>";
+    returnVal += "</td>";
+    returnVal += '<td class="bspeed">' + bspeedTitle + "</td>";
+    returnVal += fullStamina;
+    returnVal += '<td class="tack">' + tack + "</td>";
+    returnVal += '<td class="gybe">' + gybe + "</td>";
+    returnVal += '<td class="sailPenalties">' + sail + "</td>";
+    returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + "</td>";
+    returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_m = raceIte.metaDash) == null ? void 0 : _m.manoeuvering) ? "Yes" : "No") + "</td>";
+    if (userPrefs.raceData.lastCmd)
+      returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
+    returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
+  } else {
+    returnVal += '<td class="name">No info received for this race</td>';
+  }
   returnVal += "</tr>";
   return returnVal;
 }
@@ -222,24 +226,26 @@ function buildRaceLogHtml() {
   const raceInfo = getRaceInfo$1();
   const racePlayerInfos = getLegPlayerInfos();
   const raceOrder = getLegPlayersOrder();
-  if (!raceInfo || (raceInfo == null ? void 0 : raceInfo.length) == 0 || !(racePlayerInfos == null ? void 0 : racePlayerInfos.ites))
+  const raceLogTableHeader = "<tr>" + genthRacelog("th_rl_date", "dateTime", "Time" + dateUTCSmall()) + raceTableHeaders() + genthRacelog("th_rl_aSail", "aSail", "aSail", "Auto Sail time remaining") + genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed") + genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)") + genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor") + genthRacelog("th_rl_factor", "factor", "Factor", "Speed factor") + genthRacelog("th_rl_stamina", "stamina", "Stamina", "Stamina Value. (penalities factor)") + genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance") + genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions") + genthRacelog("th_rl_psn", "position", "Position") + genthRacelog("th_rl_sail", "sail", "Sail", "Sail change time remaining") + genthRacelog("th_rl_gybe", "gybe", "Gybe", "Gybing time remaining") + genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining") + "</tr>";
+  if (!raceInfo || (raceInfo == null ? void 0 : raceInfo.length) == 0 || !(racePlayerInfos == null ? void 0 : racePlayerInfos.ites)) {
+    document.getElementById("recordlog").innerHTML = `
+            <table>
+            <thead><tr><th>No infos received for this race.</th></tr></thead>
+            </table>`;
     return;
+  }
   let raceItes = racePlayerInfos.ites;
   if (raceOrder == null ? void 0 : raceOrder.length) {
     raceItes = [...raceItes, ...raceOrder].sort((a, b) => b.iteDate - a.iteDate);
   }
-  const raceLogTableHeader = "<tr>" + genthRacelog("th_rl_date", "dateTime", "Time" + dateUTCSmall()) + raceTableHeaders() + genthRacelog("th_rl_aSail", "aSail", "aSail", "Auto Sail time remaining") + genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed") + genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)") + genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor") + genthRacelog("th_rl_factor", "factor", "Factor", "Speed factor") + genthRacelog("th_rl_stamina", "stamina", "Stamina", "Stamina Value. (penalities factor)") + genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance") + genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions") + genthRacelog("th_rl_psn", "position", "Position") + genthRacelog("th_rl_sail", "sail", "Sail", "Sail change time remaining") + genthRacelog("th_rl_gybe", "gybe", "Gybe", "Gybing time remaining") + genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining") + "</tr>";
   let raceLogContent = "";
-  if (raceItes.length == 0)
-    return;
   Object.keys(raceItes).forEach((key) => {
     if (key != "info" && key != "options" && key != "team") {
       const raceLogLine = raceItes[key];
-      if ("action" in raceLogLine) {
+      if ("action" in raceLogLine)
         raceLogContent += buildRaceLogLineCmd(raceLogLine);
-      } else {
+      else
         raceLogContent += buildRaceLogLine(raceLogLine);
-      }
     }
   });
   const utcStyle = userPrefs.global.localTime ? "display: none;" : "";
@@ -891,9 +897,9 @@ function viewCredits(raceInfo, playerIte) {
   ];
   const takenTotal = totalOptionCredits(raceInfo, (_a2 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a2.options);
   const takenCells = optionKeys.map(([k]) => {
-    var _a3;
+    var _a3, _b2;
     const takenStyle = isTaken((_a3 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a3.options, k) ? { outline: "2px solid #25d366" } : {};
-    return h("span", { class: "chip", style: takenStyle }, String((raceInfo == null ? void 0 : raceInfo.optionPrices[k]) ?? "-"));
+    return h("span", { class: "chip", style: takenStyle }, String(((_b2 = raceInfo == null ? void 0 : raceInfo.optionPrices) == null ? void 0 : _b2[k]) ?? "-"));
   });
   const rows = [[
     String(((_b = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _b.credits) ?? "-"),
@@ -12010,6 +12016,721 @@ if (typeof window.L !== "undefined") {
     return new (GeodesicCircleClass.bind.apply(GeodesicCircleClass, __spreadArray([void 0], args, false)))();
   };
 }
+const Windy = function(params) {
+  var VELOCITY_SCALE = 0.011;
+  var INTENSITY_SCALE_STEP = 10;
+  var MAX_WIND_INTENSITY = 40;
+  var MAX_PARTICLE_AGE = 100;
+  var PARTICLE_LINE_WIDTH = 2;
+  var PARTICLE_MULTIPLIER = 1 / 30;
+  var PARTICLE_REDUCTION = 0.75;
+  var FRAME_RATE = 20;
+  var NULL_WIND_VECTOR = [NaN, NaN, null];
+  var bilinearInterpolateVector = function(x, y, g00, g10, g01, g11) {
+    var rx = 1 - x;
+    var ry = 1 - y;
+    var a = rx * ry, b = x * ry, c = rx * y, d = x * y;
+    var u = g00[0] * a + g10[0] * b + g01[0] * c + g11[0] * d;
+    var v = g00[1] * a + g10[1] * b + g01[1] * c + g11[1] * d;
+    return [u, v, Math.sqrt(u * u + v * v)];
+  };
+  var createWindBuilder = function(uComp, vComp) {
+    var uData = uComp.data, vData = vComp.data;
+    return {
+      header: uComp.header,
+      //recipe: recipeFor("wind-" + uComp.header.surface1Value),
+      data: function(i) {
+        return [uData[i], vData[i]];
+      },
+      interpolate: bilinearInterpolateVector
+    };
+  };
+  var createBuilder = function(data) {
+    if (Array.isArray(data)) {
+      var uComp = null, vComp = null;
+      data.forEach(function(record) {
+        if (!record || !record.header)
+          return;
+        switch (record.header.parameterCategory + "," + record.header.parameterNumber) {
+          case "2,2":
+            uComp = record;
+            break;
+          case "2,3":
+            vComp = record;
+            break;
+        }
+      });
+      if (!uComp || !vComp) {
+        throw new Error("Windy: U/V components not found in data[]");
+      }
+      return createWindBuilder(uComp, vComp);
+    }
+    if (data && data.header && Array.isArray(data.data) && data.data.length >= 2) {
+      var header = data.header;
+      var uArr = data.data[0];
+      var vArr = data.data[1];
+      var commonHeader = {
+        lo1: header.lo1,
+        la1: header.la1,
+        dx: header.dx,
+        dy: header.dy,
+        nx: header.nx,
+        ny: header.ny,
+        refTime: header.refTime || "197001010000",
+        // pour compat avec ton WindyDataProxy.interpolateData
+        forecastTime: header.forecastTime || 0
+      };
+      var uComp2 = {
+        header: commonHeader,
+        data: uArr
+      };
+      var vComp2 = {
+        header: commonHeader,
+        data: vArr
+      };
+      return createWindBuilder(uComp2, vComp2);
+    }
+    throw new Error("Windy: unsupported data format");
+  };
+  var buildGrid = function(data, callback2) {
+    var builder = createBuilder(data);
+    var header = builder.header;
+    var λ0 = header.lo1, φ0 = header.la1;
+    var Δλ = header.dx, Δφ = header.dy;
+    var ni = header.nx, nj = header.ny;
+    var date = new Date(header.refTime);
+    date.setHours(date.getHours() + header.forecastTime);
+    var grid = [], p = 0;
+    var isContinuous = Math.floor(ni * Δλ) >= 360;
+    for (var j = 0; j < nj; j++) {
+      var row = [];
+      for (var i = 0; i < ni; i++, p++) {
+        row[i] = builder.data(p);
+      }
+      if (isContinuous) {
+        row.push(row[0]);
+      }
+      grid[j] = row;
+    }
+    function interpolate2(λ, φ) {
+      var i2 = floorMod(λ - λ0, 360) / Δλ;
+      var j2 = (φ0 - φ) / Δφ;
+      var fi = Math.floor(i2), ci = fi + 1;
+      var fj = Math.floor(j2), cj = fj + 1;
+      var row2;
+      if (row2 = grid[fj]) {
+        var g00 = row2[fi];
+        var g10 = row2[ci];
+        if (isValue(g00) && isValue(g10) && (row2 = grid[cj])) {
+          var g01 = row2[fi];
+          var g11 = row2[ci];
+          if (isValue(g01) && isValue(g11)) {
+            return builder.interpolate(i2 - fi, j2 - fj, g00, g10, g01, g11);
+          }
+        }
+      }
+      return null;
+    }
+    callback2({
+      date,
+      interpolate: interpolate2
+    });
+  };
+  var isValue = function(x) {
+    return x !== null && x !== void 0;
+  };
+  var floorMod = function(a, n) {
+    return a - n * Math.floor(a / n);
+  };
+  var isMobile = function() {
+    return /android|blackberry|iemobile|ipad|iphone|ipod|opera mini|webos/i.test(navigator.userAgent);
+  };
+  var distort = function(projection, λ, φ, x, y, scale, wind, windy2) {
+    var u = wind[0] * scale;
+    var v = wind[1] * scale;
+    var d = distortion(projection, λ, φ, x, y, windy2);
+    wind[0] = d[0] * u + d[2] * v;
+    wind[1] = d[1] * u + d[3] * v;
+    return wind;
+  };
+  var distortion = function(projection, λ, φ, x, y, windy2) {
+    var τ = 2 * Math.PI;
+    var H = Math.pow(10, -5.2);
+    var hλ = λ < 0 ? H : -H;
+    var hφ = φ < 0 ? H : -H;
+    var pλ = project(φ, λ + hλ, windy2);
+    var pφ = project(φ + hφ, λ, windy2);
+    var k = Math.cos(φ / 360 * τ);
+    return [
+      (pλ[0] - x) / hλ / k,
+      (pλ[1] - y) / hλ / k,
+      (pφ[0] - x) / hφ,
+      (pφ[1] - y) / hφ
+    ];
+  };
+  var createField = function(columns, bounds, callback2) {
+    function field(x, y) {
+      var column = columns[Math.round(x)];
+      return column && column[Math.round(y)] || NULL_WIND_VECTOR;
+    }
+    field.release = function() {
+      columns = [];
+    };
+    field.randomize = function(o) {
+      var x, y;
+      var safetyNet = 0;
+      do {
+        x = Math.round(Math.floor(Math.random() * bounds.width) + bounds.x);
+        y = Math.round(Math.floor(Math.random() * bounds.height) + bounds.y);
+      } while (field(x, y)[2] === null && safetyNet++ < 30);
+      o.x = x;
+      o.y = y;
+      return o;
+    };
+    callback2(bounds, field);
+  };
+  var buildBounds = function(bounds, width, height) {
+    var upperLeft = bounds[0];
+    var lowerRight = bounds[1];
+    var x = Math.round(upperLeft[0]);
+    var y = Math.max(Math.floor(upperLeft[1], 0), 0);
+    Math.min(Math.ceil(lowerRight[0], width), width - 1);
+    var yMax = Math.min(Math.ceil(lowerRight[1], height), height - 1);
+    return { x, y, xMax: width, yMax, width, height };
+  };
+  var deg2rad = function(deg) {
+    return deg / 180 * Math.PI;
+  };
+  var rad2deg = function(ang) {
+    return ang / (Math.PI / 180);
+  };
+  var invert = function(x, y, windy2) {
+    var mapLonDelta = windy2.east - windy2.west;
+    var worldMapRadius = windy2.width / rad2deg(mapLonDelta) * 360 / (2 * Math.PI);
+    var mapOffsetY = worldMapRadius / 2 * Math.log((1 + Math.sin(windy2.south)) / (1 - Math.sin(windy2.south)));
+    var equatorY = windy2.height + mapOffsetY;
+    var a = (equatorY - y) / worldMapRadius;
+    var lat = 180 / Math.PI * (2 * Math.atan(Math.exp(a)) - Math.PI / 2);
+    var lon = rad2deg(windy2.west) + x / windy2.width * rad2deg(mapLonDelta);
+    return [lon, lat];
+  };
+  var mercY = function(lat) {
+    return Math.log(Math.tan(lat / 2 + Math.PI / 4));
+  };
+  var project = function(lat, lon, windy2) {
+    var ymin = mercY(windy2.south);
+    var ymax = mercY(windy2.north);
+    var xFactor = windy2.width / (windy2.east - windy2.west);
+    var yFactor = windy2.height / (ymax - ymin);
+    var y = mercY(deg2rad(lat));
+    var x = (deg2rad(lon) - windy2.west) * xFactor;
+    var y = (ymax - y) * yFactor;
+    return [x, y];
+  };
+  var interpolateField = function(grid, bounds, extent, callback2) {
+    var projection = {};
+    var velocityScale = VELOCITY_SCALE;
+    var columns = [];
+    var x = bounds.x;
+    function interpolateColumn(x2) {
+      var column = [];
+      for (var y = bounds.y; y <= bounds.yMax; y += 2) {
+        var coord = invert(x2, y, extent);
+        if (coord) {
+          var λ = coord[0], φ = coord[1];
+          if (isFinite(λ)) {
+            var wind = grid.interpolate(λ, φ);
+            if (wind) {
+              wind = distort(projection, λ, φ, x2, y, velocityScale, wind, extent);
+              column[y + 1] = column[y] = wind;
+            }
+          }
+        }
+      }
+      columns[x2 + 1] = columns[x2] = column;
+    }
+    (function batchInterpolate() {
+      var start2 = Date.now();
+      while (x < bounds.width) {
+        interpolateColumn(x);
+        x += 2;
+        if (Date.now() - start2 > 1e3) {
+          setTimeout(batchInterpolate, 25);
+          return;
+        }
+      }
+      createField(columns, bounds, callback2);
+    })();
+  };
+  var animate = function(bounds, field) {
+    function hexToR(h3) {
+      return parseInt(cutHex(h3).substring(0, 2), 16);
+    }
+    function hexToG(h3) {
+      return parseInt(cutHex(h3).substring(2, 4), 16);
+    }
+    function hexToB(h3) {
+      return parseInt(cutHex(h3).substring(4, 6), 16);
+    }
+    function cutHex(h3) {
+      return h3.charAt(0) == "#" ? h3.substring(1, 7) : h3;
+    }
+    function windIntensityColorScale(step, maxWind) {
+      var result = [
+        /* blue to red
+        "rgba(" + hexToR('#178be7') + ", " + hexToG('#178be7') + ", " + hexToB('#178be7') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#8888bd') + ", " + hexToG('#8888bd') + ", " + hexToB('#8888bd') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#b28499') + ", " + hexToG('#b28499') + ", " + hexToB('#b28499') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#cc7e78') + ", " + hexToG('#cc7e78') + ", " + hexToB('#cc7e78') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#de765b') + ", " + hexToG('#de765b') + ", " + hexToB('#de765b') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#ec6c42') + ", " + hexToG('#ec6c42') + ", " + hexToB('#ec6c42') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#f55f2c') + ", " + hexToG('#f55f2c') + ", " + hexToB('#f55f2c') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#fb4f17') + ", " + hexToG('#fb4f17') + ", " + hexToB('#fb4f17') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#fe3705') + ", " + hexToG('#fe3705') + ", " + hexToB('#fe3705') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#ff0000') + ", " + hexToG('#ff0000') + ", " + hexToB('#ff0000') + ", " + 0.5 + ")"
+        */
+        "rgba(" + hexToR("#00ffff") + ", " + hexToG("#00ffff") + ", " + hexToB("#00ffff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#64f0ff") + ", " + hexToG("#64f0ff") + ", " + hexToB("#64f0ff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#87e1ff") + ", " + hexToG("#87e1ff") + ", " + hexToB("#87e1ff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#a0d0ff") + ", " + hexToG("#a0d0ff") + ", " + hexToB("#a0d0ff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#b5c0ff") + ", " + hexToG("#b5c0ff") + ", " + hexToB("#b5c0ff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#c6adff") + ", " + hexToG("#c6adff") + ", " + hexToB("#c6adff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#d49bff") + ", " + hexToG("#d49bff") + ", " + hexToB("#d49bff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#e185ff") + ", " + hexToG("#e185ff") + ", " + hexToB("#e185ff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#ec6dff") + ", " + hexToG("#ec6dff") + ", " + hexToB("#ec6dff") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#ff1edb") + ", " + hexToG("#ff1edb") + ", " + hexToB("#ff1edb") + ", " + 0.5 + ")"
+      ];
+      result.indexFor = function(m) {
+        return Math.floor(Math.min(m, maxWind) / maxWind * (result.length - 1));
+      };
+      return result;
+    }
+    var colorStyles = windIntensityColorScale(INTENSITY_SCALE_STEP, MAX_WIND_INTENSITY);
+    var buckets = colorStyles.map(function() {
+      return [];
+    });
+    var particleCount = Math.round(bounds.width * bounds.height * PARTICLE_MULTIPLIER);
+    if (isMobile()) {
+      particleCount *= PARTICLE_REDUCTION;
+    }
+    var fadeFillStyle = "rgba(0, 0, 0, 0.97)";
+    var particles = [];
+    for (var i = 0; i < particleCount; i++) {
+      particles.push(field.randomize({ age: Math.floor(Math.random() * MAX_PARTICLE_AGE) + 0 }));
+    }
+    function evolve() {
+      buckets.forEach(function(bucket) {
+        bucket.length = 0;
+      });
+      particles.forEach(function(particle) {
+        if (particle.age > MAX_PARTICLE_AGE) {
+          field.randomize(particle).age = 0;
+        }
+        var x = particle.x;
+        var y = particle.y;
+        var v = field(x, y);
+        var m = v[2];
+        if (m === null) {
+          particle.age = MAX_PARTICLE_AGE;
+        } else {
+          var xt = x + v[0];
+          var yt = y + v[1];
+          if (field(xt, yt)[2] !== null) {
+            particle.xt = xt;
+            particle.yt = yt;
+            buckets[colorStyles.indexFor(m)].push(particle);
+          } else {
+            particle.x = xt;
+            particle.y = yt;
+          }
+        }
+        particle.age += 1;
+      });
+    }
+    var g = params.canvas.getContext("2d");
+    g.lineWidth = PARTICLE_LINE_WIDTH;
+    g.fillStyle = fadeFillStyle;
+    function draw2() {
+      var prev = g.globalCompositeOperation;
+      g.globalCompositeOperation = "destination-in";
+      g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+      g.globalCompositeOperation = prev;
+      buckets.forEach(function(bucket, i2) {
+        if (bucket.length > 0) {
+          g.beginPath();
+          g.strokeStyle = colorStyles[i2];
+          bucket.forEach(function(particle) {
+            g.moveTo(particle.x, particle.y);
+            g.lineTo(particle.xt, particle.yt);
+            particle.x = particle.xt;
+            particle.y = particle.yt;
+          });
+          g.stroke();
+        }
+      });
+    }
+    (function frame() {
+      try {
+        windy.timer = setTimeout(function() {
+          requestAnimationFrame(frame);
+          evolve();
+          draw2();
+        }, 1e3 / FRAME_RATE);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  };
+  var start = function(bounds, width, height, extent) {
+    var mapBounds = {
+      south: deg2rad(extent[0][1]),
+      north: deg2rad(extent[1][1]),
+      east: deg2rad(extent[1][0]),
+      west: deg2rad(extent[0][0]),
+      width,
+      height
+    };
+    stop();
+    buildGrid(params.data, function(grid) {
+      interpolateField(grid, buildBounds(bounds, width, height), mapBounds, function(bounds2, field) {
+        windy.field = field;
+        animate(bounds2, field);
+      });
+    });
+  };
+  var stop = function() {
+    if (windy.field)
+      windy.field.release();
+    if (windy.timer)
+      clearTimeout(windy.timer);
+  };
+  var windy = {
+    params,
+    start,
+    stop
+  };
+  return windy;
+};
+window.requestAnimationFrame = function() {
+  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback2) {
+    window.setTimeout(callback2, 1e3 / 20);
+  };
+}();
+L.DomUtil.setTransform = L.DomUtil.setTransform || function(el, offset, scale) {
+  var pos = offset || new L.Point(0, 0);
+  el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
+};
+L.WindCanvas = (L.Layer ? L.Layer : L.Class).extend({
+  options: {
+    opacity: 1,
+    pane: "overlayPane"
+  },
+  // -- initialized is called on prototype
+  initialize: function(options) {
+    this._map = null;
+    this._canvas = null;
+    this._frame = null;
+    this._delegate = null;
+    L.setOptions(this, options);
+  },
+  delegate: function(del) {
+    this._delegate = del;
+    return this;
+  },
+  needRedraw: function() {
+    if (!this._frame) {
+      this._frame = L.Util.requestAnimFrame(this.drawLayer, this);
+    }
+    return this;
+  },
+  clear: function() {
+    this._canvas1.getContext("2d").clearRect(0, 0, 3e3, 3e3);
+    this._canvas2.getContext("2d").clearRect(0, 0, 3e3, 3e3);
+  },
+  //-------------------------------------------------------------
+  _onLayerDidResize: function(resizeEvent) {
+    if (resizeEvent) {
+      var go_hide_canvas = null;
+      if (this._canvas == this._canvas2) {
+        this._canvas = this._canvas1;
+        L.DomUtil.removeClass(this._canvas1, "leaflet-layer-fade");
+        this._canvas1.style.opacity = this.options.opacity;
+        go_hide_canvas = this._canvas2;
+      } else {
+        this._canvas = this._canvas2;
+        L.DomUtil.removeClass(this._canvas2, "leaflet-layer-fade");
+        this._canvas2.style.opacity = this.options.opacity;
+        go_hide_canvas = this._canvas1;
+      }
+      this._canvas1.width = resizeEvent.newSize.x;
+      this._canvas1.height = resizeEvent.newSize.y;
+      this._canvas2.width = resizeEvent.newSize.x;
+      this._canvas2.height = resizeEvent.newSize.y;
+      L.DomUtil.addClass(go_hide_canvas, "leaflet-layer-fade");
+      go_hide_canvas.style.opacity = 0;
+    }
+  },
+  //-------------------------------------------------------------
+  _onLayerDidMove: function() {
+    var go_hide_canvas = null;
+    if (this._canvas == this._canvas2) {
+      this._canvas = this._canvas1;
+      this._canvas.getContext("2d").clearRect(0, 0, 3e3, 3e3);
+      L.DomUtil.removeClass(this._canvas1, "leaflet-layer-fade");
+      this._canvas1.style.opacity = this.options.opacity;
+      go_hide_canvas = this._canvas2;
+    } else {
+      this._canvas = this._canvas2;
+      this._canvas.getContext("2d").clearRect(0, 0, 3e3, 3e3);
+      L.DomUtil.removeClass(this._canvas2, "leaflet-layer-fade");
+      this._canvas2.style.opacity = this.options.opacity;
+      go_hide_canvas = this._canvas1;
+    }
+    var topLeft = this._map.containerPointToLayerPoint([0, 0]);
+    L.DomUtil.setPosition(this._canvas, topLeft);
+    this.drawLayer(true);
+    L.DomUtil.addClass(go_hide_canvas, "leaflet-layer-fade");
+    go_hide_canvas.style.opacity = 0;
+  },
+  _onLayerDidZoom: function() {
+  },
+  //-------------------------------------------------------------
+  getEvents: function() {
+    var events = {
+      resize: this._onLayerDidResize,
+      moveend: this._onLayerDidMove,
+      zoomend: this._onLayerDidZoom
+    };
+    if (this._map.options.zoomAnimation && L.Browser.any3d) {
+      events.zoomanim = this._animateZoom;
+    }
+    return events;
+  },
+  //-------------------------------------------------------------
+  onAdd: function(map2) {
+    this._map = map2;
+    this._canvas1 = L.DomUtil.create("canvas", "leaflet-layer");
+    this._canvas2 = L.DomUtil.create("canvas", "leaflet-layer");
+    if (typeof this.options.zIndex !== "undefined") {
+      this._canvas1.style.zIndex = this.options.zIndex;
+      this._canvas2.style.zIndex = this.options.zIndex;
+    }
+    if (typeof this.options.className !== "undefined") {
+      L.DomUtil.addClass(this._canvas1, this.options.className);
+      L.DomUtil.addClass(this._canvas2, this.options.className);
+    }
+    this._canvas1.style.opacity = this.options.opacity;
+    this._canvas2.style.opacity = 0;
+    this._canvas = this._canvas1;
+    var size = this._map.getSize();
+    this._canvas1.width = size.x;
+    this._canvas1.height = size.y;
+    this._canvas2.width = size.x;
+    this._canvas2.height = size.y;
+    var animated = this._map.options.zoomAnimation && L.Browser.any3d;
+    L.DomUtil.addClass(this._canvas1, "leaflet-zoom-" + (animated ? "animated" : "hide"));
+    L.DomUtil.addClass(this._canvas2, "leaflet-zoom-" + (animated ? "animated" : "hide"));
+    map2._panes[this.options.pane].appendChild(this._canvas1);
+    map2._panes[this.options.pane].appendChild(this._canvas2);
+    var topLeft = this._map.containerPointToLayerPoint([0, 0]);
+    L.DomUtil.setPosition(this._canvas1, topLeft);
+    L.DomUtil.setPosition(this._canvas2, topLeft);
+    map2.on(this.getEvents(), this);
+    var del = this._delegate || this;
+    del.onLayerDidMount && del.onLayerDidMount();
+    this.needRedraw();
+  },
+  //-------------------------------------------------------------
+  onRemove: function(map2) {
+    var del = this._delegate || this;
+    del.onLayerWillUnmount && del.onLayerWillUnmount();
+    if (this._frame) {
+      L.Util.cancelAnimFrame(this._frame);
+    }
+    map2.getPanes().overlayPane.removeChild(this._canvas);
+    map2.off(this.getEvents(), this);
+    this._canvas = null;
+  },
+  //------------------------------------------------------------
+  addTo: function(map2) {
+    map2.addLayer(this);
+    return this;
+  },
+  // --------------------------------------------------------------------------------
+  LatLonToMercator: function(latlon) {
+    return {
+      x: latlon.lng * 6378137 * Math.PI / 180,
+      y: Math.log(Math.tan((90 + latlon.lat) * Math.PI / 360)) * 6378137
+    };
+  },
+  //------------------------------------------------------------------------------
+  drawLayer: function(no_worker) {
+    var size = this._map.getSize();
+    var bounds = this._map.getBounds();
+    var zoom2 = this._map.getZoom();
+    var center = this.LatLonToMercator(this._map.getCenter());
+    var corner = this.LatLonToMercator(this._map.containerPointToLatLng(this._map.getSize()));
+    var del = this._delegate || this;
+    del.onDrawLayer && del.onDrawLayer({
+      layer: this,
+      canvas: this._canvas,
+      bounds,
+      size,
+      zoom: zoom2,
+      center,
+      corner,
+      no_worker
+    });
+    this._frame = null;
+  },
+  // -- L.DomUtil.setTransform from leaflet 1.0.0 to work on 0.0.7
+  //------------------------------------------------------------------------------
+  _setTransform: function(el, offset, scale) {
+    var pos = offset || new L.Point(0, 0);
+    el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
+  },
+  //------------------------------------------------------------------------------
+  _animateZoom: function(e) {
+    var scale = this._map.getZoomScale(e.zoom);
+    var offset = L.Layer ? this._map._latLngBoundsToNewLayerBounds(this._map.getBounds(), e.zoom, e.center).min : this._map._getCenterOffset(e.center)._multiplyBy(-scale).subtract(this._map._getMapPanePos());
+    L.DomUtil.setTransform(this._canvas, offset, scale);
+  }
+});
+L.windCanvas = function(options) {
+  return new L.WindCanvas(options);
+};
+L.WindyLayer = (L.Layer ? L.Layer : L.Class).extend({
+  options: {},
+  _map: null,
+  _canvasLayer: null,
+  _windy: null,
+  _transform_animate: null,
+  initialize: function(options) {
+    L.setOptions(this, options);
+  },
+  onAdd: function(map2) {
+    let options = {};
+    if (typeof this.options.opacity !== "undefined") {
+      options.opacity = this.options.opacity;
+    }
+    if (typeof this.options.pane !== "undefined") {
+      options.pane = this.options.pane;
+    }
+    if (typeof this.options.zIndex !== "undefined") {
+      options.zIndex = this.options.zIndex;
+    }
+    if (typeof this.options.className !== "undefined") {
+      options.className = this.options.className;
+    }
+    this._canvasLayer = L.windCanvas(options).delegate(this);
+    this._canvasLayer.addTo(map2);
+    this._map = map2;
+  },
+  onRemove: function(map2) {
+    this._destroyWind();
+  },
+  is_active: function() {
+    return !!this._windy;
+  },
+  data: function() {
+    return this.options.data;
+  },
+  transformData: function(transform_options) {
+    var self2 = this;
+    if (transform_options.data && transform_options.data.length > 0) {
+      if (self2._transform_animate) {
+        cancelAnimationFrame(self2._transform_animate);
+      }
+      self2._transform_animate = null;
+      if (self2._windy && transform_options.speed) {
+        var interpolated_data = transform_options.data, interpolated_speed = transform_options.speed;
+        self2.transform_speed = self2.options.transform_speed || 2e3;
+        self2.transform_idx = 0;
+        (function transform_animate() {
+          if (self2.transform_idx >= 0 && self2.transform_idx < interpolated_data.length) {
+            let data = interpolated_data[self2.transform_idx];
+            self2.setData(data);
+            if (self2.transform_idx < interpolated_data.length - 1) {
+              self2.transform_idx++;
+              self2._transform_animate = setTimeout(
+                transform_animate,
+                self2.transform_speed * interpolated_speed
+              );
+              return;
+            }
+          }
+          interpolated_data = [];
+        })();
+      } else {
+        self2.setData(transform_options.data[transform_options.data.length - 1]);
+      }
+    }
+    return self2;
+  },
+  setData: function(new_data) {
+    console.log("WindyLayer.setData", new_data && new_data.header);
+    this.options.data = new_data;
+    if (this._windy && this._map) {
+      var size = this._map.getSize();
+      var bounds = this._map.getBounds();
+      let params = this._buildParams(size, bounds);
+      this._windy.params.data = new_data;
+      this._windy.start(params[0], params[1], params[2], params[3]);
+    }
+    return this;
+  },
+  onDrawLayer: function(params) {
+    let [bounds, width, height, extent] = this._buildParams(params.size, params.bounds);
+    if (!this.options.data) {
+      return this;
+    }
+    if (!this._windy) {
+      this._windy = new Windy({
+        canvas: params.canvas,
+        data: this.options.data || []
+      });
+    } else {
+      this._windy.params.canvas = params.canvas;
+    }
+    if (this.options.data) {
+      this._windy.params.data = this.options.data;
+    }
+    this._windy.start(bounds, width, height, extent);
+    return this;
+  },
+  _buildParams: function(size, bounds) {
+    return [
+      [
+        [0, 0],
+        [size.x, size.y]
+      ],
+      size.x,
+      size.y,
+      [
+        [bounds._southWest.lng, bounds._southWest.lat],
+        [bounds._northEast.lng, bounds._northEast.lat]
+      ]
+    ];
+  },
+  _destroyWind: function() {
+    if (this._transform_animate) {
+      cancelAnimationFrame(this._transform_animate);
+      this._transform_animate = null;
+    }
+    if (this._windy) {
+      this._windy.stop();
+      this._windy = null;
+    }
+    if (this._canvasLayer) {
+      this._canvasLayer.clear();
+      this._map.removeLayer(this._canvasLayer);
+      this._canvasLayer = null;
+    }
+  }
+});
+L.windyLayer = function(options) {
+  return new L.WindyLayer(options);
+};
 globalThis.L = L$1;
 function ensureLayerControlClickable(ctrl) {
   const c = ctrl && ctrl._container;
@@ -12735,6 +13456,394 @@ function onCoastColorChange() {
   coastLayersCleanAll(map2, true);
   coastDrawAllLayers(map2, true);
 }
+class WindyDataProxy {
+  constructor(wind_layer, workerOrUri) {
+    this.wind_layer = wind_layer;
+    this.curr_dtg = null;
+    if (workerOrUri instanceof Worker) {
+      this.worker = workerOrUri;
+    } else if (workerOrUri) {
+      this.worker = new Worker(workerOrUri);
+    }
+    if (this.worker) {
+      const self2 = this;
+      this.worker.onmessage = function(e) {
+        if (e.data.fetched_data) {
+          if (e.data.dtg === self2.curr_dtg) {
+            self2.assignData(e.data.fetched_data, e.data.transform);
+          }
+        } else if (e.data.transform_options) {
+          if (self2.curr_dtg && self2.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0) {
+            self2.wind_layer.transformData(e.data.transform_options);
+          }
+        }
+      };
+    }
+  }
+  assignData(data, run_transform) {
+    var self2 = this;
+    if (run_transform && self2.wind_layer.is_active()) {
+      let from_data = self2.wind_layer.data();
+      if (from_data) {
+        if (self2.worker) {
+          self2.worker.postMessage({
+            from_data,
+            to_data: data
+          });
+        } else {
+          let transform_options = WindyDataProxy.interpolateData(from_data, data);
+          self2.wind_layer.transformData(transform_options);
+        }
+        return self2;
+      }
+    }
+    self2.wind_layer.setData(data);
+    return self2;
+  }
+  goto_dtg(dtg) {
+    this._to_dtg(dtg, false);
+  }
+  transform_dtg(dtg) {
+    this._to_dtg(dtg, true);
+  }
+  _to_dtg(dtg, run_transform) {
+    var self2 = this;
+    self2.curr_dtg = dtg;
+    if (dtg) {
+      if (self2.worker) {
+        self2.worker.postMessage({
+          data_uri: dtg,
+          transform: run_transform
+        });
+      } else {
+        WindyDataProxy.fetchData(dtg, function(data) {
+          self2.assignData(data);
+        });
+      }
+    } else {
+      self2.assignData(null);
+    }
+  }
+  static strptime(date_str) {
+    var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"), _rs = date_str.match(_reg), new_dt = /* @__PURE__ */ new Date();
+    new_dt.setFullYear(_rs[1]);
+    new_dt.setMonth(_rs[2]);
+    new_dt.setDate(_rs[3]);
+    new_dt.setHours(_rs[4]);
+    new_dt.setMinutes(_rs[5]);
+    new_dt.setSeconds(0);
+    new_dt.setMilliseconds(0);
+    return new_dt;
+  }
+  static interpolateData(from_data, to_data) {
+    var from_time = 0, to_time = 2, inter_datas = [], interp = 0, into_hours = 3, to_dtg = to_data.header.refTime;
+    if (from_data.header.refTime && to_data.header.refTime) {
+      if (from_data.header.refTime == to_data.header.refTime) {
+        interp = 0;
+      } else {
+        let t_from = WindyDataProxy.strptime(from_data.header.refTime), t_to = WindyDataProxy.strptime(to_data.header.refTime), to_time2 = parseInt((t_to - t_from) / (60 * 60 * 1e3 * into_hours));
+        interp = Math.abs(to_time2 - from_time);
+      }
+    } else {
+      interp = Math.abs(to_time - from_time);
+    }
+    if (interp > 1) {
+      let data_len = from_data.data[0].length;
+      for (let i = from_time; i < to_time; i++) {
+        if (i == 0) {
+          inter_datas.push({ header: from_data.header, data: from_data.data });
+          continue;
+        }
+        let vdata = [], udata = [];
+        for (let j = 0; j < data_len; j++) {
+          let uf = from_data.data[0][j], vf = from_data.data[1][j], ut = to_data.data[0][j], vt = to_data.data[1][j], du = (ut - uf) / interp, dv = (vt - vf) / interp;
+          udata.push(uf + du * i);
+          vdata.push(vf + dv * i);
+        }
+        inter_datas.push({
+          header: to_data.header,
+          data: [udata, vdata]
+        });
+      }
+    }
+    inter_datas.push({ header: to_data.header, data: to_data.data });
+    return { data: inter_datas, speed: into_hours / interp, to_dtg };
+  }
+  static fetchData(uri, callback2) {
+    fetch(uri, { method: "get" }).then((response) => {
+      if (response.ok) {
+        return Promise.resolve(response.json());
+      } else {
+        return Promise.reject(new Error("Failed to load"));
+      }
+    }).then((data) => {
+      callback2(data);
+    }).catch((error) => {
+      callback2({});
+      console.log(`Error: ${error.message}`);
+    });
+  }
+}
+function parseWindpack(arrayBuffer) {
+  const dv = new DataView(arrayBuffer);
+  const magic = String.fromCharCode(dv.getUint8(0)) + String.fromCharCode(dv.getUint8(1)) + String.fromCharCode(dv.getUint8(2)) + String.fromCharCode(dv.getUint8(3));
+  if (magic !== "WPK1") {
+    throw new Error("Invalid windpack magic: " + magic);
+  }
+  const version2 = dv.getUint16(4, true);
+  if (version2 !== 1) {
+    throw new Error("Unsupported windpack version: " + version2);
+  }
+  const flags = dv.getUint16(6, true);
+  const hasU = !!(flags & 1);
+  const hasV = !!(flags & 2);
+  const hasTmp = !!(flags & 4);
+  const nx = dv.getUint32(8, true);
+  const ny = dv.getUint32(12, true);
+  const lo1 = dv.getFloat64(16, true);
+  const la1 = dv.getFloat64(24, true);
+  const dx = dv.getFloat64(32, true);
+  const dy = dv.getFloat64(40, true);
+  const scanningMode = dv.getUint32(48, true);
+  const refTimeUnix = dv.getUint32(52, true);
+  const validTimeUnix = dv.getUint32(56, true);
+  const n = nx * ny;
+  const headerLen = 76;
+  let offset = headerLen;
+  function readField(present) {
+    if (!present)
+      return null;
+    const byteLength = n * 4;
+    const sub = arrayBuffer.slice(offset, offset + byteLength);
+    offset += byteLength;
+    return new Float32Array(sub);
+  }
+  const u = readField(hasU);
+  const v = readField(hasV);
+  const tmp = readField(hasTmp);
+  if (!u || !v) {
+    throw new Error("Windpack missing U and/or V field");
+  }
+  const header = {
+    // Pour WindyDataProxy.interpolateData, on veut une string type "YYYYMMDDHHmm"
+    refTime: unixToRefTimeString(validTimeUnix),
+    validTimeUnix,
+    refTimeUnix,
+    nx,
+    ny,
+    lo1,
+    la1,
+    dx,
+    dy,
+    scanningMode
+  };
+  return {
+    header,
+    data: [u, v],
+    meta: { tmp }
+  };
+}
+function unixToRefTimeString(unixSec) {
+  const d = new Date(unixSec * 1e3);
+  const Y = d.getUTCFullYear();
+  const M = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const D = String(d.getUTCDate()).padStart(2, "0");
+  const h3 = String(d.getUTCHours()).padStart(2, "0");
+  const m = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${Y}${M}${D}${h3}${m}`;
+}
+async function fetchWindpackFromApi(baseUrl, dateYYYYDDMM, cycleFF, fh) {
+  const fhStr = String(fh);
+  const url = `${baseUrl}/api/gfs0p25/file/${dateYYYYDDMM}/${cycleFF}/${fhStr}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} for ${url}`);
+  }
+  if (!res.body || typeof DecompressionStream === "undefined") {
+    const ab2 = await res.arrayBuffer();
+    return parseWindpack(ab2);
+  }
+  const ds = new DecompressionStream("gzip");
+  const decompressedStream = res.body.pipeThrough(ds);
+  const ab = await new Response(decompressedStream).arrayBuffer();
+  return parseWindpack(ab);
+}
+const colorScale = [
+  "rgb(255, 255, 255)",
+  "rgb(255, 255, 170)",
+  "rgb(255, 255, 85)",
+  "rgb(255, 255, 0)",
+  // 3
+  "rgb(255, 224, 0)",
+  "rgb(255, 193, 0)",
+  "rgb(255, 159, 0)",
+  "rgb(255, 127, 0)",
+  // 7
+  "rgb(255, 96, 0)",
+  "rgb(255, 64, 0)",
+  "rgb(255, 32, 0)",
+  "rgb(255, 0, 0)",
+  // 11
+  "rgb(170, 0, 170)",
+  "rgb(85, 0, 170)"
+];
+colorScale.indexFor = function(v) {
+  if (v < 10.8)
+    return 0;
+  if (v < 13.9)
+    return 1;
+  if (v < 17.2)
+    return 2;
+  if (v < 20.8)
+    return 3;
+  if (v < 24.5)
+    return 4;
+  if (v < 28.5)
+    return 5;
+  if (v < 32.7)
+    return 6;
+  if (v < 37)
+    return 7;
+  if (v < 41.5)
+    return 8;
+  if (v < 46.2)
+    return 9;
+  if (v < 51)
+    return 10;
+  if (v < 56.1)
+    return 11;
+  if (v < 61.2)
+    return 12;
+  return 13;
+};
+function startWindWorker() {
+  if (!mapState.windy_proxy) {
+    const worker = new Worker(
+      new URL("" + new URL("windy-layer-worker-3d47c459.js", import.meta.url).href, self.location),
+      { type: "module" }
+    );
+    mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
+  }
+}
+function buildWindLayer() {
+  if (!mapState.map)
+    return;
+  const map2 = mapState.map;
+  if (mapState.windyLayer) {
+    map2.removeLayer(mapState.windyLayer);
+  }
+  mapState.windyLayer = L$1.windyLayer({
+    colorScale,
+    // worker_uri: "../wind-js/mdmv-worker.js",
+    opacity: 0.6,
+    pane: "shadowPane"
+  });
+  map2.addLayer(mapState.windyLayer);
+}
+async function updateWindLayer() {
+  const apiBase = "https://wind.ityc.fr";
+  try {
+    const res = await fetch(`${apiBase}/api/gfs0p25/manifest/latest`);
+    if (!res.ok)
+      throw new Error(`HTTP ${res.status}`);
+    const manifest = await res.json();
+    const { run, forecasts } = manifest;
+    if (!run || !Array.isArray(forecasts) || forecasts.length === 0) {
+      console.warn("Manifest invalide ou vide:", manifest);
+      return;
+    }
+    const nowUnix = Math.floor(Date.now() / 1e3);
+    const existing = forecasts.filter((f) => f.exists);
+    if (!existing.length) {
+      console.warn("Aucun forecast existant dans le manifest");
+      return;
+    }
+    existing.sort((a, b) => a.validTimeUnix - b.validTimeUnix);
+    let prev = null;
+    let next = null;
+    for (const f of existing) {
+      if (f.validTimeUnix <= nowUnix) {
+        prev = f;
+      }
+      if (f.validTimeUnix > nowUnix) {
+        next = f;
+        break;
+      }
+    }
+    if (!prev || !next) {
+      let best = existing[0];
+      let bestDiff = Math.abs(existing[0].validTimeUnix - nowUnix);
+      for (const f of existing) {
+        const diff = Math.abs(f.validTimeUnix - nowUnix);
+        if (diff < bestDiff) {
+          best = f;
+          bestDiff = diff;
+        }
+      }
+      console.log("[wind] Pas d’intervalle complet, on utilise le forecast le plus proche fh=", best.fh);
+      const url = `${apiBase}/api/gfs0p25/file/${run.date}/${run.cycle}/${best.fh}`;
+      if (!mapState.windy_proxy) {
+        console.warn("windy_proxy non initialisé");
+        return;
+      }
+      mapState.windy_proxy.goto_dtg(url);
+      return;
+    }
+    const span = next.validTimeUnix - prev.validTimeUnix;
+    const alpha2 = span > 0 ? (nowUnix - prev.validTimeUnix) / span : 0;
+    const clampedAlpha = Math.min(1, Math.max(0, alpha2));
+    console.log("[wind] Interpolation temps réel entre fh=", prev.fh, "et", next.fh, "alpha=", clampedAlpha.toFixed(2));
+    const [snapPrev, snapNext] = await Promise.all([
+      fetchWindpackFromApi(apiBase, run.date, run.cycle, prev.fh),
+      fetchWindpackFromApi(apiBase, run.date, run.cycle, next.fh)
+    ]);
+    const interpolated = interpolateSnapshots(snapPrev, snapNext, clampedAlpha);
+    if (!mapState.windy_proxy) {
+      console.warn("windy_proxy non initialisé");
+      return;
+    }
+    mapState.windy_proxy.assignData(interpolated, false);
+  } catch (err) {
+    console.error("updateWindLayer error:", err);
+  }
+}
+function interpolateSnapshots(a, b, alpha2) {
+  if (!a || !b)
+    return a || b;
+  const uA = a.data && a.data[0];
+  const vA = a.data && a.data[1];
+  const uB = b.data && b.data[0];
+  const vB = b.data && b.data[1];
+  if (!uA || !vA || !uB || !vB) {
+    console.warn("Snapshots incomplets pour interpolation, fallback sur a");
+    return a;
+  }
+  if (uA.length !== uB.length || vA.length !== vB.length) {
+    console.warn("Taille U/V différente entre snapshots, fallback sur a");
+    return a;
+  }
+  const len = uA.length;
+  const uOut = new Float32Array(len);
+  const vOut = new Float32Array(len);
+  const t = Math.min(1, Math.max(0, alpha2));
+  for (let i = 0; i < len; i++) {
+    const uf = uA[i], vf = vA[i];
+    const ut = uB[i], vt = vB[i];
+    uOut[i] = uf + (ut - uf) * t;
+    vOut[i] = vf + (vt - vf) * t;
+  }
+  const header = { ...a.header };
+  const midUnix = Math.round(
+    a.header.validTimeUnix + (b.header.validTimeUnix - a.header.validTimeUnix) * t
+  );
+  header.validTimeUnix = midUnix;
+  header.refTime = unixToRefTimeString(midUnix);
+  return {
+    header,
+    data: [uOut, vOut],
+    meta: a.meta || {}
+  };
+}
 const mapState = {
   raceId: null,
   // id de la course actuellement affichée
@@ -12761,7 +13870,9 @@ const mapState = {
   leaderLayer: null,
   leaderMeLayer: null,
   coasts: /* @__PURE__ */ new Map(),
-  mapCurrentZoom: 0
+  mapCurrentZoom: 0,
+  windyLayer: null,
+  windy_proxy: null
 };
 const MAP_CONTAINER_ID = "lMap";
 const COAST_MIN_ZOOM = 7;
@@ -12872,10 +13983,9 @@ function updateMapMe(connectedPlayerId, playerIte) {
   const userPrefs = getUserPrefs();
   const localTimes = userPrefs.global.localTime;
   const displayMarkers = userPrefs.map.showMarkers;
-  if (!mapState || !mapState.map)
+  if (!mapState || !mapState.map || !playerIte)
     return;
   const map2 = mapState.map;
-  const myTrack = trackFleet[connectedPlayerId].track;
   if (!mapState.meLayer)
     mapState.meLayer = L$1.layerGroup();
   if (!mapState.meBoatLayer)
@@ -12893,6 +14003,7 @@ function updateMapMe(connectedPlayerId, playerIte) {
   mapState.meBoatLayer = L$1.layerGroup();
   const myPos = { lat: playerIte.pos.lat, lon: playerIte.pos.lon };
   if (trackFleet && trackFleet.lenght != 0 && ((_a2 = trackFleet[connectedPlayerId]) == null ? void 0 : _a2.track)) {
+    const myTrack = trackFleet[connectedPlayerId].track;
     let myTrackPts = [];
     let isFirst = false;
     let prevPt = null;
@@ -13106,7 +14217,7 @@ function getOrCreateMapContainer() {
   return divMap;
 }
 async function initializeMap() {
-  var _a2;
+  var _a2, _b, _c;
   async function set_userCustomZoom(e) {
     if (!e || e.type === "zoomend") {
       if (mapState.resetUserZoom > 0)
@@ -13156,7 +14267,8 @@ async function initializeMap() {
     updateMapMe(connectedPlayerId, playerItes.ite);
     updateMapLeader(playerItes.ite);
     updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
-    initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+    if ((_a2 = playerItes == null ? void 0 : playerItes.ite) == null ? void 0 : _a2.pos)
+      initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
     enableCoordinateCopyingWithShortcut();
     return;
   }
@@ -13167,6 +14279,7 @@ async function initializeMap() {
   }
   mapState.refPoints = [];
   mapState.refLayer = L$1.layerGroup();
+  mapState.route = [];
   mapState.resetUserZoom = 0;
   mapState.userZoom = false;
   mapState.raceId = rid;
@@ -13373,7 +14486,7 @@ async function initializeMap() {
       ]
     }).addTo(mapState.refLayer);
   }
-  const south = (_a2 = raceInfo == null ? void 0 : raceInfo.ice_limits) == null ? void 0 : _a2.south;
+  const south = (_b = raceInfo == null ? void 0 : raceInfo.ice_limits) == null ? void 0 : _b.south;
   if (Array.isArray(south) && south.length !== 0) {
     const isDummy = south.length === 5 && south[0].lat === -90 && south[0].lon === -180 && south[2].lat === -90 && south[2].lon === 0 && south[4].lat === -90 && south[4].lon === 180;
     if (!isDummy) {
@@ -13451,8 +14564,12 @@ async function initializeMap() {
   map2.on("zoomend", set_userCustomZoom);
   map2.on("moveend", set_userCustomZoom);
   mapState.map = map2;
-  initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
+  if ((_c = playerItes == null ? void 0 : playerItes.ite) == null ? void 0 : _c.pos)
+    initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
   enableCoordinateCopyingWithShortcut();
+  buildWindLayer();
+  startWindWorker();
+  updateWindLayer();
 }
 /*!
  * @kurkle/color v0.3.4
