@@ -81,6 +81,27 @@ export class WindyDataProxy {
         }
     }
 
+    interpolateBetween(urlPrev, urlNext, nowUnix) {
+        // Label "dtg" pour cette interpolation (n’importe quelle string identifie l’état courant)
+        const dtgLabel = `interp_${nowUnix}`;
+
+        this.curr_dtg = dtgLabel;
+
+        if (this.worker) {
+            this.worker.postMessage({
+                mode: 'interpolate',
+                urlPrev,
+                urlNext,
+                nowUnix,
+                dtg: dtgLabel,
+            });
+        } else {
+            // Fallback éventuel : on pourrait ici faire l’interpolation sur le main thread,
+            // mais vu que tu veux absolument le faire dans le worker, on peut juste logguer.
+            console.warn('WindyDataProxy.interpolateBetween: aucun worker, pas d’interpolation');
+        }
+    }
+    
     static strptime(date_str) {
         var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"),
             _rs = date_str.match(_reg),

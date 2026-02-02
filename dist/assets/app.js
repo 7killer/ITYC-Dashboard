@@ -12277,28 +12277,27 @@ const Windy = function(params) {
     }
     function windIntensityColorScale(step, maxWind) {
       var result = [
-        /* blue to red
-        "rgba(" + hexToR('#178be7') + ", " + hexToG('#178be7') + ", " + hexToB('#178be7') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#8888bd') + ", " + hexToG('#8888bd') + ", " + hexToB('#8888bd') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#b28499') + ", " + hexToG('#b28499') + ", " + hexToB('#b28499') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#cc7e78') + ", " + hexToG('#cc7e78') + ", " + hexToB('#cc7e78') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#de765b') + ", " + hexToG('#de765b') + ", " + hexToB('#de765b') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#ec6c42') + ", " + hexToG('#ec6c42') + ", " + hexToB('#ec6c42') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#f55f2c') + ", " + hexToG('#f55f2c') + ", " + hexToB('#f55f2c') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#fb4f17') + ", " + hexToG('#fb4f17') + ", " + hexToB('#fb4f17') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#fe3705') + ", " + hexToG('#fe3705') + ", " + hexToB('#fe3705') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#ff0000') + ", " + hexToG('#ff0000') + ", " + hexToB('#ff0000') + ", " + 0.5 + ")"
-        */
-        "rgba(" + hexToR("#00ffff") + ", " + hexToG("#00ffff") + ", " + hexToB("#00ffff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#64f0ff") + ", " + hexToG("#64f0ff") + ", " + hexToB("#64f0ff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#87e1ff") + ", " + hexToG("#87e1ff") + ", " + hexToB("#87e1ff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#a0d0ff") + ", " + hexToG("#a0d0ff") + ", " + hexToB("#a0d0ff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#b5c0ff") + ", " + hexToG("#b5c0ff") + ", " + hexToB("#b5c0ff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#c6adff") + ", " + hexToG("#c6adff") + ", " + hexToB("#c6adff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#d49bff") + ", " + hexToG("#d49bff") + ", " + hexToB("#d49bff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#e185ff") + ", " + hexToG("#e185ff") + ", " + hexToB("#e185ff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#ec6dff") + ", " + hexToG("#ec6dff") + ", " + hexToB("#ec6dff") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#ff1edb") + ", " + hexToG("#ff1edb") + ", " + hexToB("#ff1edb") + ", " + 0.5 + ")"
+        "rgba(" + hexToR("#178be7") + ", " + hexToG("#178be7") + ", " + hexToB("#178be7") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#8888bd") + ", " + hexToG("#8888bd") + ", " + hexToB("#8888bd") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#b28499") + ", " + hexToG("#b28499") + ", " + hexToB("#b28499") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#cc7e78") + ", " + hexToG("#cc7e78") + ", " + hexToB("#cc7e78") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#de765b") + ", " + hexToG("#de765b") + ", " + hexToB("#de765b") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#ec6c42") + ", " + hexToG("#ec6c42") + ", " + hexToB("#ec6c42") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#f55f2c") + ", " + hexToG("#f55f2c") + ", " + hexToB("#f55f2c") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#fb4f17") + ", " + hexToG("#fb4f17") + ", " + hexToB("#fb4f17") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#fe3705") + ", " + hexToG("#fe3705") + ", " + hexToB("#fe3705") + ", " + 0.5 + ")",
+        "rgba(" + hexToR("#ff0000") + ", " + hexToG("#ff0000") + ", " + hexToB("#ff0000") + ", " + 0.5 + ")"
+        /*
+        "rgba(" + hexToR('#00ffff') + ", " + hexToG('#00ffff') + ", " + hexToB('#00ffff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#64f0ff') + ", " + hexToG('#64f0ff') + ", " + hexToB('#64f0ff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#87e1ff') + ", " + hexToG('#87e1ff') + ", " + hexToB('#87e1ff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#a0d0ff') + ", " + hexToG('#a0d0ff') + ", " + hexToB('#a0d0ff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#b5c0ff') + ", " + hexToG('#b5c0ff') + ", " + hexToB('#b5c0ff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#c6adff') + ", " + hexToG('#c6adff') + ", " + hexToB('#c6adff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#d49bff') + ", " + hexToG('#d49bff') + ", " + hexToB('#d49bff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#e185ff') + ", " + hexToG('#e185ff') + ", " + hexToB('#e185ff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#ec6dff') + ", " + hexToG('#ec6dff') + ", " + hexToB('#ec6dff') + ", " + 0.5 + ")",
+        "rgba(" + hexToR('#ff1edb') + ", " + hexToG('#ff1edb') + ", " + hexToB('#ff1edb') + ", " + 0.5 + ")"          */
       ];
       result.indexFor = function(m) {
         return Math.floor(Math.min(m, maxWind) / maxWind * (result.length - 1));
@@ -13524,6 +13523,21 @@ class WindyDataProxy {
       self2.assignData(null);
     }
   }
+  interpolateBetween(urlPrev, urlNext, nowUnix) {
+    const dtgLabel = `interp_${nowUnix}`;
+    this.curr_dtg = dtgLabel;
+    if (this.worker) {
+      this.worker.postMessage({
+        mode: "interpolate",
+        urlPrev,
+        urlNext,
+        nowUnix,
+        dtg: dtgLabel
+      });
+    } else {
+      console.warn("WindyDataProxy.interpolateBetween: aucun worker, pas d’interpolation");
+    }
+  }
   static strptime(date_str) {
     var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"), _rs = date_str.match(_reg), new_dt = /* @__PURE__ */ new Date();
     new_dt.setFullYear(_rs[1]);
@@ -13584,90 +13598,6 @@ class WindyDataProxy {
     });
   }
 }
-function parseWindpack(arrayBuffer) {
-  const dv = new DataView(arrayBuffer);
-  const magic = String.fromCharCode(dv.getUint8(0)) + String.fromCharCode(dv.getUint8(1)) + String.fromCharCode(dv.getUint8(2)) + String.fromCharCode(dv.getUint8(3));
-  if (magic !== "WPK1") {
-    throw new Error("Invalid windpack magic: " + magic);
-  }
-  const version2 = dv.getUint16(4, true);
-  if (version2 !== 1) {
-    throw new Error("Unsupported windpack version: " + version2);
-  }
-  const flags = dv.getUint16(6, true);
-  const hasU = !!(flags & 1);
-  const hasV = !!(flags & 2);
-  const hasTmp = !!(flags & 4);
-  const nx = dv.getUint32(8, true);
-  const ny = dv.getUint32(12, true);
-  const lo1 = dv.getFloat64(16, true);
-  const la1 = dv.getFloat64(24, true);
-  const dx = dv.getFloat64(32, true);
-  const dy = dv.getFloat64(40, true);
-  const scanningMode = dv.getUint32(48, true);
-  const refTimeUnix = dv.getUint32(52, true);
-  const validTimeUnix = dv.getUint32(56, true);
-  const n = nx * ny;
-  const headerLen = 76;
-  let offset = headerLen;
-  function readField(present) {
-    if (!present)
-      return null;
-    const byteLength = n * 4;
-    const sub = arrayBuffer.slice(offset, offset + byteLength);
-    offset += byteLength;
-    return new Float32Array(sub);
-  }
-  const u = readField(hasU);
-  const v = readField(hasV);
-  const tmp = readField(hasTmp);
-  if (!u || !v) {
-    throw new Error("Windpack missing U and/or V field");
-  }
-  const header = {
-    // Pour WindyDataProxy.interpolateData, on veut une string type "YYYYMMDDHHmm"
-    refTime: unixToRefTimeString(validTimeUnix),
-    validTimeUnix,
-    refTimeUnix,
-    nx,
-    ny,
-    lo1,
-    la1,
-    dx,
-    dy,
-    scanningMode
-  };
-  return {
-    header,
-    data: [u, v],
-    meta: { tmp }
-  };
-}
-function unixToRefTimeString(unixSec) {
-  const d = new Date(unixSec * 1e3);
-  const Y = d.getUTCFullYear();
-  const M = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const D = String(d.getUTCDate()).padStart(2, "0");
-  const h3 = String(d.getUTCHours()).padStart(2, "0");
-  const m = String(d.getUTCMinutes()).padStart(2, "0");
-  return `${Y}${M}${D}${h3}${m}`;
-}
-async function fetchWindpackFromApi(baseUrl, dateYYYYDDMM, cycleFF, fh) {
-  const fhStr = String(fh);
-  const url = `${baseUrl}/api/gfs0p25/file/${dateYYYYDDMM}/${cycleFF}/${fhStr}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status} for ${url}`);
-  }
-  if (!res.body || typeof DecompressionStream === "undefined") {
-    const ab2 = await res.arrayBuffer();
-    return parseWindpack(ab2);
-  }
-  const ds = new DecompressionStream("gzip");
-  const decompressedStream = res.body.pipeThrough(ds);
-  const ab = await new Response(decompressedStream).arrayBuffer();
-  return parseWindpack(ab);
-}
 const colorScale = [
   "rgb(255, 255, 255)",
   "rgb(255, 255, 170)",
@@ -13719,7 +13649,7 @@ colorScale.indexFor = function(v) {
 function startWindWorker() {
   if (!mapState.windy_proxy) {
     const worker = new Worker(
-      new URL("" + new URL("windy-layer-worker-3d47c459.js", import.meta.url).href, self.location),
+      new URL("" + new URL("windy-layer-worker-36c18292.js", import.meta.url).href, self.location),
       { type: "module" }
     );
     mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
@@ -13740,28 +13670,35 @@ function buildWindLayer() {
   });
   map2.addLayer(mapState.windyLayer);
 }
-async function updateWindLayer() {
+function updateWindLayer() {
   const apiBase = "https://wind.ityc.fr";
-  try {
-    const res = await fetch(`${apiBase}/api/gfs0p25/manifest/latest`);
-    if (!res.ok)
-      throw new Error(`HTTP ${res.status}`);
-    const manifest = await res.json();
-    const { run, forecasts } = manifest;
+  fetch(`${apiBase}/api/gfs0p25/manifest/latest`).then(function(res) {
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
+    return res.json();
+  }).then(function(manifest) {
+    const run = manifest.run;
+    const forecasts = manifest.forecasts;
     if (!run || !Array.isArray(forecasts) || forecasts.length === 0) {
       console.warn("Manifest invalide ou vide:", manifest);
       return;
     }
     const nowUnix = Math.floor(Date.now() / 1e3);
-    const existing = forecasts.filter((f) => f.exists);
+    const existing = forecasts.filter(function(f) {
+      return f.exists;
+    });
     if (!existing.length) {
       console.warn("Aucun forecast existant dans le manifest");
       return;
     }
-    existing.sort((a, b) => a.validTimeUnix - b.validTimeUnix);
+    existing.sort(function(a, b) {
+      return a.validTimeUnix - b.validTimeUnix;
+    });
     let prev = null;
     let next = null;
-    for (const f of existing) {
+    for (let i = 0; i < existing.length; i++) {
+      const f = existing[i];
       if (f.validTimeUnix <= nowUnix) {
         prev = f;
       }
@@ -13770,79 +13707,48 @@ async function updateWindLayer() {
         break;
       }
     }
+    if (!mapState.windy_proxy) {
+      console.warn("windy_proxy non initialisé");
+      return;
+    }
+    const baseFileUrl = apiBase + "/api/gfs0p25/file/" + run.date + "/" + run.cycle;
     if (!prev || !next) {
       let best = existing[0];
       let bestDiff = Math.abs(existing[0].validTimeUnix - nowUnix);
-      for (const f of existing) {
+      for (let i = 1; i < existing.length; i++) {
+        const f = existing[i];
         const diff = Math.abs(f.validTimeUnix - nowUnix);
         if (diff < bestDiff) {
           best = f;
           bestDiff = diff;
         }
       }
-      console.log("[wind] Pas d’intervalle complet, on utilise le forecast le plus proche fh=", best.fh);
-      const url = `${apiBase}/api/gfs0p25/file/${run.date}/${run.cycle}/${best.fh}`;
-      if (!mapState.windy_proxy) {
-        console.warn("windy_proxy non initialisé");
-        return;
-      }
+      console.log(
+        "[wind] Pas d’intervalle complet, on utilise le forecast le plus proche fh=",
+        best.fh
+      );
+      const url = baseFileUrl + "/" + best.fh;
       mapState.windy_proxy.goto_dtg(url);
       return;
     }
-    const span = next.validTimeUnix - prev.validTimeUnix;
-    const alpha2 = span > 0 ? (nowUnix - prev.validTimeUnix) / span : 0;
-    const clampedAlpha = Math.min(1, Math.max(0, alpha2));
-    console.log("[wind] Interpolation temps réel entre fh=", prev.fh, "et", next.fh, "alpha=", clampedAlpha.toFixed(2));
-    const [snapPrev, snapNext] = await Promise.all([
-      fetchWindpackFromApi(apiBase, run.date, run.cycle, prev.fh),
-      fetchWindpackFromApi(apiBase, run.date, run.cycle, next.fh)
-    ]);
-    const interpolated = interpolateSnapshots(snapPrev, snapNext, clampedAlpha);
-    if (!mapState.windy_proxy) {
-      console.warn("windy_proxy non initialisé");
-      return;
-    }
-    mapState.windy_proxy.assignData(interpolated, false);
-  } catch (err) {
+    const urlPrev = baseFileUrl + "/" + prev.fh;
+    const urlNext = baseFileUrl + "/" + next.fh;
+    console.log(
+      "[wind] Interpolation temps réel entre fh=",
+      prev.fh,
+      "et",
+      next.fh,
+      "nowUnix=",
+      nowUnix
+    );
+    mapState.windy_proxy.interpolateBetween(
+      urlPrev,
+      urlNext,
+      nowUnix
+    );
+  }).catch(function(err) {
     console.error("updateWindLayer error:", err);
-  }
-}
-function interpolateSnapshots(a, b, alpha2) {
-  if (!a || !b)
-    return a || b;
-  const uA = a.data && a.data[0];
-  const vA = a.data && a.data[1];
-  const uB = b.data && b.data[0];
-  const vB = b.data && b.data[1];
-  if (!uA || !vA || !uB || !vB) {
-    console.warn("Snapshots incomplets pour interpolation, fallback sur a");
-    return a;
-  }
-  if (uA.length !== uB.length || vA.length !== vB.length) {
-    console.warn("Taille U/V différente entre snapshots, fallback sur a");
-    return a;
-  }
-  const len = uA.length;
-  const uOut = new Float32Array(len);
-  const vOut = new Float32Array(len);
-  const t = Math.min(1, Math.max(0, alpha2));
-  for (let i = 0; i < len; i++) {
-    const uf = uA[i], vf = vA[i];
-    const ut = uB[i], vt = vB[i];
-    uOut[i] = uf + (ut - uf) * t;
-    vOut[i] = vf + (vt - vf) * t;
-  }
-  const header = { ...a.header };
-  const midUnix = Math.round(
-    a.header.validTimeUnix + (b.header.validTimeUnix - a.header.validTimeUnix) * t
-  );
-  header.validTimeUnix = midUnix;
-  header.refTime = unixToRefTimeString(midUnix);
-  return {
-    header,
-    data: [uOut, vOut],
-    meta: a.meta || {}
-  };
+  });
 }
 const mapState = {
   raceId: null,
