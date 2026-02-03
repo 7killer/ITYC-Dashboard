@@ -1,83 +1,147 @@
 
 export class WindyDataProxy {
 
-  constructor(wind_layer, workerOrUri) {
-      this.wind_layer = wind_layer;
-      this.curr_dtg = null;
-    
-      if (workerOrUri instanceof Worker) {
-        this.worker = workerOrUri;
-      } else if (workerOrUri) {
-        this.worker = new Worker(workerOrUri);
-      }
-    
-      if (this.worker) {
-        const self = this;
-        this.worker.onmessage = function (e) {
-          if (e.data.fetched_data) {
-            if (e.data.dtg === self.curr_dtg) {
-              self.assignData(e.data.fetched_data, e.data.transform);
-            }
-          } else if (e.data.transform_options) {
-            if (self.curr_dtg && self.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0) {
-              self.wind_layer.transformData(e.data.transform_options);
-            }
-          }
-        };
-      }
-    }
+    constructor(wind_layer, workerOrUri) {
+        this.wind_layer = wind_layer;
+        this.curr_dtg = null;
 
-    assignData(data, run_transform) {
-        var self = this
-        if (run_transform && self.wind_layer.is_active()) {
-            let from_data = self.wind_layer.data()
-            if (from_data) {
-                if (self.worker) {
-                    self.worker.postMessage({
-                        from_data: from_data,
-                        to_data: data
-                    })
-                }
-                else {
-                    let transform_options = WindyDataProxy.interpolateData(from_data, data)
-                    self.wind_layer.transformData(transform_options)
-                }
-                return self;
-            }
+        if (workerOrUri instanceof Worker) {
+        this.worker = workerOrUri;
+        } else if (workerOrUri) {
+        this.worker = new Worker(workerOrUri);
         }
 
-        self.wind_layer.setData(data)
-        return self
+        if (this.worker) {
+        const self = this;
+        this.worker.onmessage = function (e) {
+            if (e.data.fetched_data) {
+            if (e.data.dtg === self.curr_dtg) {
+                self.assignData(e.data.fetched_data, e.data.transform);
+            }
+            } else if (e.data.transform_options) {
+            // ancien mode "transform", inutilisé avec leaflet-velocity
+            if (
+                self.curr_dtg &&
+                e.data.transform_options &&
+                self.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0 &&
+                self.wind_layer &&
+                typeof self.wind_layer.transformData === 'function'
+            ) {
+                self.wind_layer.transformData(e.data.transform_options);
+            }
+            }
+        };
+        }
+    }
+
+    /**
+     * Convertit ce qui vient du worker (windpack snapshot) en payload leaflet-velocity.
+     */
+    static toVelocityPayload(raw) {
+        if (!raw) return null;
+
+        // Déjà au format leaflet-velocity ? -> on passe tel quel.
+        if (Array.isArray(raw) && raw.length >= 2 && raw[0].header && raw[1].header) {
+        return raw;
+        }
+
+        // Format "windpack" => { header, data: [uArray, vArray] }
+        if (raw.header && Array.isArray(raw.data) && raw.data.length >= 2) {
+        const header = raw.header;
+        const u = raw.data[0];
+        const v = raw.data[1];
+
+        if (!u || !v) {
+            console.warn('toVelocityPayload: U/V manquants dans le snapshot', raw);
+            return null;
+        }
+
+        const {
+            lo1,
+            la1,
+            dx,
+            dy,
+            nx,
+            ny,
+            validTimeUnix,
+            refTimeUnix,
+        } = header;
+
+        // leaflet-velocity attend un refTime en ISO
+        const refUnix = refTimeUnix || validTimeUnix;
+        const refTime =
+            typeof refUnix === 'number'
+            ? new Date(refUnix * 1000).toISOString()
+            : new Date().toISOString();
+
+        const baseHeader = {
+            parameterCategory: 2,
+            lo1,
+            la1,
+            dx,
+            dy,
+            nx,
+            ny,
+            refTime,
+        };
+
+        return [
+            {
+            header: { ...baseHeader, parameterNumber: 2 }, // UGRD
+            data: u,
+            },
+            {
+            header: { ...baseHeader, parameterNumber: 3 }, // VGRD
+            data: v,
+            },
+        ];
+        }
+
+        console.warn('toVelocityPayload: format de données inconnu', raw);
+        return null;
+    }
+
+    /**
+     * Réception des données du worker => push vers la couche leaflet-velocity.
+     * Le paramètre run_transform est ignoré (interpolation déjà faite dans le worker).
+     */
+    assignData(data /*, run_transform */) {
+        const payload = WindyDataProxy.toVelocityPayload(data);
+
+        if (!this.wind_layer || typeof this.wind_layer.setData !== 'function') {
+        console.warn('WindyDataProxy.assignData: wind_layer sans setData');
+        return this;
+        }
+
+        this.wind_layer.setData(payload);
+        return this;
     }
 
     goto_dtg(dtg) {
-        this._to_dtg(dtg, false)
+        this._to_dtg(dtg, false);
     }
 
     transform_dtg(dtg) {
-        // transform has bug
-        // if trans to fast, they might showing wrong dtg
-        this._to_dtg(dtg, true)
+        // ancien mode "transform" (non utilisé avec interpolation par worker)
+        this._to_dtg(dtg, true);
     }
 
     _to_dtg(dtg, run_transform) {
-        var self = this
-        self.curr_dtg = dtg
+        const self = this;
+        self.curr_dtg = dtg;
         if (dtg) {
-            if (self.worker) {
-                self.worker.postMessage({
-                    data_uri: dtg,
-                    transform: run_transform
-                })
-            }
-            else {
-                WindyDataProxy.fetchData(dtg, function(data) {
-                    self.assignData(data)
-                })
-            }
+        if (self.worker) {
+            self.worker.postMessage({
+            data_uri: dtg,
+            transform: run_transform,
+            });
+        } else {
+            WindyDataProxy.fetchData(dtg, function (data) {
+            self.assignData(data);
+            });
         }
-        else {
-            self.assignData(null)
+        } else {
+        self.assignData(null);
         }
     }
 

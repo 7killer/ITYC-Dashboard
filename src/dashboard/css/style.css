@@ -1421,4 +1421,7 @@ input[type="checkbox"] {
 .pill--ok { background:#1f883d; color:#fff }
 .pill--muted { background:#555; color:#fff }
 
+.leaflet-bottom.leaflet-left .leaflet-control-velocity {
+    margin-bottom: 1em !important;
+}
   

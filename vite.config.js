@@ -13,7 +13,6 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, 'src'),
       '@background': path.resolve(__dirname, 'src/background'),
       '@webapp': path.resolve(__dirname, 'src/dashboard'),
-      '@leaflet-windy': path.resolve(__dirname, 'src/vendor/leaflet-windy'),
 
     }
   },

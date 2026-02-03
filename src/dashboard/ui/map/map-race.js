@@ -55,7 +55,8 @@ export const mapState = {
     coasts :  new Map(),
     mapCurrentZoom : 0,
     windyLayer : null,
-    windy_proxy : null
+    windy_proxy : null,
+    windControl : null 
     
 };
 const MAP_CONTAINER_ID = 'lMap';

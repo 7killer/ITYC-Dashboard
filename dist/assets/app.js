@@ -1104,7 +1104,7 @@ function requireLeafletSrc() {
       function splitWords(str) {
         return trim(str).split(/\s+/);
       }
-      function setOptions(obj, options) {
+      function setOptions2(obj, options) {
         if (!Object.prototype.hasOwnProperty.call(obj, "options")) {
           obj.options = obj.options ? create$2(obj.options) : {};
         }
@@ -1184,7 +1184,7 @@ function requireLeafletSrc() {
         formatNum,
         trim,
         splitWords,
-        setOptions,
+        setOptions: setOptions2,
         getParamString,
         template,
         isArray: isArray2,
@@ -1199,7 +1199,7 @@ function requireLeafletSrc() {
       }
       Class.extend = function(props) {
         var NewClass = function() {
-          setOptions(this);
+          setOptions2(this);
           if (this.initialize) {
             this.initialize.apply(this, arguments);
           }
@@ -2539,7 +2539,7 @@ function requireLeafletSrc() {
         }
         return el.className.baseVal === void 0 ? el.className : el.className.baseVal;
       }
-      function setOpacity(el, value) {
+      function setOpacity2(el, value) {
         if ("opacity" in el.style) {
           el.style.opacity = value;
         } else if ("filter" in el.style) {
@@ -2676,7 +2676,7 @@ function requireLeafletSrc() {
         removeClass,
         setClass,
         getClass,
-        setOpacity,
+        setOpacity: setOpacity2,
         testProp,
         setTransform,
         setPosition,
@@ -3042,7 +3042,7 @@ function requireLeafletSrc() {
           trackResize: true
         },
         initialize: function(id, options) {
-          options = setOptions(this, options);
+          options = setOptions2(this, options);
           this._handlers = [];
           this._layers = {};
           this._zoomBoundLayers = {};
@@ -4190,7 +4190,7 @@ function requireLeafletSrc() {
           position: "topright"
         },
         initialize: function(options) {
-          setOptions(this, options);
+          setOptions2(this, options);
         },
         /* @section
          * Classes extending L.Control will inherit the following methods:
@@ -4319,7 +4319,7 @@ function requireLeafletSrc() {
           }
         },
         initialize: function(baseLayers, overlays, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._layerControlInputs = [];
           this._layers = [];
           this._lastZIndex = 0;
@@ -4772,7 +4772,7 @@ function requireLeafletSrc() {
           prefix: '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps">' + (Browser.inlineSvg ? ukrainianFlag + " " : "") + "Leaflet</a>"
         },
         initialize: function(options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._attributions = {};
         },
         onAdd: function(map2) {
@@ -4924,7 +4924,7 @@ function requireLeafletSrc() {
         // @constructor L.Draggable(el: HTMLElement, dragHandle?: HTMLElement, preventOutline?: Boolean, options?: Draggable options)
         // Creates a `Draggable` object for moving `el` when you start dragging the `dragHandle` element (equals `el` itself by default).
         initialize: function(element, dragStartTarget, preventOutline2, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._element = element;
           this._dragStartTarget = dragStartTarget || element;
           this._preventOutline = preventOutline2;
@@ -5572,7 +5572,7 @@ function requireLeafletSrc() {
       });
       var LayerGroup = Layer.extend({
         initialize: function(layers2, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._layers = {};
           var i, len;
           if (layers2) {
@@ -5776,7 +5776,7 @@ function requireLeafletSrc() {
           crossOrigin: false
         },
         initialize: function(options) {
-          setOptions(this, options);
+          setOptions2(this, options);
         },
         // @method createIcon(oldIcon?: HTMLElement): HTMLElement
         // Called internally when the icon has to be shown, returns a `<img>` HTML element
@@ -6019,7 +6019,7 @@ function requireLeafletSrc() {
          * In addition to [shared layer methods](#Layer) like `addTo()` and `remove()` and [popup methods](#Popup) like bindPopup() you can also use the following methods:
          */
         initialize: function(latlng, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._latlng = toLatLng(latlng);
         },
         onAdd: function(map2) {
@@ -6215,10 +6215,10 @@ function requireLeafletSrc() {
         _updateOpacity: function() {
           var opacity = this.options.opacity;
           if (this._icon) {
-            setOpacity(this._icon, opacity);
+            setOpacity2(this._icon, opacity);
           }
           if (this._shadow) {
-            setOpacity(this._shadow, opacity);
+            setOpacity2(this._shadow, opacity);
           }
         },
         _bringToFront: function() {
@@ -6320,7 +6320,7 @@ function requireLeafletSrc() {
         // @method setStyle(style: Path options): this
         // Changes the appearance of a Path based on the options in the `Path options` object.
         setStyle: function(style3) {
-          setOptions(this, style3);
+          setOptions2(this, style3);
           if (this._renderer) {
             this._renderer._updateStyle(this);
             if (this.options.stroke && style3 && Object.prototype.hasOwnProperty.call(style3, "weight")) {
@@ -6366,7 +6366,7 @@ function requireLeafletSrc() {
           radius: 10
         },
         initialize: function(latlng, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._latlng = toLatLng(latlng);
           this._radius = this.options.radius;
         },
@@ -6432,7 +6432,7 @@ function requireLeafletSrc() {
           if (typeof options === "number") {
             options = extend({}, legacyOptions, { radius: options });
           }
-          setOptions(this, options);
+          setOptions2(this, options);
           this._latlng = toLatLng(latlng);
           if (isNaN(this.options.radius)) {
             throw new Error("Circle radius cannot be NaN");
@@ -6494,7 +6494,7 @@ function requireLeafletSrc() {
           noClip: false
         },
         initialize: function(latlngs, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._setLatLngs(latlngs);
         },
         // @method getLatLngs(): LatLng[]
@@ -6808,7 +6808,7 @@ function requireLeafletSrc() {
          * Whether default Markers for "Point" type Features inherit from group options.
          */
         initialize: function(geojson, options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           this._layers = {};
           if (geojson) {
             this.addData(geojson);
@@ -7074,7 +7074,7 @@ function requireLeafletSrc() {
         initialize: function(url, bounds, options) {
           this._url = url;
           this._bounds = toLatLngBounds(bounds);
-          setOptions(this, options);
+          setOptions2(this, options);
         },
         onAdd: function() {
           if (!this._image) {
@@ -7214,7 +7214,7 @@ function requireLeafletSrc() {
           image.style.height = size.y + "px";
         },
         _updateOpacity: function() {
-          setOpacity(this._image, this.options.opacity);
+          setOpacity2(this._image, this.options.opacity);
         },
         _updateZIndex: function() {
           if (this._image && this.options.zIndex !== void 0 && this.options.zIndex !== null) {
@@ -7349,9 +7349,9 @@ function requireLeafletSrc() {
         initialize: function(options, source) {
           if (options && (options instanceof LatLng || isArray2(options))) {
             this._latlng = toLatLng(options);
-            setOptions(this, source);
+            setOptions2(this, source);
           } else {
-            setOptions(this, options);
+            setOptions2(this, options);
             this._source = source;
           }
           if (this.options.content) {
@@ -7402,13 +7402,13 @@ function requireLeafletSrc() {
             this._initLayout();
           }
           if (map2._fadeAnimated) {
-            setOpacity(this._container, 0);
+            setOpacity2(this._container, 0);
           }
           clearTimeout(this._removeTimeout);
           this.getPane().appendChild(this._container);
           this.update();
           if (map2._fadeAnimated) {
-            setOpacity(this._container, 1);
+            setOpacity2(this._container, 1);
           }
           this.bringToFront();
           if (this.options.interactive) {
@@ -7418,7 +7418,7 @@ function requireLeafletSrc() {
         },
         onRemove: function(map2) {
           if (map2._fadeAnimated) {
-            setOpacity(this._container, 0);
+            setOpacity2(this._container, 0);
             this._removeTimeout = setTimeout(bind(remove, void 0, this._container), 200);
           } else {
             remove(this._container);
@@ -7593,7 +7593,7 @@ function requireLeafletSrc() {
         _initOverlay: function(OverlayClass, old, content, options) {
           var overlay = content;
           if (overlay instanceof OverlayClass) {
-            setOptions(overlay, options);
+            setOptions2(overlay, options);
             overlay._source = this;
           } else {
             overlay = old && !options ? old : new OverlayClass(options, this);
@@ -8020,7 +8020,7 @@ function requireLeafletSrc() {
         setOpacity: function(opacity) {
           this.options.opacity = opacity;
           if (this._container) {
-            setOpacity(this._container, opacity);
+            setOpacity2(this._container, opacity);
           }
         },
         _animateZoom: function(e) {
@@ -8305,7 +8305,7 @@ function requireLeafletSrc() {
           keepBuffer: 2
         },
         initialize: function(options) {
-          setOptions(this, options);
+          setOptions2(this, options);
         },
         onAdd: function() {
           this._initContainer();
@@ -8438,7 +8438,7 @@ function requireLeafletSrc() {
           if (Browser.ielt9) {
             return;
           }
-          setOpacity(this._container, this.options.opacity);
+          setOpacity2(this._container, this.options.opacity);
           var now = +/* @__PURE__ */ new Date(), nextFrame = false, willPrune = false;
           for (var key in this._tiles) {
             var tile = this._tiles[key];
@@ -8446,7 +8446,7 @@ function requireLeafletSrc() {
               continue;
             }
             var fade = Math.min(1, (now - tile.loaded) / 200);
-            setOpacity(tile.el, fade);
+            setOpacity2(tile.el, fade);
             if (fade < 1) {
               nextFrame = true;
             } else {
@@ -8795,7 +8795,7 @@ function requireLeafletSrc() {
           tile.onselectstart = falseFn;
           tile.onmousemove = falseFn;
           if (Browser.ielt9 && this.options.opacity < 1) {
-            setOpacity(tile, this.options.opacity);
+            setOpacity2(tile, this.options.opacity);
           }
         },
         _addTile: function(coords, container) {
@@ -8832,7 +8832,7 @@ function requireLeafletSrc() {
           }
           tile.loaded = +/* @__PURE__ */ new Date();
           if (this._map._fadeAnimated) {
-            setOpacity(tile.el, 0);
+            setOpacity2(tile.el, 0);
             cancelAnimFrame(this._fadeFrame);
             this._fadeFrame = requestAnimFrame2(this._updateOpacity, this);
           } else {
@@ -8929,7 +8929,7 @@ function requireLeafletSrc() {
         },
         initialize: function(url, options) {
           this._url = url;
-          options = setOptions(this, options);
+          options = setOptions2(this, options);
           if (options.detectRetina && Browser.retina && options.maxZoom > 0) {
             options.tileSize = Math.floor(options.tileSize / 2);
             if (!options.zoomReverse) {
@@ -9114,7 +9114,7 @@ function requireLeafletSrc() {
               wmsParams[i] = options[i];
             }
           }
-          options = setOptions(this, options);
+          options = setOptions2(this, options);
           var realRetina = options.detectRetina && Browser.retina ? 2 : 1;
           var tileSize = this.getTileSize();
           wmsParams.width = tileSize.x * realRetina;
@@ -9157,7 +9157,7 @@ function requireLeafletSrc() {
           padding: 0.1
         },
         initialize: function(options) {
-          setOptions(this, options);
+          setOptions2(this, options);
           stamp(this);
           this._layers = this._layers || {};
         },
@@ -10552,7 +10552,7 @@ function requireLeafletSrc() {
       exports2.polyline = polyline;
       exports2.popup = popup;
       exports2.rectangle = rectangle;
-      exports2.setOptions = setOptions;
+      exports2.setOptions = setOptions2;
       exports2.stamp = stamp;
       exports2.svg = svg;
       exports2.svgOverlay = svgOverlay;
@@ -11036,7 +11036,7 @@ const Leaflet_Coordinates0_1_5 = "";
         pixelSize: 10,
         pathOptions: {}
       },
-      initialize: function initialize(options) {
+      initialize: function initialize3(options) {
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
@@ -11066,7 +11066,7 @@ const Leaflet_Coordinates0_1_5 = "";
           weight: 2
         }
       },
-      initialize: function initialize(options) {
+      initialize: function initialize3(options) {
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
@@ -11093,7 +11093,7 @@ const Leaflet_Coordinates0_1_5 = "";
         markerOptions: {},
         rotate: false
       },
-      initialize: function initialize(options) {
+      initialize: function initialize3(options) {
         L$12.Util.setOptions(this, options);
         this.options.markerOptions.clickable = false;
         this.options.markerOptions.draggable = false;
@@ -11118,7 +11118,7 @@ const Leaflet_Coordinates0_1_5 = "";
       options: {
         patterns: []
       },
-      initialize: function initialize(paths, options) {
+      initialize: function initialize3(paths, options) {
         L$12.FeatureGroup.prototype.initialize.call(this);
         L$12.Util.setOptions(this, options);
         this._map = null;
@@ -11182,12 +11182,12 @@ const Leaflet_Coordinates0_1_5 = "";
           repeat: parseRelativeOrAbsoluteValue(patternDef.repeat)
         };
       },
-      onAdd: function onAdd(map2) {
+      onAdd: function onAdd4(map2) {
         this._map = map2;
         this._draw();
         this._map.on("moveend", this.redraw, this);
       },
-      onRemove: function onRemove(map2) {
+      onRemove: function onRemove4(map2) {
         this._map.off("moveend", this.redraw, this);
         this._map = null;
         L$12.FeatureGroup.prototype.onRemove.call(this, map2);
@@ -12016,17 +12016,436 @@ if (typeof window.L !== "undefined") {
     return new (GeodesicCircleClass.bind.apply(GeodesicCircleClass, __spreadArray([void 0], args, false)))();
   };
 }
-const Windy = function(params) {
-  var VELOCITY_SCALE = 0.011;
-  var INTENSITY_SCALE_STEP = 10;
-  var MAX_WIND_INTENSITY = 40;
-  var MAX_PARTICLE_AGE = 100;
-  var PARTICLE_LINE_WIDTH = 2;
-  var PARTICLE_MULTIPLIER = 1 / 30;
-  var PARTICLE_REDUCTION = 0.75;
-  var FRAME_RATE = 20;
+const leafletVelocity = "";
+if (!L.DomUtil.setTransform) {
+  L.DomUtil.setTransform = function(el, offset, scale) {
+    var pos = offset || new L.Point(0, 0);
+    el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
+  };
+}
+L.CanvasLayer = (L.Layer ? L.Layer : L.Class).extend({
+  // -- initialized is called on prototype
+  initialize: function initialize(options) {
+    this._map = null;
+    this._canvas = null;
+    this._frame = null;
+    this._delegate = null;
+    L.setOptions(this, options);
+  },
+  delegate: function delegate(del) {
+    this._delegate = del;
+    return this;
+  },
+  needRedraw: function needRedraw() {
+    if (!this._frame) {
+      this._frame = L.Util.requestAnimFrame(this.drawLayer, this);
+    }
+    return this;
+  },
+  //-------------------------------------------------------------
+  _onLayerDidResize: function _onLayerDidResize(resizeEvent) {
+    this._canvas.width = resizeEvent.newSize.x;
+    this._canvas.height = resizeEvent.newSize.y;
+  },
+  //-------------------------------------------------------------
+  _onLayerDidMove: function _onLayerDidMove() {
+    var topLeft = this._map.containerPointToLayerPoint([0, 0]);
+    L.DomUtil.setPosition(this._canvas, topLeft);
+    this.drawLayer();
+  },
+  //-------------------------------------------------------------
+  getEvents: function getEvents() {
+    var events = {
+      resize: this._onLayerDidResize,
+      moveend: this._onLayerDidMove
+    };
+    if (this._map.options.zoomAnimation && L.Browser.any3d) {
+      events.zoomanim = this._animateZoom;
+    }
+    return events;
+  },
+  //-------------------------------------------------------------
+  onAdd: function onAdd(map2) {
+    this._map = map2;
+    this._canvas = L.DomUtil.create("canvas", "leaflet-layer");
+    this.tiles = {};
+    var size = this._map.getSize();
+    this._canvas.width = size.x;
+    this._canvas.height = size.y;
+    var animated = this._map.options.zoomAnimation && L.Browser.any3d;
+    L.DomUtil.addClass(this._canvas, "leaflet-zoom-" + (animated ? "animated" : "hide"));
+    this.options.pane.appendChild(this._canvas);
+    map2.on(this.getEvents(), this);
+    var del = this._delegate || this;
+    del.onLayerDidMount && del.onLayerDidMount();
+    this.needRedraw();
+    var self2 = this;
+    setTimeout(function() {
+      self2._onLayerDidMove();
+    }, 0);
+  },
+  //-------------------------------------------------------------
+  onRemove: function onRemove(map2) {
+    var del = this._delegate || this;
+    del.onLayerWillUnmount && del.onLayerWillUnmount();
+    this.options.pane.removeChild(this._canvas);
+    map2.off(this.getEvents(), this);
+    this._canvas = null;
+  },
+  //------------------------------------------------------------
+  addTo: function addTo(map2) {
+    map2.addLayer(this);
+    return this;
+  },
+  //------------------------------------------------------------------------------
+  drawLayer: function drawLayer() {
+    var size = this._map.getSize();
+    var bounds = this._map.getBounds();
+    var zoom2 = this._map.getZoom();
+    var center = this._map.options.crs.project(this._map.getCenter());
+    var corner = this._map.options.crs.project(this._map.containerPointToLatLng(this._map.getSize()));
+    var del = this._delegate || this;
+    del.onDrawLayer && del.onDrawLayer({
+      layer: this,
+      canvas: this._canvas,
+      bounds,
+      size,
+      zoom: zoom2,
+      center,
+      corner
+    });
+    this._frame = null;
+  },
+  // -- L.DomUtil.setTransform from leaflet 1.0.0 to work on 0.0.7
+  //------------------------------------------------------------------------------
+  _setTransform: function _setTransform(el, offset, scale) {
+    var pos = offset || new L.Point(0, 0);
+    el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
+  },
+  //------------------------------------------------------------------------------
+  _animateZoom: function _animateZoom(e) {
+    var scale = this._map.getZoomScale(e.zoom);
+    var offset = L.Layer ? this._map._latLngToNewLayerPoint(this._map.getBounds().getNorthWest(), e.zoom, e.center) : this._map._getCenterOffset(e.center)._multiplyBy(-scale).subtract(this._map._getMapPanePos());
+    L.DomUtil.setTransform(this._canvas, offset, scale);
+  }
+});
+L.canvasLayer = function(pane) {
+  return new L.CanvasLayer(pane);
+};
+L.Control.Velocity = L.Control.extend({
+  options: {
+    position: "bottomleft",
+    emptyString: "Unavailable",
+    // Could be any combination of 'bearing' (angle toward which the flow goes) or 'meteo' (angle from which the flow comes)
+    // and 'CW' (angle value increases clock-wise) or 'CCW' (angle value increases counter clock-wise)
+    angleConvention: "bearingCCW",
+    showCardinal: false,
+    // Could be 'm/s' for meter per second, 'k/h' for kilometer per hour, 'mph' for miles per hour or 'kt' for knots
+    speedUnit: "m/s",
+    directionString: "Direction",
+    speedString: "Speed",
+    onAdd: null,
+    onRemove: null
+  },
+  onAdd: function onAdd2(map2) {
+    this._container = L.DomUtil.create("div", "leaflet-control-velocity");
+    L.DomEvent.disableClickPropagation(this._container);
+    map2.on("mousemove", this._onMouseMove, this);
+    this._container.innerHTML = this.options.emptyString;
+    if (this.options.leafletVelocity.options.onAdd)
+      this.options.leafletVelocity.options.onAdd();
+    return this._container;
+  },
+  onRemove: function onRemove2(map2) {
+    map2.off("mousemove", this._onMouseMove, this);
+    if (this.options.leafletVelocity.options.onRemove)
+      this.options.leafletVelocity.options.onRemove();
+  },
+  vectorToSpeed: function vectorToSpeed(uMs, vMs, unit) {
+    var velocityAbs = Math.sqrt(Math.pow(uMs, 2) + Math.pow(vMs, 2));
+    if (unit === "k/h") {
+      return this.meterSec2kilometerHour(velocityAbs);
+    } else if (unit === "kt") {
+      return this.meterSec2Knots(velocityAbs);
+    } else if (unit === "mph") {
+      return this.meterSec2milesHour(velocityAbs);
+    } else {
+      return velocityAbs;
+    }
+  },
+  vectorToDegrees: function vectorToDegrees(uMs, vMs, angleConvention) {
+    if (angleConvention.endsWith("CCW")) {
+      vMs = vMs > 0 ? vMs = -vMs : Math.abs(vMs);
+    }
+    var velocityAbs = Math.sqrt(Math.pow(uMs, 2) + Math.pow(vMs, 2));
+    var velocityDir = Math.atan2(uMs / velocityAbs, vMs / velocityAbs);
+    var velocityDirToDegrees = velocityDir * 180 / Math.PI + 180;
+    if (angleConvention === "bearingCW" || angleConvention === "meteoCCW") {
+      velocityDirToDegrees += 180;
+      if (velocityDirToDegrees >= 360)
+        velocityDirToDegrees -= 360;
+    }
+    return velocityDirToDegrees;
+  },
+  degreesToCardinalDirection: function degreesToCardinalDirection(deg) {
+    var cardinalDirection = "";
+    if (deg >= 0 && deg < 11.25 || deg >= 348.75) {
+      cardinalDirection = "N";
+    } else if (deg >= 11.25 && deg < 33.75) {
+      cardinalDirection = "NNW";
+    } else if (deg >= 33.75 && deg < 56.25) {
+      cardinalDirection = "NW";
+    } else if (deg >= 56.25 && deg < 78.75) {
+      cardinalDirection = "WNW";
+    } else if (deg >= 78.25 && deg < 101.25) {
+      cardinalDirection = "W";
+    } else if (deg >= 101.25 && deg < 123.75) {
+      cardinalDirection = "WSW";
+    } else if (deg >= 123.75 && deg < 146.25) {
+      cardinalDirection = "SW";
+    } else if (deg >= 146.25 && deg < 168.75) {
+      cardinalDirection = "SSW";
+    } else if (deg >= 168.75 && deg < 191.25) {
+      cardinalDirection = "S";
+    } else if (deg >= 191.25 && deg < 213.75) {
+      cardinalDirection = "SSE";
+    } else if (deg >= 213.75 && deg < 236.25) {
+      cardinalDirection = "SE";
+    } else if (deg >= 236.25 && deg < 258.75) {
+      cardinalDirection = "ESE";
+    } else if (deg >= 258.75 && deg < 281.25) {
+      cardinalDirection = "E";
+    } else if (deg >= 281.25 && deg < 303.75) {
+      cardinalDirection = "ENE";
+    } else if (deg >= 303.75 && deg < 326.25) {
+      cardinalDirection = "NE";
+    } else if (deg >= 326.25 && deg < 348.75) {
+      cardinalDirection = "NNE";
+    }
+    return cardinalDirection;
+  },
+  meterSec2Knots: function meterSec2Knots(meters) {
+    return meters / 0.514;
+  },
+  meterSec2kilometerHour: function meterSec2kilometerHour(meters) {
+    return meters * 3.6;
+  },
+  meterSec2milesHour: function meterSec2milesHour(meters) {
+    return meters * 2.23694;
+  },
+  _onMouseMove: function _onMouseMove(e) {
+    var self2 = this;
+    var pos = this.options.leafletVelocity._map.containerPointToLatLng(L.point(e.containerPoint.x, e.containerPoint.y));
+    var gridValue = this.options.leafletVelocity._windy.interpolatePoint(pos.lng, pos.lat);
+    var htmlOut = "";
+    if (gridValue && !isNaN(gridValue[0]) && !isNaN(gridValue[1]) && gridValue[2]) {
+      var deg = self2.vectorToDegrees(gridValue[0], gridValue[1], this.options.angleConvention);
+      var cardinal = this.options.showCardinal ? " (".concat(self2.degreesToCardinalDirection(deg), ") ") : "";
+      htmlOut = "<strong> ".concat(this.options.velocityType, " ").concat(this.options.directionString, ": </strong> ").concat(deg.toFixed(2), "°").concat(cardinal, ", <strong> ").concat(this.options.velocityType, " ").concat(this.options.speedString, ": </strong> ").concat(self2.vectorToSpeed(gridValue[0], gridValue[1], this.options.speedUnit).toFixed(2), " ").concat(this.options.speedUnit);
+    } else {
+      htmlOut = this.options.emptyString;
+    }
+    self2._container.innerHTML = htmlOut;
+  }
+});
+L.Map.mergeOptions({
+  positionControl: false
+});
+L.Map.addInitHook(function() {
+  if (this.options.positionControl) {
+    this.positionControl = new L.Control.MousePosition();
+    this.addControl(this.positionControl);
+  }
+});
+L.control.velocity = function(options) {
+  return new L.Control.Velocity(options);
+};
+L.VelocityLayer = (L.Layer ? L.Layer : L.Class).extend({
+  options: {
+    displayValues: true,
+    displayOptions: {
+      velocityType: "Velocity",
+      position: "bottomleft",
+      emptyString: "No velocity data"
+    },
+    maxVelocity: 10,
+    // used to align color scale
+    colorScale: null,
+    data: null
+  },
+  _map: null,
+  _canvasLayer: null,
+  _windy: null,
+  _context: null,
+  _timer: 0,
+  _mouseControl: null,
+  initialize: function initialize2(options) {
+    L.setOptions(this, options);
+  },
+  onAdd: function onAdd3(map2) {
+    this._paneName = this.options.paneName || "overlayPane";
+    var pane = map2._panes.overlayPane;
+    if (map2.getPane) {
+      pane = map2.getPane(this._paneName);
+      if (!pane) {
+        pane = map2.createPane(this._paneName);
+      }
+    }
+    this._canvasLayer = L.canvasLayer({
+      pane
+    }).delegate(this);
+    this._canvasLayer.addTo(map2);
+    this._map = map2;
+  },
+  onRemove: function onRemove3(map2) {
+    this._destroyWind();
+  },
+  setData: function setData(data) {
+    this.options.data = data;
+    if (this._windy) {
+      this._windy.setData(data);
+      this._clearAndRestart();
+    }
+    this.fire("load");
+  },
+  setOpacity: function setOpacity(opacity) {
+    this._canvasLayer.setOpacity(opacity);
+  },
+  setOptions: function setOptions(options) {
+    this.options = Object.assign(this.options, options);
+    if (options.hasOwnProperty("displayOptions")) {
+      this.options.displayOptions = Object.assign(this.options.displayOptions, options.displayOptions);
+      this._initMouseHandler(true);
+    }
+    if (options.hasOwnProperty("data"))
+      this.options.data = options.data;
+    if (this._windy) {
+      this._windy.setOptions(options);
+      if (options.hasOwnProperty("data"))
+        this._windy.setData(options.data);
+      this._clearAndRestart();
+    }
+    this.fire("load");
+  },
+  /*------------------------------------ PRIVATE ------------------------------------------*/
+  onDrawLayer: function onDrawLayer(overlay, params) {
+    var self2 = this;
+    if (!this._windy) {
+      this._initWindy(this);
+      return;
+    }
+    if (!this.options.data) {
+      return;
+    }
+    if (this._timer)
+      clearTimeout(self2._timer);
+    this._timer = setTimeout(function() {
+      self2._startWindy();
+    }, 750);
+  },
+  _startWindy: function _startWindy() {
+    var bounds = this._map.getBounds();
+    var size = this._map.getSize();
+    this._windy.start([[0, 0], [size.x, size.y]], size.x, size.y, [[bounds._southWest.lng, bounds._southWest.lat], [bounds._northEast.lng, bounds._northEast.lat]]);
+  },
+  _initWindy: function _initWindy(self2) {
+    var options = Object.assign({
+      canvas: self2._canvasLayer._canvas,
+      map: this._map
+    }, self2.options);
+    this._windy = new Windy(options);
+    this._context = this._canvasLayer._canvas.getContext("2d");
+    this._canvasLayer._canvas.classList.add("velocity-overlay");
+    this.onDrawLayer();
+    this._map.on("dragstart", self2._windy.stop);
+    this._map.on("dragend", self2._clearAndRestart);
+    this._map.on("zoomstart", self2._windy.stop);
+    this._map.on("zoomend", self2._clearAndRestart);
+    this._map.on("resize", self2._clearWind);
+    this._initMouseHandler(false);
+  },
+  _initMouseHandler: function _initMouseHandler(voidPrevious) {
+    if (voidPrevious) {
+      this._map.removeControl(this._mouseControl);
+      this._mouseControl = false;
+    }
+    if (!this._mouseControl && this.options.displayValues) {
+      var options = this.options.displayOptions || {};
+      options["leafletVelocity"] = this;
+      this._mouseControl = L.control.velocity(options).addTo(this._map);
+    }
+  },
+  _clearAndRestart: function _clearAndRestart() {
+    if (this._context)
+      this._context.clearRect(0, 0, 3e3, 3e3);
+    if (this._windy)
+      this._startWindy();
+  },
+  _clearWind: function _clearWind() {
+    if (this._windy)
+      this._windy.stop();
+    if (this._context)
+      this._context.clearRect(0, 0, 3e3, 3e3);
+  },
+  _destroyWind: function _destroyWind() {
+    if (this._timer)
+      clearTimeout(this._timer);
+    if (this._windy)
+      this._windy.stop();
+    if (this._context)
+      this._context.clearRect(0, 0, 3e3, 3e3);
+    if (this._mouseControl)
+      this._map.removeControl(this._mouseControl);
+    this._mouseControl = null;
+    this._windy = null;
+    this._map.removeLayer(this._canvasLayer);
+  }
+});
+L.velocityLayer = function(options) {
+  return new L.VelocityLayer(options);
+};
+var Windy = function Windy2(params) {
+  var MIN_VELOCITY_INTENSITY = params.minVelocity || 0;
+  var MAX_VELOCITY_INTENSITY = params.maxVelocity || 10;
+  var VELOCITY_SCALE = (params.velocityScale || 5e-3) * (Math.pow(window.devicePixelRatio, 1 / 3) || 1);
+  var MAX_PARTICLE_AGE = params.particleAge || 90;
+  var PARTICLE_LINE_WIDTH = params.lineWidth || 1;
+  var PARTICLE_MULTIPLIER = params.particleMultiplier || 1 / 300;
+  var PARTICLE_REDUCTION = Math.pow(window.devicePixelRatio, 1 / 3) || 1.6;
+  var FRAME_RATE = params.frameRate || 15;
+  var FRAME_TIME = 1e3 / FRAME_RATE;
+  var OPACITY = 0.97;
+  var defaulColorScale = ["rgb(36,104, 180)", "rgb(60,157, 194)", "rgb(128,205,193 )", "rgb(151,218,168 )", "rgb(198,231,181)", "rgb(238,247,217)", "rgb(255,238,159)", "rgb(252,217,125)", "rgb(255,182,100)", "rgb(252,150,75)", "rgb(250,112,52)", "rgb(245,64,32)", "rgb(237,45,28)", "rgb(220,24,32)", "rgb(180,0,35)"];
+  var colorScale2 = params.colorScale || defaulColorScale;
   var NULL_WIND_VECTOR = [NaN, NaN, null];
-  var bilinearInterpolateVector = function(x, y, g00, g10, g01, g11) {
+  var builder;
+  var grid;
+  var gridData = params.data;
+  var date;
+  var λ0, φ0, Δλ, Δφ, ni, nj;
+  var setData2 = function setData3(data) {
+    gridData = data;
+  };
+  var setOptions2 = function setOptions3(options) {
+    if (options.hasOwnProperty("minVelocity"))
+      MIN_VELOCITY_INTENSITY = options.minVelocity;
+    if (options.hasOwnProperty("maxVelocity"))
+      MAX_VELOCITY_INTENSITY = options.maxVelocity;
+    if (options.hasOwnProperty("velocityScale"))
+      VELOCITY_SCALE = (options.velocityScale || 5e-3) * (Math.pow(window.devicePixelRatio, 1 / 3) || 1);
+    if (options.hasOwnProperty("particleAge"))
+      MAX_PARTICLE_AGE = options.particleAge;
+    if (options.hasOwnProperty("lineWidth"))
+      PARTICLE_LINE_WIDTH = options.lineWidth;
+    if (options.hasOwnProperty("particleMultiplier"))
+      PARTICLE_MULTIPLIER = options.particleMultiplier;
+    if (options.hasOwnProperty("opacity"))
+      OPACITY = +options.opacity;
+    if (options.hasOwnProperty("frameRate"))
+      FRAME_RATE = options.frameRate;
+    FRAME_TIME = 1e3 / FRAME_RATE;
+  };
+  var bilinearInterpolateVector = function bilinearInterpolateVector2(x, y, g00, g10, g01, g11) {
     var rx = 1 - x;
     var ry = 1 - y;
     var a = rx * ry, b = x * ry, c = rx * y, d = x * y;
@@ -12034,73 +12453,80 @@ const Windy = function(params) {
     var v = g00[1] * a + g10[1] * b + g01[1] * c + g11[1] * d;
     return [u, v, Math.sqrt(u * u + v * v)];
   };
-  var createWindBuilder = function(uComp, vComp) {
+  var createWindBuilder = function createWindBuilder2(uComp, vComp) {
     var uData = uComp.data, vData = vComp.data;
     return {
       header: uComp.header,
       //recipe: recipeFor("wind-" + uComp.header.surface1Value),
-      data: function(i) {
+      data: function data(i) {
         return [uData[i], vData[i]];
       },
       interpolate: bilinearInterpolateVector
     };
   };
-  var createBuilder = function(data) {
-    if (Array.isArray(data)) {
-      var uComp = null, vComp = null;
-      data.forEach(function(record) {
-        if (!record || !record.header)
-          return;
-        switch (record.header.parameterCategory + "," + record.header.parameterNumber) {
-          case "2,2":
-            uComp = record;
-            break;
-          case "2,3":
-            vComp = record;
-            break;
-        }
-      });
-      if (!uComp || !vComp) {
-        throw new Error("Windy: U/V components not found in data[]");
+  var createBuilder = function createBuilder2(data) {
+    var uComp = null, vComp = null;
+    data.forEach(function(record) {
+      switch (record.header.parameterCategory + "," + record.header.parameterNumber) {
+        case "1,2":
+        case "2,2":
+          uComp = record;
+          break;
+        case "1,3":
+        case "2,3":
+          vComp = record;
+          break;
       }
-      return createWindBuilder(uComp, vComp);
-    }
-    if (data && data.header && Array.isArray(data.data) && data.data.length >= 2) {
-      var header = data.header;
-      var uArr = data.data[0];
-      var vArr = data.data[1];
-      var commonHeader = {
-        lo1: header.lo1,
-        la1: header.la1,
-        dx: header.dx,
-        dy: header.dy,
-        nx: header.nx,
-        ny: header.ny,
-        refTime: header.refTime || "197001010000",
-        // pour compat avec ton WindyDataProxy.interpolateData
-        forecastTime: header.forecastTime || 0
-      };
-      var uComp2 = {
-        header: commonHeader,
-        data: uArr
-      };
-      var vComp2 = {
-        header: commonHeader,
-        data: vArr
-      };
-      return createWindBuilder(uComp2, vComp2);
-    }
-    throw new Error("Windy: unsupported data format");
+    });
+    return createWindBuilder(uComp, vComp);
   };
-  var buildGrid = function(data, callback2) {
-    var builder = createBuilder(data);
+  var buildGrid = function buildGrid2(data, callback2) {
+    var supported = true;
+    if (data.length < 2)
+      supported = false;
+    if (!supported)
+      console.log("Windy Error: data must have at least two components (u,v)");
+    builder = createBuilder(data);
     var header = builder.header;
-    var λ0 = header.lo1, φ0 = header.la1;
-    var Δλ = header.dx, Δφ = header.dy;
-    var ni = header.nx, nj = header.ny;
-    var date = new Date(header.refTime);
+    if (header.hasOwnProperty("gridDefinitionTemplate") && header.gridDefinitionTemplate != 0)
+      supported = false;
+    if (!supported) {
+      console.log("Windy Error: Only data with Latitude_Longitude coordinates is supported");
+    }
+    supported = true;
+    λ0 = header.lo1;
+    φ0 = header.la1;
+    Δλ = header.dx;
+    Δφ = header.dy;
+    ni = header.nx;
+    nj = header.ny;
+    if (header.hasOwnProperty("scanMode")) {
+      var scanModeMask = header.scanMode.toString(2);
+      scanModeMask = ("0" + scanModeMask).slice(-8);
+      var scanModeMaskArray = scanModeMask.split("").map(Number).map(Boolean);
+      if (scanModeMaskArray[0])
+        Δλ = -Δλ;
+      if (scanModeMaskArray[1])
+        Δφ = -Δφ;
+      if (scanModeMaskArray[2])
+        supported = false;
+      if (scanModeMaskArray[3])
+        supported = false;
+      if (scanModeMaskArray[4])
+        supported = false;
+      if (scanModeMaskArray[5])
+        supported = false;
+      if (scanModeMaskArray[6])
+        supported = false;
+      if (scanModeMaskArray[7])
+        supported = false;
+      if (!supported)
+        console.log("Windy Error: Data with scanMode: " + header.scanMode + " is not supported.");
+    }
+    date = new Date(header.refTime);
     date.setHours(date.getHours() + header.forecastTime);
-    var grid = [], p = 0;
+    grid = [];
+    var p = 0;
     var isContinuous = Math.floor(ni * Δλ) >= 360;
     for (var j = 0; j < nj; j++) {
       var row = [];
@@ -12112,63 +12538,60 @@ const Windy = function(params) {
       }
       grid[j] = row;
     }
-    function interpolate2(λ, φ) {
-      var i2 = floorMod(λ - λ0, 360) / Δλ;
-      var j2 = (φ0 - φ) / Δφ;
-      var fi = Math.floor(i2), ci = fi + 1;
-      var fj = Math.floor(j2), cj = fj + 1;
-      var row2;
-      if (row2 = grid[fj]) {
-        var g00 = row2[fi];
-        var g10 = row2[ci];
-        if (isValue(g00) && isValue(g10) && (row2 = grid[cj])) {
-          var g01 = row2[fi];
-          var g11 = row2[ci];
-          if (isValue(g01) && isValue(g11)) {
-            return builder.interpolate(i2 - fi, j2 - fj, g00, g10, g01, g11);
-          }
-        }
-      }
-      return null;
-    }
     callback2({
       date,
       interpolate: interpolate2
     });
   };
-  var isValue = function(x) {
+  var interpolate2 = function interpolate3(λ, φ) {
+    if (!grid)
+      return null;
+    var i = floorMod(λ - λ0, 360) / Δλ;
+    var j = (φ0 - φ) / Δφ;
+    var fi = Math.floor(i), ci = fi + 1;
+    var fj = Math.floor(j), cj = fj + 1;
+    var row;
+    if (row = grid[fj]) {
+      var g00 = row[fi];
+      var g10 = row[ci];
+      if (isValue(g00) && isValue(g10) && (row = grid[cj])) {
+        var g01 = row[fi];
+        var g11 = row[ci];
+        if (isValue(g01) && isValue(g11)) {
+          return builder.interpolate(i - fi, j - fj, g00, g10, g01, g11);
+        }
+      }
+    }
+    return null;
+  };
+  var isValue = function isValue2(x) {
     return x !== null && x !== void 0;
   };
-  var floorMod = function(a, n) {
+  var floorMod = function floorMod2(a, n) {
     return a - n * Math.floor(a / n);
   };
-  var isMobile = function() {
+  var isMobile = function isMobile2() {
     return /android|blackberry|iemobile|ipad|iphone|ipod|opera mini|webos/i.test(navigator.userAgent);
   };
-  var distort = function(projection, λ, φ, x, y, scale, wind, windy2) {
+  var distort = function distort2(projection, λ, φ, x, y, scale, wind) {
     var u = wind[0] * scale;
     var v = wind[1] * scale;
-    var d = distortion(projection, λ, φ, x, y, windy2);
+    var d = distortion(projection, λ, φ, x, y);
     wind[0] = d[0] * u + d[2] * v;
     wind[1] = d[1] * u + d[3] * v;
     return wind;
   };
-  var distortion = function(projection, λ, φ, x, y, windy2) {
+  var distortion = function distortion2(projection, λ, φ, x, y) {
     var τ = 2 * Math.PI;
-    var H = Math.pow(10, -5.2);
+    var H = 5;
     var hλ = λ < 0 ? H : -H;
     var hφ = φ < 0 ? H : -H;
-    var pλ = project(φ, λ + hλ, windy2);
-    var pφ = project(φ + hφ, λ, windy2);
+    var pλ = project(φ, λ + hλ);
+    var pφ = project(φ + hφ, λ);
     var k = Math.cos(φ / 360 * τ);
-    return [
-      (pλ[0] - x) / hλ / k,
-      (pλ[1] - y) / hλ / k,
-      (pφ[0] - x) / hφ,
-      (pφ[1] - y) / hφ
-    ];
+    return [(pλ[0] - x) / hλ / k, (pλ[1] - y) / hλ / k, (pφ[0] - x) / hφ, (pφ[1] - y) / hφ];
   };
-  var createField = function(columns, bounds, callback2) {
+  var createField = function createField2(columns, bounds, callback2) {
     function field(x, y) {
       var column = columns[Math.round(x)];
       return column && column[Math.round(y)] || NULL_WIND_VECTOR;
@@ -12189,59 +12612,49 @@ const Windy = function(params) {
     };
     callback2(bounds, field);
   };
-  var buildBounds = function(bounds, width, height) {
+  var buildBounds = function buildBounds2(bounds, width, height) {
     var upperLeft = bounds[0];
     var lowerRight = bounds[1];
     var x = Math.round(upperLeft[0]);
     var y = Math.max(Math.floor(upperLeft[1], 0), 0);
     Math.min(Math.ceil(lowerRight[0], width), width - 1);
     var yMax = Math.min(Math.ceil(lowerRight[1], height), height - 1);
-    return { x, y, xMax: width, yMax, width, height };
+    return {
+      x,
+      y,
+      xMax: width,
+      yMax,
+      width,
+      height
+    };
   };
-  var deg2rad = function(deg) {
+  var deg2rad = function deg2rad2(deg) {
     return deg / 180 * Math.PI;
   };
-  var rad2deg = function(ang) {
-    return ang / (Math.PI / 180);
+  var invert = function invert2(x, y, windy2) {
+    var latlon = params.map.containerPointToLatLng(L.point(x, y));
+    return [latlon.lng, latlon.lat];
   };
-  var invert = function(x, y, windy2) {
-    var mapLonDelta = windy2.east - windy2.west;
-    var worldMapRadius = windy2.width / rad2deg(mapLonDelta) * 360 / (2 * Math.PI);
-    var mapOffsetY = worldMapRadius / 2 * Math.log((1 + Math.sin(windy2.south)) / (1 - Math.sin(windy2.south)));
-    var equatorY = windy2.height + mapOffsetY;
-    var a = (equatorY - y) / worldMapRadius;
-    var lat = 180 / Math.PI * (2 * Math.atan(Math.exp(a)) - Math.PI / 2);
-    var lon = rad2deg(windy2.west) + x / windy2.width * rad2deg(mapLonDelta);
-    return [lon, lat];
+  var project = function project2(lat, lon, windy2) {
+    var xy = params.map.latLngToContainerPoint(L.latLng(lat, lon));
+    return [xy.x, xy.y];
   };
-  var mercY = function(lat) {
-    return Math.log(Math.tan(lat / 2 + Math.PI / 4));
-  };
-  var project = function(lat, lon, windy2) {
-    var ymin = mercY(windy2.south);
-    var ymax = mercY(windy2.north);
-    var xFactor = windy2.width / (windy2.east - windy2.west);
-    var yFactor = windy2.height / (ymax - ymin);
-    var y = mercY(deg2rad(lat));
-    var x = (deg2rad(lon) - windy2.west) * xFactor;
-    var y = (ymax - y) * yFactor;
-    return [x, y];
-  };
-  var interpolateField = function(grid, bounds, extent, callback2) {
+  var interpolateField = function interpolateField2(grid2, bounds, extent, callback2) {
     var projection = {};
-    var velocityScale = VELOCITY_SCALE;
+    var mapArea = (extent.south - extent.north) * (extent.west - extent.east);
+    var velocityScale = VELOCITY_SCALE * Math.pow(mapArea, 0.4);
     var columns = [];
     var x = bounds.x;
     function interpolateColumn(x2) {
       var column = [];
       for (var y = bounds.y; y <= bounds.yMax; y += 2) {
-        var coord = invert(x2, y, extent);
+        var coord = invert(x2, y);
         if (coord) {
           var λ = coord[0], φ = coord[1];
           if (isFinite(λ)) {
-            var wind = grid.interpolate(λ, φ);
+            var wind = grid2.interpolate(λ, φ);
             if (wind) {
-              wind = distort(projection, λ, φ, x2, y, velocityScale, wind, extent);
+              wind = distort(projection, λ, φ, x2, y, velocityScale, wind);
               column[y + 1] = column[y] = wind;
             }
           }
@@ -12262,49 +12675,15 @@ const Windy = function(params) {
       createField(columns, bounds, callback2);
     })();
   };
-  var animate = function(bounds, field) {
-    function hexToR(h3) {
-      return parseInt(cutHex(h3).substring(0, 2), 16);
-    }
-    function hexToG(h3) {
-      return parseInt(cutHex(h3).substring(2, 4), 16);
-    }
-    function hexToB(h3) {
-      return parseInt(cutHex(h3).substring(4, 6), 16);
-    }
-    function cutHex(h3) {
-      return h3.charAt(0) == "#" ? h3.substring(1, 7) : h3;
-    }
-    function windIntensityColorScale(step, maxWind) {
-      var result = [
-        "rgba(" + hexToR("#178be7") + ", " + hexToG("#178be7") + ", " + hexToB("#178be7") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#8888bd") + ", " + hexToG("#8888bd") + ", " + hexToB("#8888bd") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#b28499") + ", " + hexToG("#b28499") + ", " + hexToB("#b28499") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#cc7e78") + ", " + hexToG("#cc7e78") + ", " + hexToB("#cc7e78") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#de765b") + ", " + hexToG("#de765b") + ", " + hexToB("#de765b") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#ec6c42") + ", " + hexToG("#ec6c42") + ", " + hexToB("#ec6c42") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#f55f2c") + ", " + hexToG("#f55f2c") + ", " + hexToB("#f55f2c") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#fb4f17") + ", " + hexToG("#fb4f17") + ", " + hexToB("#fb4f17") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#fe3705") + ", " + hexToG("#fe3705") + ", " + hexToB("#fe3705") + ", " + 0.5 + ")",
-        "rgba(" + hexToR("#ff0000") + ", " + hexToG("#ff0000") + ", " + hexToB("#ff0000") + ", " + 0.5 + ")"
-        /*
-        "rgba(" + hexToR('#00ffff') + ", " + hexToG('#00ffff') + ", " + hexToB('#00ffff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#64f0ff') + ", " + hexToG('#64f0ff') + ", " + hexToB('#64f0ff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#87e1ff') + ", " + hexToG('#87e1ff') + ", " + hexToB('#87e1ff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#a0d0ff') + ", " + hexToG('#a0d0ff') + ", " + hexToB('#a0d0ff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#b5c0ff') + ", " + hexToG('#b5c0ff') + ", " + hexToB('#b5c0ff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#c6adff') + ", " + hexToG('#c6adff') + ", " + hexToB('#c6adff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#d49bff') + ", " + hexToG('#d49bff') + ", " + hexToB('#d49bff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#e185ff') + ", " + hexToG('#e185ff') + ", " + hexToB('#e185ff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#ec6dff') + ", " + hexToG('#ec6dff') + ", " + hexToB('#ec6dff') + ", " + 0.5 + ")",
-        "rgba(" + hexToR('#ff1edb') + ", " + hexToG('#ff1edb') + ", " + hexToB('#ff1edb') + ", " + 0.5 + ")"          */
-      ];
-      result.indexFor = function(m) {
-        return Math.floor(Math.min(m, maxWind) / maxWind * (result.length - 1));
+  var animationLoop;
+  var animate = function animate2(bounds, field) {
+    function windIntensityColorScale(min, max) {
+      colorScale2.indexFor = function(m) {
+        return Math.max(0, Math.min(colorScale2.length - 1, Math.round((m - min) / (max - min) * (colorScale2.length - 1))));
       };
-      return result;
+      return colorScale2;
     }
-    var colorStyles = windIntensityColorScale(INTENSITY_SCALE_STEP, MAX_WIND_INTENSITY);
+    var colorStyles = windIntensityColorScale(MIN_VELOCITY_INTENSITY, MAX_VELOCITY_INTENSITY);
     var buckets = colorStyles.map(function() {
       return [];
     });
@@ -12312,10 +12691,12 @@ const Windy = function(params) {
     if (isMobile()) {
       particleCount *= PARTICLE_REDUCTION;
     }
-    var fadeFillStyle = "rgba(0, 0, 0, 0.97)";
+    var fadeFillStyle = "rgba(0, 0, 0, ".concat(OPACITY, ")");
     var particles = [];
     for (var i = 0; i < particleCount; i++) {
-      particles.push(field.randomize({ age: Math.floor(Math.random() * MAX_PARTICLE_AGE) + 0 }));
+      particles.push(field.randomize({
+        age: Math.floor(Math.random() * MAX_PARTICLE_AGE) + 0
+      }));
     }
     function evolve() {
       buckets.forEach(function(bucket) {
@@ -12349,11 +12730,13 @@ const Windy = function(params) {
     var g = params.canvas.getContext("2d");
     g.lineWidth = PARTICLE_LINE_WIDTH;
     g.fillStyle = fadeFillStyle;
+    g.globalAlpha = 0.6;
     function draw2() {
-      var prev = g.globalCompositeOperation;
+      var prev = "lighter";
       g.globalCompositeOperation = "destination-in";
       g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
       g.globalCompositeOperation = prev;
+      g.globalAlpha = OPACITY === 0 ? 0 : OPACITY * 0.9;
       buckets.forEach(function(bucket, i2) {
         if (bucket.length > 0) {
           g.beginPath();
@@ -12368,19 +12751,19 @@ const Windy = function(params) {
         }
       });
     }
+    var then = Date.now();
     (function frame() {
-      try {
-        windy.timer = setTimeout(function() {
-          requestAnimationFrame(frame);
-          evolve();
-          draw2();
-        }, 1e3 / FRAME_RATE);
-      } catch (e) {
-        console.error(e);
+      animationLoop = requestAnimationFrame(frame);
+      var now = Date.now();
+      var delta = now - then;
+      if (delta > FRAME_TIME) {
+        then = now - delta % FRAME_TIME;
+        evolve();
+        draw2();
       }
     })();
   };
-  var start = function(bounds, width, height, extent) {
+  var start = function start2(bounds, width, height, extent) {
     var mapBounds = {
       south: deg2rad(extent[0][1]),
       north: deg2rad(extent[1][1]),
@@ -12390,346 +12773,35 @@ const Windy = function(params) {
       height
     };
     stop();
-    buildGrid(params.data, function(grid) {
-      interpolateField(grid, buildBounds(bounds, width, height), mapBounds, function(bounds2, field) {
+    buildGrid(gridData, function(grid2) {
+      interpolateField(grid2, buildBounds(bounds, width, height), mapBounds, function(bounds2, field) {
         windy.field = field;
         animate(bounds2, field);
       });
     });
   };
-  var stop = function() {
+  var stop = function stop2() {
     if (windy.field)
       windy.field.release();
-    if (windy.timer)
-      clearTimeout(windy.timer);
+    if (animationLoop)
+      cancelAnimationFrame(animationLoop);
   };
   var windy = {
     params,
     start,
-    stop
+    stop,
+    createField,
+    interpolatePoint: interpolate2,
+    setData: setData2,
+    setOptions: setOptions2
   };
   return windy;
 };
-window.requestAnimationFrame = function() {
-  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback2) {
-    window.setTimeout(callback2, 1e3 / 20);
+if (!window.cancelAnimationFrame) {
+  window.cancelAnimationFrame = function(id) {
+    clearTimeout(id);
   };
-}();
-L.DomUtil.setTransform = L.DomUtil.setTransform || function(el, offset, scale) {
-  var pos = offset || new L.Point(0, 0);
-  el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
-};
-L.WindCanvas = (L.Layer ? L.Layer : L.Class).extend({
-  options: {
-    opacity: 1,
-    pane: "overlayPane"
-  },
-  // -- initialized is called on prototype
-  initialize: function(options) {
-    this._map = null;
-    this._canvas = null;
-    this._frame = null;
-    this._delegate = null;
-    L.setOptions(this, options);
-  },
-  delegate: function(del) {
-    this._delegate = del;
-    return this;
-  },
-  needRedraw: function() {
-    if (!this._frame) {
-      this._frame = L.Util.requestAnimFrame(this.drawLayer, this);
-    }
-    return this;
-  },
-  clear: function() {
-    this._canvas1.getContext("2d").clearRect(0, 0, 3e3, 3e3);
-    this._canvas2.getContext("2d").clearRect(0, 0, 3e3, 3e3);
-  },
-  //-------------------------------------------------------------
-  _onLayerDidResize: function(resizeEvent) {
-    if (resizeEvent) {
-      var go_hide_canvas = null;
-      if (this._canvas == this._canvas2) {
-        this._canvas = this._canvas1;
-        L.DomUtil.removeClass(this._canvas1, "leaflet-layer-fade");
-        this._canvas1.style.opacity = this.options.opacity;
-        go_hide_canvas = this._canvas2;
-      } else {
-        this._canvas = this._canvas2;
-        L.DomUtil.removeClass(this._canvas2, "leaflet-layer-fade");
-        this._canvas2.style.opacity = this.options.opacity;
-        go_hide_canvas = this._canvas1;
-      }
-      this._canvas1.width = resizeEvent.newSize.x;
-      this._canvas1.height = resizeEvent.newSize.y;
-      this._canvas2.width = resizeEvent.newSize.x;
-      this._canvas2.height = resizeEvent.newSize.y;
-      L.DomUtil.addClass(go_hide_canvas, "leaflet-layer-fade");
-      go_hide_canvas.style.opacity = 0;
-    }
-  },
-  //-------------------------------------------------------------
-  _onLayerDidMove: function() {
-    var go_hide_canvas = null;
-    if (this._canvas == this._canvas2) {
-      this._canvas = this._canvas1;
-      this._canvas.getContext("2d").clearRect(0, 0, 3e3, 3e3);
-      L.DomUtil.removeClass(this._canvas1, "leaflet-layer-fade");
-      this._canvas1.style.opacity = this.options.opacity;
-      go_hide_canvas = this._canvas2;
-    } else {
-      this._canvas = this._canvas2;
-      this._canvas.getContext("2d").clearRect(0, 0, 3e3, 3e3);
-      L.DomUtil.removeClass(this._canvas2, "leaflet-layer-fade");
-      this._canvas2.style.opacity = this.options.opacity;
-      go_hide_canvas = this._canvas1;
-    }
-    var topLeft = this._map.containerPointToLayerPoint([0, 0]);
-    L.DomUtil.setPosition(this._canvas, topLeft);
-    this.drawLayer(true);
-    L.DomUtil.addClass(go_hide_canvas, "leaflet-layer-fade");
-    go_hide_canvas.style.opacity = 0;
-  },
-  _onLayerDidZoom: function() {
-  },
-  //-------------------------------------------------------------
-  getEvents: function() {
-    var events = {
-      resize: this._onLayerDidResize,
-      moveend: this._onLayerDidMove,
-      zoomend: this._onLayerDidZoom
-    };
-    if (this._map.options.zoomAnimation && L.Browser.any3d) {
-      events.zoomanim = this._animateZoom;
-    }
-    return events;
-  },
-  //-------------------------------------------------------------
-  onAdd: function(map2) {
-    this._map = map2;
-    this._canvas1 = L.DomUtil.create("canvas", "leaflet-layer");
-    this._canvas2 = L.DomUtil.create("canvas", "leaflet-layer");
-    if (typeof this.options.zIndex !== "undefined") {
-      this._canvas1.style.zIndex = this.options.zIndex;
-      this._canvas2.style.zIndex = this.options.zIndex;
-    }
-    if (typeof this.options.className !== "undefined") {
-      L.DomUtil.addClass(this._canvas1, this.options.className);
-      L.DomUtil.addClass(this._canvas2, this.options.className);
-    }
-    this._canvas1.style.opacity = this.options.opacity;
-    this._canvas2.style.opacity = 0;
-    this._canvas = this._canvas1;
-    var size = this._map.getSize();
-    this._canvas1.width = size.x;
-    this._canvas1.height = size.y;
-    this._canvas2.width = size.x;
-    this._canvas2.height = size.y;
-    var animated = this._map.options.zoomAnimation && L.Browser.any3d;
-    L.DomUtil.addClass(this._canvas1, "leaflet-zoom-" + (animated ? "animated" : "hide"));
-    L.DomUtil.addClass(this._canvas2, "leaflet-zoom-" + (animated ? "animated" : "hide"));
-    map2._panes[this.options.pane].appendChild(this._canvas1);
-    map2._panes[this.options.pane].appendChild(this._canvas2);
-    var topLeft = this._map.containerPointToLayerPoint([0, 0]);
-    L.DomUtil.setPosition(this._canvas1, topLeft);
-    L.DomUtil.setPosition(this._canvas2, topLeft);
-    map2.on(this.getEvents(), this);
-    var del = this._delegate || this;
-    del.onLayerDidMount && del.onLayerDidMount();
-    this.needRedraw();
-  },
-  //-------------------------------------------------------------
-  onRemove: function(map2) {
-    var del = this._delegate || this;
-    del.onLayerWillUnmount && del.onLayerWillUnmount();
-    if (this._frame) {
-      L.Util.cancelAnimFrame(this._frame);
-    }
-    map2.getPanes().overlayPane.removeChild(this._canvas);
-    map2.off(this.getEvents(), this);
-    this._canvas = null;
-  },
-  //------------------------------------------------------------
-  addTo: function(map2) {
-    map2.addLayer(this);
-    return this;
-  },
-  // --------------------------------------------------------------------------------
-  LatLonToMercator: function(latlon) {
-    return {
-      x: latlon.lng * 6378137 * Math.PI / 180,
-      y: Math.log(Math.tan((90 + latlon.lat) * Math.PI / 360)) * 6378137
-    };
-  },
-  //------------------------------------------------------------------------------
-  drawLayer: function(no_worker) {
-    var size = this._map.getSize();
-    var bounds = this._map.getBounds();
-    var zoom2 = this._map.getZoom();
-    var center = this.LatLonToMercator(this._map.getCenter());
-    var corner = this.LatLonToMercator(this._map.containerPointToLatLng(this._map.getSize()));
-    var del = this._delegate || this;
-    del.onDrawLayer && del.onDrawLayer({
-      layer: this,
-      canvas: this._canvas,
-      bounds,
-      size,
-      zoom: zoom2,
-      center,
-      corner,
-      no_worker
-    });
-    this._frame = null;
-  },
-  // -- L.DomUtil.setTransform from leaflet 1.0.0 to work on 0.0.7
-  //------------------------------------------------------------------------------
-  _setTransform: function(el, offset, scale) {
-    var pos = offset || new L.Point(0, 0);
-    el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
-  },
-  //------------------------------------------------------------------------------
-  _animateZoom: function(e) {
-    var scale = this._map.getZoomScale(e.zoom);
-    var offset = L.Layer ? this._map._latLngBoundsToNewLayerBounds(this._map.getBounds(), e.zoom, e.center).min : this._map._getCenterOffset(e.center)._multiplyBy(-scale).subtract(this._map._getMapPanePos());
-    L.DomUtil.setTransform(this._canvas, offset, scale);
-  }
-});
-L.windCanvas = function(options) {
-  return new L.WindCanvas(options);
-};
-L.WindyLayer = (L.Layer ? L.Layer : L.Class).extend({
-  options: {},
-  _map: null,
-  _canvasLayer: null,
-  _windy: null,
-  _transform_animate: null,
-  initialize: function(options) {
-    L.setOptions(this, options);
-  },
-  onAdd: function(map2) {
-    let options = {};
-    if (typeof this.options.opacity !== "undefined") {
-      options.opacity = this.options.opacity;
-    }
-    if (typeof this.options.pane !== "undefined") {
-      options.pane = this.options.pane;
-    }
-    if (typeof this.options.zIndex !== "undefined") {
-      options.zIndex = this.options.zIndex;
-    }
-    if (typeof this.options.className !== "undefined") {
-      options.className = this.options.className;
-    }
-    this._canvasLayer = L.windCanvas(options).delegate(this);
-    this._canvasLayer.addTo(map2);
-    this._map = map2;
-  },
-  onRemove: function(map2) {
-    this._destroyWind();
-  },
-  is_active: function() {
-    return !!this._windy;
-  },
-  data: function() {
-    return this.options.data;
-  },
-  transformData: function(transform_options) {
-    var self2 = this;
-    if (transform_options.data && transform_options.data.length > 0) {
-      if (self2._transform_animate) {
-        cancelAnimationFrame(self2._transform_animate);
-      }
-      self2._transform_animate = null;
-      if (self2._windy && transform_options.speed) {
-        var interpolated_data = transform_options.data, interpolated_speed = transform_options.speed;
-        self2.transform_speed = self2.options.transform_speed || 2e3;
-        self2.transform_idx = 0;
-        (function transform_animate() {
-          if (self2.transform_idx >= 0 && self2.transform_idx < interpolated_data.length) {
-            let data = interpolated_data[self2.transform_idx];
-            self2.setData(data);
-            if (self2.transform_idx < interpolated_data.length - 1) {
-              self2.transform_idx++;
-              self2._transform_animate = setTimeout(
-                transform_animate,
-                self2.transform_speed * interpolated_speed
-              );
-              return;
-            }
-          }
-          interpolated_data = [];
-        })();
-      } else {
-        self2.setData(transform_options.data[transform_options.data.length - 1]);
-      }
-    }
-    return self2;
-  },
-  setData: function(new_data) {
-    console.log("WindyLayer.setData", new_data && new_data.header);
-    this.options.data = new_data;
-    if (this._windy && this._map) {
-      var size = this._map.getSize();
-      var bounds = this._map.getBounds();
-      let params = this._buildParams(size, bounds);
-      this._windy.params.data = new_data;
-      this._windy.start(params[0], params[1], params[2], params[3]);
-    }
-    return this;
-  },
-  onDrawLayer: function(params) {
-    let [bounds, width, height, extent] = this._buildParams(params.size, params.bounds);
-    if (!this.options.data) {
-      return this;
-    }
-    if (!this._windy) {
-      this._windy = new Windy({
-        canvas: params.canvas,
-        data: this.options.data || []
-      });
-    } else {
-      this._windy.params.canvas = params.canvas;
-    }
-    if (this.options.data) {
-      this._windy.params.data = this.options.data;
-    }
-    this._windy.start(bounds, width, height, extent);
-    return this;
-  },
-  _buildParams: function(size, bounds) {
-    return [
-      [
-        [0, 0],
-        [size.x, size.y]
-      ],
-      size.x,
-      size.y,
-      [
-        [bounds._southWest.lng, bounds._southWest.lat],
-        [bounds._northEast.lng, bounds._northEast.lat]
-      ]
-    ];
-  },
-  _destroyWind: function() {
-    if (this._transform_animate) {
-      cancelAnimationFrame(this._transform_animate);
-      this._transform_animate = null;
-    }
-    if (this._windy) {
-      this._windy.stop();
-      this._windy = null;
-    }
-    if (this._canvasLayer) {
-      this._canvasLayer.clear();
-      this._map.removeLayer(this._canvasLayer);
-      this._canvasLayer = null;
-    }
-  }
-});
-L.windyLayer = function(options) {
-  return new L.WindyLayer(options);
-};
+}
 globalThis.L = L$1;
 function ensureLayerControlClickable(ctrl) {
   const c = ctrl && ctrl._container;
@@ -13472,32 +13544,80 @@ class WindyDataProxy {
             self2.assignData(e.data.fetched_data, e.data.transform);
           }
         } else if (e.data.transform_options) {
-          if (self2.curr_dtg && self2.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0) {
+          if (self2.curr_dtg && e.data.transform_options && self2.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0 && self2.wind_layer && typeof self2.wind_layer.transformData === "function") {
             self2.wind_layer.transformData(e.data.transform_options);
           }
         }
       };
     }
   }
-  assignData(data, run_transform) {
-    var self2 = this;
-    if (run_transform && self2.wind_layer.is_active()) {
-      let from_data = self2.wind_layer.data();
-      if (from_data) {
-        if (self2.worker) {
-          self2.worker.postMessage({
-            from_data,
-            to_data: data
-          });
-        } else {
-          let transform_options = WindyDataProxy.interpolateData(from_data, data);
-          self2.wind_layer.transformData(transform_options);
-        }
-        return self2;
-      }
+  /**
+   * Convertit ce qui vient du worker (windpack snapshot) en payload leaflet-velocity.
+   */
+  static toVelocityPayload(raw) {
+    if (!raw)
+      return null;
+    if (Array.isArray(raw) && raw.length >= 2 && raw[0].header && raw[1].header) {
+      return raw;
     }
-    self2.wind_layer.setData(data);
-    return self2;
+    if (raw.header && Array.isArray(raw.data) && raw.data.length >= 2) {
+      const header = raw.header;
+      const u = raw.data[0];
+      const v = raw.data[1];
+      if (!u || !v) {
+        console.warn("toVelocityPayload: U/V manquants dans le snapshot", raw);
+        return null;
+      }
+      const {
+        lo1,
+        la1,
+        dx,
+        dy,
+        nx,
+        ny,
+        validTimeUnix,
+        refTimeUnix
+      } = header;
+      const refUnix = refTimeUnix || validTimeUnix;
+      const refTime = typeof refUnix === "number" ? new Date(refUnix * 1e3).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
+      const baseHeader = {
+        parameterCategory: 2,
+        lo1,
+        la1,
+        dx,
+        dy,
+        nx,
+        ny,
+        refTime
+      };
+      return [
+        {
+          header: { ...baseHeader, parameterNumber: 2 },
+          // UGRD
+          data: u
+        },
+        {
+          header: { ...baseHeader, parameterNumber: 3 },
+          // VGRD
+          data: v
+        }
+      ];
+    }
+    console.warn("toVelocityPayload: format de données inconnu", raw);
+    return null;
+  }
+  /**
+   * Réception des données du worker => push vers la couche leaflet-velocity.
+   * Le paramètre run_transform est ignoré (interpolation déjà faite dans le worker).
+   */
+  assignData(data) {
+    const payload = WindyDataProxy.toVelocityPayload(data);
+    if (!this.wind_layer || typeof this.wind_layer.setData !== "function") {
+      console.warn("WindyDataProxy.assignData: wind_layer sans setData");
+      return this;
+    }
+    this.wind_layer.setData(payload);
+    return this;
   }
   goto_dtg(dtg) {
     this._to_dtg(dtg, false);
@@ -13506,7 +13626,7 @@ class WindyDataProxy {
     this._to_dtg(dtg, true);
   }
   _to_dtg(dtg, run_transform) {
-    var self2 = this;
+    const self2 = this;
     self2.curr_dtg = dtg;
     if (dtg) {
       if (self2.worker) {
@@ -13599,53 +13719,19 @@ class WindyDataProxy {
   }
 }
 const colorScale = [
-  "rgb(255, 255, 255)",
-  "rgb(255, 255, 170)",
-  "rgb(255, 255, 85)",
-  "rgb(255, 255, 0)",
-  // 3
-  "rgb(255, 224, 0)",
-  "rgb(255, 193, 0)",
-  "rgb(255, 159, 0)",
-  "rgb(255, 127, 0)",
-  // 7
-  "rgb(255, 96, 0)",
-  "rgb(255, 64, 0)",
-  "rgb(255, 32, 0)",
-  "rgb(255, 0, 0)",
-  // 11
-  "rgb(170, 0, 170)",
-  "rgb(85, 0, 170)"
+  "#1e3f5a",
+  "#225ea8",
+  "#1d91c0",
+  "#41b6c4",
+  "#7fcdbb",
+  "#c7e9b4",
+  "#ffff8c",
+  "#feda61",
+  "#fd8d3c",
+  "#f03b20",
+  "#bd0026",
+  "#7b1fa2"
 ];
-colorScale.indexFor = function(v) {
-  if (v < 10.8)
-    return 0;
-  if (v < 13.9)
-    return 1;
-  if (v < 17.2)
-    return 2;
-  if (v < 20.8)
-    return 3;
-  if (v < 24.5)
-    return 4;
-  if (v < 28.5)
-    return 5;
-  if (v < 32.7)
-    return 6;
-  if (v < 37)
-    return 7;
-  if (v < 41.5)
-    return 8;
-  if (v < 46.2)
-    return 9;
-  if (v < 51)
-    return 10;
-  if (v < 56.1)
-    return 11;
-  if (v < 61.2)
-    return 12;
-  return 13;
-};
 function startWindWorker() {
   if (!mapState.windy_proxy) {
     const worker = new Worker(
@@ -13662,11 +13748,27 @@ function buildWindLayer() {
   if (mapState.windyLayer) {
     map2.removeLayer(mapState.windyLayer);
   }
-  mapState.windyLayer = L$1.windyLayer({
-    colorScale,
-    // worker_uri: "../wind-js/mdmv-worker.js",
+  mapState.windyLayer = L$1.velocityLayer({
+    // on laisse data à null, elle sera poussée par WindyDataProxy.setData()
+    data: null,
     opacity: 0.6,
-    pane: "shadowPane"
+    pane: "shadowPane",
+    colorScale,
+    // notre palette
+    //    velocityScale: 0.005, // à tweaker pour la longueur des particules
+    velocityScale: 0.01,
+    // à tweaker pour la longueur des particules
+    displayValues: true,
+    displayOptions: {
+      velocityType: "Vent",
+      position: "bottomleft",
+      emptyString: "Aucune donnée",
+      angleConvention: "bearingCW",
+      speedUnit: "kts",
+      showCardinal: true,
+      directionString: "Direction",
+      speedString: "Vitesse"
+    }
   });
   map2.addLayer(mapState.windyLayer);
 }
@@ -13741,11 +13843,7 @@ function updateWindLayer() {
       "nowUnix=",
       nowUnix
     );
-    mapState.windy_proxy.interpolateBetween(
-      urlPrev,
-      urlNext,
-      nowUnix
-    );
+    mapState.windy_proxy.interpolateBetween(urlPrev, urlNext, nowUnix);
   }).catch(function(err) {
     console.error("updateWindLayer error:", err);
   });
@@ -13778,7 +13876,8 @@ const mapState = {
   coasts: /* @__PURE__ */ new Map(),
   mapCurrentZoom: 0,
   windyLayer: null,
-  windy_proxy: null
+  windy_proxy: null,
+  windControl: null
 };
 const MAP_CONTAINER_ID = "lMap";
 const COAST_MIN_ZOOM = 7;

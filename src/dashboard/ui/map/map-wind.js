@@ -1,76 +1,107 @@
-
-import { mapState,updateBounds } from './map-race.js';
+// map-wind.js
+import { mapState, updateBounds } from './map-race.js';
 import L from '@/dashboard/ui/map/leaflet-setup';
-import {getUserPrefs} from "../../../common/userPrefs.js"
-import {WindyDataProxy} from '@leaflet-windy/WindyDataProxy.js'; // selon ton organisation
-import { fetchWindpackFromApi, unixToRefTimeString } from './wind/windpackClient.js';
+import { getUserPrefs } from '../../../common/userPrefs.js';
+import { WindyDataProxy } from './wind/WindyDataProxy.js';
+
+// IMPORTANT : plugin leaflet-velocity
 
 
+// Palette Beaufort (on la réutilise pour leaflet-velocity)
+/*const colorScale = [
+  'rgb(255, 255, 255)',
+  'rgb(255, 255, 170)',
+  'rgb(255, 255, 85)',
+  'rgb(255, 255, 0)', // 3
+  'rgb(255, 224, 0)',
+  'rgb(255, 193, 0)',
+  'rgb(255, 159, 0)',
+  'rgb(255, 127, 0)', // 7
+  'rgb(255, 96, 0)',
+  'rgb(255, 64, 0)',
+  'rgb(255, 32, 0)',
+  'rgb(255, 0, 0)', // 11
+  'rgb(170, 0, 170)',
+  'rgb(85, 0, 170)',
+];*/
 const colorScale = [
-    "rgb(255, 255, 255)",
-    "rgb(255, 255, 170)",
-    "rgb(255, 255, 85)",
-    "rgb(255, 255, 0)", // 3
-    "rgb(255, 224, 0)",
-    "rgb(255, 193, 0)",
-    "rgb(255, 159, 0)",
-    "rgb(255, 127, 0)", // 7
-    "rgb(255, 96, 0)",
-    "rgb(255, 64, 0)",
-    "rgb(255, 32, 0)",
-    "rgb(255, 0, 0)", // 11
-    "rgb(170, 0, 170)",
-    "rgb(85, 0, 170)",
+  '#1e3f5a',
+  '#225ea8',
+  '#1d91c0',
+  '#41b6c4',
+  '#7fcdbb',
+  '#c7e9b4',
+  '#ffff8c',
+  '#feda61',
+  '#fd8d3c',
+  '#f03b20',
+  '#bd0026',
+  '#7b1fa2',
 ];
-colorScale.indexFor = function(v) {
-    if (v < 10.8) return 0;
-    if (v < 13.9) return 1;
-    if (v < 17.2) return 2;
-    if (v < 20.8) return 3;
-    if (v < 24.5) return 4;
-    if (v < 28.5) return 5;
-    if (v < 32.7) return 6;
-    if (v < 37.0) return 7;
-    if (v < 41.5) return 8;
-    if (v < 46.2) return 9;
-    if (v < 51.0) return 10;
-    if (v < 56.1) return 11;
-    if (v < 61.2) return 12;
-    return 13
-};
 
 
-export function startWindWorker()
-{
-    if(!mapState.windy_proxy )
-    {
-        const worker = new Worker(
-            new URL('./wind/windy-layer-worker.js', import.meta.url),
-            { type: 'module' }
-        );
-        mapState.windy_proxy  = new WindyDataProxy(mapState.windyLayer, worker);
-    }
+// ─────────────────────────────────────────────
+// Worker + proxy
+// ─────────────────────────────────────────────
+
+export function startWindWorker() {
+  if (!mapState.windy_proxy) {
+    const worker = new Worker(
+      new URL('./wind/windy-layer-worker.js', import.meta.url),
+      { type: 'module' }
+    );
+    mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
+  }
 }
 
+// ─────────────────────────────────────────────
+// Construction de la couche vent (leaflet-velocity)
+// ─────────────────────────────────────────────
 
-export function buildWindLayer()
-{
-    if (!mapState.map) return;
+export function buildWindLayer() {
+  if (!mapState.map) return;
 
-    const map = mapState.map;
+  const map = mapState.map;
 
-    if(mapState.windyLayer)
-    {
-        map.removeLayer(mapState.windyLayer);
-    }
-    mapState.windyLayer = L.windyLayer({
-        colorScale: colorScale,
-        // worker_uri: "../wind-js/mdmv-worker.js",
-        opacity: 0.6,
-        pane: 'shadowPane'
-    });
-    map.addLayer(mapState.windyLayer);
+  if (mapState.windyLayer) {
+    map.removeLayer(mapState.windyLayer);
+
+  }
+  if (mapState.windControl) {
+    map.removeControl(mapState.windControl);
+    mapState.windControl = null;
+  }
+
+  // leaflet-velocity
+  mapState.windyLayer = L.velocityLayer({
+    // on laisse data à null, elle sera poussée par WindyDataProxy.setData()
+    data: null,
+    opacity: 0.6,
+    pane: 'shadowPane',
+    colorScale, // notre palette
+//    velocityScale: 0.005, // à tweaker pour la longueur des particules
+    velocityScale: 0.01, // à tweaker pour la longueur des particules
+    displayValues: true,
+    displayOptions: {
+      velocityType: 'Vent',
+      position: 'bottomleft',
+      emptyString: 'Aucune donnée',
+      angleConvention: 'bearingCW',
+      speedUnit: 'kts',
+      showCardinal: true,
+      directionString: 'Direction',
+      speedString: 'Vitesse',
+    },
+  });
+
+  map.addLayer(mapState.windyLayer);
+
 }
+
+// ─────────────────────────────────────────────
+// Récup du manifest & interpolation temps réel
+// ─────────────────────────────────────────────
+
 export function updateWindLayer() {
   const apiBase = 'https://wind.ityc.fr'; // proxy vers ton Node
 
@@ -154,7 +185,7 @@ export function updateWindLayer() {
         return;
       }
 
-      // Cas normal : interpolation
+      // Cas normal : interpolation entre prev & next
       const urlPrev = baseFileUrl + '/' + prev.fh;
       const urlNext = baseFileUrl + '/' + next.fh;
 
@@ -167,11 +198,7 @@ export function updateWindLayer() {
         nowUnix
       );
 
-      mapState.windy_proxy.interpolateBetween(
-        urlPrev,
-        urlNext,
-        nowUnix
-      );
+      mapState.windy_proxy.interpolateBetween(urlPrev, urlNext, nowUnix);
     })
     .catch(function (err) {
       console.error('updateWindLayer error:', err);
