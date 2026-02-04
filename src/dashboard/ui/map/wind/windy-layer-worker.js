@@ -98,7 +98,8 @@ async function fetchAnyWindData(uri) {
   const isWindpack =
     uri.endsWith('.wpack') ||
     uri.endsWith('.wpack.gz') ||
-    uri.includes('/api/gfs0p25/file/');
+    uri.includes('/api/gfs0p25/file/') ||
+    uri.startsWith('blob:');
 
   const res = await fetch(uri);
   if (!res.ok) {

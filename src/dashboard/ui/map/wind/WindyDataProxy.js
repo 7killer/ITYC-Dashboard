@@ -1,4 +1,8 @@
 
+import { mapState } from '../map-race.js';
+import { requestAutoWindUpdate } from '../map-wind.js';
+
+
 export class WindyDataProxy {
 
     constructor(wind_layer, workerOrUri) {
@@ -112,11 +116,33 @@ export class WindyDataProxy {
         console.warn('WindyDataProxy.assignData: wind_layer sans setData');
         return this;
         }
+        if (payload) {
+            // on profite du fait que map-wind utilise mapState
+            try {
+            // import { mapState } from '...'; en haut du fichier si ce n’est pas déjà fait
+            mapState.windSettings.lastData = payload;
+            requestAutoWindUpdate();
+            // proto de mode auto : on estime un max en nds sur l’ensemble du fichier
+            const u = payload[0].data;
+            const v = payload[1].data;
+            let maxKts = 0;
+            for (let i = 0; i < u.length; i++) {
+                const uu = u[i];
+                const vv = v[i];
+                if (uu == null || vv == null) continue;
+                const speedMs = Math.sqrt(uu * uu + vv * vv);
+                const speedKts = speedMs * 1.943844;
+                if (speedKts > maxKts) maxKts = speedKts;
+            }
+            mapState.windSettings.autoMaxKts = Math.max(10, Math.round(maxKts));
+            } catch (e) {
+            console.warn('Erreur calcul autoMaxKts', e);
+            }
+        }
 
         this.wind_layer.setData(payload);
         return this;
     }
-
     goto_dtg(dtg) {
         this._to_dtg(dtg, false);
     }

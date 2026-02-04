@@ -4,130 +4,137 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 
 export async function openDatabase() {
     try {
         return await openDB(DB_NAME, DB_VERSION, {
             upgrade(db) {
-                if (!db.objectStoreNames.contains('internal')) {
-                    const store = db.createObjectStore('internal', { keyPath: 'id' });
-                    if(cfg.debugDB) console.log('Created "internal" object store');
-              
-                    store.add({
+              if (!db.objectStoreNames.contains('internal')) {
+                  const store = db.createObjectStore('internal', { keyPath: 'id' });
+                  if(cfg.debugDB) console.log('Created "internal" object store');
+            
+                  store.add({
 //                      key: "paramStamina",
-                      id: "paramStamina",
-                      paramStamina: paramStamina
-                    }) ;
-                    store.add({
-                        id : 'lastLoggedUser',
-                        loggedUser : null
-                    });
-                    store.add({
-                        id : 'lastOpennedRace',
-                        raceId : null,
-                        legNum : null,
-                        lastOpennedRace : null
-                    });
-                    store.add({
-                        id: "playersUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "teamsUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "polarsUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legListUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legFleetInfosUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legPlayersInfosUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legFleetInfosDashUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legPlayersInfosDashUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legPlayersOptionsUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "legPlayersOrderUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "playersTracksUpdate",
-                        ts: Date.now()
-                    });
-                    store.add({
-                        id: "state",
-                        state: 'dashInstalled'
-                    });
-                }
-                if (!db.objectStoreNames.contains('players')) {
-                    db.createObjectStore('players', { keyPath: 'id' });
-                    if(cfg.debugDB) console.log('Created "players" object store');
-                }
-                if (!db.objectStoreNames.contains('teams')) {
-                    db.createObjectStore('teams', { keyPath: 'id' });
-                    if(cfg.debugDB) console.log('Created "teams" object store');
-                }
-                if (!db.objectStoreNames.contains('polars')) {
-                    db.createObjectStore('polars', { keyPath: 'id' });
-                    if(cfg.debugDB) console.log('Created "polars" object store');
-                }
-                if (!db.objectStoreNames.contains('legList')) {
-                    const store = db.createObjectStore('legList', {
-                         keyPath: ['raceId', 'legNum']  });
-                    if(cfg.debugDB) console.log('Created "legList" object store');
-                }
-                if (!db.objectStoreNames.contains('legFleetInfos')) {
-                    const store = db.createObjectStore('legFleetInfos', {
-                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
-                    if(cfg.debugDB) console.log('Created "legFleetInfos" object store');
-                }
-                if (!db.objectStoreNames.contains('legPlayersInfos')) {
-                    const store = db.createObjectStore('legPlayersInfos', {
-                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
-                    if(cfg.debugDB) console.log('Created "legPlayersInfos" object store');
-                }
-                if (!db.objectStoreNames.contains('legPlayersOrder')) {
-                    const store = db.createObjectStore('legPlayersOrder', {
-                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
-                    if(cfg.debugDB) console.log('Created "legPlayersOrder" object store');
-                }
-                if (!db.objectStoreNames.contains('legPlayersOptions')) {
-                    const store = db.createObjectStore('legPlayersOptions', {
-                         keyPath: ['raceId', 'legNum', 'userId']  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
-                    store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false }); 
-                    if(cfg.debugDB) console.log('Created "legPlayersOptions" object store');
-                }
-                if (!db.objectStoreNames.contains('playersTracks')) {
-                    const store = db.createObjectStore('playersTracks', {
-                         keyPath: ['raceId', 'legNum', 'userId', 'type' ]  });
-                    store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
-                    store.createIndex('byType', ['raceId', 'legNum', 'type'], { unique: false });
-                    
-                    if(cfg.debugDB) console.log('Created "playersTracks" object store');
-                }
+                    id: "paramStamina",
+                    paramStamina: paramStamina
+                  }) ;
+                  store.add({
+                      id : 'lastLoggedUser',
+                      loggedUser : null
+                  });
+                  store.add({
+                      id : 'lastOpennedRace',
+                      raceId : null,
+                      legNum : null,
+                      lastOpennedRace : null
+                  });
+                  store.add({
+                      id: "playersUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "teamsUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "polarsUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legListUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legFleetInfosUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legPlayersInfosUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legFleetInfosDashUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legPlayersInfosDashUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legPlayersOptionsUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "legPlayersOrderUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "playersTracksUpdate",
+                      ts: Date.now()
+                  });
+                  store.add({
+                      id: "state",
+                      state: 'dashInstalled'
+                  });
+              }
+              if (!db.objectStoreNames.contains('players')) {
+                  db.createObjectStore('players', { keyPath: 'id' });
+                  if(cfg.debugDB) console.log('Created "players" object store');
+              }
+              if (!db.objectStoreNames.contains('teams')) {
+                  db.createObjectStore('teams', { keyPath: 'id' });
+                  if(cfg.debugDB) console.log('Created "teams" object store');
+              }
+              if (!db.objectStoreNames.contains('polars')) {
+                  db.createObjectStore('polars', { keyPath: 'id' });
+                  if(cfg.debugDB) console.log('Created "polars" object store');
+              }
+              if (!db.objectStoreNames.contains('legList')) {
+                  const store = db.createObjectStore('legList', {
+                        keyPath: ['raceId', 'legNum']  });
+                  if(cfg.debugDB) console.log('Created "legList" object store');
+              }
+              if (!db.objectStoreNames.contains('legFleetInfos')) {
+                  const store = db.createObjectStore('legFleetInfos', {
+                        keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
+                  store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  if(cfg.debugDB) console.log('Created "legFleetInfos" object store');
+              }
+              if (!db.objectStoreNames.contains('legPlayersInfos')) {
+                  const store = db.createObjectStore('legPlayersInfos', {
+                        keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
+                  store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  if(cfg.debugDB) console.log('Created "legPlayersInfos" object store');
+              }
+              if (!db.objectStoreNames.contains('legPlayersOrder')) {
+                  const store = db.createObjectStore('legPlayersOrder', {
+                        keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
+                  store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  if(cfg.debugDB) console.log('Created "legPlayersOrder" object store');
+              }
+              if (!db.objectStoreNames.contains('legPlayersOptions')) {
+                  const store = db.createObjectStore('legPlayersOptions', {
+                        keyPath: ['raceId', 'legNum', 'userId']  });
+                  store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false }); 
+                  if(cfg.debugDB) console.log('Created "legPlayersOptions" object store');
+              }
+              if (!db.objectStoreNames.contains('playersTracks')) {
+                  const store = db.createObjectStore('playersTracks', {
+                        keyPath: ['raceId', 'legNum', 'userId', 'type' ]  });
+                  store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  store.createIndex('byType', ['raceId', 'legNum', 'type'], { unique: false });
+                  
+                  if(cfg.debugDB) console.log('Created "playersTracks" object store');
+              }
+              if (!db.objectStoreNames.contains('windpacks')) {
+                const store = db.createObjectStore('windpacks', {
+                    keyPath: ['model', 'runId', 'fh']
+                });
+                store.createIndex('byRun', ['model', 'runId'], { unique: false });
+                if (cfg.debugDB) console.log('Created "windpacks" object store');
+              }
             }
         });
     } catch (error) {

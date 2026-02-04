@@ -1,308 +1,412 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import * as msgInjest from './data/msgIngestDef.js';
 import { ensureOffscreen } from './ensureOffscreen.js';
-import { computeOwnIte ,computeFleetIte} from './iteRun.js';
-import {createKeyChangeListener, getData,saveData} from '../common/dbOpes.js';
-import {buildEmbeddedToolbarHtml,getbuildEmbeddedToolbarContent} from '../dashboard/ui/embeddedToolbar.js'
-import {manageDashState} from './dashState.js'
+import { computeOwnIte, computeFleetIte } from './iteRun.js';
+import { createKeyChangeListener, getData, saveData } from '../common/dbOpes.js';
+import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
+import { manageDashState } from './dashState.js';
+import { syncLatestWindpacks, buildRunInfo, syncLatestWindpacksWindowed } from './windBackground.js';
 
-var version = "1.0";
-var debuggeeTab;
-var dashboardTab;
+const version = '1.0';
+let debuggeeTab;
+let dashboardTab;
 
 const pending = new Map();
 
-saveData('internal',{id:'state',state:'dashInstalled'});
+// modèle vent par défaut
+const WIND_MODEL = 'gfs0p25';
+
+// marquer l’état interne
+saveData('internal', { id: 'state', state: 'dashInstalled' });
+
+/* =========================================================
+*  Offscreen / Heavy jobs handling
+* ======================================================= */
 
 chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
-  if (msg?.target !== 'bg') return;
+    // gestion des retours de jobs offscreen → target: 'bg'
+    if (msg?.target !== 'bg') return;
 
-  if (msg.type === 'job:done' && pending.has(msg.id)) {
-    pending.get(msg.id).resolve(msg.summary); // petit récap, pas le gros buffer
-    pending.delete(msg.id);
-  }
-  if (msg.type === 'job:error' && pending.has(msg.id)) {
-    pending.get(msg.id).reject(new Error(msg.error || 'Offscreen/Worker error'));
-    pending.delete(msg.id);
-  }
+    if (msg.type === 'job:done' && pending.has(msg.id)) {
+        pending.get(msg.id).resolve(msg.summary);
+        pending.delete(msg.id);
+    }
+    if (msg.type === 'job:error' && pending.has(msg.id)) {
+        pending.get(msg.id).reject(new Error(msg.error || 'Offscreen/Worker error'));
+        pending.delete(msg.id);
+    }
 });
 
 export async function runHeavyJob(descriptor) {
-  await ensureOffscreen();
+    await ensureOffscreen();
 
-  const id = crypto.randomUUID();
-  const resP = new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
+    const id = crypto.randomUUID();
+    const resP = new Promise((resolve, reject) =>
+        pending.set(id, { resolve, reject })
+    );
 
-  // On envoie un descripteur léger (ex: { source: 'fetch', url: ... } ou { source: 'idb', key: ... })
-  await chrome.runtime.sendMessage({
-    target: 'offscreen',
-    type: 'job:start',
-    id,
-    descriptor
-  });
+    await chrome.runtime.sendMessage({
+        target: 'offscreen',
+        type: 'job:start',
+        id,
+        descriptor,
+    });
 
-  return resP;
+    return resP;
 }
 
-chrome.action.onClicked.addListener( onStartDash );
-function onStartDash (tab) {
-    if (tab && tab.url.indexOf('virtualregatta.com') >= 0) {
+/* =========================================================
+*  Action / Tab management (VR + dashboard)
+* ======================================================= */
+
+chrome.action.onClicked.addListener(onStartDash);
+
+function onStartDash(tab) {
+    if (tab && tab.url && tab.url.indexOf('virtualregatta.com') >= 0) {
         debuggeeTab = tab;
         onAttach(tab.id);
     }
 }
-function autoReloadTab(tabs) {
-    tabs.forEach(tab => {
-        if (tab.url.indexOf(chrome.runtime.id+"/dashboard.html") >= 0) {     
-            dashboardTab = tab;
-            chrome.tabs.reload(tab.id);
-            console.log("autoreload: " + tab.id + " " + tab.url);
-        }
-    });
 
+function onAttach(tabId) {
+    if (chrome.runtime.lastError) {
+        console.error('[bg] onAttach error:', chrome.runtime.lastError.message);
+    } else {
+        if (!dashboardTab) {
+            chrome.tabs.create(
+                { url: 'dashboard.html?' + tabId, active: false },
+                function (tab) {
+                dashboardTab = tab;
+                }
+            );
+        }
+    }
 }
 
-chrome.tabs.onUpdated.addListener( checkForValidUrl );
-chrome.tabs.onActivated.addListener( function (activeInfo) {
-    chrome.tabs.get(activeInfo.tabId, function (tab) {
-        checkForValidUrl(activeInfo.tabId,null,tab);
+function autoReloadTab(tabs) {
+    tabs.forEach((tab) => {
+        if (tab.url && tab.url.indexOf(chrome.runtime.id + '/dashboard.html') >= 0) {
+            dashboardTab = tab;
+            chrome.tabs.reload(tab.id);
+            console.log('autoreload:', tab.id, tab.url);
+        }
     });
-});
-function checkForValidUrl (tabId, changeInfo, tabInfo) {
+}
 
+chrome.tabs.onUpdated.addListener(checkForValidUrl);
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+chrome.tabs.get(activeInfo.tabId, function (tab) {
+ checkForValidUrl(activeInfo.tabId, null, tab);
+});
+});
+
+function checkForValidUrl(tabId, changeInfo, tabInfo) {
     try {
-        if (tabInfo && tabInfo.url.indexOf('virtualregatta.com') >= 0) {
-            if(!debuggeeTab) {
+        if (tabInfo && tabInfo.url && tabInfo.url.indexOf('virtualregatta.com') >= 0) {
+            if (!debuggeeTab) {
                 debuggeeTab = tabInfo;
-            }       
-            if(!dashboardTab) //may the browser has been closed with dash tab open 
-            {
+            }
+            if (!dashboardTab) {
+                // navigateur relancé avec dash fermé → on essaie de le retrouver
                 chrome.tabs.query({}).then(autoReloadTab);
             }
         }
     } catch (e) {
-        console.log("Tab is gone: " + tabId);
+        console.log('Tab is gone:', tabId, e);
     }
-};
+}
 
+chrome.tabs.onRemoved.addListener(onTabRemoved);
 
-chrome.tabs.onRemoved.addListener( onTabRemoved );
-function onTabRemoved (tabId, removeInfo) {
-    if ( debuggeeTab && (tabId == debuggeeTab.id) ) {
+function onTabRemoved(tabId, removeInfo) {
+    if (debuggeeTab && tabId === debuggeeTab.id) {
         try {
             debuggeeTab = undefined;
-            
-            if(dashboardTab) chrome.tabs.remove(dashboardTab.id);
+        if (dashboardTab) chrome.tabs.remove(dashboardTab.id);
             dashboardTab = undefined;
         } catch (e) {
             console.log(JSON.stringify(e));
         }
-    } else if ( dashboardTab && (tabId == dashboardTab.id) ) {
+    } else if (dashboardTab && tabId === dashboardTab.id) {
         dashboardTab = undefined;
     }
 }
 
-function onAttach (tabId) {
-    if (chrome.runtime.lastError) {
-        alert(chrome.runtime.lastError.message);
-    } else {
-        if(!dashboardTab)
-            chrome.tabs.create({url: "dashboard.html?" + tabId, active: false},
-                            function (tab) {
-                                dashboardTab = tab;
-                            });
-    }
-}
+/* =========================================================
+*  DeclarativeContent (icon + activation)
+* ======================================================= */
 
-
-
-chrome.declarativeContent.onPageChanged.removeRules(async () => {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      conditions: [
-        new chrome.declarativeContent.PageStateMatcher({
-          pageUrl: { hostPrefix: 'www.virtualregatta.',pathContains: '/offshore-' },
-        }),
-      ],
-      actions: [
-        new chrome.declarativeContent.SetIcon({
-          imageData: {
-            128: await loadImageData('icon.png')
-          },
-        }),
-        chrome.declarativeContent.ShowAction
-          ? new chrome.declarativeContent.ShowAction()
-          : new chrome.declarativeContent.ShowPageAction(),
-      ],
-    }]);
-  });
-  
-  async function loadImageData(url) {
-    const img = await createImageBitmap(await (await fetch(chrome.runtime.getURL(url))).blob());
-    const {width: w, height: h} = img;
+// Précharger l’icon 128px pour declarativeContent
+let icon128Promise = (async function loadIcon128() {
+    const img = await createImageBitmap(
+    await (await fetch(chrome.runtime.getURL('icon.png'))).blob()
+    );
+    const { width: w, height: h } = img;
     const canvas = new OffscreenCanvas(w, h);
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, w, h);
     return ctx.getImageData(0, 0, w, h);
-  }
-  
+})();
+
+// Config declarativeContent
+(async () => {
+    const icon128 = await icon128Promise;
+
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+        chrome.declarativeContent.onPageChanged.addRules([
+            {
+                conditions: [
+                new chrome.declarativeContent.PageStateMatcher({
+                    pageUrl: { hostPrefix: 'www.virtualregatta.', pathContains: '/offshore-' },
+                }),
+                ],
+                actions: [
+                new chrome.declarativeContent.SetIcon({
+                    imageData: {
+                    128: icon128,
+                    },
+                }),
+                chrome.declarativeContent.ShowAction
+                    ? new chrome.declarativeContent.ShowAction()
+                    : new chrome.declarativeContent.ShowPageAction(),
+                ],
+            },
+        ]);
+        });
+})();
+
+/* =========================================================
+*  OnInstalled + Alarm vent 5j
+* ======================================================= */
+
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
-        try { const panelWindowInfo = chrome.windows.create({
-            url: chrome.runtime.getURL("popup.html"),
-            type:"popup",
-            height: 150,
-            width: 300, });
-        } catch (error) { console.log(error); }
+    try {
+    await chrome.windows.create({
+        url: chrome.runtime.getURL('popup.html'),
+        type: 'popup',
+        height: 150,
+        width: 300,
+    });
+    } catch (error) {
+        console.log(error);
     }
-  });
-
-  /*to listen from VR page in bg future usage*/
-  /*
-  chrome.runtime.onMessageExternal.addListener(
-    function(request, sender, sendResponse) {
-        var msg = request;
-        let rstTimer = false;
-        let sendResp = true;
-        console.log("bg R " + msg.type);
-        void chrome.runtime.getPlatformInfo();
-        sendResponse({type:"alive",rstTimer:false});
     }
-);
 
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        var msg = request;
+    // sync vent toutes les 2 minutes
+    chrome.alarms.create('wind-sync-5d', {
+        delayInMinutes: 1,
+        periodInMinutes: 2,
+    });
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+if (alarm.name === 'wind-sync-5d') {
+ (async () => {
+   try {
+     await syncLatestWindpacksWindowed();
+   } catch (e) {
+     console.error('[wind] erreur sur alarm sync-5d', e);
+   }
+ })();
+}
+});
+
+/* =========================================================
+*  VR external messages (proxy HTTP)
+* ======================================================= */
+
+chrome.runtime.onMessageExternal.addListener(
+    async function (request, sender, sendResponse) {
+        const msg = request;
         let rstTimer = false;
-        let sendResp = true;
-        console.log("bg2 R " + msg.type);
-        void chrome.runtime.getPlatformInfo();
-        sendResponse({type:"alive",rstTimer:false});
-    }
-);*/
-  
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    let sendResp = false;
-    console.log("bg R2 " + msg.type);
 
-    sendResponse({type:"alive",rstTimer:false,gameSize:80});
- 
+        console.log('bg R external', msg.type);
 
-  });
-  chrome.runtime.onMessageExternal.addListener(
-    async function(request, sender, sendResponse) {
-        var msg = request;
-        let rstTimer = false;
-        let sendResp = true;
-        console.log("bg R " + msg.type);
-        if(msg.type=="data") {
-            if(msg.req.Accept) {sendResponse({type:"dummy"}); return;}  //json ranking request not supported
-            var postData = JSON.parse(msg.req);
-            var eventClass = postData['@class'];
-            var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
-            if (eventClass == 'AccountDetailsRequest') {
+        if (msg.type === 'data') {
+            if (msg.req && msg.req.Accept) {
+                // json ranking request non géré
+                sendResponse({ type: 'dummy' });
+                return;
+            }
+
+            const postData = JSON.parse(msg.req);
+            const eventClass = postData['@class'];
+            const body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, 'null'));
+
+            if (eventClass === 'AccountDetailsRequest') {
                 await msgInjest.ingestAccountDetails(body);
-            }  else if (eventClass == 'LogEventRequest') {
-                var eventKey = postData.eventKey;
-                if (eventKey == 'Leg_GetList') {
+            } else if (eventClass === 'LogEventRequest') {
+                const eventKey = postData.eventKey;
+                if (eventKey === 'Leg_GetList') {
                     await msgInjest.ingestRaceList(body);
-                } else if (eventKey == 'Game_EndLegPrep') {
+                } else if (eventKey === 'Game_EndLegPrep') {
                     await msgInjest.ingestEndLegPrep(body);
-//                } else if (eventKey == 'Meta_GetPolar') {
-//                    msgInjest.ingestPolars(body);
-                } else if (eventKey == "Game_GetSettings") {
+                } else if (eventKey === 'Game_GetSettings') {
                     await msgInjest.ingestGameSetting(body);
-                } else if (eventKey == "Race_SelectorData") {
+                } else if (eventKey === 'Race_SelectorData') {
                     await msgInjest.ingestPolars(body);
-                } else if (eventKey == "Game_AddBoatAction") {
+                } else if (eventKey === 'Game_AddBoatAction') {
                     await msgInjest.ingestBoatAction(body);
-                } else if (eventKey == "Game_GetGhostTrack") {
+                } else if (eventKey === 'Game_GetGhostTrack') {
                     await msgInjest.ingestGhostTrack(postData, body);
                 }
-
-                
-                /*
-  const sum = await runHeavyJob({
-    source: 'fetch',
-    url: 'https://example.com/huge-binary.bin', // Exemple: l’offscreen/worker fera le fetch lui-même
-    op: 'sumModulo10'
-  });
-  console.log('[SW] job summary:', sum);
-
-                */
-            }
-            else {
-                let event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
-                if (event == 'getboatinfos') {
+            } else {
+                const event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
+                if (event === 'getboatinfos') {
                     const ret = await msgInjest.ingestBoatInfos(body);
                     rstTimer = ret.rstTimer;
-                } else  if (event == 'getfleet') {
-                    await msgInjest.ingestFleetData(postData,body);
+                } else if (event === 'getfleet') {
+                    await msgInjest.ingestFleetData(postData, body);
                 }
             }
-
-            sendResp = false;
         }
-
         void chrome.runtime.getPlatformInfo();
+
         const embeddedToolbar = getbuildEmbeddedToolbarContent();
-        embeddedToolbar.rstTimer =rstTimer;
-        sendResponse({...embeddedToolbar, type: "update" });
+        embeddedToolbar.rstTimer = rstTimer;
+        sendResponse({ ...embeddedToolbar, type: 'update' });
     }
 );
+
+/* =========================================================
+*  Listeners sur IndexedDB (internal)
+* ======================================================= */
+
 const dashStateInfosListener = createKeyChangeListener('internal', 'state');
 dashStateInfosListener.start({
-    referenceValue: {state : ""},
-    onChange: async ( { oldValue, newValue }) => {
+    referenceValue: { state: '' },
+        onChange: async ({ oldValue, newValue }) => {
         const currentId = await getData('internal', 'lastLoggedUser');
         const currentRace = await getData('internal', 'lastOpennedRace');
-        await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
-    }
+        if (!currentRace || !currentId) return;
+        await buildEmbeddedToolbarHtml(
+            currentRace.raceId,
+            currentRace.legNum,
+            currentId.loggedUser
+        );
+    },
 });
-const legPlayersInfosListener = createKeyChangeListener('internal', 'legPlayersInfosUpdate');
+
+const legPlayersInfosListener = createKeyChangeListener(
+    'internal',
+    'legPlayersInfosUpdate'
+);
 legPlayersInfosListener.start({
-    referenceValue: {loggedUser : Date.now()},
-    onChange: async ( { oldValue, newValue }) => {
+    referenceValue: { loggedUser: Date.now() },
+    onChange: async ({ oldValue, newValue }) => {
         const currentId = await getData('internal', 'lastLoggedUser');
         const currentRace = await getData('internal', 'lastOpennedRace');
-        if(!currentId || !currentRace) return;
+        if (!currentId || !currentRace) return;
         await manageDashState('raceOpened');
-        await computeOwnIte(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
-        await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
-    }
+        await computeOwnIte(
+            currentRace.raceId,
+            currentRace.legNum,
+            currentId.loggedUser
+        );
+        await buildEmbeddedToolbarHtml(
+            currentRace.raceId,
+            currentRace.legNum,
+            currentId.loggedUser
+        );
+    },
 });
 
-
-const legFleetInfosListener = createKeyChangeListener('internal', 'legFleetInfosUpdate');
+const legFleetInfosListener = createKeyChangeListener(
+    'internal',
+    'legFleetInfosUpdate'
+);
 legFleetInfosListener.start({
-    referenceValue: {loggedUser : Date.now()},
-    onChange: async ( { oldValue, newValue }) => {
+    referenceValue: { loggedUser: Date.now() },
+    onChange: async ({ oldValue, newValue }) => {
         const currentRace = await getData('internal', 'lastOpennedRace');
-        if(!currentRace) return;
+        if (!currentRace) return;
         await manageDashState('raceOpened');
         await computeFleetIte(currentRace.raceId, currentRace.legNum);
-    }
+    },
 });
 
-const connectedUserListener = createKeyChangeListener('internal', 'lastLoggedUser');
+const connectedUserListener = createKeyChangeListener(
+    'internal',
+    'lastLoggedUser'
+);
 connectedUserListener.start({
-    referenceValue: {loggedUser : null},
+    referenceValue: { loggedUser: null },
     onChange: async ({ oldValue, newValue }) => {
-        if(newValue.loggedUser) {
+        if (newValue && newValue.loggedUser) {
             const currentRace = await getData('internal', 'lastOpennedRace');
+            if (!currentRace) return;
             await manageDashState('playerConnected');
-        	await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, newValue.loggedUser); 
+            await buildEmbeddedToolbarHtml(
+                currentRace.raceId,
+                currentRace.legNum,
+                newValue.loggedUser
+            );
         }
-    }
+    },
 });
-const connectedRaceListener = createKeyChangeListener('internal', 'lastOpennedRace');
+
+const connectedRaceListener = createKeyChangeListener(
+    'internal',
+    'lastOpennedRace'
+);
 connectedRaceListener.start({
-    referenceValue: {raceId: null,legNum: null},
+    referenceValue: { raceId: null, legNum: null },
     onChange: async ({ oldValue, newValue }) => {
         const currentId = await getData('internal', 'lastLoggedUser');
+        if (!currentId) return;
         await manageDashState('raceOpened');
-        await buildEmbeddedToolbarHtml(newValue.raceId, newValue.legNum,  currentId.loggedUser); 
+        await buildEmbeddedToolbarHtml(
+            newValue.raceId,
+            newValue.legNum,
+            currentId.loggedUser
+        );
     },
+});
+
+/* =========================================================
+*  Messages internes (ping + vent)
+* ======================================================= */
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (!message || !message.type) return;
+
+    // 1) Ping simple optionnel
+    if (message.type === 'bg/ping') {
+        console.log('bg R ping', message.type);
+        sendResponse({ type: 'alive', rstTimer: false, gameSize: 80 });
+        return; // sync
+    }
+
+    // 2) API vent (async)
+    switch (message.type) {
+        case 'wind/syncLatest': {
+        (async () => {
+                try {
+                    const info = await syncLatestWindpacks();
+                    sendResponse({ ok: true, info });
+                } catch (e) {
+                    console.error('[wind] syncLatest error', e);
+                    sendResponse({ ok: false, error: String(e) });
+                }
+            })();
+                return true;
+            }
+
+        case 'wind/getRunInfo': {
+            (async () => {
+                try {
+                    const info = await buildRunInfo();
+                    sendResponse({ ok: true, info });
+                } catch (e) {
+                    console.error('[wind] getRunInfo error', e);
+                    sendResponse({ ok: false, error: String(e) });
+                }
+            })();
+                return true;
+            }
+
+        default:
+        // autres messages → ignorés ici (ou gérés par d'autres listeners plus haut)
+        break;
+    }
 });

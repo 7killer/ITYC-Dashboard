@@ -28,7 +28,7 @@ import { gcDistance, roundTo, courseAngle} from '../../../common/utils.js';
 
 import {drawProjectionLine} from './map-proj.js';
 import {showCoastTiles, coastLayersCleanAll} from './map-coasts.js';
-import {startWindWorker, buildWindLayer, updateWindLayer} from './map-wind.js';
+import {startWindWorker, buildWindLayer, updateWindLayer,applyWindSettings,initAutoWindWorker,requestAutoWindUpdate} from './map-wind.js';
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 
@@ -56,8 +56,14 @@ export const mapState = {
     mapCurrentZoom : 0,
     windyLayer : null,
     windy_proxy : null,
-    windControl : null 
-    
+    windControl : null,
+    windSettings : {
+        mode: 'default',      // 'default' | 'custom' | 'auto'
+        customMaxKts: 40,     // max en nds pour le mode custom (violet)
+        visible: true,
+        lastData: null,       // on pourra y mettre la dernière data reçue si besoin
+        autoMaxKts: 40,       // valeur déduite auto (à ajuster plus tard)
+    }
 };
 const MAP_CONTAINER_ID = 'lMap';
 const COAST_MIN_ZOOM = 7;
@@ -267,10 +273,22 @@ function updateMapLeader(playerIte) {
         const title = "Leader: <b>" + playersList[trackLeader.userId].name + "</b><br>Elapsed: " + formatDHMS(offset);
         addGhostTrack(trackLeader.track, title, offset, "#FF8C00", mapState.leaderLayer);
     }
-    const trackGhostMap = getLegPlayersTracksGhost(); // si async, garde await
-    const trackGhost = trackGhostMap && typeof trackGhostMap === "object"
-        ? Object.values(trackGhostMap)[0]
-        : null;
+
+    const trackGhostMap = getLegPlayersTracksGhost();
+    let trackGhost = null;
+
+    if (trackGhostMap && typeof trackGhostMap === "object") {
+        if (Array.isArray(trackGhostMap.track)) {
+            // cas actuel : un seul ghost direct
+            trackGhost = trackGhostMap;
+        } else {
+            // cas futur : map de ghosts -> on cherche le 1er qui a un .track array
+            trackGhost = Object.values(trackGhostMap).find(
+            (val) => val && typeof val === "object" && Array.isArray(val.track)
+            ) || null;
+        }
+    }
+
     if (trackGhost && trackGhost.track.length > 0) {
         const title = "<b>Best Attempt</b><br>Elapsed: " + formatDHMS(offset);
         addGhostTrack(trackGhost.track, title, offset, "#b86dff", mapState.leaderMeLayer);
@@ -660,8 +678,10 @@ export async function initializeMap()
             const zoom   = map.getZoom();
 
             map.off('baselayerchange', onBaseLayerChange);
-            map.off('zoomend', set_userCustomZoom);
-            map.off('moveend', set_userCustomZoom);
+            map.off('moveend zoomend', set_userCustomZoom);
+            map.off('moveend zoomend', () => {
+                requestAutoWindUpdate();
+            });
             map.remove();
 
             POLAR.enabled = isArctic;
@@ -739,9 +759,11 @@ export async function initializeMap()
 
             applyBoundsForCurrentMode(newMap);
 
-            newMap.on('zoomend', set_userCustomZoom);
-            newMap.on('moveend', set_userCustomZoom);
+            newMap.on('moveend zoomend', set_userCustomZoom);
             newMap.on('baselayerchange', onBaseLayerChange);
+            newMap.on('moveend zoomend', () => {
+                requestAutoWindUpdate();
+            });
 
             // re-appliquer les couches dynamiques pour la course courante
             const raceInfo = getRaceInfo();
@@ -910,16 +932,39 @@ export async function initializeMap()
     applyBoundsForCurrentMode(map);
 
     map.on('baselayerchange', onBaseLayerChange);
-    map.on('zoomend',set_userCustomZoom);
-    map.on('moveend', set_userCustomZoom);
+    map.on('zoomend moveend',set_userCustomZoom);
+    map.on('moveend zoomend', () => {
+    requestAutoWindUpdate();
+    });
 
     mapState.map = map;
     if(playerItes?.ite?.pos) initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
     enableCoordinateCopyingWithShortcut();
     
+    initAutoWindWorker();
     buildWindLayer();
     startWindWorker();
     updateWindLayer();
+    // Contrôle UI vent
+    if (!mapState.windUiControl) {
+        mapState.windUiControl = L.control.windDisplay({
+            position: 'topright',
+            onModeChange: (mode) => {
+                mapState.windSettings.mode = mode;
+                applyWindSettings();
+            },
+            onMaxChange: (maxKts) => {
+            mapState.windSettings.customMaxKts = maxKts;
+            if (mapState.windSettings.mode === 'custom') {
+                applyWindSettings();
+            }
+            },
+            onToggleVisible: (visible) => {
+            mapState.windSettings.visible = visible;
+                applyWindSettings();
+            },
+        }).addTo(mapState.map);
+    }
 }
 
 

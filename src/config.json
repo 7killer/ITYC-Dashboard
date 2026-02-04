@@ -7,5 +7,7 @@
     "debugIngesterErr":true,
     "debugIteRun":true,
     "debugIteRunErr":true,
-    "debugFilter1":true
+    "debugFilter1":true,
+    "debugWind":true
+
   }

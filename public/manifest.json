@@ -10,7 +10,8 @@
     "scripting",
     "declarativeContent",
     "unlimitedStorage",
-    "offscreen" 
+    "offscreen",
+    "alarms"
 	],
 	"host_permissions" : [
 	"*://*.virtualregatta.com/*",

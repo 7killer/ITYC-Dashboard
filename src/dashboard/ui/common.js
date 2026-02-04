@@ -367,7 +367,7 @@ export function infoSail(ite,short,extended = true) {
     } else
         sailInfo =  '<span ' + 'style="color:' + sailColors[ite.sail] + '" padding: 0px 0px 0px 2px;"' + '>&#x25e2&#x25e3  </span>'+ sailNames[ite.sail % 10];
 
-    if (ite.metaDash.isAutoSail) {
+    if (ite.metaDash?.isAutoSail) {
         const autoSailTime = ite.metaDash.autoSailTime == 'inf' ? '∞' : formatHM(ite.metaDash.autoSailTime);
         sailInfo = sailInfo + " <span title='Auto Sails' class='cursorHelp'>&#x24B6;</span> " + autoSailTime;
     } else {
@@ -376,10 +376,10 @@ export function infoSail(ite,short,extended = true) {
     
     const sailNameBG = (userPrefs.theme =='dark')?(ite.badSail ? "darkred" : "darkgreen"):(ite.badSail ? "lightred" : "lightgreen");
 
-    if(ite.metaDash.deltaReceiveCompute > 900000)   sailNameBG = 'red' ;
+    if(ite.metaDash?.deltaReceiveCompute > 900000)   sailNameBG = 'red' ;
 
     let retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
-    if(extended) {
+    if(extended && ite.metaDash) {
         const best = ite.metaDash.bVmg;
         if(best.sailTWSMax != 0)
         {
