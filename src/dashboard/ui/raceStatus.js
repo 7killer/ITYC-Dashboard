@@ -78,7 +78,7 @@ export function buildRaceStatusHtml()
     }
     
     const tablecontainer = document.getElementById("raceStatus");
-    tablecontainer.innerHTML =  '<table id="raceStatusTable">'
+    tablecontainer.innerHTML =  '<table id="raceStatusTable" class="tabUser">'
         + '<thead>'
         + raceStatusHeader
         + '</thead>'

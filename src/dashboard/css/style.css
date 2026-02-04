@@ -1424,4 +1424,29 @@ input[type="checkbox"] {
 .leaflet-bottom.leaflet-left .leaflet-control-velocity {
     margin-bottom: 1em !important;
 }
-  
+
+.wind-display-control .wind-ctrl {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 4px 6px;
+  font-size: 11px;
+}
+
+.wind-display-control .wind-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.wind-display-control label {
+  white-space: nowrap;
+}
+
+.wind-display-control input[type="range"] {
+  width: 80px;
+}
+
+.tabUser {
+    font-size: 13px;
+}

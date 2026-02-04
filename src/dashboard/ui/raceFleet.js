@@ -32,7 +32,7 @@ export function buildRaceFleetHtml() {
     // pas de flotte
     if (!raceItesFleet || Object.keys(raceItesFleet).length === 0) {
         document.getElementById("friendList").innerHTML = `
-            <table id="raceidTable">
+            <table id="raceidTable" class="tabUser">
             <thead><tr><th>No friend positions received yet. Please enter a race.</th></tr></thead>
             </table>`;
         return;
@@ -103,7 +103,7 @@ export function buildRaceFleetHtml() {
     }
 
     const fleetHTML =
-        '<table>'
+        '<table class="tabUser">'
         + '<thead class="sticky">'
         + raceFleetTableHeader
         + '</thead>'

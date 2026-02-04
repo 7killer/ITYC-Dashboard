@@ -48,7 +48,7 @@ export function buildRaceLogHtml() {
     if(!raceInfo || raceInfo?.length == 0 
       ||  !racePlayerInfos?.ites) {
         document.getElementById("recordlog").innerHTML = `
-            <table>
+            <table class="tabUser">
             <thead><tr><th>No infos received for this race.</th></tr></thead>
             </table>`; 
         return;
@@ -78,7 +78,7 @@ export function buildRaceLogHtml() {
             #UTC { ${utcStyle} }
             #UTCLocal { ${utcLocalStyle} }
         </style>
-        <table>
+        <table class="tabUser">
             <thead class="sticky">${raceLogTableHeader}</thead>
             <tbody>${raceLogContent}</tbody>
         </table>`;
