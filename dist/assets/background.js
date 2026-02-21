@@ -1,4 +1,4 @@
-import { R as getDefaultExportFromCjs, aD as processDBOperations, aE as getData, aF as cfg, c as roundTo, aG as getLatestAndPreviousByTriplet, aH as getLatestEntriesPerUser, aI as saveData, X as gcDistance, Z as courseAngle, aJ as angle, S as toRad, aK as toDeg, aL as calculateCOGLoxo, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aM as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, h as getUserPrefs, aC as createKeyChangeListener } from "./_commonjsHelpers-83ee83fe.js";
+import { R as getDefaultExportFromCjs, aE as processDBOperations, S as getData, aF as cfg, c as roundTo, aG as getLatestAndPreviousByTriplet, aH as getLatestEntriesPerUser, aI as saveData, Z as gcDistance, $ as courseAngle, aJ as angle, U as toRad, aK as toDeg, aL as calculateCOGLoxo, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aM as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, h as getUserPrefs, aN as getAllData, aO as deleteData, aD as createKeyChangeListener } from "./_commonjsHelpers-ef85fc27.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -4840,8 +4840,267 @@ async function manageDashState(nextState) {
   if (currentDashState != dashState)
     await saveData("internal", { id: "state", state: dashState }, null, { updateIfExists: true });
 }
-var debuggeeTab;
-var dashboardTab;
+const WIND_MODEL = "gfs0p25";
+const API_BASE = "https://wind.ityc.fr";
+const WINDOW_SECONDS = 5 * 24 * 3600;
+const VALID_WHICH = /* @__PURE__ */ new Set(["latest", "previous"]);
+function normalizeWhich(which) {
+  const w = String(which || "latest").toLowerCase();
+  return VALID_WHICH.has(w) ? w : "latest";
+}
+function buildRunId(run) {
+  return `${run.date}_${run.cycle}`;
+}
+function parseRunId(runId) {
+  const s = String(runId || "");
+  const m = s.match(/^(\d{8})_(\d{2})$/);
+  if (!m)
+    return null;
+  return { date: m[1], cycle: m[2] };
+}
+function computeValidTimeUnixFromRunIdFh(runId, fh) {
+  const parsed = parseRunId(runId);
+  const fhNum = toFhNumber(fh);
+  if (!parsed || fhNum == null)
+    return null;
+  const y = Number(parsed.date.slice(0, 4));
+  const mo = Number(parsed.date.slice(4, 6)) - 1;
+  const d = Number(parsed.date.slice(6, 8));
+  const h = Number(parsed.cycle);
+  const refMs = Date.UTC(y, mo, d, h, 0, 0);
+  return Math.floor(refMs / 1e3) + fhNum * 3600;
+}
+async function fetchManifest(which = "latest") {
+  const w = normalizeWhich(which);
+  const url = `${API_BASE}/api/${WIND_MODEL}/manifest/${w}`;
+  const res = await fetch(url);
+  if (!res.ok)
+    throw new Error(`HTTP ${res.status} on manifest`);
+  const manifest = await res.json();
+  console.log(`[wind] manifest ${w}:`, manifest);
+  return manifest;
+}
+function toFhNumber(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+function getForecastsWindow5d(manifest) {
+  const { forecasts } = manifest;
+  if (!forecasts || !forecasts.length)
+    return [];
+  const validTimes = forecasts.map((f) => f && typeof f.validTimeUnix === "number" ? f.validTimeUnix : null).filter((v) => v !== null);
+  if (!validTimes.length)
+    return [];
+  const minValid = Math.min(...validTimes);
+  const maxValid = minValid + WINDOW_SECONDS;
+  return forecasts.filter(
+    (f) => f && typeof f.validTimeUnix === "number" && f.validTimeUnix >= minValid && f.validTimeUnix <= maxValid
+  );
+}
+async function ensureWindpackInDB(model, run, forecast) {
+  const runId = buildRunId(run);
+  const fhNum = toFhNumber(forecast == null ? void 0 : forecast.fh);
+  if (fhNum == null)
+    throw new Error(`Invalid forecast.fh: ${forecast == null ? void 0 : forecast.fh}`);
+  const key = [model, runId, fhNum];
+  const existing = await getData("windpacks", key);
+  if (existing && existing.blob) {
+    console.log("[wind] windpack déjà présent", key);
+    return existing;
+  }
+  const fileUrl = `${API_BASE}/api/${model}/file/${run.date}/${run.cycle}/${fhNum}`;
+  console.log("[wind] DL windpack", fileUrl);
+  const res = await fetch(fileUrl);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} on windpack fh=${fhNum}`);
+  }
+  const blob = await res.blob();
+  const record = {
+    model,
+    runId,
+    fh: fhNum,
+    runDate: run.date,
+    runCycle: run.cycle,
+    validTimeUnix: forecast.validTimeUnix,
+    blob
+  };
+  await saveData("windpacks", record);
+  console.log("[wind] windpack stocké", key);
+  return record;
+}
+async function ensureWindpackByRunIdFh(model, runId, fh) {
+  const parsed = parseRunId(runId);
+  const fhNum = toFhNumber(fh);
+  if (!parsed)
+    throw new Error(`Invalid runId: ${runId}`);
+  if (fhNum == null)
+    throw new Error(`Invalid fh: ${fh}`);
+  const key = [model, runId, fhNum];
+  const existing = await getData("windpacks", key);
+  if (existing && existing.blob)
+    return existing;
+  const run = { date: parsed.date, cycle: parsed.cycle };
+  const validTimeUnix = computeValidTimeUnixFromRunIdFh(runId, fhNum);
+  const forecast = {
+    fh: fhNum,
+    validTimeUnix,
+    exists: true
+  };
+  return ensureWindpackInDB(model, run, forecast);
+}
+async function ensurePreviousRunFh09and12(model) {
+  try {
+    const prevManifest = await fetchManifest("previous");
+    const prevRun = prevManifest == null ? void 0 : prevManifest.run;
+    const prevForecasts = (prevManifest == null ? void 0 : prevManifest.forecasts) || [];
+    if (!prevRun || !prevForecasts.length)
+      return;
+    const want = /* @__PURE__ */ new Set([9, 12]);
+    const candidates = prevForecasts.map((f) => ({ f, fh: toFhNumber(f == null ? void 0 : f.fh) })).filter((x) => x.f && x.fh != null && want.has(x.fh));
+    for (const c of candidates) {
+      if (!c.f.exists)
+        continue;
+      try {
+        await ensureWindpackInDB(model, prevRun, c.f);
+      } catch (e) {
+        console.warn("[wind] preload previous fh failed", c.fh, e);
+      }
+    }
+  } catch (e) {
+    console.warn("[wind] preload previous fh 9/12 skipped (manifest previous failed)", e);
+  }
+}
+async function syncLatestWindpacks() {
+  const manifest = await fetchLatestManifest("latest");
+  const { run, forecasts } = manifest;
+  const model = WIND_MODEL;
+  const avail = (forecasts || []).filter((f) => f && f.exists);
+  if (!avail.length) {
+    console.warn("[wind] aucun forecast existant dans le manifest");
+    await ensurePreviousRunFh09and12(model);
+    return { model, run, forecasts: [] };
+  }
+  const nowUnix = Math.floor(Date.now() / 1e3);
+  let best = avail[0];
+  let bestDiff = Math.abs(best.validTimeUnix - nowUnix);
+  for (let i = 1; i < avail.length; i++) {
+    const f = avail[i];
+    const diff = Math.abs(f.validTimeUnix - nowUnix);
+    if (diff < bestDiff) {
+      best = f;
+      bestDiff = diff;
+    }
+  }
+  try {
+    await ensureWindpackInDB(model, run, best);
+  } catch (e) {
+    console.error("[wind] erreur DL windpack best", best, e);
+  }
+  await ensurePreviousRunFh09and12(model);
+  await cleanupOldRuns(model);
+  return { model, run, forecasts };
+}
+async function cleanupOldRuns(model) {
+  const all = await getAllData("windpacks");
+  const runsSet = new Set(all.filter((p) => p.model === model).map((p) => p.runId));
+  const runs = Array.from(runsSet).sort().reverse();
+  const keep = new Set(runs.slice(0, 2));
+  let removed = 0;
+  for (const pack of all) {
+    if (pack.model !== model)
+      continue;
+    if (!keep.has(pack.runId)) {
+      const key = [pack.model, pack.runId, pack.fh];
+      await deleteData("windpacks", key);
+      removed++;
+    }
+  }
+  {
+    console.log("[wind] cleanupOldRuns", { runs, keep: Array.from(keep), removed });
+  }
+}
+async function buildRunInfo(opts = void 0) {
+  const which = normalizeWhich(opts == null ? void 0 : opts.which);
+  const manifest = await fetchManifest(which);
+  const { run, forecasts } = manifest;
+  const model = WIND_MODEL;
+  const runId = buildRunId(run);
+  const packs = await getAllData("windpacks");
+  const byFH = /* @__PURE__ */ new Map();
+  for (const p of packs) {
+    if (p.model === model && p.runId === runId) {
+      byFH.set(p.fh, p);
+    }
+  }
+  const enriched = (forecasts || []).map((f) => {
+    if (!f)
+      return null;
+    const fhNum = toFhNumber(f.fh);
+    const pack = fhNum == null ? null : byFH.get(fhNum);
+    return {
+      fh: fhNum ?? f.fh,
+      existsOnServer: !!f.exists,
+      validTimeUnix: f.validTimeUnix,
+      hasBlob: !!pack
+    };
+  });
+  return {
+    model,
+    run,
+    runId,
+    which,
+    forecasts: enriched
+  };
+}
+async function syncLatestWindpacksWindowed() {
+  const manifest = await fetchManifest("latest");
+  const { run } = manifest;
+  const model = WIND_MODEL;
+  const runId = buildRunId(run);
+  const windowForecasts = getForecastsWindow5d(manifest);
+  if (!windowForecasts.length) {
+    console.warn("[wind] aucune forecast dans la fenêtre 5j");
+    return { model, run, runId, allComplete: false, count: 0, downloaded: 0 };
+  }
+  windowForecasts.map((f) => f.fh);
+  const allPacks = await getAllData("windpacks");
+  const existingForRun = allPacks.filter((p) => p.model === model && p.runId === runId);
+  const haveByFh = new Set(existingForRun.map((p) => p.fh));
+  let downloaded = 0;
+  let allComplete = true;
+  for (const f of windowForecasts) {
+    if (!f)
+      continue;
+    if (!f.exists) {
+      allComplete = false;
+      continue;
+    }
+    if (haveByFh.has(f.fh))
+      continue;
+    try {
+      await ensureWindpackInDB(model, run, f);
+      downloaded++;
+      haveByFh.add(f.fh);
+    } catch (err) {
+      allComplete = false;
+      console.warn("[wind] erreur download FH", f.fh, err);
+    }
+  }
+  await ensurePreviousRunFh09and12(model);
+  await cleanupOldRuns(model);
+  {
+    console.log("[wind] syncLatestWindpacksWindowed", {
+      model,
+      runId,
+      count: windowForecasts.length,
+      downloaded,
+      allComplete
+    });
+  }
+  return { model, run, runId, count: windowForecasts.length, downloaded, allComplete };
+}
+let debuggeeTab;
+let dashboardTab;
 const pending = /* @__PURE__ */ new Map();
 saveData("internal", { id: "state", state: "dashInstalled" });
 chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
@@ -4858,17 +5117,31 @@ chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
 });
 chrome.action.onClicked.addListener(onStartDash);
 function onStartDash(tab) {
-  if (tab && tab.url.indexOf("virtualregatta.com") >= 0) {
+  if (tab && tab.url && tab.url.indexOf("virtualregatta.com") >= 0) {
     debuggeeTab = tab;
     onAttach(tab.id);
   }
 }
+function onAttach(tabId) {
+  if (chrome.runtime.lastError) {
+    console.error("[bg] onAttach error:", chrome.runtime.lastError.message);
+  } else {
+    if (!dashboardTab) {
+      chrome.tabs.create(
+        { url: "dashboard.html?" + tabId, active: false },
+        function(tab) {
+          dashboardTab = tab;
+        }
+      );
+    }
+  }
+}
 function autoReloadTab(tabs) {
   tabs.forEach((tab) => {
-    if (tab.url.indexOf(chrome.runtime.id + "/dashboard.html") >= 0) {
+    if (tab.url && tab.url.indexOf(chrome.runtime.id + "/dashboard.html") >= 0) {
       dashboardTab = tab;
       chrome.tabs.reload(tab.id);
-      console.log("autoreload: " + tab.id + " " + tab.url);
+      console.log("autoreload:", tab.id, tab.url);
     }
   });
 }
@@ -4880,7 +5153,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 });
 function checkForValidUrl(tabId, changeInfo, tabInfo) {
   try {
-    if (tabInfo && tabInfo.url.indexOf("virtualregatta.com") >= 0) {
+    if (tabInfo && tabInfo.url && tabInfo.url.indexOf("virtualregatta.com") >= 0) {
       if (!debuggeeTab) {
         debuggeeTab = tabInfo;
       }
@@ -4889,12 +5162,12 @@ function checkForValidUrl(tabId, changeInfo, tabInfo) {
       }
     }
   } catch (e) {
-    console.log("Tab is gone: " + tabId);
+    console.log("Tab is gone:", tabId, e);
   }
 }
 chrome.tabs.onRemoved.addListener(onTabRemoved);
 function onTabRemoved(tabId, removeInfo) {
-  if (debuggeeTab && tabId == debuggeeTab.id) {
+  if (debuggeeTab && tabId === debuggeeTab.id) {
     try {
       debuggeeTab = void 0;
       if (dashboardTab)
@@ -4903,52 +5176,46 @@ function onTabRemoved(tabId, removeInfo) {
     } catch (e) {
       console.log(JSON.stringify(e));
     }
-  } else if (dashboardTab && tabId == dashboardTab.id) {
+  } else if (dashboardTab && tabId === dashboardTab.id) {
     dashboardTab = void 0;
   }
 }
-function onAttach(tabId) {
-  if (chrome.runtime.lastError) {
-    alert(chrome.runtime.lastError.message);
-  } else {
-    if (!dashboardTab)
-      chrome.tabs.create(
-        { url: "dashboard.html?" + tabId, active: false },
-        function(tab) {
-          dashboardTab = tab;
-        }
-      );
-  }
-}
-chrome.declarativeContent.onPageChanged.removeRules(async () => {
-  chrome.declarativeContent.onPageChanged.addRules([{
-    conditions: [
-      new chrome.declarativeContent.PageStateMatcher({
-        pageUrl: { hostPrefix: "www.virtualregatta.", pathContains: "/offshore-" }
-      })
-    ],
-    actions: [
-      new chrome.declarativeContent.SetIcon({
-        imageData: {
-          128: await loadImageData("icon.png")
-        }
-      }),
-      chrome.declarativeContent.ShowAction ? new chrome.declarativeContent.ShowAction() : new chrome.declarativeContent.ShowPageAction()
-    ]
-  }]);
-});
-async function loadImageData(url) {
-  const img = await createImageBitmap(await (await fetch(chrome.runtime.getURL(url))).blob());
+let icon128Promise = async function loadIcon128() {
+  const img = await createImageBitmap(
+    await (await fetch(chrome.runtime.getURL("icon.png"))).blob()
+  );
   const { width: w, height: h } = img;
   const canvas = new OffscreenCanvas(w, h);
   const ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0, w, h);
   return ctx.getImageData(0, 0, w, h);
-}
+}();
+(async () => {
+  const icon128 = await icon128Promise;
+  chrome.declarativeContent.onPageChanged.removeRules(void 0, () => {
+    chrome.declarativeContent.onPageChanged.addRules([
+      {
+        conditions: [
+          new chrome.declarativeContent.PageStateMatcher({
+            pageUrl: { hostPrefix: "www.virtualregatta.", pathContains: "/offshore-" }
+          })
+        ],
+        actions: [
+          new chrome.declarativeContent.SetIcon({
+            imageData: {
+              128: icon128
+            }
+          }),
+          chrome.declarativeContent.ShowAction ? new chrome.declarativeContent.ShowAction() : new chrome.declarativeContent.ShowPageAction()
+        ]
+      }
+    ]);
+  });
+})();
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
     try {
-      const panelWindowInfo = chrome.windows.create({
+      await chrome.windows.create({
         url: chrome.runtime.getURL("popup.html"),
         type: "popup",
         height: 150,
@@ -4958,47 +5225,58 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       console.log(error);
     }
   }
+  chrome.alarms.create("wind-sync-5d", {
+    delayInMinutes: 1,
+    periodInMinutes: 2
+  });
 });
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log("bg R2 " + msg.type);
-  sendResponse({ type: "alive", rstTimer: false, gameSize: 80 });
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "wind-sync-5d") {
+    (async () => {
+      try {
+        await syncLatestWindpacksWindowed();
+      } catch (e) {
+        console.error("[wind] erreur sur alarm sync-5d", e);
+      }
+    })();
+  }
 });
 chrome.runtime.onMessageExternal.addListener(
   async function(request, sender, sendResponse) {
-    var msg = request;
+    const msg = request;
     let rstTimer = false;
-    console.log("bg R " + msg.type);
-    if (msg.type == "data") {
-      if (msg.req.Accept) {
+    console.log("bg R external", msg.type);
+    if (msg.type === "data") {
+      if (msg.req && msg.req.Accept) {
         sendResponse({ type: "dummy" });
         return;
       }
-      var postData = JSON.parse(msg.req);
-      var eventClass = postData["@class"];
-      var body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
-      if (eventClass == "AccountDetailsRequest") {
+      const postData = JSON.parse(msg.req);
+      const eventClass = postData["@class"];
+      const body = JSON.parse(msg.resp.replace(/\bNaN\b|\bInfinity\b/g, "null"));
+      if (eventClass === "AccountDetailsRequest") {
         await ingestAccountDetails(body);
-      } else if (eventClass == "LogEventRequest") {
-        var eventKey = postData.eventKey;
-        if (eventKey == "Leg_GetList") {
+      } else if (eventClass === "LogEventRequest") {
+        const eventKey = postData.eventKey;
+        if (eventKey === "Leg_GetList") {
           await ingestRaceList(body);
-        } else if (eventKey == "Game_EndLegPrep") {
+        } else if (eventKey === "Game_EndLegPrep") {
           await ingestEndLegPrep(body);
-        } else if (eventKey == "Game_GetSettings") {
+        } else if (eventKey === "Game_GetSettings") {
           await ingestGameSetting(body);
-        } else if (eventKey == "Race_SelectorData") {
+        } else if (eventKey === "Race_SelectorData") {
           await ingestPolars(body);
-        } else if (eventKey == "Game_AddBoatAction") {
+        } else if (eventKey === "Game_AddBoatAction") {
           await ingestBoatAction(body);
-        } else if (eventKey == "Game_GetGhostTrack") {
+        } else if (eventKey === "Game_GetGhostTrack") {
           await ingestGhostTrack(postData, body);
         }
       } else {
-        let event = msg.url.substring(msg.url.lastIndexOf("/") + 1);
-        if (event == "getboatinfos") {
+        const event = msg.url.substring(msg.url.lastIndexOf("/") + 1);
+        if (event === "getboatinfos") {
           const ret = await ingestBoatInfos(body);
           rstTimer = ret.rstTimer;
-        } else if (event == "getfleet") {
+        } else if (event === "getfleet") {
           await ingestFleetData(postData, body);
         }
       }
@@ -5015,10 +5293,19 @@ dashStateInfosListener.start({
   onChange: async ({ oldValue, newValue }) => {
     const currentId = await getData("internal", "lastLoggedUser");
     const currentRace = await getData("internal", "lastOpennedRace");
-    await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
+    if (!currentRace || !currentId)
+      return;
+    await buildEmbeddedToolbarHtml(
+      currentRace.raceId,
+      currentRace.legNum,
+      currentId.loggedUser
+    );
   }
 });
-const legPlayersInfosListener = createKeyChangeListener("internal", "legPlayersInfosUpdate");
+const legPlayersInfosListener = createKeyChangeListener(
+  "internal",
+  "legPlayersInfosUpdate"
+);
 legPlayersInfosListener.start({
   referenceValue: { loggedUser: Date.now() },
   onChange: async ({ oldValue, newValue }) => {
@@ -5027,11 +5314,22 @@ legPlayersInfosListener.start({
     if (!currentId || !currentRace)
       return;
     await manageDashState("raceOpened");
-    await computeOwnIte(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
-    await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, currentId.loggedUser);
+    await computeOwnIte(
+      currentRace.raceId,
+      currentRace.legNum,
+      currentId.loggedUser
+    );
+    await buildEmbeddedToolbarHtml(
+      currentRace.raceId,
+      currentRace.legNum,
+      currentId.loggedUser
+    );
   }
 });
-const legFleetInfosListener = createKeyChangeListener("internal", "legFleetInfosUpdate");
+const legFleetInfosListener = createKeyChangeListener(
+  "internal",
+  "legFleetInfosUpdate"
+);
 legFleetInfosListener.start({
   referenceValue: { loggedUser: Date.now() },
   onChange: async ({ oldValue, newValue }) => {
@@ -5042,24 +5340,104 @@ legFleetInfosListener.start({
     await computeFleetIte(currentRace.raceId, currentRace.legNum);
   }
 });
-const connectedUserListener = createKeyChangeListener("internal", "lastLoggedUser");
+const connectedUserListener = createKeyChangeListener(
+  "internal",
+  "lastLoggedUser"
+);
 connectedUserListener.start({
   referenceValue: { loggedUser: null },
   onChange: async ({ oldValue, newValue }) => {
-    if (newValue.loggedUser) {
+    if (newValue && newValue.loggedUser) {
       const currentRace = await getData("internal", "lastOpennedRace");
+      if (!currentRace)
+        return;
       await manageDashState("playerConnected");
-      await buildEmbeddedToolbarHtml(currentRace.raceId, currentRace.legNum, newValue.loggedUser);
+      await buildEmbeddedToolbarHtml(
+        currentRace.raceId,
+        currentRace.legNum,
+        newValue.loggedUser
+      );
     }
   }
 });
-const connectedRaceListener = createKeyChangeListener("internal", "lastOpennedRace");
+const connectedRaceListener = createKeyChangeListener(
+  "internal",
+  "lastOpennedRace"
+);
 connectedRaceListener.start({
   referenceValue: { raceId: null, legNum: null },
   onChange: async ({ oldValue, newValue }) => {
     const currentId = await getData("internal", "lastLoggedUser");
+    if (!currentId)
+      return;
     await manageDashState("raceOpened");
-    await buildEmbeddedToolbarHtml(newValue.raceId, newValue.legNum, currentId.loggedUser);
+    await buildEmbeddedToolbarHtml(
+      newValue.raceId,
+      newValue.legNum,
+      currentId.loggedUser
+    );
+  }
+});
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!message || !message.type)
+    return;
+  if (message.type === "bg/ping") {
+    console.log("bg R ping", message.type);
+    sendResponse({ type: "alive", rstTimer: false, gameSize: 80 });
+    return;
+  }
+  switch (message.type) {
+    case "wind/syncLatest": {
+      (async () => {
+        try {
+          const info = await syncLatestWindpacks();
+          sendResponse({ ok: true, info });
+        } catch (e) {
+          console.error("[wind] syncLatest error", e);
+          sendResponse({ ok: false, error: String(e) });
+        }
+      })();
+      return true;
+    }
+    case "wind/ensureWindpack": {
+      (async () => {
+        try {
+          const model = (message == null ? void 0 : message.model) || WIND_MODEL;
+          const runId = message == null ? void 0 : message.runId;
+          const fh = message == null ? void 0 : message.fh;
+          if (!runId && runId !== 0)
+            throw new Error("Missing runId");
+          if (fh == null)
+            throw new Error("Missing fh");
+          const rec = await ensureWindpackByRunIdFh(model, String(runId), Number(fh));
+          sendResponse({ ok: true, record: { model: rec.model, runId: rec.runId, fh: rec.fh, validTimeUnix: rec.validTimeUnix } });
+        } catch (e) {
+          console.error("[wind] ensureWindpack error", e);
+          sendResponse({ ok: false, error: String(e) });
+        }
+      })();
+      return true;
+    }
+    case "wind/getRunInfo": {
+      (async () => {
+        try {
+          const which = (message == null ? void 0 : message.which) === "previous" ? "previous" : "latest";
+          if (which === "previous") {
+            try {
+              await syncLatestWindpacks();
+            } catch (e) {
+              console.warn("[wind] warmup sync (previous) failed", e);
+            }
+          }
+          const info = await buildRunInfo({ which });
+          sendResponse({ ok: true, info });
+        } catch (e) {
+          console.error("[wind] getRunInfo error", e);
+          sendResponse({ ok: false, error: String(e) });
+        }
+      })();
+      return true;
+    }
   }
 });
 //# sourceMappingURL=background.js.map

@@ -10,7 +10,8 @@
     "scripting",
     "declarativeContent",
     "unlimitedStorage",
-    "offscreen" 
+    "offscreen",
+    "alarms"
 	],
 	"host_permissions" : [
 	"*://*.virtualregatta.com/*",
@@ -37,12 +38,12 @@
   "content_scripts": [
     {
       "matches": ["https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"],
-      "js": ["./js/addResume2.js","./js/loaderIframeItyc.js"],
+      "js": ["./js/addResume3.js","./js/loaderIframeItycN.js"],
       "run_at": "document_start",
       "all_frames": true
     },    {
       "matches": ["https://www.virtualregatta.com/en/offshore-game/*","https://www.virtualregatta.com/offshore-game/*"],
-      "js": ["./js/addResume2.js","./js/loaderItyc.js"],
+      "js": ["./js/addResume3.js","./js/loaderItycN.js"],
       "run_at": "document_start"
     },
     {
@@ -62,7 +63,7 @@
     "resources": [
     "offscreen.html",
     "assets/*",
-   "listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png"],
+   "listenerItycN.js","./js/addResume3.js","listenerIframeItycN.js","./js/loaderItycN.js","./js/loaderIframeItycNS.js","img/foil.png"],
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {

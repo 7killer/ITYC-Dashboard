@@ -6,7 +6,8 @@ import {buildPt2, buildMarker,
     buildTextIcon,buildCircleEndRace,buildCircle,
     buildPath_bspline,buildTrace,buildPath,buildBoatIcon,
     yellowRLIconP, yellowRRIconP, yellowRLIcon, yellowRRIcon,
-    redRLIconP, redRLIcon, greenRRIconP, greenRRIcon
+    redRLIconP, redRLIcon, greenRRIconP, greenRRIcon,
+    addMapControl
 } from './map-utils.js'
 import {formatPosition,formatShortDate,formatTimestampToReadableDate,formatDHMS
 } from '../common.js';
@@ -74,6 +75,17 @@ export function updateBounds()
     mapState.bounds = L.latLngBounds(mapState.refPoints);
     mapState.map.fitBounds(mapState.bounds);
 }
+export function redrawMapCheckPoints()
+{
+    const raceInfo = getRaceInfo();
+    const playerItes = getLegPlayerInfos(); 
+    if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+        playerItes.ite = playerItes.ites[0];
+    }
+    if(!playerItes.ite) return;
+    updateMapCheckpoints(raceInfo, playerItes.ite);  
+}
+
 
 function updateMapCheckpoints(raceInfo,playerIte) {
 
@@ -250,6 +262,18 @@ function updateMapMe(connectedPlayerId,playerIte) {
     mapState.meBoatLayer.addTo(map);
 
     if(!mapState.userZoom) updateBounds();  
+}
+
+export function redrawProjectionLine()
+{
+    const playerItes = getLegPlayerInfos();
+    if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+       playerItes.ite = playerItes.ites[0];
+    }
+    if(!playerItes.ite) return;
+    const myPosPt = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
+    drawProjectionLine(myPosPt,playerIte.ite.hdg,playerIte.ite.speed) ;
+
 }
 
 function updateMapLeader(playerIte) {
@@ -719,41 +743,7 @@ export async function initializeMap()
             const newLayerControl = L.control.layers(newBaseLayers);
             newLayerControl.addTo(newMap);
             ensureLayerControlClickable(newLayerControl);
-
-            newMap.addControl(new L.Control.ScaleNautic({
-                metric: true,
-                imperial: false,
-                nautic: true
-            }));
-
-            const optionsRuler = {
-                position: 'topleft',
-                maxPoints: 2,
-                lengthUnit: {
-                    factor: 0.539956803,
-                    display: 'nm',
-                    decimal: 2,
-                    label: 'Distance:'
-                },
-            };
-            L.control.ruler(optionsRuler).addTo(newMap);
-
-            L.control.coordinates({
-                useDMS: true,
-                labelTemplateLat: "Lat: {y}",
-                labelTemplateLng: " Lng: {x}",
-                useLatLngOrder: true,
-                labelFormatterLat: function (lat) {
-                    let latFormatted = L.NumberFormatter.toDMS(lat);
-                    latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
-                    return latFormatted.replace(/^-/, '');
-                },
-                labelFormatterLng: function (lng) {
-                    let lngFormatted = L.NumberFormatter.toDMS(lng);
-                    lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
-                    return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
-                },
-            }).addTo(newMap);
+            addMapControl(newMap);
 
             if (mapState.refLayer) mapState.refLayer.addTo(newMap);
 
@@ -786,43 +776,8 @@ export async function initializeMap()
         POLAR.enabled = isArctic;
         applyBoundsForCurrentMode(map);
     }
+    addMapControl(map);
 
-    map.addControl(new L.Control.ScaleNautic({
-        metric: true,
-        imperial: false,
-        nautic: true
-    }));
-
-    const optionsRuler = {
-        position: 'topleft',
-        maxPoints: 2,
-        lengthUnit: {
-            factor: 0.539956803,
-            display: 'nm',
-            decimal: 2,
-            label: 'Distance:'
-        },
-    };
-    L.control.ruler(optionsRuler).addTo(map);
-
-    L.control.coordinates({
-        useDMS: true,
-        labelTemplateLat: "Lat: {y}",
-        labelTemplateLng: " Lng: {x}",
-        useLatLngOrder: true,
-        labelFormatterLat: function (lat) {
-            let latFormatted = L.NumberFormatter.toDMS(lat);
-            latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
-            return latFormatted.replace(/^-/, '');
-        },
-        labelFormatterLng: function (lng) {
-            let lngFormatted = L.NumberFormatter.toDMS(lng);
-            lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
-            return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
-        },
-    }).addTo(map);
-
-    map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
 
     mapState.refLayer = L.layerGroup();
 
@@ -945,26 +900,6 @@ export async function initializeMap()
     buildWindLayer();
     startWindWorker();
     updateWindLayer();
-    // Contrôle UI vent
-    if (!mapState.windUiControl) {
-        mapState.windUiControl = L.control.windDisplay({
-            position: 'topright',
-            onModeChange: (mode) => {
-                mapState.windSettings.mode = mode;
-                applyWindSettings();
-            },
-            onMaxChange: (maxKts) => {
-            mapState.windSettings.customMaxKts = maxKts;
-            if (mapState.windSettings.mode === 'custom') {
-                applyWindSettings();
-            }
-            },
-            onToggleVisible: (visible) => {
-            mapState.windSettings.visible = visible;
-                applyWindSettings();
-            },
-        }).addTo(mapState.map);
-    }
 }
 
 

@@ -236,21 +236,6 @@ export function uiBindingInit() {
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.position }
     },
     {
-      selector: '#track_infos',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.trace = checked;saveUserPrefs(userPrefs);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.trace }
-    },
-    {
-      selector: '#projectionLine_Size',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionLineLenght = value;saveUserPrefs(userPrefs);},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionLineLenght}
-    },
-    {
-      selector: '#view_InvisibleDoors',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.invisibleBuoy = checked;saveUserPrefs(userPrefs);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.invisibleBuoy }
-    },
-    {
       selector: '#abbreviatedOption',
       onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.shortOption = checked;saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.shortOption }
@@ -379,21 +364,6 @@ export function uiBindingInit() {
       onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked?false:true;await saveUserPrefs(userPrefs);hideShowTracks(checked);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showTracks }
     },  
-    {
-      selector: '#sel_borderColorLmap',
-      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.borderColor = value;await saveUserPrefs(userPrefs);onCoastColorChange()},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.borderColor}
-    },  
-    {
-      selector: '#sel_projectionColorLmap',
-      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionColor = value;await saveUserPrefs(userPrefs);/*onProjectionColorChange()*/},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionColor}
-    },
-    {
-      selector: '#projectionLine_Size',
-      onChange: async (value) => {const userPrefs = getUserPrefs(); userPrefs.map.projectionLineLenght = value;await saveUserPrefs(userPrefs);/*onProjectionSizeChange()*/},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.projectionLineLenght}
-    },
     {
       selector: '#lbl_rt_openLmap',
       onChange: () => {onPopupOpenLmap();}

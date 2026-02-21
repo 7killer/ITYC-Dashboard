@@ -35,9 +35,6 @@ importers:
       leaflet-ruler:
         specifier: ^1.0.0
         version: 1.0.0(leaflet@1.9.4)
-      leaflet-velocity:
-        specifier: ^2.1.4
-        version: 2.1.4
       leaflet.awesome-markers:
         specifier: ^2.0.5
         version: 2.0.5
@@ -764,9 +761,6 @@ packages:
     resolution: {integrity: sha512-5Ti99czL+hhcd5rMmT5JBkDvzErPUM+ogJbP6NDzJEMK5vCGqS9/1BrMpVeCcCaxViSWLPf9qcXRGcGO85UCZA==}
     peerDependencies:
       leaflet: ^1.0.0
-
-  leaflet-velocity@2.1.4:
-    resolution: {integrity: sha512-uTmSb2/Kn28S0itlmJBMy2ZRKsisWUr2wm9rtkKXjpq9Sai7tqKdTRHKfLgTOgEdWFf5Ctt2bQoB7kb50qC7eg==}
 
   leaflet.awesome-markers@2.0.5:
     resolution: {integrity: sha512-Ne/xDjkGyaujwNVVkv2tyXQUV0ZW7gZ0Mo0FuQY4jp2qWrvXi0hwDBvmZyF/8YOvybyMabTMM/mFWCTd1jZIQA==}
@@ -1859,8 +1853,6 @@ snapshots:
   leaflet-ruler@1.0.0(leaflet@1.9.4):
     dependencies:
       leaflet: 1.9.4
-
-  leaflet-velocity@2.1.4: {}
 
   leaflet.awesome-markers@2.0.5: {}
 

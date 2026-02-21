@@ -4,7 +4,13 @@ import { computeOwnIte, computeFleetIte } from './iteRun.js';
 import { createKeyChangeListener, getData, saveData } from '../common/dbOpes.js';
 import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
 import { manageDashState } from './dashState.js';
-import { syncLatestWindpacks, buildRunInfo, syncLatestWindpacksWindowed } from './windBackground.js';
+import {
+  syncLatestWindpacks,
+  buildRunInfo,
+  syncLatestWindpacksWindowed,
+  ensureWindpackByRunIdFh,
+  WIND_MODEL,
+} from './windBackground.js';
 
 const version = '1.0';
 let debuggeeTab;
@@ -12,8 +18,7 @@ let dashboardTab;
 
 const pending = new Map();
 
-// modèle vent par défaut
-const WIND_MODEL = 'gfs0p25';
+
 
 // marquer l’état interne
 saveData('internal', { id: 'state', state: 'dashInstalled' });
@@ -391,11 +396,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             })();
                 return true;
             }
+        case 'wind/ensureWindpack': {
+            (async () => {
+                try {
+                    const model = message?.model || WIND_MODEL;
+                    const runId = message?.runId;
+                    const fh = message?.fh;
+                    if (!runId && runId !== 0) throw new Error('Missing runId');
+                    if (fh == null) throw new Error('Missing fh');
+
+                    const rec = await ensureWindpackByRunIdFh(model, String(runId), Number(fh));
+                    sendResponse({ ok: true, record: { model: rec.model, runId: rec.runId, fh: rec.fh, validTimeUnix: rec.validTimeUnix } });
+                } catch (e) {
+                    console.error('[wind] ensureWindpack error', e);
+                    sendResponse({ ok: false, error: String(e) });
+                }
+            })();
+            return true;
+        }
 
         case 'wind/getRunInfo': {
             (async () => {
                 try {
-                    const info = await buildRunInfo();
+                   const which = (message?.which === 'previous') ? 'previous' : 'latest';
+
+                    if (which === 'previous') {
+                        try { await syncLatestWindpacks(); } catch (e) {
+                            console.warn('[wind] warmup sync (previous) failed', e);
+                        }
+                    }
+ 
+                    const info = await buildRunInfo({ which });
                     sendResponse({ ok: true, info });
                 } catch (e) {
                     console.error('[wind] getRunInfo error', e);

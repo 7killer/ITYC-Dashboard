@@ -38,7 +38,31 @@
     --tabActive_color: #F5F5F5;
     --tabActive_background: #555555;
 
+    --mapControl_background: rgba(255,255,255,0.9);
+    --mapControl_color: #333;
+    --mapControl_border-color: rgba(255,255,255,0.18);
+    --mapControl_box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    --mapControl_backgroundTick: rgba(0,0,0,0.25);
+    --mapControl_backgroundTickDay: rgba(0,0,0,0.55);
+    
+
+    --mapControl_backgroundOff: rgba(255,255,255,0.9);
+    --mapControl_colorOff: #333;
+    --mapControl_border-colorOff: rgba(255,255,255,0.18);
+    --mapControl_box-shadowOff: 0 8px 30px rgba(0,0,0,0.35);
+
+    --mapControl_backgroundOn: rgba(0,0,0,0.75);
+    --mapControl_colorOn: #fff;
+    --mapControl_border-colorOn: rgba(0,0,0,0.10)!important;
+    --mapControl_box-shadowOn: 0 8px 30px rgba(0,0,0,0.12);
   }
+  /*
+dark
+
+
+light
+
+  */
   [data-theme="dark"] {
     --bg_body_color: #202124;
     
@@ -80,6 +104,23 @@
     --tabActive_background: #EEEEEE;
     --tabNotActive_color: #F5F5F5;
     --tabNotActive_background: #555555;
+
+    --mapControl_background: rgba(0,0,0,0.75);
+    --mapControl_color: #fff!important;
+    --mapControl_border-color: rgba(0,0,0,0.10)!important;
+    --mapControl_box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    --mapControl_backgroundTick: rgba(255,255,255,0.25);
+    --mapControl_backgroundTickDay: rgba(255,255,255,0.55);
+
+    --mapControl_backgroundOff: rgba(255,255,255,0.9);
+    --mapControl_colorOff: #333;
+    --mapControl_border-colorOff: rgba(255,255,255,0.18);
+    --mapControl_box-shadowOff: 0 8px 30px rgba(0,0,0,0.35);
+
+    --mapControl_backgroundOn: rgba(0,0,0,0.75);
+    --mapControl_colorOn: #fff;
+    --mapControl_border-colorOn: rgba(0,0,0,0.10)!important;
+    --mapControl_box-shadowOn: 0 8px 30px rgba(0,0,0,0.12);
 
   }
 
@@ -1125,19 +1166,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 input[type="color"]::-webkit-color-swatch {
     border: none;
 }
-#existingRoute3Lmap>.rt_lst_color {
 
-    height: 1.2em;
-    width: 46%;
-    padding-left: 2px;
-}
-#sel_borderColorLmap,#sel_projectionColorLmap {
- 
-    width: 50%;
-    max-width: none;
-    padding: 0;
-    height: 1.4em;
-}
 #rt_popupLmap{
     margin-top: 5%;
     margin-left: 30%;
@@ -1294,22 +1323,209 @@ input[type="checkbox"] {
     margin: 13px 22px 11px 18px !important;
     line-height: 15px !important;
 }
-.leaflet-control-coordinates {
-    font-size: 11px !important;
-    padding: 0 5px;
+
+
+/* ────────────── Coordonnées (bottom-right) plus lisibles ────────────── */
+/*
+dark
+
+    --mapControl_background: rgba(0,0,0,0.75)!important;
+    --mapControl_color: #fff!important;
+    --mapControl_border-color: rgba(0,0,0,0.10)!important;
+    --mapControl_box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    --mapControl_backgroundOff: rgba(255,255,255,0.9)!important;
+    --mapControl_colorOff: #333!important;
+    --mapControl_border-colorOff: rgba(255,255,255,0.18)!important;
+    --mapControl_box-shadowOff: 0 8px 30px rgba(0,0,0,0.35);
+light
+    --mapControl_background: rgba(255,255,255,0.9)!important;
+    --mapControl_color: #333!important;
+    --mapControl_border-color: rgba(255,255,255,0.18)!important;
+    --mapControl_box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    --mapControl_backgroundOff: rgba(0,0,0,0.75)!important;
+    --mapControl_colorOff: #fff!important;
+    --mapControl_border-colorOff: rgba(0,0,0,0.10)!important;
+    --mapControl_box-shadowOff: 0 8px 30px rgba(0,0,0,0.12);
+  */
+
+
+
+
+.ityc-info-control {
+  background: var(--mapControl_background)!important;/*rgba(255, 255, 255, 0.7)!important;*/
+  color: var(--mapControl_color)!important;/*#333!important;*/
+  padding: 1px 5px!important;
+  margin: 1px !important;
+  border-radius: 4px;
+  font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  line-height: 1.3;
+  white-space: nowrap;
+  min-width: 180px;
+
+  
 }
-.leaflet-control-coordinates .uiElement .labelFirst {
-    margin-right: 0px;
+
+.ityc-info-coords {
+  font-weight: 500;
 }
-.leaflet-control-coordinates .uiElement .labelGeo {
-    padding-left: 6px;
+
+.ityc-info-wind {
+  margin-top: 2px;
+  opacity: 0.9;
 }
-.leaflet-control-coordinates .input{
-    padding-bottom: 2px;
+
+.ityc-info-grib {
+  min-width: auto;
+}
+
+/* Petit conteneur type toolbar */
+.leaflet-bar.ityc-toolbar {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Bouton façon Leaflet tool */
+.leaflet-bar.ityc-toolbar .ityc-tool {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px!important;
+  text-decoration: none;
+  border-color: var(--mapControl_border-color)!important;/*rgba(0,0,0,0.1);*/
+  box-shadow: var(--mapControl_box-shadow)!important;/*0 2px 8px rgba(0,0,0,0.12);*/
+  backdrop-filter: blur(4px);
+}
+
+/* Icône */
+.ityc-icon {
+  width: 27px;
+  height: 27px;
+}
+
+/* État ON: fond sombre + icône claire */
+.ityc-tool-wind.is-on {
+  background: var(--mapControl_backgroundOn)!important;/*rgba(0,0,0,0.75)!important;*/
+  color: var(--mapControl_colorOn)!important;/*#fff!important;*/
+  border-color: var(--mapControl_border-colorOn)!important;/*rgba(255,255,255,0.18)!important;*/
+}
+
+/* État OFF: fond clair + icône sombre */
+.ityc-tool-wind.is-off {
+  background:  var(--mapControl_backgroundOff)!important;/*rgba(255,255,255,0.9)!important;*/
+  color: var(--mapControl_colorOff)!important;/*#222!important;*/
+  border-color: var(--mapControl_border-colorOff)!important;/*rgba(0,0,0,0.10)!important;*/
+}
+
+.ityc-tool-wind:hover {
+  filter: brightness(1.05);
 }
 .textMini {
     font-size: 11px !important;
     line-height: 1.4;
+}
+
+/* container settings (top-right) */
+.leaflet-bar.ityc-settings {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* bouton gear, même style que tes tools */
+.leaflet-bar.ityc-settings .ityc-tool {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px!important;
+  text-decoration: none;
+  border-color: var(--mapControl_border-color)!important;
+  /*border:  rgba(0,0,0,0.1);*/
+  box-shadow: var(--mapControl_box-shadow)!important;/*0 2px 10px rgba(0,0,0,0.12);*/
+  backdrop-filter: blur(4px);
+  background: var(--mapControl_background)!important;/*rgba(0,0,0,0.75);*/
+  color: var(--mapControl_color)!important;/*#fff;*/
+}
+
+.leaflet-bar.ityc-settings .ityc-tool:hover {
+  filter: brightness(1.06);
+}
+
+
+/* panel */
+.ityc-settings-panel {
+  position: absolute;
+  top: 0;
+  right: 36px; /* décale le menu à gauche du bouton */
+  min-width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--mapControl_background)!important;/*rgba(0,0,0,0.9);*/
+  color: var(--mapControl_color)!important;/*#fff;*/
+  border: 1px solid  var(--mapControl_border-color)!important;/*rgba(255,255,255,0.12);*/
+  box-shadow: var(--mapControl_box-shadow)!important;/*0 8px 30px rgba(0,0,0,0.25);*/
+  backdrop-filter: blur(6px);
+
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.ityc-settings.open .ityc-settings-panel {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* contenu */
+.ityc-settings-title {
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.ityc-settings-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.ityc-settings-label { font-size: 11px; opacity: 0.92; }
+.ityc-settings-select {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid  var(--mapControl_border-color)!important;/*rgba(255,255,255,0.12);*/
+  background: var(--mapControl_background)!important;/*rgba(255,255,255,0.08);*/
+  color: var(--mapControl_color)!important;/*#fff;*/
+}
+
+.ityc-settings-row-custom {
+  grid-template-columns: 1fr 1fr auto;
+}
+
+.ityc-settings-range { width: 110px; accent-color: #ffb400; }
+.ityc-settings-value { font-size: 11px; opacity: 0.9; min-width: 26px; text-align: right; }
+
+.ityc-settings-divider {
+  height: 1px;
+  background: var(--mapControl_background)!important;/*rgba(255,255,255,0.10);*/
+  margin: 8px 0;
+}
+
+.ityc-settings-color {
+  width: 32px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid  var(--mapControl_border-color)!important;/* rgba(255,255,255,0.12);*/
+  border-radius: 6px;
+  background: var(--mapControl_background)!important;/*rgba(255,255,255,0.08);*/
 }
 
 /* ---- RaceBook v2: cards + tables modernes ---- */
@@ -1317,6 +1533,23 @@ input[type="checkbox"] {
     container-type: inline-size;
     display: grid;
     gap: 16px;
+}
+.card-credits {
+    height: 100%;
+    display: flex;          /* header + body en colonne */
+    flex-direction: column;
+}
+
+.card-credits .card-body {
+   flex-direction: column; 
+   align-items: stretch;   
+   justify-content: center;
+}
+.card-credits .table-wrap {
+    margin-top: 24px;
+}
+.card-credits .table-wrap {
+    width: 100%;            /* garde le tableau à la largeur de la card */
 }
 
 .rb-grid {
@@ -1327,7 +1560,7 @@ input[type="checkbox"] {
 
 @container (min-width: 900px) {
 .rb-grid {
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 0.65fr 1fr;
     align-items: start;
 }
 }
@@ -1382,6 +1615,11 @@ input[type="checkbox"] {
     color: var(--td_color);
     white-space: nowrap;
 }
+.table-modern th,
+.table-modern td {
+    text-align: center;
+    vertical-align: middle;
+}
 .table-modern tbody tr:hover td {
     background: color-mix(in oklab, var(--td_bg_color), #888 12%);
 }
@@ -1400,6 +1638,41 @@ input[type="checkbox"] {
 .kv .k {opacity:.75}
 .kv .v {font-weight:600; text-align:right}
 
+/* ---- Race identity layout ---- */
+.rb-identity {
+   display: grid;
+   grid-template-columns: auto 1fr;
+   gap: 12px 32px;
+   align-items: stretch;   /* la colonne gauche prend toute la hauteur */
+   min-height: 160px;      /* hauteur mini pour bien ancrer l'image */
+}
+
+.rb-identity .kv {
+    align-content: space-between;
+}
+
+.rb-identity-media {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    height: 100%;         
+}
+
+.rb-identity-thumb {
+    flex: 1 1 auto;         /* prend tout l'espace vertical disponible sous le badge */
+    width: auto;
+    max-height: 180px;      /* sécurité pour éviter une image trop haute */
+    border-radius: 12px;
+    display: block;
+    object-fit: cover;      /* remplissage propre, sans déformation moche */
+}
+
+@media (max-width: 700px) {
+    .rb-identity {
+        grid-template-columns: 1fr;
+    }
+}
 .badge {
     display:inline-flex; align-items:center; gap:6px;
     font-size:12px; font-weight:600; padding:3px 8px;
@@ -1426,8 +1699,8 @@ input[type="checkbox"] {
 }
 
 .wind-display-control .wind-ctrl {
-  background: rgba(0,0,0,0.6);
-  color: #fff;
+  background: var(--mapControl_background)!important;/*rgba(0,0,0,0.6);*/
+  color: var(--mapControl_color)!important;/*#fff;*/
   padding: 4px 6px;
   font-size: 11px;
 }
@@ -1450,3 +1723,196 @@ input[type="checkbox"] {
 .tabUser {
     font-size: 13px;
 }
+/* ────────────── Contrôle Vent (top-right) ────────────── */
+
+.leaflet-bar.wind-display-control {
+  background: var(--mapControl_background)!important;/*rgba(0, 0, 0, 0.7);*/
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: var(--mapControl_color)!important;/*#fff;*/
+  font-size: 11px;
+}
+
+
+
+.wind-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+ /* ────────────── Timeline Vent Windy-like (bottom-left) ────────────── */
+ 
+ :root { --ityc-accent: #ffb400; }
+/* Nouveau coin Leaflet : bottom center */
+  .leaflet-bottom.leaflet-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 6px;
+    z-index: 600; /* au-dessus du fond, sous les popups */
+    pointer-events: none; /* pour ne pas bloquer la map hors du control */
+  }
+  .leaflet-bottom.leaflet-center .leaflet-control {
+    pointer-events: auto;
+  }
+  
+  /* Slider principal */
+  .leaflet-bar.ityc-timeline {
+    background: var(--mapControl_background)!important;/*rgba(0,0,0,0.65) !important;*/
+    color: var(--mapControl_color)!important;/*#fff !important;*/
+    border: 1px solid  var(--mapControl_border-color)!important;/* rgba(255,255,255,0.12);*/
+    box-shadow: var(--mapControl_box-shadow)!important;/*0 8px 30px rgba(0,0,0,0.25);*/
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+    padding: 8px 10px !important;
+    min-width: 780px; /* look "barre bas de page" */
+    max-width: 1100px;
+  }
+  
+  .ityc-tl-bar {
+    position: relative;
+    padding: 8px 0 4px;
+  }
+  
+  .ityc-tl-slider {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--ityc-accent);
+  }
+  
+  .ityc-tl-ticks {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0;
+    height: 10px;
+    pointer-events: none;
+  }
+  
+  .ityc-tl-tick {
+    position: absolute;
+    top: 2px;
+    width: 1px;
+    height: 6px;
+    background: var(--mapControl_backgroundTick);/*rgba(255,255,255,0.25);*/
+    transform: translateX(-0.5px);
+  }
+  .ityc-tl-tick.is-day {
+    height: 9px;
+    background: var(--mapControl_backgroundTickDay);/*rgba(255,255,255,0.55);*/
+  }
+  
+
+  .ityc-tl-tooltip {
+    position: absolute;
+    top: -18px;
+    transform: translateX(-50%);
+    background: var(--mapControl_background)!important;/* rgba(0,0,0,0.85);*/
+    border: 1px solid  var(--mapControl_border-color)!important;/*rgba(255,255,255,0.12);*/
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  
+  .ityc-tl-days {
+    position: relative;
+    height: 16px;
+    margin-top: 4px;
+  }
+  
+  .ityc-tl-day {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 10px;
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+  
+  
+
+/* ────────────── Bloc bottom-right : boutons + coords/vent ────────────── */
+.leaflet-bar.ityc-posplay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px !important;
+}
+
+.ityc-posplay-buttons {
+   display: flex;                   /* boutons sur UNE ligne */
+   flex-direction: row;
+   gap: 6px;
+   justify-content: flex-start;
+   align-items: center;
+   padding-right: 6px;
+   border-right: 1px solid rgba(255,255,255,0.12);
+}
+
+.ityc-posplay-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.15;
+}
+
+.ityc-pb-btn {
+  width: 28px;
+  height: 24px;
+  border: 1px solid  var(--mapControl_border-color)!important;/*rgba(0,0,0,0.12);*/
+  background: rgba(255,255,255,0.08);
+  color: inherit;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+}
+.ityc-pb-btn:hover {
+  background: rgba(255,255,255,0.16);
+}
+  /* Time au-dessus GRIB (optionnel, léger accent) */
+  .ityc-info-grib .ityc-grib-time {
+    font-weight: 700;
+    margin-bottom: 2px;
+    opacity: 0.95;
+  }
+/* support des thèmes : utilise ta variable d'accent si tu en as une */
+
+.ityc-windctl { position: relative; }
+
+.ityc-wind-menu{
+  position: absolute;
+  right: 0;
+  background: var(--mapControl_background)!important;/*rgba(255,255,255,0.9)!important;*/
+  color: var(--mapControl_color)!important;/*#222!important;*/
+  border-color: var(--mapControl_border-color)!important;/*rgba(0,0,0,0.10)!important;*/
+  box-shadow: var(--mapControl_box-shadow)!important;/*0 8px 22px rgba(0,0,0,0.35);*/
+  top : 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  min-width: 11em;
+  z-index: 10000;
+  backdrop-filter: blur(6px);
+}
+
+.ityc-wind-opt{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 4px 2px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ityc-wind-opt input{ margin: 0; }
+.ityc-wind-opt:hover{ opacity: 0.9; }
+
+
+
+

@@ -20,7 +20,7 @@ let originalSize;
 
 
 window.addEventListener("load", function () {
-  var idC = document.getElementById('itycDashId');
+  var idC = document.getElementById('itycNDashId');
   if(idC)  manifestVersion = idC.getAttribute('ver');             
 
   document.addEventListener("fullscreenchange", manageGoInFullScreen);

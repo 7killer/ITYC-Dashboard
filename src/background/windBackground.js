@@ -5,21 +5,52 @@ import cfg from '@/config.json';
 export const WIND_MODEL = 'gfs0p25';
 const API_BASE = 'https://wind.ityc.fr';
 const WINDOW_SECONDS = 5 * 24 * 3600; // 5 jours
+const VALID_WHICH = new Set(['latest', 'previous']);
+function normalizeWhich(which) {
+  const w = String(which || 'latest').toLowerCase();
+  return VALID_WHICH.has(w) ? w : 'latest';
+}
 
 function buildRunId(run) {
   // run = { date: 'YYYYMMDD', cycle: '00'|'06'|'12'|'18' }
   return `${run.date}_${run.cycle}`;
 }
+function parseRunId(runId) {
+  // "YYYYMMDD_CC" -> { date:"YYYYMMDD", cycle:"CC" }
+  const s = String(runId || '');
+  const m = s.match(/^(\d{8})_(\d{2})$/);
+  if (!m) return null;
+  return { date: m[1], cycle: m[2] };
+}
 
-async function fetchLatestManifest() {
-  const url = `${API_BASE}/api/${WIND_MODEL}/manifest/latest`;
+function computeValidTimeUnixFromRunIdFh(runId, fh) {
+  const parsed = parseRunId(runId);
+  const fhNum = toFhNumber(fh);
+  if (!parsed || fhNum == null) return null;
+  const y = Number(parsed.date.slice(0, 4));
+  const mo = Number(parsed.date.slice(4, 6)) - 1;
+  const d = Number(parsed.date.slice(6, 8));
+  const h = Number(parsed.cycle);
+  const refMs = Date.UTC(y, mo, d, h, 0, 0);
+  return Math.floor(refMs / 1000) + fhNum * 3600;
+}
+
+async function fetchManifest(which = 'latest') {
+  const w = normalizeWhich(which);
+  const url = `${API_BASE}/api/${WIND_MODEL}/manifest/${w}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status} on manifest`);
   const manifest = await res.json();
 
-  if (cfg.debugWind) console.log('[wind] manifest latest:', manifest);
+  if (cfg.debugWind) console.log(`[wind] manifest ${w}:`, manifest);
   return manifest; // { run: {date,cycle,...?}, forecasts: [...] }
 }
+
+function toFhNumber(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 function getForecastsWindow5d(manifest) {
   const { forecasts } = manifest;
   if (!forecasts || !forecasts.length) return [];
@@ -45,7 +76,9 @@ function getForecastsWindow5d(manifest) {
 
 async function ensureWindpackInDB(model, run, forecast) {
   const runId = buildRunId(run);
-  const key = [model, runId, forecast.fh];
+  const fhNum = toFhNumber(forecast?.fh);
+  if (fhNum == null) throw new Error(`Invalid forecast.fh: ${forecast?.fh}`);
+  const key = [model, runId, fhNum];
 
   const existing = await getData('windpacks', key);
   if (existing && existing.blob) {
@@ -53,12 +86,12 @@ async function ensureWindpackInDB(model, run, forecast) {
     return existing;
   }
 
-  const fileUrl = `${API_BASE}/api/${model}/file/${run.date}/${run.cycle}/${forecast.fh}`;
+  const fileUrl = `${API_BASE}/api/${model}/file/${run.date}/${run.cycle}/${fhNum}`;
   if (cfg.debugWind) console.log('[wind] DL windpack', fileUrl);
 
   const res = await fetch(fileUrl);
   if (!res.ok) {
-    throw new Error(`HTTP ${res.status} on windpack fh=${forecast.fh}`);
+    throw new Error(`HTTP ${res.status} on windpack fh=${fhNum}`);
   }
 
   const blob = await res.blob();
@@ -66,7 +99,7 @@ async function ensureWindpackInDB(model, run, forecast) {
   const record = {
     model,
     runId,
-    fh: forecast.fh,
+    fh: fhNum,
     runDate: run.date,
     runCycle: run.cycle,
     validTimeUnix: forecast.validTimeUnix,
@@ -79,14 +112,73 @@ async function ensureWindpackInDB(model, run, forecast) {
   return record;
 }
 
+/**
+ * Assure qu'un windpack (model, runId, fh) est en DB.
+ * - runId = "YYYYMMDD_CC"
+ * - fh = number (ex 9, 12, 15, 18...)
+ *
+ * Utilisé par le mode VR côté UI : on peut avoir besoin de snapshots
+ * d'un run différent du "latest" courant.
+ */
+export async function ensureWindpackByRunIdFh(model, runId, fh) {
+  const parsed = parseRunId(runId);
+  const fhNum = toFhNumber(fh);
+  if (!parsed) throw new Error(`Invalid runId: ${runId}`);
+  if (fhNum == null) throw new Error(`Invalid fh: ${fh}`);
+
+  // Déjà en DB ?
+  const key = [model, runId, fhNum];
+  const existing = await getData('windpacks', key);
+  if (existing && existing.blob) return existing;
+
+  // On construit un "run" + "forecast" minimal pour réutiliser ensureWindpackInDB
+  const run = { date: parsed.date, cycle: parsed.cycle };
+  const validTimeUnix = computeValidTimeUnixFromRunIdFh(runId, fhNum);
+  const forecast = {
+    fh: fhNum,
+    validTimeUnix,
+    exists: true,
+  };
+
+  return ensureWindpackInDB(model, run, forecast);
+}
+
+async function ensurePreviousRunFh09and12(model) {
+  // Toujours tenter de précharger FH 9 et 12 du run "previous"
+  try {
+    const prevManifest = await fetchManifest('previous');
+    const prevRun = prevManifest?.run;
+    const prevForecasts = prevManifest?.forecasts || [];
+    if (!prevRun || !prevForecasts.length) return;
+
+    const want = new Set([9, 12]);
+    const candidates = prevForecasts
+      .map((f) => ({ f, fh: toFhNumber(f?.fh) }))
+      .filter((x) => x.f && x.fh != null && want.has(x.fh));
+
+    for (const c of candidates) {
+      // Si le serveur n'a pas encore FH 9/12 (rare sur "previous"), on skip.
+      if (!c.f.exists) continue;
+      try {
+        await ensureWindpackInDB(model, prevRun, c.f);
+      } catch (e) {
+        console.warn('[wind] preload previous fh failed', c.fh, e);
+      }
+    }
+  } catch (e) {
+    console.warn('[wind] preload previous fh 9/12 skipped (manifest previous failed)', e);
+  }
+}
+
 export async function syncLatestWindpacks() {
-  const manifest = await fetchLatestManifest();
+  const manifest = await fetchLatestManifest('latest');
   const { run, forecasts } = manifest;
   const model = WIND_MODEL;
 
   const avail = (forecasts || []).filter(f => f && f.exists);
   if (!avail.length) {
     if (cfg.debugWind) console.warn('[wind] aucun forecast existant dans le manifest');
+    await ensurePreviousRunFh09and12(model);
     return { model, run, forecasts: [] };
   }
 
@@ -109,7 +201,7 @@ export async function syncLatestWindpacks() {
   } catch (e) {
     console.error('[wind] erreur DL windpack best', best, e);
   }
-
+  await ensurePreviousRunFh09and12(model);
   // tu peux décider ici si tu veux *tout* précharger ou juste le "best" :
   // for (const f of avail) { await ensureWindpackInDB(model, run, f); }
 
@@ -138,8 +230,9 @@ async function cleanupOldRuns(model) {
     console.log('[wind] cleanupOldRuns', { runs, keep: Array.from(keep), removed });
   }
 }
-export async function buildRunInfo() {
-  const manifest = await fetchLatestManifest();
+export async function buildRunInfo(opts = undefined) {
+  const which = normalizeWhich(opts?.which);
+  const manifest = await fetchManifest(which);
   const { run, forecasts } = manifest;
   const model = WIND_MODEL;
   const runId = buildRunId(run);
@@ -155,9 +248,10 @@ export async function buildRunInfo() {
 
   const enriched = (forecasts || []).map(f => {
     if (!f) return null;
-    const pack = byFH.get(f.fh);
+    const fhNum = toFhNumber(f.fh);
+    const pack = fhNum == null ? null : byFH.get(fhNum);
     return {
-      fh: f.fh,
+      fh: fhNum ?? f.fh,
       existsOnServer: !!f.exists,
       validTimeUnix: f.validTimeUnix,
       hasBlob: !!pack,
@@ -168,12 +262,13 @@ export async function buildRunInfo() {
     model,
     run,
     runId,
+    which,
     forecasts: enriched,
   };
 }
 
 export async function syncLatestWindpacksWindowed() {
-  const manifest = await fetchLatestManifest();
+  const manifest = await fetchManifest('latest');
   const { run } = manifest;
   const model = WIND_MODEL;
 
@@ -221,7 +316,7 @@ export async function syncLatestWindpacksWindowed() {
 
   // Si tous les FH de la fenêtre existent côté serveur ET sont en DB → allComplete = true
   // Sinon → allComplete = false (robot 2 min continuera de réessayer)
-
+  await ensurePreviousRunFh09and12(model);
   await cleanupOldRuns(model);
 
   if (cfg.debugWind) {

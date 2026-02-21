@@ -176,3 +176,12 @@ export function hideShowTracks() {
         } 
     }
 }
+/*
+// quelque part dans ton module de routage
+import { onWindTimeChange } from './map-wind.js';
+
+onWindTimeChange((epochSec) => {
+  // epochSec en secondes
+  const tsMs = epochSec * 1000;
+  // update position sur tes polylines de routage, etc.
+});*/

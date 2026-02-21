@@ -21,7 +21,7 @@ let scriptLoaded;
 
 window.addEventListener("load", () => {
   setTimeout(() => {  
-    let idC = document.getElementById('itycDashId');
+    let idC = document.getElementById('itycNDashId');
     if(idC)  manifestVersion = idC.getAttribute('ver');   
     else return;
     let spacer =  0;
@@ -44,21 +44,21 @@ window.addEventListener("load", () => {
 
 
 function callRouterZezo() { 
-  var idC = document.getElementById('itycDashId');
+  var idC = document.getElementById('itycNDashId');
   if(idC && scriptLoaded)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openZezo" });             
 } 
 
 function callRouterToxxct() { 
-  var idC = document.getElementById('itycDashId');
+  var idC = document.getElementById('itycNDashId');
   if(idC && scriptLoaded)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openToxxct" });  
 }
 
 function callItyc() { 
-  var idC = document.getElementById('itycDashId');
+  var idC = document.getElementById('itycNDashId');
   if(idC && scriptLoaded)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openItyc" });  
 }
 function callRouterVrZen() { 
-  var idC = document.getElementById('itycDashId');
+  var idC = document.getElementById('itycNDashId');
   if(idC && scriptLoaded)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
 }
 
@@ -121,7 +121,7 @@ function callRouterVrZen() {
   };
 
   window.fetch = async function (...fetchArgs) {
-    const idC = document.getElementById("itycDashId");
+    const idC = document.getElementById("itycNDashId");
     const extId = idC?.getAttribute?.('extId')
     let init
     let url
@@ -275,7 +275,7 @@ var comTimer ;
 var aliveTimeout = 1000;
 function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
-    var idC = document.getElementById('itycDashId');
+    var idC = document.getElementById('itycNDashId');
     if(idC  && scriptLoaded) {
       chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"alive"},
       function (response) {manageAnswer(response);})
@@ -373,7 +373,7 @@ function drawDashBoardDetected()
 
 window.onmessage = function(e) {
   let msg = e.data;
-  manifestVersion = document.getElementById('itycDashId')?.getAttribute('ver')?document.getElementById('itycDashId')?.getAttribute('ver'):manifestVersion;  
+  manifestVersion = document.getElementById('itycNDashId')?.getAttribute('ver')?document.getElementById('itycNDashId')?.getAttribute('ver'):manifestVersion;  
   if(msg && msg.port && msg.port==("VR2Iframe" + manifestVersion)) {
     
     if (msg.order === "maxSize") {
@@ -389,7 +389,7 @@ window.onmessage = function(e) {
 
 function sendSize2Top(w,h)
 {
-  manifestVersion = document.getElementById('itycDashId')?.getAttribute('ver')?document.getElementById('itycDashId')?.getAttribute('ver'):manifestVersion;  
+  manifestVersion = document.getElementById('itycNDashId')?.getAttribute('ver')?document.getElementById('itycNDashId')?.getAttribute('ver'):manifestVersion;  
   window.top.postMessage(
     { port:"ItycIframe2VR" + manifestVersion,
       order: "resize",
@@ -400,7 +400,7 @@ function sendSize2Top(w,h)
 
 function sendParameter2Top(theme,gameSizeFrame)
 {
-  manifestVersion = document.getElementById('itycDashId')?.getAttribute('ver')?document.getElementById('itycDashId')?.getAttribute('ver'):manifestVersion;  
+  manifestVersion = document.getElementById('itycNDashId')?.getAttribute('ver')?document.getElementById('itycNDashId')?.getAttribute('ver'):manifestVersion;  
   let paramReceived = false;
   if(originGameWidth == 0 || originGameHeight== 0)
     console.log("warn original size not loaded");

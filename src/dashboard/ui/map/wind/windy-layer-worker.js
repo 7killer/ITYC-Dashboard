@@ -1,6 +1,23 @@
 // windy-layer-worker.js
 import { parseWindpack, unixToRefTimeString } from './windpackClient.js';
 
+let activeField = null;     // champ actuellement utilisé par les particules
+let nextField = null;       // champ cible (pour morph)
+let morphState = null;      // état du morphing temporel
+
+// Cache des snapshots windpack pour éviter de re-décompresser à chaque interpolation
+// Clé = URI (y compris blob:), Valeur = snapshot parseWindpack(...)
+const windpackCache = new Map();
+
+function isWindpackUri(uri) {
+  return (
+    uri.endsWith('.wpack') ||
+    uri.endsWith('.wpack.gz') ||
+    uri.includes('/api/gfs0p25/file/') ||
+    uri.startsWith('blob:')
+  );
+}
+
 self.onmessage = async (e) => {
   const data = e.data || {};
 
@@ -95,32 +112,40 @@ async function handleInterpolate(urlPrev, urlNext, nowUnix) {
   }
 
 async function fetchAnyWindData(uri) {
-  const isWindpack =
-    uri.endsWith('.wpack') ||
-    uri.endsWith('.wpack.gz') ||
-    uri.includes('/api/gfs0p25/file/') ||
-    uri.startsWith('blob:');
+  // Cas windpack (y compris blob:) → on utilise le cache
+  if (isWindpackUri(uri)) {
+    const cached = windpackCache.get(uri);
+    if (cached) {
+      return cached;
+    }
 
-  const res = await fetch(uri);
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status} for ${uri}`);
-  }
+    const res = await fetch(uri);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} for ${uri}`);
+    }
 
-  if (isWindpack) {
     // DecompressionStream dispo dans les workers MV3
+    let snap;
     if (res.body && typeof DecompressionStream !== 'undefined') {
       const ds = new DecompressionStream('gzip');
       const decompressed = res.body.pipeThrough(ds);
       const ab = await new Response(decompressed).arrayBuffer();
-      return parseWindpack(ab);
+      snap = parseWindpack(ab);
     } else {
-      // Si ton reverse proxy décompresse déjà
+      // Si ton reverse proxy décompresse déjà ou si le blob est déjà décompressé
       const ab = await res.arrayBuffer();
-      return parseWindpack(ab);
+      snap = parseWindpack(ab);
     }
+
+    windpackCache.set(uri, snap);
+    return snap;
   }
 
-  // Fallback JSON (ancien mode du plugin)
+  // Fallback JSON (ancien mode du plugin / debug)
+  const res = await fetch(uri);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} for ${uri}`);
+  }
   return res.json();
 }
 

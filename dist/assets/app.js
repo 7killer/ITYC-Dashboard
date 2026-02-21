@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as toRad, T as getLegPlayersTracksFleet, U as formatTimestampToReadableDate, V as getLegPlayersTrackLeader, W as getLegPlayersTracksGhost, X as gcDistance, Y as getPlayersList, Z as courseAngle, _ as display_selbox, $ as changeState, a0 as cleanSpecial, a1 as convertDMS2Dec, a2 as onUserChangeRace, a3 as saveUserPrefs, a4 as switchTheme, a5 as loadUserPrefs, a6 as initMemo, a7 as setConnectedPlayerId, a8 as updatePlayersList, a9 as updateTeamsList, aa as updateConnectedPlayerInfos, ab as updateLegPlayerInfos, ac as updateLegPlayersOrder, ad as getLegListUpdate, ae as setLegListUpdate, af as updateLegList, ag as updatePolar, ah as getPlayersUpdate, ai as setPlayersUpdate, aj as updateLegFleetInfos, ak as getTeamsUpdate, al as setTeamsUpdate, am as getPolarsUpdate, an as setPolarsUpdate, ao as getLegPlayersInfosUpdate, ap as setLegPlayersInfosUpdate, aq as getLegFleetInfosUpdate, ar as setLegFleetInfosUpdate, as as getLegPlayersOptionsUpdate, at as setLegPlayersOptionsUpdate, au as updateLegPlayersOptions, av as getLegPlayersOrderUpdate, aw as setLegPlayersOrderUpdate, ax as setOpenedRaceId, ay as updateOpenedRaceId, az as updateLegPlayersTracks, aA as getLegPlayersTracksUpdate, aB as setLegPlayersTracksUpdate, aC as createKeyChangeListener } from "./_commonjsHelpers-83ee83fe.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as display_selbox, a1 as changeState, a2 as cleanSpecial, a3 as convertDMS2Dec, a4 as onUserChangeRace, a5 as switchTheme, a6 as loadUserPrefs, a7 as initMemo, a8 as setConnectedPlayerId, a9 as updatePlayersList, aa as updateTeamsList, ab as updateConnectedPlayerInfos, ac as updateLegPlayerInfos, ad as updateLegPlayersOrder, ae as getLegListUpdate, af as setLegListUpdate, ag as updateLegList, ah as updatePolar, ai as getPlayersUpdate, aj as setPlayersUpdate, ak as updateLegFleetInfos, al as getTeamsUpdate, am as setTeamsUpdate, an as getPolarsUpdate, ao as setPolarsUpdate, ap as getLegPlayersInfosUpdate, aq as setLegPlayersInfosUpdate, ar as getLegFleetInfosUpdate, as as setLegFleetInfosUpdate, at as getLegPlayersOptionsUpdate, au as setLegPlayersOptionsUpdate, av as updateLegPlayersOptions, aw as getLegPlayersOrderUpdate, ax as setLegPlayersOrderUpdate, ay as setOpenedRaceId, az as updateOpenedRaceId, aA as updateLegPlayersTracks, aB as getLegPlayersTracksUpdate, aC as setLegPlayersTracksUpdate, aD as createKeyChangeListener } from "./_commonjsHelpers-ef85fc27.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -104,7 +104,7 @@ function buildRaceStatusHtml() {
     }
   }
   const tablecontainer = document.getElementById("raceStatus");
-  tablecontainer.innerHTML = '<table id="raceStatusTable"><thead>' + raceStatusHeader + "</thead><tbody>" + tableContent + "</tbody></table>";
+  tablecontainer.innerHTML = '<table id="raceStatusTable" class="tabUser"><thead>' + raceStatusHeader + "</thead><tbody>" + tableContent + "</tbody></table>";
 }
 function buildRaceStatusHtmlLine(raceInfo, raceIte) {
   var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
@@ -229,7 +229,7 @@ function buildRaceLogHtml() {
   const raceLogTableHeader = "<tr>" + genthRacelog("th_rl_date", "dateTime", "Time" + dateUTCSmall()) + raceTableHeaders() + genthRacelog("th_rl_aSail", "aSail", "aSail", "Auto Sail time remaining") + genthRacelog("th_rl_reportedSpeed", "reportedSpeed", "vR (kn)", "Reported speed") + genthRacelog("th_rl_calcSpeed", "calcSpeed", "vC (kn)", "Calculated speed (Δd/Δt)") + genthRacelog("th_rl_foils", "foils", "Foils", "Foiling factor") + genthRacelog("th_rl_factor", "factor", "Factor", "Speed factor") + genthRacelog("th_rl_stamina", "stamina", "Stamina", "Stamina Value. (penalities factor)") + genthRacelog("th_rl_deltaDistance", "deltaDistance", "Δd (nm)", "Calculated distance") + genthRacelog("th_rl_deltaTime", "deltaTime", "Δt (s)", "Time between positions") + genthRacelog("th_rl_psn", "position", "Position") + genthRacelog("th_rl_sail", "sail", "Sail", "Sail change time remaining") + genthRacelog("th_rl_gybe", "gybe", "Gybe", "Gybing time remaining") + genthRacelog("th_rl_tack", "tack", "Tack", "Tacking time remaining") + "</tr>";
   if (!raceInfo || (raceInfo == null ? void 0 : raceInfo.length) == 0 || !(racePlayerInfos == null ? void 0 : racePlayerInfos.ites)) {
     document.getElementById("recordlog").innerHTML = `
-            <table>
+            <table class="tabUser">
             <thead><tr><th>No infos received for this race.</th></tr></thead>
             </table>`;
     return;
@@ -255,7 +255,7 @@ function buildRaceLogHtml() {
             #UTC { ${utcStyle} }
             #UTCLocal { ${utcLocalStyle} }
         </style>
-        <table>
+        <table class="tabUser">
             <thead class="sticky">${raceLogTableHeader}</thead>
             <tbody>${raceLogContent}</tbody>
         </table>`;
@@ -388,26 +388,26 @@ function getSortField() {
 function getSortOrder() {
   return sortOrder;
 }
-function isDisplayEnabled(playerIte, userId, connectPlayerId) {
+function isDisplayEnabled(playerIte2, userId, connectPlayerId) {
   const userPrefs = getUserPrefs();
   const userFilters = userPrefs.filters;
   {
     console.groupCollapsed(`[isDisplayEnabled] Check for user ${userId}`);
     console.log("→ connectPlayerId :", connectPlayerId);
-    console.log("→ playerIte :", playerIte);
+    console.log("→ playerIte :", playerIte2);
     console.log("→ userFilters :", userFilters);
   }
   const conditions = {
     self: userId === connectPlayerId,
-    followed: playerIte.type2 === "followed" && userFilters.friends,
-    team: playerIte.type2 === "team" && userFilters.team,
-    normal: playerIte.type2 === "normal" && userFilters.opponents,
-    top: (playerIte.type === "top" || playerIte.type2 === "top") && userFilters.top,
-    certified: playerIte.type2 === "certified" && userFilters.certified,
-    real: playerIte.type2 === "real" && userFilters.real,
-    sponsor: (playerIte.type === "sponsor" || playerIte.type2 === "sponsor") && userFilters.sponsors,
-    selected: playerIte.choice === true && userFilters.selected,
-    inRace: playerIte.state === "racing" && userFilters.inRace
+    followed: playerIte2.type2 === "followed" && userFilters.friends,
+    team: playerIte2.type2 === "team" && userFilters.team,
+    normal: playerIte2.type2 === "normal" && userFilters.opponents,
+    top: (playerIte2.type === "top" || playerIte2.type2 === "top") && userFilters.top,
+    certified: playerIte2.type2 === "certified" && userFilters.certified,
+    real: playerIte2.type2 === "real" && userFilters.real,
+    sponsor: (playerIte2.type === "sponsor" || playerIte2.type2 === "sponsor") && userFilters.sponsors,
+    selected: playerIte2.choice === true && userFilters.selected,
+    inRace: playerIte2.state === "racing" && userFilters.inRace
   };
   const result = Object.values(conditions).some(Boolean);
   {
@@ -504,7 +504,7 @@ function buildRaceFleetHtml() {
     return;
   if (!raceItesFleet || Object.keys(raceItesFleet).length === 0) {
     document.getElementById("friendList").innerHTML = `
-            <table id="raceidTable">
+            <table id="raceidTable" class="tabUser">
             <thead><tr><th>No friend positions received yet. Please enter a race.</th></tr></thead>
             </table>`;
     return;
@@ -536,7 +536,7 @@ function buildRaceFleetHtml() {
   for (const { userId, pInfos } of rows) {
     raceFleetLines += buildRaceFleetLine(pInfos, raceInfo, connectedPlayerId);
   }
-  const fleetHTML = '<table><thead class="sticky">' + raceFleetTableHeader + "</thead><tbody>" + raceFleetLines + "</tbody></table>";
+  const fleetHTML = '<table class="tabUser"><thead class="sticky">' + raceFleetTableHeader + "</thead><tbody>" + raceFleetLines + "</tbody></table>";
   document.getElementById("friendList").innerHTML = fleetHTML;
   addEventListenersToRemoveSelectedBoatButtons();
   addEventListenersToSelectedLine();
@@ -546,35 +546,35 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
   var _a2, _b;
   if (!playerFleetInfos || !raceInfo)
     return "";
-  const playerIte = playerFleetInfos.ite;
-  if (!playerIte)
+  const playerIte2 = playerFleetInfos.ite;
+  if (!playerIte2)
     return "";
-  const iteDash = playerIte.metaDash;
+  const iteDash = playerIte2.metaDash;
   if (!iteDash)
     return "";
   const userPrefs = getUserPrefs();
   const darkTheme = userPrefs.theme == "dark";
-  const userId = playerIte.userId;
-  const isDisplay = isDisplayEnabled(playerIte, userId, connectedPlayerId) && (!userPrefs.filters.inRace || r.state == "racing");
+  const userId = playerIte2.userId;
+  const isDisplay = isDisplayEnabled(playerIte2, userId, connectedPlayerId) && (!userPrefs.filters.inRace || r.state == "racing");
   if (!isDisplay)
     return "";
   let iconState = "";
   let txtTitle = "";
-  if (playerIte.state == null) {
+  if (playerIte2.state == null) {
     iconState = "";
-  } else if (playerIte.state == "racing" && playerIte.speed == 0 && playerIte.twa != 0) {
+  } else if (playerIte2.state == "racing" && playerIte2.speed == 0 && playerIte2.twa != 0) {
     iconState = '<span style="color:Red;">&#x2B24;</span>';
     txtTitle = "AGROUND !";
-  } else if (playerIte.state == "racing" && playerIte.speed != 0) {
+  } else if (playerIte2.state == "racing" && playerIte2.speed != 0) {
     iconState = '<span style="color:DodgerBlue;">&#x2B24;</span>';
     txtTitle = "Racing";
-  } else if (playerIte.state == "arrived") {
+  } else if (playerIte2.state == "arrived") {
     iconState = '<span style="color:Lime;">&#x2B24;</span>';
     txtTitle = "Arrived";
-  } else if (playerIte.state == "waiting") {
+  } else if (playerIte2.state == "waiting") {
     iconState = '<span style="color:DimGray;">&#x2a02;</span>';
     txtTitle = "Waiting";
-  } else if (playerIte.state == "staying") {
+  } else if (playerIte2.state == "staying") {
     iconState = '<span style="color:DimGray;">&#x2a02;</span>';
     txtTitle = "Staying";
   } else {
@@ -584,30 +584,30 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
   if (getLegSelectedPlayersState(userId)) {
     bull = '<span style="color:HotPink;font-size:16px;"><b>&#9679;</b></span>';
   }
-  if (playerIte.team == true) {
+  if (playerIte2.team == true) {
     bull += '<span style="color:Red;font-size:16px;"><b>&#9679;</b></span>';
   }
-  if (playerIte.followed == true || playerIte.isFollowed == true) {
+  if (playerIte2.followed == true || playerIte2.isFollowed == true) {
     bull += '<span style="color:LimeGreen;font-size:16px;"><b>&#9679</b></span>';
-  } else if (playerIte.type == "real") {
+  } else if (playerIte2.type == "real") {
     bull = '<span style="color:Chocolate;font-size:16px;"><b>&#9679;</b></span>';
   } else {
     bull += '<span style="color:LightGrey;font-size:16px;"><b>&#9679;</b></span>';
   }
-  if (playerIte.type == "top") {
+  if (playerIte2.type == "top") {
     bull += '<span style="color:GoldenRod;font-size:16px;"><b>&#9679;</b></span>';
   }
-  if (playerIte.type == "certified") {
+  if (playerIte2.type == "certified") {
     bull += '<span style="color:DodgerBlue;font-size:16px;"><b>&#9679;</b></span>';
   }
-  if (playerIte.type == "sponsor") {
+  if (playerIte2.type == "sponsor") {
     bull += '<span style="color:DarkSlateBlue;font-size:16px;"><b>&#9679;</b></span>';
   }
   if (userId == connectedPlayerId) {
     bull = "<span>&#11088</span>";
   }
   const teamName = ((_a2 = playerFleetInfos.team) == null ? void 0 : _a2.id) ? playerFleetInfos.team.name : "";
-  const xfactorStyle = iteDash ? getxFactorStyle(playerIte) : "";
+  const xfactorStyle = iteDash ? getxFactorStyle(playerIte2) : "";
   let xfactorTxt = "-";
   if (iteDash) {
     xfactorTxt = roundTo(iteDash.xfactor, 4);
@@ -615,13 +615,13 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
       xfactorTxt += " " + iteDash.sailCoverage + "%";
     }
   }
-  const isTWAMode = playerIte.isRegulated;
+  const isTWAMode = playerIte2.isRegulated;
   let lock = "";
   if (isTWAMode == false)
     lock = "<span title='TWA Unlocked' class='cursorHelp'>&#x25EF;</span>";
   else if (isTWAMode == true)
     lock = "<span title='TWA Locked' class='cursorHelp'>&#x24B6;</span>";
-  const twaFG = 'style="color: ' + (playerIte.twa < 0 ? "red" : "green") + ';"';
+  const twaFG = 'style="color: ' + (playerIte2.twa < 0 ? "red" : "green") + ';"';
   const hdgFG = isTWAMode ? darkTheme ? "white" : "black" : darkTheme ? "darkcyan" : "blue";
   const hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
   const { optionsTxt, optionsTitle, optionsStyle, foilsType } = drawOptions(playerFleetInfos.options);
@@ -632,29 +632,29 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
     else
       routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
   const nameClass = userId == connectedPlayerId ? "highlightMe" : "";
-  const categoryIdx = category.indexOf(playerIte.type);
+  const categoryIdx = category.indexOf(playerIte2.type);
   const nameStyle = userId == connectedPlayerId ? "color: #b86dff; font-weight: bold; " : "color:" + (darkTheme ? categoryStyleDark[categoryIdx].nameStyle : categoryStyle[categoryIdx].nameStyle) + ";";
-  const autoSail = playerIte.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : "";
-  const name = playerIte.type == "sponsor" ? ((_b = playerIte.branding) == null ? void 0 : _b.name) ? playerFleetInfos.info.name + "(" + playerIte.branding.name + ")" : playerFleetInfos.info.name : playerFleetInfos.info.name;
-  const sailStyle = 'style="color:' + sailColors[playerIte.sail] + '"';
-  const sailName = sailNames[playerIte.sail % 10] || "-";
+  const autoSail = playerIte2.sail > 10 ? "<span title='Auto Sails' class='cursorHelp'>&#x24B6;</span>" : "";
+  const name = playerIte2.type == "sponsor" ? ((_b = playerIte2.branding) == null ? void 0 : _b.name) ? playerFleetInfos.info.name + "(" + playerIte2.branding.name + ")" : playerFleetInfos.info.name : playerFleetInfos.info.name;
+  const sailStyle = 'style="color:' + sailColors[playerIte2.sail] + '"';
+  const sailName = sailNames[playerIte2.sail % 10] || "-";
   const foils = (iteDash == null ? void 0 : iteDash.realFoilFactor) == null ? foilsType ? "no" : "?" : roundTo(iteDash.realFoilFactor, 1) + "%";
-  return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '"><td class="tdc">' + routerIcon + "</td>" + gentd("Time", "", null, formatTime(playerIte.iteDate, 1)) + '<td class="Skipper" style="' + nameStyle + '"><div class="bull">' + bull + "</div> " + name + "</td>" + gentd("Team", "", null, teamName) + gentd("Rank", "", null, playerIte.rank ? playerIte.rank : "-") + (raceInfo.raceType !== "record" ? gentd("RaceTime", "", null, iteDash.raceTime ? formatDHMS(iteDash.raceTime) : "-") : "") + gentd("DTU", "", null, iteDash.DTU ? roundTo(iteDash.DTU, 3) : "-") + gentd("DTF", "", null, iteDash.dtf == iteDash.dtfC ? "(" + roundTo(iteDash.dtfC, 3) + ")" : roundTo(iteDash.dtf, 3)) + gentd("TWD", "", null, roundTo(playerIte.twd ? playerIte.twd : iteDash.twd, 3)) + gentd("TWS", "", null, roundTo(playerIte.tws, 3)) + gentd("TWA", twaFG, null, roundTo(Math.abs(playerIte.twa), 3)) + gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock) + gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold, null, roundTo(playerIte.hdg, 3)) + gentd("Speed", "", null, roundTo(playerIte.speed, 3)) + gentd("VMG", "", null, roundTo(iteDash.vmg, 3)) + gentd("Sail", "", null, "<span " + sailStyle + ">&#x25e2&#x25e3  </span>" + sailName) + gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, autoSail) + gentd("Factor", xfactorStyle, null, xfactorTxt) + gentd("Foils", "", null, foils) + recordRaceFields(raceInfo, playerIte) + gentd("Position", "", null, playerIte.pos ? formatPosition(playerIte.pos.lat, playerIte.pos.lon) : "-") + gentd("Options", optionsStyle, optionsTitle, optionsTxt) + gentd("State", "", txtTitle, iconState) + gentd("Remove", "", null, getLegSelectedPlayersState(userId) && userId != connectedPlayerId ? '<span class="removeSelectedBoat" data-id="' + userId + '" title="Remove this boat: ' + name + '">❌</span>' : "") + "</tr>";
+  return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '"><td class="tdc">' + routerIcon + "</td>" + gentd("Time", "", null, formatTime(playerIte2.iteDate, 1)) + '<td class="Skipper" style="' + nameStyle + '"><div class="bull">' + bull + "</div> " + name + "</td>" + gentd("Team", "", null, teamName) + gentd("Rank", "", null, playerIte2.rank ? playerIte2.rank : "-") + (raceInfo.raceType !== "record" ? gentd("RaceTime", "", null, iteDash.raceTime ? formatDHMS(iteDash.raceTime) : "-") : "") + gentd("DTU", "", null, iteDash.DTU ? roundTo(iteDash.DTU, 3) : "-") + gentd("DTF", "", null, iteDash.dtf == iteDash.dtfC ? "(" + roundTo(iteDash.dtfC, 3) + ")" : roundTo(iteDash.dtf, 3)) + gentd("TWD", "", null, roundTo(playerIte2.twd ? playerIte2.twd : iteDash.twd, 3)) + gentd("TWS", "", null, roundTo(playerIte2.tws, 3)) + gentd("TWA", twaFG, null, roundTo(Math.abs(playerIte2.twa), 3)) + gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock) + gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold, null, roundTo(playerIte2.hdg, 3)) + gentd("Speed", "", null, roundTo(playerIte2.speed, 3)) + gentd("VMG", "", null, roundTo(iteDash.vmg, 3)) + gentd("Sail", "", null, "<span " + sailStyle + ">&#x25e2&#x25e3  </span>" + sailName) + gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, autoSail) + gentd("Factor", xfactorStyle, null, xfactorTxt) + gentd("Foils", "", null, foils) + recordRaceFields(raceInfo, playerIte2) + gentd("Position", "", null, playerIte2.pos ? formatPosition(playerIte2.pos.lat, playerIte2.pos.lon) : "-") + gentd("Options", optionsStyle, optionsTitle, optionsTxt) + gentd("State", "", txtTitle, iconState) + gentd("Remove", "", null, getLegSelectedPlayersState(userId) && userId != connectedPlayerId ? '<span class="removeSelectedBoat" data-id="' + userId + '" title="Remove this boat: ' + name + '">❌</span>' : "") + "</tr>";
 }
-function recordRaceFields(raceInfo, playerIte) {
+function recordRaceFields(raceInfo, playerIte2) {
   const userPrefs = getUserPrefs();
   if (raceInfo.raceType === "record") {
     const localTimes = userPrefs.global.localTime;
-    if (playerIte.state === "racing" && playerIte.distanceToEnd) {
+    if (playerIte2.state === "racing" && playerIte2.distanceToEnd) {
       let t;
-      if (playerIte.metaDash.eRT)
-        t = '<td class="eRT" title= "End : ' + formatShortDate(playerIte.metaDash.eRT, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.eRT) + "</td>";
+      if (playerIte2.metaDash.eRT)
+        t = '<td class="eRT" title= "End : ' + formatShortDate(playerIte2.metaDash.eRT, void 0, localTimes) + '">' + formatDHMS(playerIte2.metaDash.eRT) + "</td>";
       else
         t = '<td class="eRT" title= "End : unknow"></td>';
-      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>" + t + '<td class="avg">' + roundTo(playerIte.metaDash.avgSpeed, 2) + "</td>";
+      return '<td class="eRT" title= "Start : ' + formatShortDate(playerIte2.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte2.metaDash.raceTime) + "</td>" + t + '<td class="avg">' + roundTo(playerIte2.metaDash.avgSpeed, 2) + "</td>";
     } else {
-      if (playerIte.startDate && playerIte.state === "racing" && playerIte.startDate != "-") {
-        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte.metaDash.raceTime) + "</td>";
+      if (playerIte2.startDate && playerIte2.state === "racing" && playerIte2.startDate != "-") {
+        let retVal = '<td class="eRT" title= "Start : ' + formatShortDate(playerIte2.startDate, void 0, localTimes) + '">' + formatDHMS(playerIte2.metaDash.raceTime) + "</td>";
         retVal += '<td class="eRT"> - </td><td class="avg"> - </td>';
         return retVal;
       } else
@@ -845,10 +845,11 @@ function totalOptionCredits(raceInfo, playerOptions) {
       sum += raceInfo.optionPrices[k] || 0;
   return sum;
 }
-function card(title, bodyNodes, { icon = null } = {}) {
+function card(title, bodyNodes, { icon = null, class: extraClass = "" } = {}) {
+  const sectionClass = ["card", extraClass].filter(Boolean).join(" ");
   return h(
     "section",
-    { class: "card" },
+    { class: sectionClass },
     h(
       "div",
       { class: "card-header" },
@@ -865,8 +866,11 @@ function tableModern({ head = [], rows = [] }) {
 }
 function viewIdentity(raceInfo, playerOptions) {
   const rid = raceInfo.raceId + "_" + raceInfo.legNum;
-  const img = h("img", { src: `https://static.virtualregatta.com/offshore/leg/${rid}.jpg`, style: { height: "48px", borderRadius: "8px" } });
-  const badge = h("span", { class: "badge" }, img, "Race");
+  const img = h("img", {
+    class: "rb-identity-thumb",
+    src: `https://static.virtualregatta.com/offshore/leg/${rid}.jpg`
+  });
+  const badge = h("span", { class: "badge" }, "Race");
   const grid = h(
     "div",
     { class: "kv" },
@@ -883,39 +887,50 @@ function viewIdentity(raceInfo, playerOptions) {
     h("div", { class: "k" }, "Category"),
     h("div", { class: "v" }, getRankingCategory(playerOptions == null ? void 0 : playerOptions.options))
   );
-  return card("Race Details", [h("div", { class: "chips" }, badge), grid]);
+  const layout = h(
+    "div",
+    { class: "rb-identity" },
+    h("div", { class: "rb-identity-media" }, badge, img),
+    grid
+  );
+  return card("Race Details", layout);
 }
-function viewCredits(raceInfo, playerIte) {
+function viewCredits(raceInfo, playerIte2) {
   var _a2, _b, _c, _d;
-  const awarded = (playerIte == null ? void 0 : playerIte.rank) > 0 ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel - 1] / Math.pow(playerIte.rank, 0.4)) : "-";
-  const head = [
+  const headRow1 = [
     "Game Credits",
     "Free Credits",
     "Current Race Credits (Total Options)",
-    "Gains",
-    ...optionKeys.map(([, label]) => label)
+    "Gains"
   ];
-  const takenTotal = totalOptionCredits(raceInfo, (_a2 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a2.options);
-  const takenCells = optionKeys.map(([k]) => {
-    var _a3, _b2;
-    const takenStyle = isTaken((_a3 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a3.options, k) ? { outline: "2px solid #25d366" } : {};
-    return h("span", { class: "chip", style: takenStyle }, String(((_b2 = raceInfo == null ? void 0 : raceInfo.optionPrices) == null ? void 0 : _b2[k]) ?? "-"));
-  });
-  const rows = [[
-    String(((_b = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _b.credits) ?? "-"),
-    String(raceInfo.freeCredits ?? "-"),
-    `${((_c = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _c.credits) || ((_d = playerIte == null ? void 0 : playerIte.info) == null ? void 0 : _d.credits) === 0 ? playerIte.info.credits : "???"}  `,
-    String(awarded),
-    ...takenCells
-  ]];
-  rows[0][2] = frag(
-    h("span", null, rows[0][2]),
+  const awarded = (playerIte2 == null ? void 0 : playerIte2.rank) > 0 ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel - 1] / Math.pow(playerIte2.rank, 0.4)) : "-";
+  const takenTotal = totalOptionCredits(raceInfo, (_a2 = playerIte2 == null ? void 0 : playerIte2.options) == null ? void 0 : _a2.options);
+  const creditsCell = String(((_b = playerIte2 == null ? void 0 : playerIte2.info) == null ? void 0 : _b.credits) ?? "-");
+  const freeCell = String(raceInfo.freeCredits ?? "-");
+  const currentCell = `${((_c = playerIte2 == null ? void 0 : playerIte2.info) == null ? void 0 : _c.credits) || ((_d = playerIte2 == null ? void 0 : playerIte2.info) == null ? void 0 : _d.credits) === 0 ? playerIte2.info.credits : "???"}  `;
+  const gainsCell = String(awarded);
+  const topRow = [
+    creditsCell,
+    freeCell,
+    currentCell,
+    gainsCell
+  ];
+  topRow[2] = frag(
+    h("span", null, topRow[2]),
     " ",
     h("span", { class: "chip", style: { borderColor: "tomato", color: "tomato" } }, `(-${takenTotal})`)
   );
-  return card("Credits (Option équipée)", tableModern({ head, rows }));
+  const tableTop = tableModern({ head: headRow1, rows: [topRow] });
+  const optionLabels = optionKeys.map(([, label]) => label);
+  const bottomRow = optionKeys.map(([k]) => {
+    var _a3, _b2;
+    const takenStyle = isTaken((_a3 = playerIte2 == null ? void 0 : playerIte2.options) == null ? void 0 : _a3.options, k) ? { outline: "2px solid #25d366" } : {};
+    return h("span", { style: takenStyle }, String(((_b2 = raceInfo == null ? void 0 : raceInfo.optionPrices) == null ? void 0 : _b2[k]) ?? "-"));
+  });
+  const tableBottom = tableModern({ head: optionLabels, rows: [bottomRow] });
+  return card("Credits (Option équipée)", [tableTop, tableBottom], { class: "card-credits" });
 }
-function viewStages(raceInfo, playerIte) {
+function viewStages(raceInfo, playerIte2) {
   var _a2, _b, _c, _d;
   const userPrefs = getUserPrefs();
   const head = ["Type", "Name", "Id", "Position", "Position2", "Status"];
@@ -934,7 +949,9 @@ function viewStages(raceInfo, playerIte) {
       cpName = cpName.charAt(0).toUpperCase() + cpName.slice(1);
       if (cpName === "Buoy")
         cpName = "🏳️ " + cpName;
-      const passed = ((_b = playerIte == null ? void 0 : playerIte.ites[0]) == null ? void 0 : _b.gateGroupCounters) && playerIte.ites[0].gateGroupCounters[cp.group - 1] ? h("span", { class: "pill pill--ok" }, "Passed") : " - ";
+      let passed = " - ";
+      if ((playerIte2 == null ? void 0 : playerIte2.ites) && ((_b = playerIte2 == null ? void 0 : playerIte2.ites[0]) == null ? void 0 : _b.gateGroupCounters) && playerIte2.ites[0].gateGroupCounters[cp.group - 1])
+        passed = h("span", { class: "pill pill--ok" }, "Passed");
       rows.push([
         cpName,
         cp.name ?? "",
@@ -994,16 +1011,16 @@ function buildRaceBookHtml() {
   if (!host)
     return;
   const raceInfo = getRaceInfo$1();
-  const playerIte = getLegPlayerInfos();
+  const playerIte2 = getLegPlayerInfos();
   if (!raceInfo || (raceInfo == null ? void 0 : raceInfo.length) == 0) {
     host.replaceChildren(
       card("Race Details", h("div", { class: "centered" }, "No data available. Please enter a race."))
     );
     return;
   }
-  const identity = viewIdentity(raceInfo, (_a2 = playerIte == null ? void 0 : playerIte.options) == null ? void 0 : _a2.options);
-  const credits = viewCredits(raceInfo, playerIte);
-  const stages = viewStages(raceInfo, playerIte);
+  const identity = viewIdentity(raceInfo, (_a2 = playerIte2 == null ? void 0 : playerIte2.options) == null ? void 0 : _a2.options);
+  const credits = viewCredits(raceInfo, playerIte2);
+  const stages = viewStages(raceInfo, playerIte2);
   const ice = viewIceLimits(raceInfo);
   const rz = viewRestrictedZones(raceInfo);
   const gridTop = h("div", { class: "rb-grid" }, identity, credits);
@@ -12192,35 +12209,35 @@ L.Control.Velocity = L.Control.extend({
     if (deg >= 0 && deg < 11.25 || deg >= 348.75) {
       cardinalDirection = "N";
     } else if (deg >= 11.25 && deg < 33.75) {
-      cardinalDirection = "NNW";
+      cardinalDirection = "NNE";
     } else if (deg >= 33.75 && deg < 56.25) {
-      cardinalDirection = "NW";
+      cardinalDirection = "NE";
     } else if (deg >= 56.25 && deg < 78.75) {
-      cardinalDirection = "WNW";
+      cardinalDirection = "ENE";
     } else if (deg >= 78.25 && deg < 101.25) {
-      cardinalDirection = "W";
+      cardinalDirection = "E";
     } else if (deg >= 101.25 && deg < 123.75) {
-      cardinalDirection = "WSW";
+      cardinalDirection = "ESE";
     } else if (deg >= 123.75 && deg < 146.25) {
-      cardinalDirection = "SW";
+      cardinalDirection = "SE";
     } else if (deg >= 146.25 && deg < 168.75) {
-      cardinalDirection = "SSW";
+      cardinalDirection = "SSE";
     } else if (deg >= 168.75 && deg < 191.25) {
       cardinalDirection = "S";
     } else if (deg >= 191.25 && deg < 213.75) {
-      cardinalDirection = "SSE";
+      cardinalDirection = "SSW";
     } else if (deg >= 213.75 && deg < 236.25) {
-      cardinalDirection = "SE";
+      cardinalDirection = "SW";
     } else if (deg >= 236.25 && deg < 258.75) {
-      cardinalDirection = "ESE";
+      cardinalDirection = "WSW";
     } else if (deg >= 258.75 && deg < 281.25) {
-      cardinalDirection = "E";
+      cardinalDirection = "W";
     } else if (deg >= 281.25 && deg < 303.75) {
-      cardinalDirection = "ENE";
+      cardinalDirection = "WNW";
     } else if (deg >= 303.75 && deg < 326.25) {
-      cardinalDirection = "NE";
+      cardinalDirection = "NW";
     } else if (deg >= 326.25 && deg < 348.75) {
-      cardinalDirection = "NNE";
+      cardinalDirection = "NNW";
     }
     return cardinalDirection;
   },
@@ -12304,7 +12321,7 @@ L.VelocityLayer = (L.Layer ? L.Layer : L.Class).extend({
     this.options.data = data;
     if (this._windy) {
       this._windy.setData(data);
-      this._clearAndRestart();
+      this._startWindy();
     }
     this.fire("load");
   },
@@ -12376,8 +12393,6 @@ L.VelocityLayer = (L.Layer ? L.Layer : L.Class).extend({
     }
   },
   _clearAndRestart: function _clearAndRestart() {
-    if (this._context)
-      this._context.clearRect(0, 0, 3e3, 3e3);
     if (this._windy)
       this._startWindy();
   },
@@ -12676,7 +12691,7 @@ var Windy = function Windy2(params) {
     })();
   };
   var animationLoop;
-  var animate = function animate2(bounds, field) {
+  var animate = function animate2(bounds) {
     function windIntensityColorScale(min, max) {
       colorScale2.indexFor = function(m) {
         return Math.max(0, Math.min(colorScale2.length - 1, Math.round((m - min) / (max - min) * (colorScale2.length - 1))));
@@ -12694,7 +12709,7 @@ var Windy = function Windy2(params) {
     var fadeFillStyle = "rgba(0, 0, 0, ".concat(OPACITY, ")");
     var particles = [];
     for (var i = 0; i < particleCount; i++) {
-      particles.push(field.randomize({
+      particles.push(windy.field.randomize({
         age: Math.floor(Math.random() * MAX_PARTICLE_AGE) + 0
       }));
     }
@@ -12704,18 +12719,18 @@ var Windy = function Windy2(params) {
       });
       particles.forEach(function(particle) {
         if (particle.age > MAX_PARTICLE_AGE) {
-          field.randomize(particle).age = 0;
+          windy.field.randomize(particle).age = 0;
         }
         var x = particle.x;
         var y = particle.y;
-        var v = field(x, y);
+        var v = windy.field(x, y);
         var m = v[2];
         if (m === null) {
           particle.age = MAX_PARTICLE_AGE;
         } else {
           var xt = x + v[0];
           var yt = y + v[1];
-          if (field(xt, yt)[2] !== null) {
+          if (windy.field(xt, yt)[2] !== null) {
             particle.xt = xt;
             particle.yt = yt;
             buckets[colorStyles.indexFor(m)].push(particle);
@@ -12772,19 +12787,25 @@ var Windy = function Windy2(params) {
       width,
       height
     };
-    stop();
     buildGrid(gridData, function(grid2) {
       interpolateField(grid2, buildBounds(bounds, width, height), mapBounds, function(bounds2, field) {
-        windy.field = field;
-        animate(bounds2, field);
+        if (!windy.field) {
+          windy.field = field;
+          animate(bounds2);
+        } else {
+          windy.field = field;
+        }
       });
     });
   };
   var stop = function stop2() {
-    if (windy.field)
+    if (windy.field) {
       windy.field.release();
-    if (animationLoop)
+    }
+    windy.field = null;
+    if (animationLoop) {
       cancelAnimationFrame(animationLoop);
+    }
   };
   var windy = {
     params,
@@ -12953,6 +12974,1290 @@ function enableCoordinateCopyingWithShortcut() {
       }
     });
   }
+}
+class WindyDataProxy {
+  constructor(wind_layer, workerOrUri) {
+    this.wind_layer = wind_layer;
+    this.curr_dtg = null;
+    if (workerOrUri instanceof Worker) {
+      this.worker = workerOrUri;
+    } else if (workerOrUri) {
+      this.worker = new Worker(workerOrUri);
+    }
+    if (this.worker) {
+      const self2 = this;
+      this.worker.onmessage = function(e) {
+        if (e.data.fetched_data) {
+          if (e.data.dtg === self2.curr_dtg) {
+            self2.assignData(e.data.fetched_data, e.data.transform);
+          }
+        } else if (e.data.transform_options) {
+          if (self2.curr_dtg && e.data.transform_options && self2.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0 && self2.wind_layer && typeof self2.wind_layer.transformData === "function") {
+            self2.wind_layer.transformData(e.data.transform_options);
+          }
+        }
+      };
+    }
+  }
+  /**
+   * Convertit ce qui vient du worker (windpack snapshot) en payload leaflet-velocity.
+   */
+  static toVelocityPayload(raw) {
+    if (!raw)
+      return null;
+    if (Array.isArray(raw) && raw.length >= 2 && raw[0].header && raw[1].header) {
+      return raw;
+    }
+    if (raw.header && Array.isArray(raw.data) && raw.data.length >= 2) {
+      const header = raw.header;
+      const u = raw.data[0];
+      const v = raw.data[1];
+      if (!u || !v) {
+        console.warn("toVelocityPayload: U/V manquants dans le snapshot", raw);
+        return null;
+      }
+      const {
+        lo1,
+        la1,
+        dx,
+        dy,
+        nx,
+        ny,
+        validTimeUnix,
+        refTimeUnix
+      } = header;
+      const refUnix = refTimeUnix || validTimeUnix;
+      const refTime = typeof refUnix === "number" ? new Date(refUnix * 1e3).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
+      const baseHeader = {
+        parameterCategory: 2,
+        lo1,
+        la1,
+        dx,
+        dy,
+        nx,
+        ny,
+        refTime
+      };
+      return [
+        {
+          header: { ...baseHeader, parameterNumber: 2 },
+          // UGRD
+          data: u
+        },
+        {
+          header: { ...baseHeader, parameterNumber: 3 },
+          // VGRD
+          data: v
+        }
+      ];
+    }
+    console.warn("toVelocityPayload: format de données inconnu", raw);
+    return null;
+  }
+  /**
+   * Réception des données du worker => push vers la couche leaflet-velocity.
+   * Le paramètre run_transform est ignoré (interpolation déjà faite dans le worker).
+   */
+  assignData(data) {
+    const payload = WindyDataProxy.toVelocityPayload(data);
+    if (!this.wind_layer || typeof this.wind_layer.setData !== "function") {
+      console.warn("WindyDataProxy.assignData: wind_layer sans setData");
+      return this;
+    }
+    if (payload) {
+      try {
+        mapState.windSettings.lastData = payload;
+        requestAutoWindUpdate();
+        const u = payload[0].data;
+        const v = payload[1].data;
+        let maxKts = 0;
+        for (let i = 0; i < u.length; i++) {
+          const uu = u[i];
+          const vv = v[i];
+          if (uu == null || vv == null)
+            continue;
+          const speedMs = Math.sqrt(uu * uu + vv * vv);
+          const speedKts = speedMs * 1.943844;
+          if (speedKts > maxKts)
+            maxKts = speedKts;
+        }
+        mapState.windSettings.autoMaxKts = Math.max(10, Math.round(maxKts));
+      } catch (e) {
+        console.warn("Erreur calcul autoMaxKts", e);
+      }
+    }
+    this.wind_layer.setData(payload);
+    return this;
+  }
+  goto_dtg(dtg) {
+    this._to_dtg(dtg, false);
+  }
+  transform_dtg(dtg) {
+    this._to_dtg(dtg, true);
+  }
+  _to_dtg(dtg, run_transform) {
+    const self2 = this;
+    self2.curr_dtg = dtg;
+    if (dtg) {
+      if (self2.worker) {
+        self2.worker.postMessage({
+          data_uri: dtg,
+          transform: run_transform
+        });
+      } else {
+        WindyDataProxy.fetchData(dtg, function(data) {
+          self2.assignData(data);
+        });
+      }
+    } else {
+      self2.assignData(null);
+    }
+  }
+  interpolateBetween(urlPrev, urlNext, nowUnix) {
+    const dtgLabel = `interp_${nowUnix}`;
+    this.curr_dtg = dtgLabel;
+    if (this.worker) {
+      this.worker.postMessage({
+        mode: "interpolate",
+        urlPrev,
+        urlNext,
+        nowUnix,
+        dtg: dtgLabel
+      });
+    } else {
+      console.warn("WindyDataProxy.interpolateBetween: aucun worker, pas d’interpolation");
+    }
+  }
+  static strptime(date_str) {
+    var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"), _rs = date_str.match(_reg), new_dt = /* @__PURE__ */ new Date();
+    new_dt.setFullYear(_rs[1]);
+    new_dt.setMonth(_rs[2]);
+    new_dt.setDate(_rs[3]);
+    new_dt.setHours(_rs[4]);
+    new_dt.setMinutes(_rs[5]);
+    new_dt.setSeconds(0);
+    new_dt.setMilliseconds(0);
+    return new_dt;
+  }
+  static interpolateData(from_data, to_data) {
+    var from_time = 0, to_time = 2, inter_datas = [], interp = 0, into_hours = 3, to_dtg = to_data.header.refTime;
+    if (from_data.header.refTime && to_data.header.refTime) {
+      if (from_data.header.refTime == to_data.header.refTime) {
+        interp = 0;
+      } else {
+        let t_from = WindyDataProxy.strptime(from_data.header.refTime), t_to = WindyDataProxy.strptime(to_data.header.refTime), to_time2 = parseInt((t_to - t_from) / (60 * 60 * 1e3 * into_hours));
+        interp = Math.abs(to_time2 - from_time);
+      }
+    } else {
+      interp = Math.abs(to_time - from_time);
+    }
+    if (interp > 1) {
+      let data_len = from_data.data[0].length;
+      for (let i = from_time; i < to_time; i++) {
+        if (i == 0) {
+          inter_datas.push({ header: from_data.header, data: from_data.data });
+          continue;
+        }
+        let vdata = [], udata = [];
+        for (let j = 0; j < data_len; j++) {
+          let uf = from_data.data[0][j], vf = from_data.data[1][j], ut = to_data.data[0][j], vt = to_data.data[1][j], du = (ut - uf) / interp, dv = (vt - vf) / interp;
+          udata.push(uf + du * i);
+          vdata.push(vf + dv * i);
+        }
+        inter_datas.push({
+          header: to_data.header,
+          data: [udata, vdata]
+        });
+      }
+    }
+    inter_datas.push({ header: to_data.header, data: to_data.data });
+    return { data: inter_datas, speed: into_hours / interp, to_dtg };
+  }
+  static fetchData(uri, callback2) {
+    fetch(uri, { method: "get" }).then((response) => {
+      if (response.ok) {
+        return Promise.resolve(response.json());
+      } else {
+        return Promise.reject(new Error("Failed to load"));
+      }
+    }).then((data) => {
+      callback2(data);
+    }).catch((error) => {
+      callback2({});
+      console.log(`Error: ${error.message}`);
+    });
+  }
+}
+const colorScale = [
+  "#1e3f5a",
+  "#225ea8",
+  "#1d91c0",
+  "#41b6c4",
+  "#7fcdbb",
+  "#c7e9b4",
+  "#ffff8c",
+  "#feda61",
+  "#fd8d3c",
+  "#f03b20",
+  "#bd0026",
+  "#7b1fa2"
+];
+let windUpdateInProgress = false;
+let windUpdateQueued = null;
+const windUiState = {
+  runInfo: null,
+  runInfoKind: "latest",
+  // 'latest' | 'previous' (fallback affiché)
+  lastRunSignature: null,
+  // détecter arrivée de nouveaux forecasts
+  pollTimer: null,
+  pollInFlight: false,
+  runInfoLatest: null,
+  runInfoPrevious: null,
+  // timeline
+  startUnix: null,
+  endUnix: null,
+  stepSec: 600,
+  // 10 minutes
+  currentUnix: null,
+  sliderMax: 0,
+  // autoplay
+  autoPlayTimer: null,
+  autoPlayState: "stopped",
+  // 'playing' | 'paused' | 'stopped'
+  // cache snapshots (fh -> { runId, fh, blob, objectUrl, validTimeUnix })
+  fhCache: /* @__PURE__ */ new Map(),
+  // contrôles Leaflet
+  statusControl: null,
+  // grib + time (bottom-left)
+  timeControl: null,
+  // slider (bottom-center)
+  sliderEl: null,
+  timeLabelEl: null,
+  // (désormais dans status control)
+  ticksEl: null,
+  daysEl: null,
+  tipEl: null,
+  // listeners externes (routage…)
+  timeListeners: /* @__PURE__ */ new Set()
+};
+function notifyWindTimeChange(epochSec) {
+  windUiState.currentUnix = epochSec;
+  for (const cb of windUiState.timeListeners) {
+    try {
+      cb(epochSec);
+    } catch (err) {
+      console.error("[wind] erreur listener onWindTimeChange", err);
+    }
+  }
+}
+function sendWindBg(message) {
+  return new Promise((resolve2) => {
+    try {
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        console.warn("[wind] chrome.runtime indisponible, pas de background wind");
+        resolve2(null);
+        return;
+      }
+    } catch {
+      console.warn("[wind] chrome.runtime non accessible (contexte non-extension ?)");
+      resolve2(null);
+      return;
+    }
+    chrome.runtime.sendMessage(message, (resp) => {
+      var _a2;
+      const err = (_a2 = chrome.runtime) == null ? void 0 : _a2.lastError;
+      if (err) {
+        console.warn("[wind] sendMessage error", err);
+        resolve2(null);
+      } else {
+        resolve2(resp);
+      }
+    });
+  });
+}
+function getWindTimeMode() {
+  var _a2;
+  const m = (_a2 = mapState == null ? void 0 : mapState.windSettings) == null ? void 0 : _a2.timeMode;
+  return m === "vr" ? "vr" : "gfs";
+}
+function formatLocalDateTime(epochSec) {
+  if (!epochSec)
+    return "?";
+  const d = new Date(epochSec * 1e3);
+  return new Intl.DateTimeFormat(void 0, {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(d);
+}
+function resetCacheOnRunChange(newInfo) {
+  var _a2, _b, _c, _d;
+  const newRunId = ((_a2 = newInfo == null ? void 0 : newInfo.run) == null ? void 0 : _a2.runId) || (newInfo == null ? void 0 : newInfo.runId);
+  const oldRunId = ((_c = (_b = windUiState.runInfo) == null ? void 0 : _b.run) == null ? void 0 : _c.runId) || ((_d = windUiState.runInfo) == null ? void 0 : _d.runId);
+  if (oldRunId && newRunId && newRunId !== oldRunId) {
+    for (const entry of windUiState.fhCache.values()) {
+      try {
+        entry.objectUrl && URL.revokeObjectURL(entry.objectUrl);
+      } catch (_) {
+      }
+    }
+    windUiState.fhCache.clear();
+  }
+}
+async function loadRunInfoFromBg() {
+  const [latest, previous] = await Promise.all([
+    sendWindBg({ target: "bg", type: "wind/getRunInfo", which: "latest" }),
+    sendWindBg({ target: "bg", type: "wind/getRunInfo", which: "previous" })
+  ]);
+  const latestInfo = latest && latest.ok && latest.info ? latest.info : null;
+  const prevInfo = previous && previous.ok && previous.info ? previous.info : null;
+  if (!latestInfo && !prevInfo) {
+    console.warn("[wind] pas de runInfo depuis le background", (latest == null ? void 0 : latest.error) || (previous == null ? void 0 : previous.error));
+    return null;
+  }
+  if (latestInfo)
+    resetCacheOnRunChange(latestInfo);
+  windUiState.runInfoLatest = latestInfo;
+  windUiState.runInfoPrevious = prevInfo;
+  if (latestInfo) {
+    const forecasts = (latestInfo.forecasts || []).filter((f) => f.existsOnServer ?? f.exists);
+    if (forecasts.length) {
+      windUiState.runInfo = latestInfo;
+      windUiState.runInfoKind = "latest";
+      return applyRunInfoToTimeline(latestInfo);
+    }
+  }
+  if (prevInfo) {
+    const pfore = (prevInfo.forecasts || []).filter((f) => f.existsOnServer ?? f.exists);
+    if (pfore.length) {
+      windUiState.runInfo = prevInfo;
+      windUiState.runInfoKind = "previous";
+      return applyRunInfoToTimeline(prevInfo);
+    }
+  }
+  if (latestInfo) {
+    windUiState.runInfo = latestInfo;
+    windUiState.runInfoKind = "latest";
+    return applyRunInfoToTimeline(latestInfo);
+  }
+  windUiState.runInfo = prevInfo;
+  windUiState.runInfoKind = "previous";
+  return applyRunInfoToTimeline(prevInfo);
+}
+function getExistingForecasts(info) {
+  const raw = (info == null ? void 0 : info.forecasts) || [];
+  const existing = raw.filter((f) => f.existsOnServer ?? f.exists);
+  existing.sort((a, b) => (a.validTimeUnix || 0) - (b.validTimeUnix || 0));
+  return existing;
+}
+function runStampFromRunId(runId) {
+  const m = String(runId || "").match(/^(\d{8})_(\d{2})$/);
+  if (!m)
+    return 0;
+  return Number(m[1]) * 100 + Number(m[2]);
+}
+function pickBestForecastAtValidTime(infos, validTimeUnix) {
+  var _a2;
+  let best = null;
+  let bestStamp = -1;
+  for (const info of infos) {
+    if (!info)
+      continue;
+    const runId = ((_a2 = info == null ? void 0 : info.run) == null ? void 0 : _a2.runId) || (info == null ? void 0 : info.runId);
+    const stamp = runStampFromRunId(runId);
+    if (!runId)
+      continue;
+    const arr = info.forecasts || [];
+    for (const f of arr) {
+      if (!f)
+        continue;
+      const exists = f.existsOnServer ?? f.exists;
+      if (!exists)
+        continue;
+      if ((f.validTimeUnix || 0) !== validTimeUnix)
+        continue;
+      const fh = Number(f.fh ?? f.forecastHour ?? f.hour);
+      if (!Number.isFinite(fh))
+        continue;
+      if (stamp > bestStamp) {
+        bestStamp = stamp;
+        best = { runId, fh, validTimeUnix };
+      }
+    }
+  }
+  return best;
+}
+function computeRunSignature(info) {
+  const run = (info == null ? void 0 : info.run) || {};
+  const runId = run.runId || (info == null ? void 0 : info.runId) || "";
+  const existing = getExistingForecasts(info);
+  const count = existing.length;
+  const lastVt = count ? existing[count - 1].validTimeUnix || 0 : 0;
+  const firstVt = count ? existing[0].validTimeUnix || 0 : 0;
+  return `${runId}|${count}|${firstVt}|${lastVt}|${windUiState.runInfoKind}`;
+}
+function computeCombinedSignature() {
+  const a = windUiState.runInfoLatest ? computeRunSignature(windUiState.runInfoLatest) : "none";
+  const b = windUiState.runInfoPrevious ? computeRunSignature(windUiState.runInfoPrevious) : "none";
+  return `L:${a}#P:${b}#mode:${getWindTimeMode()}`;
+}
+function applyRunInfoToTimeline(info) {
+  const forecasts = getExistingForecasts(info);
+  if (!forecasts.length) {
+    windUiState.startUnix = null;
+    windUiState.endUnix = null;
+    windUiState.sliderMax = 0;
+    refreshTimelineUI();
+    return info;
+  }
+  const min = forecasts[0].validTimeUnix;
+  const max = forecasts[forecasts.length - 1].validTimeUnix;
+  const spanMax = min + 5 * 24 * 3600;
+  windUiState.startUnix = min;
+  windUiState.endUnix = Math.min(max, spanMax);
+  if (!windUiState.currentUnix) {
+    windUiState.currentUnix = Math.floor(Date.now() / 1e3);
+  }
+  if (windUiState.currentUnix < windUiState.startUnix) {
+    windUiState.currentUnix = windUiState.startUnix;
+  }
+  if (windUiState.currentUnix > windUiState.endUnix) {
+    windUiState.currentUnix = windUiState.endUnix;
+  }
+  const totalSteps = Math.max(
+    0,
+    Math.floor((windUiState.endUnix - windUiState.startUnix) / windUiState.stepSec)
+  );
+  windUiState.sliderMax = totalSteps;
+  refreshTimelineUI();
+  return info;
+}
+function ensureWindStatusControl(map2) {
+  const el = windUiState.statusControl;
+  if (el)
+    el.update();
+  else {
+    const ctrl = new shortGribControl();
+    ctrl.addTo(map2);
+    windUiState.statusControl = ctrl;
+  }
+}
+const shortGribControl = L$1.Control.extend({
+  options: {
+    position: "bottomleft"
+  },
+  onAdd: function(map2) {
+    const container = L$1.DomUtil.create(
+      "div",
+      "leaflet-bar ityc-info-control ityc-info-grib"
+    );
+    const rowTime = document.createElement("div");
+    rowTime.className = "ityc-info-coords ityc-grib-time";
+    rowTime.textContent = formatLocalDateTime(windUiState.currentUnix);
+    const rowGribInfo = document.createElement("div");
+    rowGribInfo.className = "ityc-info-coords";
+    const info = windUiState.runInfo;
+    if (!info) {
+      rowGribInfo.textContent = "GRIB : —";
+    }
+    container.appendChild(rowTime);
+    container.appendChild(rowGribInfo);
+    this._map = map2;
+    this._rowTime = rowTime;
+    this._rowGribInfo = rowGribInfo;
+    const update = () => {
+      rowTime.textContent = formatLocalDateTime(windUiState.currentUnix);
+      const info2 = windUiState.runInfo;
+      if (!info2) {
+        rowGribInfo.textContent = "GRIB : —";
+        return;
+      }
+      const run = info2.run || {};
+      const allForecasts = info2.forecasts || [];
+      const cached = allForecasts.filter((f) => f.hasBlob);
+      let maxH = 0;
+      for (const f of cached) {
+        const fh = Number(f.fh ?? f.forecastHour ?? f.hour ?? 0);
+        if (!Number.isNaN(fh) && fh > maxH)
+          maxH = fh;
+      }
+      let dt = null;
+      if (run.refTimeUnix) {
+        dt = new Date(run.refTimeUnix * 1e3);
+      } else if (run.date) {
+        const y = Number(run.date.slice(0, 4));
+        const m = Number(run.date.slice(4, 6)) - 1;
+        const d = Number(run.date.slice(6, 8));
+        const h3 = Number(run.cycle || 0);
+        dt = new Date(Date.UTC(y, m, d, h3, 0, 0));
+      }
+      const dateStr = dt ? new Intl.DateTimeFormat(void 0, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit"
+      }).format(dt) : "?";
+      const cycleStr = run.cycle != null ? `${String(run.cycle).padStart(2, "0")}Z` : "";
+      const plusStr = maxH ? `+${maxH}h` : "+0h";
+      rowGribInfo.textContent = `${dateStr} ${cycleStr} ${plusStr}`;
+      if (mapState.windSettings.visible) {
+        rowTime.style.display = "";
+        rowGribInfo.style.display = "";
+      } else {
+        rowTime.style.display = "none";
+        rowGribInfo.style.display = "none";
+      }
+    };
+    this._updateFn = update;
+    update();
+    map2.on("mousemove", update);
+    return container;
+  },
+  onRemove: function(map2) {
+    if (this._updateFn) {
+      map2.off("mousemove", this._updateFn);
+    }
+  },
+  update: function() {
+    if (this._updateFn)
+      this._updateFn();
+  }
+});
+function computeSliderIndexFromCurrent() {
+  if (!windUiState.startUnix || windUiState.currentUnix == null)
+    return 0;
+  const idx2 = Math.round(
+    (windUiState.currentUnix - windUiState.startUnix) / windUiState.stepSec
+  );
+  return Math.min(Math.max(idx2, 0), windUiState.sliderMax || 0);
+}
+function refreshTimeControlDom() {
+  if (!windUiState.sliderEl)
+    return;
+  windUiState.sliderEl.max = String(windUiState.sliderMax || 0);
+  windUiState.sliderEl.value = String(computeSliderIndexFromCurrent());
+  const sc = windUiState.statusControl;
+  if (sc && typeof sc.update === "function")
+    sc.update();
+}
+function clearAutoPlayTimer() {
+  if (windUiState.autoPlayTimer) {
+    clearTimeout(windUiState.autoPlayTimer);
+    windUiState.autoPlayTimer = null;
+  }
+}
+function stopAutoPlay() {
+  clearAutoPlayTimer();
+  windUiState.autoPlayState = "stopped";
+}
+function pauseAutoPlay() {
+  clearAutoPlayTimer();
+  windUiState.autoPlayState = "paused";
+}
+async function autoPlayStep() {
+  if (windUiState.autoPlayState !== "playing")
+    return;
+  const { startUnix, endUnix } = windUiState;
+  if (!startUnix || !endUnix) {
+    stopAutoPlay();
+    return;
+  }
+  const current = windUiState.currentUnix ?? startUnix;
+  const offsetHours = (current - startUnix) / 3600;
+  const stepHours = offsetHours < 24 ? 1 : 3;
+  let next = current + stepHours * 3600;
+  if (next > endUnix) {
+    stopAutoPlay();
+    return;
+  }
+  windUiState.currentUnix = next;
+  if (windUiState.sliderEl) {
+    const idx2 = computeSliderIndexFromCurrent();
+    windUiState.sliderEl.value = String(idx2);
+  }
+  await applyWindAtTime(next);
+  windUiState.autoPlayTimer = setTimeout(autoPlayStep, 1e3);
+}
+function startAutoPlay() {
+  if (windUiState.autoPlayState === "playing")
+    return;
+  windUiState.autoPlayState = "playing";
+  clearAutoPlayTimer();
+  windUiState.autoPlayTimer = setTimeout(autoPlayStep, 0);
+}
+function refreshTimelineUI() {
+  var _a2, _b, _c;
+  refreshTimeControlDom();
+  const container = ((_a2 = windUiState.timeControl) == null ? void 0 : _a2._container) || ((_c = (_b = windUiState.timeControl) == null ? void 0 : _b.getContainer) == null ? void 0 : _c.call(_b));
+  if (!container)
+    return;
+  const ticksEl = container.querySelector('[data-role="ticks"]');
+  const daysEl = container.querySelector('[data-role="days"]');
+  if (ticksEl && daysEl)
+    buildTimelineTicks(ticksEl, daysEl);
+}
+function buildTimelineTicks(ticksEl, daysEl) {
+  ticksEl.innerHTML = "";
+  daysEl.innerHTML = "";
+  const start = windUiState.startUnix;
+  const end = windUiState.endUnix;
+  if (!start || !end || end <= start)
+    return;
+  const totalSec = end - start;
+  const totalH = totalSec / 3600;
+  const tickEveryH = 3;
+  const nbTicks = Math.floor(totalH / tickEveryH);
+  for (let i = 0; i <= nbTicks; i++) {
+    const h3 = i * tickEveryH;
+    const ratio = h3 / totalH;
+    const div = document.createElement("div");
+    div.className = "ityc-tl-tick";
+    div.style.left = `${ratio * 100}%`;
+    if (h3 % 24 === 0)
+      div.classList.add("is-day");
+    ticksEl.appendChild(div);
+  }
+  const nbDays = Math.ceil(totalH / 24);
+  for (let d = 0; d <= nbDays; d++) {
+    const ts = start + d * 24 * 3600;
+    if (ts > end)
+      break;
+    const ratio = d * 24 / totalH;
+    const lab = document.createElement("div");
+    lab.className = "ityc-tl-day";
+    lab.style.left = `${ratio * 100}%`;
+    const date = new Date(ts * 1e3);
+    const today = /* @__PURE__ */ new Date();
+    const isToday = date.toDateString() === today.toDateString();
+    lab.textContent = isToday ? "Aujourd’hui" : new Intl.DateTimeFormat(void 0, { weekday: "short" }).format(date);
+    daysEl.appendChild(lab);
+  }
+}
+function ensureWindTimeControl(map2) {
+  if (windUiState.timeControl)
+    return windUiState.timeControl;
+  const ctrl = L$1.control({ position: "bottomleft" });
+  ctrl.onAdd = function() {
+    const root = L$1.DomUtil.create("div", "leaflet-bar ityc-info-control ityc-timeline");
+    root.innerHTML = `
+      <div class="ityc-tl-bar">
+        <div class="ityc-tl-ticks" data-role="ticks"></div>
+        <input class="ityc-tl-slider" data-role="slider" type="range" min="0" max="0" step="1" value="0" />
+        <div class="ityc-tl-tooltip" data-role="tip" style="display:none;"></div>
+      </div>
+      <div class="ityc-tl-days" data-role="days"></div>
+    `;
+    L$1.DomEvent.disableClickPropagation(root);
+    L$1.DomEvent.disableScrollPropagation(root);
+    const elSlider = root.querySelector('[data-role="slider"]');
+    const elTicks = root.querySelector('[data-role="ticks"]');
+    const elDays = root.querySelector('[data-role="days"]');
+    const elTip = root.querySelector('[data-role="tip"]');
+    windUiState.sliderEl = elSlider;
+    windUiState.ticksEl = elTicks;
+    windUiState.daysEl = elDays;
+    windUiState.tipEl = elTip;
+    elSlider.max = String(windUiState.sliderMax || 0);
+    elSlider.value = String(computeSliderIndexFromCurrent());
+    buildTimelineTicks(elTicks, elDays);
+    const bar = root.querySelector(".ityc-tl-bar");
+    const showTipAt = (clientX) => {
+      const rect = elSlider.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const idx2 = Math.round(ratio * (Number(elSlider.max) || 0));
+      const ts = (windUiState.startUnix || 0) + idx2 * windUiState.stepSec;
+      elTip.textContent = formatLocalDateTime(ts);
+      elTip.style.display = "";
+      elTip.style.left = `${Math.round(ratio * 100)}%`;
+    };
+    const hideTip = () => {
+      elTip.style.display = "none";
+    };
+    bar.addEventListener("mousemove", (e) => showTipAt(e.clientX));
+    bar.addEventListener("mouseleave", hideTip);
+    const updateTipFromSlider = () => {
+      const idx2 = Number(elSlider.value) || 0;
+      const ts = (windUiState.startUnix || 0) + idx2 * windUiState.stepSec;
+      const max = Number(elSlider.max) || 0;
+      const ratio = max ? idx2 / max : 0;
+      elTip.textContent = formatLocalDateTime(ts);
+      elTip.style.display = "";
+      elTip.style.left = `${Math.round(ratio * 100)}%`;
+    };
+    elSlider.addEventListener("input", () => {
+      const idx2 = Number(elSlider.value) || 0;
+      const target = (windUiState.startUnix || 0) + idx2 * windUiState.stepSec;
+      windUiState.currentUnix = target;
+      updateTipFromSlider();
+      const sc = windUiState.statusControl;
+      if (sc && typeof sc.update === "function")
+        sc.update();
+    });
+    elSlider.addEventListener("change", async () => {
+      stopAutoPlay();
+      hideTip();
+      const idx2 = Number(elSlider.value) || 0;
+      const target = (windUiState.startUnix || 0) + idx2 * windUiState.stepSec;
+      await applyWindAtTime(target);
+    });
+    return root;
+  };
+  ctrl.addTo(map2);
+  windUiState.timeControl = ctrl;
+  moveControlToBottomCenter(map2, ctrl);
+  return ctrl;
+}
+function ensureBottomCenterCorner(map2) {
+  if (map2._controlCorners && map2._controlCorners.bottomcenter)
+    return map2._controlCorners.bottomcenter;
+  const container = map2._controlContainer || map2._controlContainer;
+  const corner = L$1.DomUtil.create("div", "leaflet-bottom leaflet-center", container);
+  map2._controlCorners = map2._controlCorners || {};
+  map2._controlCorners.bottomcenter = corner;
+  return corner;
+}
+function moveControlToBottomCenter(map2, ctrl) {
+  const corner = ensureBottomCenterCorner(map2);
+  const c = ctrl == null ? void 0 : ctrl._container;
+  if (corner && c)
+    corner.appendChild(c);
+}
+async function getOrLoadSnapshot(runId, fh) {
+  var _a2, _b;
+  const key = `${runId}_${fh}`;
+  const cached = windUiState.fhCache.get(key);
+  if (cached)
+    return cached;
+  const model = ((_a2 = windUiState.runInfoLatest) == null ? void 0 : _a2.model) || ((_b = windUiState.runInfo) == null ? void 0 : _b.model) || "gfs0p25";
+  const pack = await getData("windpacks", [model, runId, fh]);
+  if (!pack || !pack.blob) {
+    console.warn("[wind] pack introuvable en DB", { model, runId, fh, pack });
+    return null;
+  }
+  const blob = pack.blob;
+  const objectUrl = URL.createObjectURL(blob);
+  const entry = {
+    runId,
+    fh,
+    blob,
+    objectUrl,
+    validTimeUnix: pack.validTimeUnix || pack.validTime || null
+  };
+  windUiState.fhCache.set(key, entry);
+  return entry;
+}
+async function ensureSnapshotAvailable(model, runId, fh) {
+  const resp = await sendWindBg({
+    target: "bg",
+    type: "wind/ensureWindpack",
+    model,
+    runId,
+    fh
+  });
+  if (!resp || !resp.ok) {
+    console.warn("[wind] ensureWindpack failed", resp && resp.error);
+    return false;
+  }
+  return true;
+}
+function floorTo3hAnchor(unixSec) {
+  const step = 3 * 3600;
+  return Math.floor(unixSec / step) * step;
+}
+async function applyWindAtTime(targetUnix) {
+  var _a2, _b, _c;
+  if (windUpdateInProgress) {
+    windUpdateQueued = targetUnix;
+    return;
+  }
+  windUpdateInProgress = true;
+  try {
+    let info = windUiState.runInfo;
+    if (!info) {
+      info = await loadRunInfoFromBg();
+    }
+    if (!info)
+      return;
+    if (!mapState.windy_proxy) {
+      console.warn("[wind] windy_proxy non initialisé");
+      return;
+    }
+    const mode = getWindTimeMode();
+    const model = ((_a2 = windUiState.runInfoLatest) == null ? void 0 : _a2.model) || ((_b = windUiState.runInfo) == null ? void 0 : _b.model) || "gfs0p25";
+    if (mode === "vr") {
+      if (!windUiState.runInfoLatest && !windUiState.runInfoPrevious) {
+        await loadRunInfoFromBg();
+      }
+      const infos = [windUiState.runInfoLatest, windUiState.runInfoPrevious].filter(Boolean);
+      if (!infos.length)
+        return;
+      const anchor0 = floorTo3hAnchor(targetUnix);
+      const anchor1 = anchor0 + 3 * 3600;
+      let p = pickBestForecastAtValidTime(infos, anchor0);
+      let n = pickBestForecastAtValidTime(infos, anchor1);
+      const combinedExisting = [];
+      for (const ri of infos) {
+        const runId2 = ((_c = ri == null ? void 0 : ri.run) == null ? void 0 : _c.runId) || (ri == null ? void 0 : ri.runId);
+        if (!runId2)
+          continue;
+        for (const f of ri.forecasts || []) {
+          if (!f)
+            continue;
+          const exists = f.existsOnServer ?? f.exists;
+          if (!exists)
+            continue;
+          const fh = Number(f.fh ?? f.forecastHour ?? f.hour);
+          if (!Number.isFinite(fh))
+            continue;
+          combinedExisting.push({ runId: runId2, fh, validTimeUnix: f.validTimeUnix, stamp: runStampFromRunId(runId2) });
+        }
+      }
+      combinedExisting.sort((a, b) => a.validTimeUnix - b.validTimeUnix || b.stamp - a.stamp);
+      const nearest = (t) => {
+        if (!combinedExisting.length)
+          return null;
+        let best = combinedExisting[0];
+        let bestDiff = Math.abs((best.validTimeUnix || 0) - t);
+        for (let i = 1; i < combinedExisting.length; i++) {
+          const x = combinedExisting[i];
+          const diff = Math.abs((x.validTimeUnix || 0) - t);
+          if (diff < bestDiff) {
+            best = x;
+            bestDiff = diff;
+          }
+        }
+        return { runId: best.runId, fh: best.fh, validTimeUnix: best.validTimeUnix };
+      };
+      if (!p)
+        p = nearest(anchor0);
+      if (!n)
+        n = nearest(anchor1);
+      if (!p || !n)
+        return;
+      let prevSnap2 = await getOrLoadSnapshot(p.runId, p.fh);
+      if (!prevSnap2) {
+        const ok = await ensureSnapshotAvailable(model, p.runId, p.fh);
+        if (ok)
+          prevSnap2 = await getOrLoadSnapshot(p.runId, p.fh);
+      }
+      let nextSnap2 = p.runId === n.runId && p.fh === n.fh ? prevSnap2 : await getOrLoadSnapshot(n.runId, n.fh);
+      if (!nextSnap2) {
+        const ok = await ensureSnapshotAvailable(model, n.runId, n.fh);
+        if (ok)
+          nextSnap2 = await getOrLoadSnapshot(n.runId, n.fh);
+      }
+      if (!prevSnap2 || !nextSnap2)
+        return;
+      if (p.runId === n.runId && p.fh === n.fh) {
+        mapState.windy_proxy.goto_dtg(prevSnap2.objectUrl);
+      } else {
+        mapState.windy_proxy.interpolateBetween(prevSnap2.objectUrl, nextSnap2.objectUrl, targetUnix);
+      }
+      notifyWindTimeChange(targetUnix);
+      return;
+    }
+    const run = info.run || {};
+    const runId = run.runId || info.runId;
+    if (!runId) {
+      console.warn("[wind] runId manquant dans runInfo");
+      return;
+    }
+    const existing = (info.forecasts || []).filter((f) => f.existsOnServer ?? f.exists);
+    if (!existing.length)
+      return;
+    existing.sort((a, b) => (a.validTimeUnix || 0) - (b.validTimeUnix || 0));
+    let prev = null;
+    let next = null;
+    for (let i = 0; i < existing.length; i++) {
+      const f = existing[i];
+      const vt = f.validTimeUnix;
+      if (vt <= targetUnix)
+        prev = f;
+      if (vt >= targetUnix) {
+        next = f;
+        break;
+      }
+    }
+    if (!prev || !next) {
+      let best = existing[0];
+      let bestDiff = Math.abs((existing[0].validTimeUnix || 0) - targetUnix);
+      for (let i = 1; i < existing.length; i++) {
+        const f = existing[i];
+        const diff = Math.abs((f.validTimeUnix || 0) - targetUnix);
+        if (diff < bestDiff) {
+          best = f;
+          bestDiff = diff;
+        }
+      }
+      let bestSnap = await getOrLoadSnapshot(runId, best.fh);
+      if (!bestSnap) {
+        const ok = await ensureSnapshotAvailable(model, runId, best.fh);
+        if (ok)
+          bestSnap = await getOrLoadSnapshot(runId, best.fh);
+      }
+      if (!bestSnap)
+        return;
+      mapState.windy_proxy.goto_dtg(bestSnap.objectUrl);
+      notifyWindTimeChange(targetUnix);
+      return;
+    }
+    let prevSnap = await getOrLoadSnapshot(runId, prev.fh);
+    if (!prevSnap) {
+      const ok = await ensureSnapshotAvailable(model, runId, prev.fh);
+      if (ok)
+        prevSnap = await getOrLoadSnapshot(runId, prev.fh);
+    }
+    let nextSnap = prev.fh === next.fh ? prevSnap : await getOrLoadSnapshot(runId, next.fh);
+    if (!nextSnap) {
+      const ok = await ensureSnapshotAvailable(model, runId, next.fh);
+      if (ok)
+        nextSnap = await getOrLoadSnapshot(runId, next.fh);
+    }
+    if (!prevSnap || !nextSnap)
+      return;
+    mapState.windy_proxy.interpolateBetween(prevSnap.objectUrl, nextSnap.objectUrl, targetUnix);
+  } finally {
+    windUpdateInProgress = false;
+    if (windUpdateQueued != null) {
+      const next = windUpdateQueued;
+      windUpdateQueued = null;
+      applyWindAtTime(next);
+    }
+    notifyWindTimeChange(targetUnix);
+  }
+}
+function startWindWorker() {
+  if (!mapState.windy_proxy) {
+    const worker = new Worker(
+      new URL("" + new URL("windy-layer-worker-55959b8a.js", import.meta.url).href, self.location),
+      { type: "module" }
+    );
+    mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
+  }
+}
+function buildWindLayer() {
+  if (!mapState.map)
+    return;
+  const map2 = mapState.map;
+  if (mapState.windyLayer) {
+    map2.removeLayer(mapState.windyLayer);
+    mapState.windyLayer = null;
+  }
+  const settings = mapState.windSettings;
+  let maxKts;
+  if (settings.mode === "custom") {
+    maxKts = settings.customMaxKts;
+  } else if (settings.mode === "auto" && settings.autoMaxKts) {
+    maxKts = settings.autoMaxKts;
+  } else {
+    maxKts = 50;
+  }
+  mapState.windyLayer = L$1.velocityLayer({
+    data: settings.lastData || null,
+    opacity: settings.visible ? 0.6 : 0,
+    paneName: "overlayPane",
+    colorScale,
+    // ta palette
+    maxVelocity: ktsToMps(maxKts),
+    // *** clé pour le gradient ***
+    velocityScale: 5e-3,
+    displayValues: false
+  });
+  if (settings.visible) {
+    map2.addLayer(mapState.windyLayer);
+  }
+}
+function ktsToMps(kts) {
+  return kts * 0.514444;
+}
+async function updateWindLayer() {
+  if (!mapState.map)
+    return;
+  const map2 = mapState.map;
+  ensureWindStatusControl(map2);
+  ensureWindTimeControl(map2);
+  startRunInfoPolling();
+  await loadRunInfoFromBg();
+  refreshTimeControlDom();
+  refreshTimelineUI();
+  await applyWindAtTime(windUiState.currentUnix);
+}
+function startRunInfoPolling() {
+  if (windUiState.pollTimer)
+    return;
+  windUiState.pollTimer = setInterval(async () => {
+    if (windUiState.pollInFlight)
+      return;
+    windUiState.pollInFlight = true;
+    try {
+      const prevSig = windUiState.lastRunSignature || computeCombinedSignature();
+      const prevHadForecasts = !!getExistingForecasts(windUiState.runInfo).length;
+      const info = await loadRunInfoFromBg();
+      if (!info)
+        return;
+      const sig = computeCombinedSignature();
+      windUiState.lastRunSignature = sig;
+      const changed = !prevSig || sig !== prevSig;
+      if (!changed)
+        return;
+      refreshTimeControlDom();
+      refreshTimelineUI();
+      const sc = windUiState.statusControl;
+      if (sc && typeof sc.update === "function")
+        sc.update();
+      const nowHasForecasts = !!getExistingForecasts(windUiState.runInfo).length;
+      if (mapState.windSettings.visible && (!prevHadForecasts && nowHasForecasts)) {
+        if (mapState.map && mapState.windyLayer && !mapState.map.hasLayer(mapState.windyLayer)) {
+          mapState.map.addLayer(mapState.windyLayer);
+        }
+        await applyWindAtTime(windUiState.currentUnix);
+      }
+    } catch (e) {
+      console.warn("[wind] poll runInfo error", e);
+    } finally {
+      windUiState.pollInFlight = false;
+    }
+  }, 12e4);
+}
+function applyWindSettings() {
+  const map2 = mapState.map;
+  const layer = mapState.windyLayer;
+  const settings = mapState.windSettings;
+  if (!map2 || !layer)
+    return;
+  let maxKts;
+  if (settings.mode === "custom") {
+    maxKts = settings.customMaxKts;
+  } else if (settings.mode === "auto" && settings.autoMaxKts) {
+    maxKts = settings.autoMaxKts;
+  } else {
+    maxKts = 50;
+  }
+  const maxVelocity = ktsToMps(maxKts);
+  layer.options.maxVelocity = maxVelocity;
+  if (!settings.visible) {
+    if (map2.hasLayer(layer)) {
+      map2.removeLayer(layer);
+    }
+    return;
+  }
+  if (settings.lastData) {
+    layer.setData(settings.lastData);
+  }
+  const isOnMap = map2.hasLayer(layer);
+  if (isOnMap) {
+    map2.removeLayer(layer);
+    map2.addLayer(layer);
+  } else {
+    map2.addLayer(layer);
+  }
+}
+let autoWindWorker = null;
+function initAutoWindWorker() {
+  if (!autoWindWorker) {
+    autoWindWorker = new Worker(
+      new URL("" + new URL("auto-wind-worker-6def430b.js", import.meta.url).href, self.location),
+      { type: "module" }
+    );
+    autoWindWorker.onmessage = (e) => {
+      const { autoMaxKts } = e.data;
+      if (!autoMaxKts)
+        return;
+      mapState.windSettings.autoMaxKts = autoMaxKts;
+      if (mapState.windSettings.mode === "auto") {
+        applyWindSettings();
+      }
+    };
+  }
+}
+let autoWindDebounce = null;
+function requestAutoWindUpdate() {
+  if (mapState.windSettings.mode !== "auto")
+    return;
+  if (!mapState.windSettings.lastData)
+    return;
+  if (!mapState.map)
+    return;
+  clearTimeout(autoWindDebounce);
+  autoWindDebounce = setTimeout(() => {
+    const payload = mapState.windSettings.lastData;
+    const bounds = mapState.map.getBounds();
+    const header = payload[0].header;
+    const u = payload[0].data;
+    const v = payload[1].data;
+    autoWindWorker.postMessage({
+      header,
+      u,
+      v,
+      bounds: {
+        south: bounds.getSouth(),
+        north: bounds.getNorth(),
+        west: bounds.getWest(),
+        east: bounds.getEast()
+      }
+    });
+  }, 200);
+}
+let cachedTileList = [];
+let coastDrawnState = false;
+async function initCachedTilesList() {
+  cachedTileList = [];
+  await chrome.runtime.getPackageDirectoryEntry((dir) => {
+    dir.getDirectory("coasts", {}, function(cachedTilesDir) {
+      new Promise((resolve2) => {
+        let dirReader = cachedTilesDir.createReader();
+        let getEntries = () => {
+          dirReader.readEntries(
+            (entries) => {
+              if (entries.length) {
+                for (var i = 0; i < entries.length; ++i) {
+                  cachedTileList.push(entries[i].name);
+                }
+                getEntries();
+              }
+            }
+          );
+        };
+        getEntries();
+      });
+    });
+  });
+}
+async function showCoastTiles() {
+  const raceInfo = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo)
+    return;
+  const map2 = mapState.map;
+  const center = map2.getCenter();
+  const RANGE = 3;
+  const GRID = 3;
+  const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
+  const wrapLng = (lng) => {
+    let x = lng;
+    while (x > 180)
+      x -= 360;
+    while (x < -180)
+      x += 360;
+    return x;
+  };
+  const south = clampLat(center.lat - RANGE);
+  const north = clampLat(center.lat + RANGE);
+  const west = wrapLng(center.lng - RANGE);
+  const east = wrapLng(center.lng + RANGE);
+  const crossesDateline = west > east;
+  const snapDown = (v) => Math.floor(v / GRID) * GRID;
+  const snapUp = (v) => Math.ceil(v / GRID) * GRID;
+  const latitudeStart = snapDown(Math.min(south, north));
+  const latitudeEnd = snapUp(Math.max(south, north));
+  const coastsToLoad = [];
+  const pushIfExists = (x, y) => {
+    const id = `coast_polygons_${x}_${y}.geojson.gzip`;
+    if (cachedTileList.includes(id))
+      coastsToLoad.push(id);
+  };
+  if (!crossesDateline) {
+    const longitudeStart = snapDown(Math.min(west, east));
+    const longitudeEnd = snapUp(Math.max(west, east));
+    for (let x = longitudeStart; x <= longitudeEnd; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+  } else {
+    const start1 = snapDown(west);
+    const end1 = 180;
+    const start2 = -180;
+    const end2 = snapUp(east);
+    for (let x = start1; x <= end1; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+    for (let x = start2; x <= end2; x += 1) {
+      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
+        pushIfExists(x, y);
+      }
+    }
+  }
+  coastLayersCleanAll(map2);
+  await Promise.all(
+    coastsToLoad.map(async (id) => {
+      const existing = mapState.coasts.get(id);
+      if (existing) {
+        existing.displayed = true;
+        return;
+      }
+      try {
+        const resp = await fetch(`../coasts/${id}`);
+        if (!resp.ok)
+          return;
+        const blob = await resp.blob();
+        const ds = new DecompressionStream("gzip");
+        const decompressedStream = blob.stream().pipeThrough(ds);
+        const jsonText = await new Response(decompressedStream).text();
+        if (!jsonText)
+          return;
+        mapState.coasts.set(id, {
+          id,
+          json: JSON.parse(jsonText),
+          layer: null,
+          displayed: true
+        });
+      } catch (e) {
+        console.warn("coast fetch failed", id, e);
+      }
+    })
+  );
+  coastDrawAllLayers(map2);
+}
+function coastDrawAllLayers(map2, force = false) {
+  mapState.coasts.forEach((mapCoast) => {
+    if (mapCoast.displayed) {
+      if (force)
+        mapCoast.layer = null;
+      if (!mapCoast.layer) {
+        mapCoast.layer = L$1.layerGroup();
+        mapCoast.layer.__tag = "coastLines";
+        L$1.geoJSON(mapCoast.json, { style: styleLines }).addTo(mapCoast.layer);
+      }
+      mapCoast.layer.addTo(map2);
+    }
+  });
+  coastDrawnState = true;
+}
+function coastLayersCleanAll(map2, force = false) {
+  map2 = map2 ? map2 : mapState.map;
+  if (!map2 || !coastDrawnState && !force)
+    return;
+  map2.eachLayer((l) => {
+    if (l.__tag && l.__tag === "coastLines") {
+      map2.removeLayer(l);
+    }
+  });
+  mapState.coasts.forEach((mapCoast) => {
+    if (!force)
+      mapCoast.displayed = false;
+  });
+  coastDrawnState = false;
+}
+function styleLines(feature) {
+  const userPrefs = getUserPrefs();
+  const borderColor = userPrefs.map.borderColor;
+  return {
+    color: borderColor,
+    weight: 1,
+    opacity: 0.7
+  };
+}
+function onCoastColorChange() {
+  const raceInfo = getRaceInfo$1();
+  if (!mapState || !mapState.map || !raceInfo)
+    return;
+  const map2 = mapState.map;
+  coastLayersCleanAll(map2, true);
+  coastDrawAllLayers(map2, true);
 }
 const greenRRIcon = L$1.icon({
   iconUrl: "../img/greenIcon.png",
@@ -13333,6 +14638,501 @@ function buildMarkerTitle(point) {
     textStamina = "🔋 " + point.stamina + "%";
   return "<b>" + newDate + "</b> (" + formatDHMS(ttw) + ")<br>" + position + "<br>" + textTWA + textHDG + textTWD + textTWS + textSail + textSpeed + "<br>" + textStamina;
 }
+function addMapControl(map2) {
+  map2.addControl(new L$1.Control.ScaleNautic({
+    metric: true,
+    imperial: false,
+    nautic: true
+  }));
+  const optionsRuler = {
+    position: "topleft",
+    maxPoints: 2,
+    lengthUnit: {
+      factor: 0.539956803,
+      display: "nm",
+      decimal: 2,
+      label: "Distance:"
+    }
+  };
+  L$1.control.ruler(optionsRuler).addTo(map2);
+  const ctrl = new windPosControl();
+  ctrl.addTo(map2);
+  const ctrl2 = new WindToggleControl({
+    initialMode: mapState.windSettings.visible ? mapState.windSettings.timeMode === "vr" ? "vr" : "gfs" : "none",
+    onToggle: async (mode) => {
+      if (mode === "none") {
+        mapState.windSettings.visible = false;
+        applyWindSettings();
+        return;
+      }
+      mapState.windSettings.visible = true;
+      mapState.windSettings.timeMode = mode;
+      applyWindSettings();
+      await applyWindAtTime(windUiState.currentUnix);
+    }
+  });
+  ctrl2.addTo(mapState.map);
+  addSettingsMenuControl(map2, {
+    getWindMode: () => mapState.windSettings.mode || "default",
+    setWindMode: (mode) => {
+      mapState.windSettings.mode = mode;
+      applyWindSettings();
+    },
+    getWindMaxKts: () => mapState.windMaxKts || 40,
+    setWindMaxKts: (kts) => {
+      mapState.windSettings.customMaxKts = kts;
+      if (mapState.windSettings.mode === "custom") {
+        applyWindSettings();
+      }
+    },
+    getCoastColor: () => {
+      var _a2;
+      return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.borderColor) || "#ff0000";
+    },
+    setCoastColor: async (color2) => {
+      const userPrefs = getUserPrefs();
+      userPrefs.map.borderColor = color2;
+      await saveUserPrefs(userPrefs);
+      onCoastColorChange();
+    },
+    getProjectionColor: () => {
+      var _a2;
+      return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.projectionColor) || "#b86dff";
+    },
+    setProjectionColor: async (color2) => {
+      const userPrefs = getUserPrefs();
+      userPrefs.map.projectionColor = color2;
+      await saveUserPrefs(userPrefs);
+      redrawProjectionLine();
+    },
+    getProjectionLenght: () => {
+      var _a2;
+      return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.projectionLineLenght) || 20;
+    },
+    setProjectionLenght: async (lght) => {
+      const userPrefs = getUserPrefs();
+      userPrefs.map.projectionLineLenght = lght;
+      await saveUserPrefs(userPrefs);
+      redrawProjectionLine();
+    },
+    getShowHiddenBouys: () => {
+      var _a2;
+      return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.invisibleBuoy) || false;
+    },
+    setShowHiddenBouys: async (state) => {
+      const userPrefs = getUserPrefs();
+      userPrefs.map.invisibleBuoy = state;
+      await saveUserPrefs(userPrefs);
+      redrawMapCheckPoints();
+    }
+  });
+  map2.attributionControl.addAttribution("&copy;SkipperDuMad / Trait de cotes &copy;Kurun56");
+}
+function degreesToCardinalDirection2(deg) {
+  var cardinalDirection = "";
+  if (deg >= 0 && deg < 11.25 || deg >= 348.75) {
+    cardinalDirection = "N";
+  } else if (deg >= 11.25 && deg < 33.75) {
+    cardinalDirection = "NNE";
+  } else if (deg >= 33.75 && deg < 56.25) {
+    cardinalDirection = "NE";
+  } else if (deg >= 56.25 && deg < 78.75) {
+    cardinalDirection = "ENE";
+  } else if (deg >= 78.25 && deg < 101.25) {
+    cardinalDirection = "E";
+  } else if (deg >= 101.25 && deg < 123.75) {
+    cardinalDirection = "ESE";
+  } else if (deg >= 123.75 && deg < 146.25) {
+    cardinalDirection = "SE";
+  } else if (deg >= 146.25 && deg < 168.75) {
+    cardinalDirection = "SSE";
+  } else if (deg >= 168.75 && deg < 191.25) {
+    cardinalDirection = "S";
+  } else if (deg >= 191.25 && deg < 213.75) {
+    cardinalDirection = "SSW";
+  } else if (deg >= 213.75 && deg < 236.25) {
+    cardinalDirection = "SW";
+  } else if (deg >= 236.25 && deg < 258.75) {
+    cardinalDirection = "WSW";
+  } else if (deg >= 258.75 && deg < 281.25) {
+    cardinalDirection = "W";
+  } else if (deg >= 281.25 && deg < 303.75) {
+    cardinalDirection = "WNW";
+  } else if (deg >= 303.75 && deg < 326.25) {
+    cardinalDirection = "NW";
+  } else if (deg >= 326.25 && deg < 348.75) {
+    cardinalDirection = "NNW";
+  }
+  return cardinalDirection;
+}
+const windPosControl = L$1.Control.extend({
+  options: {
+    position: "bottomright"
+  },
+  onAdd: function(map2) {
+    const container = L$1.DomUtil.create(
+      "div",
+      "leaflet-bar ityc-info-control ityc-posplay"
+    );
+    const pb = document.createElement("div");
+    pb.className = "ityc-posplay-buttons";
+    pb.innerHTML = `
+       <button type="button" class="ityc-pb-btn" data-role="play"  title="Lecture">▶</button>
+       <button type="button" class="ityc-pb-btn" data-role="pause" title="Pause">⏸</button>
+       <button type="button" class="ityc-pb-btn" data-role="stop"  title="Stop">⏹</button>
+     `;
+    const play = pb.querySelector('[data-role="play"]');
+    const pause = pb.querySelector('[data-role="pause"]');
+    const stop = pb.querySelector('[data-role="stop"]');
+    play.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      startAutoPlay();
+    });
+    pause.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      pauseAutoPlay();
+    });
+    stop.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopAutoPlay();
+    });
+    const info = document.createElement("div");
+    info.className = "ityc-posplay-info";
+    const rowCoords = document.createElement("div");
+    rowCoords.className = "ityc-info-coords";
+    rowCoords.textContent = "Lat: —   Lng: —";
+    const rowWind = document.createElement("div");
+    rowWind.className = "ityc-info-wind";
+    rowWind.style.display = "none";
+    rowWind.textContent = "TWD: —   TWS: —";
+    info.appendChild(rowCoords);
+    info.appendChild(rowWind);
+    container.appendChild(pb);
+    container.appendChild(info);
+    this._map = map2;
+    this._rowCoords = rowCoords;
+    this._rowWind = rowWind;
+    const update = (e) => {
+      function formatLatDMS(lat2) {
+        let latFormatted = L$1.NumberFormatter.toDMS(lat2);
+        latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith("-") ? " S" : " N");
+        return latFormatted.replace(/^-/, "");
+      }
+      function formatLngDMS(lng2) {
+        let lngFormatted = L$1.NumberFormatter.toDMS(lng2);
+        lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
+        return lngFormatted.replace(/^-/, "");
+      }
+      const { lat, lng } = e.latlng;
+      rowCoords.innerHTML = `Lat: ${formatLatDMS(lat)}   Lng: ${formatLngDMS(lng)}`;
+      if (mapState.windSettings.visible && mapState.windyLayer && mapState.windyLayer._windy && mapState.windyLayer._windy.field) {
+        const field = mapState.windyLayer._windy.field;
+        const point = map2.latLngToContainerPoint(e.latlng);
+        const v = field(point.x, point.y);
+        if (v && v[2] !== null) {
+          const speedKt = (v[2] * 1.94384).toFixed(1);
+          let dirDeg = Math.round(
+            Math.atan2(v[0], -v[1]) * 180 / Math.PI + 180
+          );
+          if (dirDeg >= 360)
+            dirDeg -= 360;
+          rowWind.textContent = `TWD: ${dirDeg}° (${degreesToCardinalDirection2(dirDeg)})   TWS: ${speedKt} kt`;
+          rowWind.style.display = "";
+          pb.style.display = "";
+        } else {
+          rowWind.style.display = "none";
+          pb.style.display = "none";
+        }
+      } else {
+        rowWind.style.display = "none";
+        pb.style.display = "none";
+      }
+    };
+    this._updateFn = update;
+    map2.on("mousemove", update);
+    L$1.DomEvent.disableClickPropagation(container);
+    L$1.DomEvent.disableScrollPropagation(container);
+    return container;
+  },
+  onRemove: function(map2) {
+    if (this._updateFn) {
+      map2.off("mousemove", this._updateFn);
+    }
+  }
+});
+const WindToggleControl = L$1.Control.extend({
+  options: { position: "topright" },
+  initialize: function(opts = {}) {
+    L$1.Util.setOptions(this, opts);
+    this._onToggle = opts.onToggle || (() => {
+    });
+    const initialMode = opts.initialMode === "vr" || opts.initialMode === "gfs" ? opts.initialMode : "none";
+    this._mode = initialMode;
+    this._lastOnMode = initialMode === "none" ? opts.defaultOnMode || "gfs" : initialMode;
+    this._hideTimer = null;
+  },
+  onAdd: function(map2) {
+    this._map = map2;
+    const container = L$1.DomUtil.create("div", "leaflet-bar ityc-toolbar ityc-windctl");
+    const btn = L$1.DomUtil.create("a", "ityc-tool ityc-tool-wind", container);
+    btn.href = "#";
+    btn.setAttribute("role", "button");
+    btn.setAttribute("aria-label", "Vent");
+    btn.innerHTML = `
+      <svg viewBox="0 0 24 24" class="ityc-icon" aria-hidden="true">
+        <path d="M4 8h10a3 3 0 1 0-3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 12h14a3 3 0 1 1-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 16h8a2 2 0 1 1-2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    `;
+    const menu = L$1.DomUtil.create("div", "ityc-wind-menu", container);
+    menu.style.display = "none";
+    menu.setAttribute("role", "menu");
+    const groupName = `ityc_wind_${Math.random().toString(16).slice(2)}`;
+    menu.innerHTML = `
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="gfs">
+        <span>GFS 0.25</span>
+      </label>
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="vr">
+        <span>VR</span>
+      </label>
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="none">
+        <span>Aucun</span>
+      </label>
+    `;
+    this._container = container;
+    this._btn = btn;
+    this._menu = menu;
+    this._syncRadios();
+    this._applyState();
+    L$1.DomEvent.disableClickPropagation(container);
+    L$1.DomEvent.disableScrollPropagation(container);
+    L$1.DomEvent.on(btn, "click", L$1.DomEvent.stop);
+    L$1.DomEvent.on(btn, "click", () => {
+      const next = this._mode === "none" ? this._lastOnMode || "gfs" : "none";
+      this.setMode(next, { emit: true });
+    });
+    const showMenu = () => {
+      clearTimeout(this._hideTimer);
+      this._hideTimer = null;
+      this._menu.style.display = "";
+      this._container.classList.add("is-menu-open");
+    };
+    const hideMenu = () => {
+      clearTimeout(this._hideTimer);
+      this._hideTimer = setTimeout(() => {
+        this._menu.style.display = "none";
+        this._container.classList.remove("is-menu-open");
+      }, 180);
+    };
+    container.addEventListener("mouseenter", showMenu);
+    container.addEventListener("mouseleave", hideMenu);
+    menu.addEventListener("mouseenter", showMenu);
+    menu.addEventListener("mouseleave", hideMenu);
+    menu.querySelectorAll('input[type="radio"]').forEach((input) => {
+      input.addEventListener("change", () => {
+        const v = input.value;
+        this.setMode(v, { emit: true });
+      });
+    });
+    return container;
+  },
+  setMode: function(mode, { emit = false } = {}) {
+    const m = mode === "vr" || mode === "gfs" ? mode : "none";
+    this._mode = m;
+    if (m !== "none")
+      this._lastOnMode = m;
+    this._syncRadios();
+    this._applyState();
+    if (emit)
+      this._onToggle(this._mode);
+  },
+  getMode: function() {
+    return this._mode;
+  },
+  _syncRadios: function() {
+    if (!this._menu)
+      return;
+    const inputs = this._menu.querySelectorAll('input[type="radio"]');
+    inputs.forEach((i) => {
+      i.checked = i.value === this._mode;
+    });
+  },
+  _applyState: function() {
+    if (!this._btn)
+      return;
+    const isOn = this._mode !== "none";
+    this._btn.classList.toggle("is-on", isOn);
+    this._btn.classList.toggle("is-off", !isOn);
+    const title = this._mode === "vr" ? "Vent (VR)" : this._mode === "gfs" ? "Vent (GFS 0.25)" : "Vent (Aucun)";
+    this._btn.title = title;
+    this._btn.setAttribute("aria-pressed", String(isOn));
+  }
+});
+function addSettingsMenuControl(map2, {
+  getWindMode,
+  // () => 'default'|'custom'|'auto'
+  setWindMode,
+  // (mode) => void
+  getWindMaxKts,
+  // () => number
+  setWindMaxKts,
+  // (kts) => void
+  getCoastColor,
+  // () => string  ex '#ff0000'
+  setCoastColor,
+  // (color) => void  (ton handler existant)
+  getProjectionColor,
+  // () => string  ex '#b86dff'
+  setProjectionColor,
+  // (color) => void  (ton handler existant)
+  getProjectionLenght,
+  setProjectionLenght,
+  getShowHiddenBouys,
+  setShowHiddenBouys
+} = {}) {
+  const SettingsControl = L$1.Control.extend({
+    options: { position: "topright" },
+    onAdd() {
+      const root = L$1.DomUtil.create("div", "leaflet-bar ityc-settings");
+      const btn = L$1.DomUtil.create("a", "ityc-tool ityc-tool-gear is-off", root);
+      btn.href = "#";
+      btn.title = "Réglages";
+      btn.setAttribute("role", "button");
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" class="ityc-icon" aria-hidden="true">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M19.4 15a8.7 8.7 0 0 0 .1-1l2-1.2-2-3.4-2.3.6a7.6 7.6 0 0 0-.8-.5L16 7h-4l-.4-2h-3.9l-.8 2.1a7.6 7.6 0 0 0-.8.5l-2.3-.6-2 3.4L3.6 14c0 .3 0 .7.1 1l-2 1.2 2 3.4 2.3-.6c.3.2.5.3.8.5L8 21h4l.4 2h3.9l.8-2.1c.3-.2.6-.3.8-.5l2.3.6 2-3.4-2-1.2Z"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      `;
+      const panel = L$1.DomUtil.create("div", "ityc-settings-panel", root);
+      panel.innerHTML = `
+        <div class="ityc-settings-title">Réglages</div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Mode vent</label>
+          <select class="ityc-settings-select" data-role="wind-mode">
+            <option value="default">Défaut</option>
+            <option value="custom">Custom</option>
+            <option value="auto">Auto</option>
+          </select>
+        </div>
+
+        <div class="ityc-settings-row ityc-settings-row-custom" data-role="wind-custom">
+          <label class="ityc-settings-label">Max (kt)</label>
+          <input class="ityc-settings-range" data-role="wind-max" type="range" min="5" max="80" step="1" value="40">
+          <span class="ityc-settings-value" data-role="wind-max-val">40</span>
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Trait de côte</label>
+          <input class="ityc-settings-color" data-role="coast-color" type="color" value="#ff0000">
+        </div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Ligne de projection</label>
+          <input class="ityc-settings-color" data-role="projection-color" type="color" value="#ff0000">
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Longueur projection</label>
+          <input class="ityc-settings-value" data-role="projection-lenght" type="number" min="0" max="360" value="20">
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Afficher bouées cachées</label>
+          <input class="ityc-settings-checkbox" data-role="show-hidden-bouys" type="checkbox">
+        </div>
+
+      `;
+      L$1.DomEvent.disableClickPropagation(root);
+      L$1.DomEvent.disableScrollPropagation(root);
+      const selMode = panel.querySelector('[data-role="wind-mode"]');
+      const rowCustom = panel.querySelector('[data-role="wind-custom"]');
+      const rngMax = panel.querySelector('[data-role="wind-max"]');
+      const lblMax = panel.querySelector('[data-role="wind-max-val"]');
+      const inpCoast = panel.querySelector('[data-role="coast-color"]');
+      const inpProjection = panel.querySelector('[data-role="projection-color"]');
+      const inpProjectionLenght = panel.querySelector('[data-role="projection-lenght"]');
+      const inpPShowHiddenbouys = panel.querySelector('[data-role="show-hidden-bouys"]');
+      const mode0 = getWindMode ? getWindMode() : "default";
+      selMode.value = mode0;
+      const max0 = getWindMaxKts ? Number(getWindMaxKts()) : 40;
+      rngMax.value = String(max0);
+      lblMax.textContent = String(max0);
+      const cc0 = getCoastColor ? getCoastColor() || "#ff0000" : "#ff0000";
+      inpCoast.value = cc0;
+      const cc1 = getProjectionColor ? getProjectionColor() || "#b86dff" : "#b86dff";
+      inpProjection.value = cc1;
+      const pLght = getProjectionLenght ? Number(getProjectionLenght()) || 20 : 30;
+      inpProjectionLenght.value = pLght;
+      const pHiddenBouys = getShowHiddenBouys ? getShowHiddenBouys() : false;
+      inpPShowHiddenbouys.checked = pHiddenBouys;
+      const refreshCustomVisibility = () => {
+        const mode = selMode.value;
+        rowCustom.style.display = mode === "custom" ? "" : "none";
+      };
+      refreshCustomVisibility();
+      selMode.addEventListener("change", () => {
+        const mode = selMode.value;
+        refreshCustomVisibility();
+        if (setWindMode)
+          setWindMode(mode);
+      });
+      rngMax.addEventListener("input", () => {
+        lblMax.textContent = rngMax.value;
+      });
+      rngMax.addEventListener("change", () => {
+        const kts = Number(rngMax.value);
+        if (setWindMaxKts)
+          setWindMaxKts(kts);
+      });
+      inpCoast.addEventListener("change", () => {
+        const color2 = inpCoast.value;
+        if (setCoastColor)
+          setCoastColor(color2);
+      });
+      inpProjection.addEventListener("change", () => {
+        const color2 = inpProjection.value;
+        if (setProjectionColor)
+          setProjectionColor(color2);
+      });
+      inpProjectionLenght.addEventListener("change", () => {
+        const pLght2 = inpProjectionLenght.value;
+        if (setProjectionLenght)
+          setProjectionLenght(pLght2);
+      });
+      inpPShowHiddenbouys.addEventListener("change", () => {
+        const sHiddenBouys = inpPShowHiddenbouys.checked;
+        if (setShowHiddenBouys)
+          setShowHiddenBouys(sHiddenBouys);
+      });
+      const open = () => root.classList.add("open");
+      const close = () => root.classList.remove("open");
+      root.addEventListener("mouseenter", open);
+      root.addEventListener("mouseleave", close);
+      L$1.DomEvent.on(btn, "click", L$1.DomEvent.stop);
+      L$1.DomEvent.on(btn, "click", () => {
+        root.classList.toggle("open");
+      });
+      return root;
+    }
+  });
+  const ctrl = new SettingsControl();
+  ctrl.addTo(map2);
+  return ctrl;
+}
 function computeNextPos(pos, hdg, speed, time) {
   const dist5 = speed * time / (3600 * 60);
   const alpha2 = 360 - (hdg - 90);
@@ -13368,486 +15168,6 @@ function drawProjectionLine(pos, hdg, speed) {
   buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs.map.projectionColor, 1, 0.4, "10, 10", "5");
   mapState.me_PlLayer.addTo(map2);
 }
-let cachedTileList = [];
-let coastDrawnState = false;
-async function initCachedTilesList() {
-  cachedTileList = [];
-  await chrome.runtime.getPackageDirectoryEntry((dir) => {
-    dir.getDirectory("coasts", {}, function(cachedTilesDir) {
-      new Promise((resolve2) => {
-        let dirReader = cachedTilesDir.createReader();
-        let getEntries = () => {
-          dirReader.readEntries(
-            (entries) => {
-              if (entries.length) {
-                for (var i = 0; i < entries.length; ++i) {
-                  cachedTileList.push(entries[i].name);
-                }
-                getEntries();
-              }
-            }
-          );
-        };
-        getEntries();
-      });
-    });
-  });
-}
-async function showCoastTiles() {
-  const raceInfo = getRaceInfo$1();
-  if (!mapState || !mapState.map || !raceInfo)
-    return;
-  const map2 = mapState.map;
-  const center = map2.getCenter();
-  const RANGE = 3;
-  const GRID = 3;
-  const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
-  const wrapLng = (lng) => {
-    let x = lng;
-    while (x > 180)
-      x -= 360;
-    while (x < -180)
-      x += 360;
-    return x;
-  };
-  const south = clampLat(center.lat - RANGE);
-  const north = clampLat(center.lat + RANGE);
-  const west = wrapLng(center.lng - RANGE);
-  const east = wrapLng(center.lng + RANGE);
-  const crossesDateline = west > east;
-  const snapDown = (v) => Math.floor(v / GRID) * GRID;
-  const snapUp = (v) => Math.ceil(v / GRID) * GRID;
-  const latitudeStart = snapDown(Math.min(south, north));
-  const latitudeEnd = snapUp(Math.max(south, north));
-  const coastsToLoad = [];
-  const pushIfExists = (x, y) => {
-    const id = `coast_polygons_${x}_${y}.geojson.gzip`;
-    if (cachedTileList.includes(id))
-      coastsToLoad.push(id);
-  };
-  if (!crossesDateline) {
-    const longitudeStart = snapDown(Math.min(west, east));
-    const longitudeEnd = snapUp(Math.max(west, east));
-    for (let x = longitudeStart; x <= longitudeEnd; x += 1) {
-      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
-        pushIfExists(x, y);
-      }
-    }
-  } else {
-    const start1 = snapDown(west);
-    const end1 = 180;
-    const start2 = -180;
-    const end2 = snapUp(east);
-    for (let x = start1; x <= end1; x += 1) {
-      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
-        pushIfExists(x, y);
-      }
-    }
-    for (let x = start2; x <= end2; x += 1) {
-      for (let y = latitudeStart; y <= latitudeEnd; y += 1) {
-        pushIfExists(x, y);
-      }
-    }
-  }
-  coastLayersCleanAll(map2);
-  await Promise.all(
-    coastsToLoad.map(async (id) => {
-      const existing = mapState.coasts.get(id);
-      if (existing) {
-        existing.displayed = true;
-        return;
-      }
-      try {
-        const resp = await fetch(`../coasts/${id}`);
-        if (!resp.ok)
-          return;
-        const blob = await resp.blob();
-        const ds = new DecompressionStream("gzip");
-        const decompressedStream = blob.stream().pipeThrough(ds);
-        const jsonText = await new Response(decompressedStream).text();
-        if (!jsonText)
-          return;
-        mapState.coasts.set(id, {
-          id,
-          json: JSON.parse(jsonText),
-          layer: null,
-          displayed: true
-        });
-      } catch (e) {
-        console.warn("coast fetch failed", id, e);
-      }
-    })
-  );
-  coastDrawAllLayers(map2);
-}
-function coastDrawAllLayers(map2, force = false) {
-  mapState.coasts.forEach((mapCoast) => {
-    if (mapCoast.displayed) {
-      if (force)
-        mapCoast.layer = null;
-      if (!mapCoast.layer) {
-        mapCoast.layer = L$1.layerGroup();
-        mapCoast.layer.__tag = "coastLines";
-        L$1.geoJSON(mapCoast.json, { style: styleLines }).addTo(mapCoast.layer);
-      }
-      mapCoast.layer.addTo(map2);
-    }
-  });
-  coastDrawnState = true;
-}
-function coastLayersCleanAll(map2, force = false) {
-  map2 = map2 ? map2 : mapState.map;
-  if (!map2 || !coastDrawnState && !force)
-    return;
-  map2.eachLayer((l) => {
-    if (l.__tag && l.__tag === "coastLines") {
-      map2.removeLayer(l);
-    }
-  });
-  mapState.coasts.forEach((mapCoast) => {
-    if (!force)
-      mapCoast.displayed = false;
-  });
-  coastDrawnState = false;
-}
-function styleLines(feature) {
-  const userPrefs = getUserPrefs();
-  const borderColor = userPrefs.map.borderColor;
-  return {
-    color: borderColor,
-    weight: 1,
-    opacity: 0.7
-  };
-}
-function onCoastColorChange() {
-  const raceInfo = getRaceInfo$1();
-  if (!mapState || !mapState.map || !raceInfo)
-    return;
-  const map2 = mapState.map;
-  coastLayersCleanAll(map2, true);
-  coastDrawAllLayers(map2, true);
-}
-class WindyDataProxy {
-  constructor(wind_layer, workerOrUri) {
-    this.wind_layer = wind_layer;
-    this.curr_dtg = null;
-    if (workerOrUri instanceof Worker) {
-      this.worker = workerOrUri;
-    } else if (workerOrUri) {
-      this.worker = new Worker(workerOrUri);
-    }
-    if (this.worker) {
-      const self2 = this;
-      this.worker.onmessage = function(e) {
-        if (e.data.fetched_data) {
-          if (e.data.dtg === self2.curr_dtg) {
-            self2.assignData(e.data.fetched_data, e.data.transform);
-          }
-        } else if (e.data.transform_options) {
-          if (self2.curr_dtg && e.data.transform_options && self2.curr_dtg.indexOf(e.data.transform_options.to_dtg) >= 0 && self2.wind_layer && typeof self2.wind_layer.transformData === "function") {
-            self2.wind_layer.transformData(e.data.transform_options);
-          }
-        }
-      };
-    }
-  }
-  /**
-   * Convertit ce qui vient du worker (windpack snapshot) en payload leaflet-velocity.
-   */
-  static toVelocityPayload(raw) {
-    if (!raw)
-      return null;
-    if (Array.isArray(raw) && raw.length >= 2 && raw[0].header && raw[1].header) {
-      return raw;
-    }
-    if (raw.header && Array.isArray(raw.data) && raw.data.length >= 2) {
-      const header = raw.header;
-      const u = raw.data[0];
-      const v = raw.data[1];
-      if (!u || !v) {
-        console.warn("toVelocityPayload: U/V manquants dans le snapshot", raw);
-        return null;
-      }
-      const {
-        lo1,
-        la1,
-        dx,
-        dy,
-        nx,
-        ny,
-        validTimeUnix,
-        refTimeUnix
-      } = header;
-      const refUnix = refTimeUnix || validTimeUnix;
-      const refTime = typeof refUnix === "number" ? new Date(refUnix * 1e3).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
-      const baseHeader = {
-        parameterCategory: 2,
-        lo1,
-        la1,
-        dx,
-        dy,
-        nx,
-        ny,
-        refTime
-      };
-      return [
-        {
-          header: { ...baseHeader, parameterNumber: 2 },
-          // UGRD
-          data: u
-        },
-        {
-          header: { ...baseHeader, parameterNumber: 3 },
-          // VGRD
-          data: v
-        }
-      ];
-    }
-    console.warn("toVelocityPayload: format de données inconnu", raw);
-    return null;
-  }
-  /**
-   * Réception des données du worker => push vers la couche leaflet-velocity.
-   * Le paramètre run_transform est ignoré (interpolation déjà faite dans le worker).
-   */
-  assignData(data) {
-    const payload = WindyDataProxy.toVelocityPayload(data);
-    if (!this.wind_layer || typeof this.wind_layer.setData !== "function") {
-      console.warn("WindyDataProxy.assignData: wind_layer sans setData");
-      return this;
-    }
-    this.wind_layer.setData(payload);
-    return this;
-  }
-  goto_dtg(dtg) {
-    this._to_dtg(dtg, false);
-  }
-  transform_dtg(dtg) {
-    this._to_dtg(dtg, true);
-  }
-  _to_dtg(dtg, run_transform) {
-    const self2 = this;
-    self2.curr_dtg = dtg;
-    if (dtg) {
-      if (self2.worker) {
-        self2.worker.postMessage({
-          data_uri: dtg,
-          transform: run_transform
-        });
-      } else {
-        WindyDataProxy.fetchData(dtg, function(data) {
-          self2.assignData(data);
-        });
-      }
-    } else {
-      self2.assignData(null);
-    }
-  }
-  interpolateBetween(urlPrev, urlNext, nowUnix) {
-    const dtgLabel = `interp_${nowUnix}`;
-    this.curr_dtg = dtgLabel;
-    if (this.worker) {
-      this.worker.postMessage({
-        mode: "interpolate",
-        urlPrev,
-        urlNext,
-        nowUnix,
-        dtg: dtgLabel
-      });
-    } else {
-      console.warn("WindyDataProxy.interpolateBetween: aucun worker, pas d’interpolation");
-    }
-  }
-  static strptime(date_str) {
-    var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"), _rs = date_str.match(_reg), new_dt = /* @__PURE__ */ new Date();
-    new_dt.setFullYear(_rs[1]);
-    new_dt.setMonth(_rs[2]);
-    new_dt.setDate(_rs[3]);
-    new_dt.setHours(_rs[4]);
-    new_dt.setMinutes(_rs[5]);
-    new_dt.setSeconds(0);
-    new_dt.setMilliseconds(0);
-    return new_dt;
-  }
-  static interpolateData(from_data, to_data) {
-    var from_time = 0, to_time = 2, inter_datas = [], interp = 0, into_hours = 3, to_dtg = to_data.header.refTime;
-    if (from_data.header.refTime && to_data.header.refTime) {
-      if (from_data.header.refTime == to_data.header.refTime) {
-        interp = 0;
-      } else {
-        let t_from = WindyDataProxy.strptime(from_data.header.refTime), t_to = WindyDataProxy.strptime(to_data.header.refTime), to_time2 = parseInt((t_to - t_from) / (60 * 60 * 1e3 * into_hours));
-        interp = Math.abs(to_time2 - from_time);
-      }
-    } else {
-      interp = Math.abs(to_time - from_time);
-    }
-    if (interp > 1) {
-      let data_len = from_data.data[0].length;
-      for (let i = from_time; i < to_time; i++) {
-        if (i == 0) {
-          inter_datas.push({ header: from_data.header, data: from_data.data });
-          continue;
-        }
-        let vdata = [], udata = [];
-        for (let j = 0; j < data_len; j++) {
-          let uf = from_data.data[0][j], vf = from_data.data[1][j], ut = to_data.data[0][j], vt = to_data.data[1][j], du = (ut - uf) / interp, dv = (vt - vf) / interp;
-          udata.push(uf + du * i);
-          vdata.push(vf + dv * i);
-        }
-        inter_datas.push({
-          header: to_data.header,
-          data: [udata, vdata]
-        });
-      }
-    }
-    inter_datas.push({ header: to_data.header, data: to_data.data });
-    return { data: inter_datas, speed: into_hours / interp, to_dtg };
-  }
-  static fetchData(uri, callback2) {
-    fetch(uri, { method: "get" }).then((response) => {
-      if (response.ok) {
-        return Promise.resolve(response.json());
-      } else {
-        return Promise.reject(new Error("Failed to load"));
-      }
-    }).then((data) => {
-      callback2(data);
-    }).catch((error) => {
-      callback2({});
-      console.log(`Error: ${error.message}`);
-    });
-  }
-}
-const colorScale = [
-  "#1e3f5a",
-  "#225ea8",
-  "#1d91c0",
-  "#41b6c4",
-  "#7fcdbb",
-  "#c7e9b4",
-  "#ffff8c",
-  "#feda61",
-  "#fd8d3c",
-  "#f03b20",
-  "#bd0026",
-  "#7b1fa2"
-];
-function startWindWorker() {
-  if (!mapState.windy_proxy) {
-    const worker = new Worker(
-      new URL("" + new URL("windy-layer-worker-36c18292.js", import.meta.url).href, self.location),
-      { type: "module" }
-    );
-    mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
-  }
-}
-function buildWindLayer() {
-  if (!mapState.map)
-    return;
-  const map2 = mapState.map;
-  if (mapState.windyLayer) {
-    map2.removeLayer(mapState.windyLayer);
-  }
-  mapState.windyLayer = L$1.velocityLayer({
-    // on laisse data à null, elle sera poussée par WindyDataProxy.setData()
-    data: null,
-    opacity: 0.6,
-    pane: "shadowPane",
-    colorScale,
-    // notre palette
-    //    velocityScale: 0.005, // à tweaker pour la longueur des particules
-    velocityScale: 0.01,
-    // à tweaker pour la longueur des particules
-    displayValues: true,
-    displayOptions: {
-      velocityType: "Vent",
-      position: "bottomleft",
-      emptyString: "Aucune donnée",
-      angleConvention: "bearingCW",
-      speedUnit: "kts",
-      showCardinal: true,
-      directionString: "Direction",
-      speedString: "Vitesse"
-    }
-  });
-  map2.addLayer(mapState.windyLayer);
-}
-function updateWindLayer() {
-  const apiBase = "https://wind.ityc.fr";
-  fetch(`${apiBase}/api/gfs0p25/manifest/latest`).then(function(res) {
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
-    return res.json();
-  }).then(function(manifest) {
-    const run = manifest.run;
-    const forecasts = manifest.forecasts;
-    if (!run || !Array.isArray(forecasts) || forecasts.length === 0) {
-      console.warn("Manifest invalide ou vide:", manifest);
-      return;
-    }
-    const nowUnix = Math.floor(Date.now() / 1e3);
-    const existing = forecasts.filter(function(f) {
-      return f.exists;
-    });
-    if (!existing.length) {
-      console.warn("Aucun forecast existant dans le manifest");
-      return;
-    }
-    existing.sort(function(a, b) {
-      return a.validTimeUnix - b.validTimeUnix;
-    });
-    let prev = null;
-    let next = null;
-    for (let i = 0; i < existing.length; i++) {
-      const f = existing[i];
-      if (f.validTimeUnix <= nowUnix) {
-        prev = f;
-      }
-      if (f.validTimeUnix > nowUnix) {
-        next = f;
-        break;
-      }
-    }
-    if (!mapState.windy_proxy) {
-      console.warn("windy_proxy non initialisé");
-      return;
-    }
-    const baseFileUrl = apiBase + "/api/gfs0p25/file/" + run.date + "/" + run.cycle;
-    if (!prev || !next) {
-      let best = existing[0];
-      let bestDiff = Math.abs(existing[0].validTimeUnix - nowUnix);
-      for (let i = 1; i < existing.length; i++) {
-        const f = existing[i];
-        const diff = Math.abs(f.validTimeUnix - nowUnix);
-        if (diff < bestDiff) {
-          best = f;
-          bestDiff = diff;
-        }
-      }
-      console.log(
-        "[wind] Pas d’intervalle complet, on utilise le forecast le plus proche fh=",
-        best.fh
-      );
-      const url = baseFileUrl + "/" + best.fh;
-      mapState.windy_proxy.goto_dtg(url);
-      return;
-    }
-    const urlPrev = baseFileUrl + "/" + prev.fh;
-    const urlNext = baseFileUrl + "/" + next.fh;
-    console.log(
-      "[wind] Interpolation temps réel entre fh=",
-      prev.fh,
-      "et",
-      next.fh,
-      "nowUnix=",
-      nowUnix
-    );
-    mapState.windy_proxy.interpolateBetween(urlPrev, urlNext, nowUnix);
-  }).catch(function(err) {
-    console.error("updateWindLayer error:", err);
-  });
-}
 const mapState = {
   raceId: null,
   // id de la course actuellement affichée
@@ -13877,7 +15197,18 @@ const mapState = {
   mapCurrentZoom: 0,
   windyLayer: null,
   windy_proxy: null,
-  windControl: null
+  windControl: null,
+  windSettings: {
+    mode: "default",
+    // 'default' | 'custom' | 'auto'
+    customMaxKts: 40,
+    // max en nds pour le mode custom (violet)
+    visible: true,
+    lastData: null,
+    // on pourra y mettre la dernière data reçue si besoin
+    autoMaxKts: 40
+    // valeur déduite auto (à ajuster plus tard)
+  }
 };
 const MAP_CONTAINER_ID = "lMap";
 const COAST_MIN_ZOOM = 7;
@@ -13887,7 +15218,17 @@ function updateBounds() {
   mapState.bounds = L$1.latLngBounds(mapState.refPoints);
   mapState.map.fitBounds(mapState.bounds);
 }
-function updateMapCheckpoints(raceInfo, playerIte) {
+function redrawMapCheckPoints() {
+  const raceInfo = getRaceInfo$1();
+  const playerItes = getLegPlayerInfos();
+  if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+    playerItes.ite = playerItes.ites[0];
+  }
+  if (!playerItes.ite)
+    return;
+  updateMapCheckpoints(raceInfo, playerItes.ite);
+}
+function updateMapCheckpoints(raceInfo, playerIte2) {
   var _a2;
   if (!mapState.map)
     return;
@@ -13909,7 +15250,7 @@ function updateMapCheckpoints(raceInfo, playerIte) {
       cpType = cpType.charAt(0).toUpperCase() + cpType.slice(1);
       const position_s = buildPt2(cp.start.lat, cp.start.lon);
       const position_e = buildPt2(cp.end.lat, cp.end.lon);
-      const passed = ((_a2 = playerIte == null ? void 0 : playerIte.ite) == null ? void 0 : _a2.gateGroupCounters) && playerIte.ite.gateGroupCounters[cp.group - 1] ? true : false;
+      const passed = ((_a2 = playerIte2 == null ? void 0 : playerIte2.ite) == null ? void 0 : _a2.gateGroupCounters) && playerIte2.ite.gateGroupCounters[cp.group - 1] ? true : false;
       let op = 1;
       if (passed)
         op = 0.6;
@@ -13941,13 +15282,13 @@ function updateMapCheckpoints(raceInfo, playerIte) {
   if (!mapState.userZoom)
     updateBounds();
 }
-function updateMapWaypoints(playerIte) {
+function updateMapWaypoints(playerIte2) {
   var _a2, _b;
   const raceOrder = getLegPlayersOrder();
   if (!mapState || !mapState.map)
     return;
   const map2 = mapState.map;
-  if (!playerIte)
+  if (!playerIte2)
     return;
   if (!raceOrder || raceOrder.lenght == 0 || ((_b = (_a2 = raceOrder[0]) == null ? void 0 : _a2.action) == null ? void 0 : _b.type) !== "wp")
     return;
@@ -13956,8 +15297,8 @@ function updateMapWaypoints(playerIte) {
   }
   mapState.wayPointLayer = L$1.layerGroup();
   const wpOrder = raceOrder[0].action.action;
-  const lastWpIdx = playerIte.lastWpIdx;
-  const currPos = playerIte.pos;
+  const lastWpIdx = playerIte2.lastWpIdx;
+  const currPos = playerIte2.pos;
   let wpPts = [];
   wpOrder.forEach(({ lat, lon, idx: idx2 }) => {
     if (idx2 <= lastWpIdx)
@@ -13982,13 +15323,13 @@ function updateMapWaypoints(playerIte) {
   if (!mapState.userZoom)
     updateBounds();
 }
-function updateMapMe(connectedPlayerId, playerIte) {
+function updateMapMe(connectedPlayerId, playerIte2) {
   var _a2, _b;
   const trackFleet = getLegPlayersTracksFleet();
   const userPrefs = getUserPrefs();
   const localTimes = userPrefs.global.localTime;
   const displayMarkers = userPrefs.map.showMarkers;
-  if (!mapState || !mapState.map || !playerIte)
+  if (!mapState || !mapState.map || !playerIte2)
     return;
   const map2 = mapState.map;
   if (!mapState.meLayer)
@@ -14006,7 +15347,7 @@ function updateMapMe(connectedPlayerId, playerIte) {
   mapState.meLayer = L$1.layerGroup();
   mapState.meLayerMarkers = L$1.layerGroup();
   mapState.meBoatLayer = L$1.layerGroup();
-  const myPos = { lat: playerIte.pos.lat, lon: playerIte.pos.lon };
+  const myPos = { lat: playerIte2.pos.lat, lon: playerIte2.pos.lon };
   if (trackFleet && trackFleet.lenght != 0 && ((_a2 = trackFleet[connectedPlayerId]) == null ? void 0 : _a2.track)) {
     const myTrack = trackFleet[connectedPlayerId].track;
     let myTrackPts = [];
@@ -14029,14 +15370,24 @@ function updateMapMe(connectedPlayerId, playerIte) {
   if (displayMarkers)
     mapState.meLayerMarkers.addTo(map2);
   const myPosPt = buildPt2(myPos.lat, myPos.lon);
-  const title = "Me (Last position: " + formatTimestampToReadableDate(playerIte.iteDate, 1) + ")<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte.sail] + " | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo((playerIte == null ? void 0 : playerIte.twd) ?? ((_b = playerIte == null ? void 0 : playerIte.metaDash) == null ? void 0 : _b.twd) ?? 0, 3) + "°";
-  buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff", "#000000", 0.4), title, 200, 0.5, playerIte.hdg);
-  drawProjectionLine(myPosPt, playerIte.hdg, playerIte.speed);
+  const title = "Me (Last position: " + formatTimestampToReadableDate(playerIte2.iteDate, 1) + ")<br>TWA: <b>" + roundTo(playerIte2.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte2.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte2.sail] + " | Speed: " + roundTo(playerIte2.speed, 3) + " kts<br>TWS: " + roundTo(playerIte2.tws, 3) + " kts | TWD: " + roundTo((playerIte2 == null ? void 0 : playerIte2.twd) ?? ((_b = playerIte2 == null ? void 0 : playerIte2.metaDash) == null ? void 0 : _b.twd) ?? 0, 3) + "°";
+  buildMarker(myPosPt, mapState.meBoatLayer, buildBoatIcon("#b86dff", "#000000", 0.4), title, 200, 0.5, playerIte2.hdg);
+  drawProjectionLine(myPosPt, playerIte2.hdg, playerIte2.speed);
   mapState.meBoatLayer.addTo(map2);
   if (!mapState.userZoom)
     updateBounds();
 }
-function updateMapLeader(playerIte) {
+function redrawProjectionLine() {
+  const playerItes = getLegPlayerInfos();
+  if (playerItes && playerItes.ites && playerItes.ites.length > 0) {
+    playerItes.ite = playerItes.ites[0];
+  }
+  if (!playerItes.ite)
+    return;
+  const myPosPt = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
+  drawProjectionLine(myPosPt, playerIte.ite.hdg, playerIte.ite.speed);
+}
+function updateMapLeader(playerIte2) {
   if (!mapState || !mapState.map)
     return;
   const map2 = mapState.map;
@@ -14046,7 +15397,7 @@ function updateMapLeader(playerIte) {
     map2.removeLayer(mapState.leaderMeLayer);
   mapState.leaderLayer = L$1.layerGroup();
   mapState.leaderMeLayer = L$1.layerGroup();
-  const offset = (playerIte == null ? void 0 : playerIte.startDate) ? /* @__PURE__ */ new Date() - playerIte.startDate : /* @__PURE__ */ new Date();
+  const offset = (playerIte2 == null ? void 0 : playerIte2.startDate) ? /* @__PURE__ */ new Date() - playerIte2.startDate : /* @__PURE__ */ new Date();
   const trackLeaderMap = getLegPlayersTrackLeader();
   const trackLeader = trackLeaderMap && typeof trackLeaderMap === "object" ? Object.values(trackLeaderMap)[0] : null;
   if (trackLeader && trackLeader.track.length > 0) {
@@ -14055,7 +15406,16 @@ function updateMapLeader(playerIte) {
     addGhostTrack(trackLeader.track, title, offset, "#FF8C00", mapState.leaderLayer);
   }
   const trackGhostMap = getLegPlayersTracksGhost();
-  const trackGhost = trackGhostMap && typeof trackGhostMap === "object" ? Object.values(trackGhostMap)[0] : null;
+  let trackGhost = null;
+  if (trackGhostMap && typeof trackGhostMap === "object") {
+    if (Array.isArray(trackGhostMap.track)) {
+      trackGhost = trackGhostMap;
+    } else {
+      trackGhost = Object.values(trackGhostMap).find(
+        (val) => val && typeof val === "object" && Array.isArray(val.track)
+      ) || null;
+    }
+  }
   if (trackGhost && trackGhost.track.length > 0) {
     const title = "<b>Best Attempt</b><br>Elapsed: " + formatDHMS(offset);
     addGhostTrack(trackGhost.track, title, offset, "#b86dff", mapState.leaderMeLayer);
@@ -14113,43 +15473,43 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
   mapState.fleetLayerTracks = L$1.layerGroup();
   Object.entries(raceItesFleet).map(([userId, playerFleetInfos]) => {
     var _a2, _b, _c, _d;
-    const playerIte = playerFleetInfos.ite;
-    if (playerIte && userId && userId != connectedPlayerId && isDisplayEnabled(playerIte, userId, connectedPlayerId)) {
+    const playerIte2 = playerFleetInfos.ite;
+    if (playerIte2 && userId && userId != connectedPlayerId && isDisplayEnabled(playerIte2, userId, connectedPlayerId)) {
       let zi;
-      if (playerIte.type == "top") {
+      if (playerIte2.type == "top") {
         zi = 49;
-      } else if (playerIte.team) {
+      } else if (playerIte2.team) {
         zi = 48;
-      } else if (playerIte.followed == true || playerIte.isFollowed == true) {
+      } else if (playerIte2.followed == true || playerIte2.isFollowed == true) {
         zi = 47;
-      } else if (playerIte.type == "sponsor") {
+      } else if (playerIte2.type == "sponsor") {
         zi = 46;
       } else {
         zi = 44;
       }
-      const pos = buildPt2(playerIte.pos.lat, playerIte.pos.lon);
+      const pos = buildPt2(playerIte2.pos.lat, playerIte2.pos.lon);
       let skipperName = playerFleetInfos.info.name;
-      if ((_a2 = playerIte.extendedInfos) == null ? void 0 : _a2.skipperName)
-        skipperName += '<span class="txtUpper">' + playerIte.extendedInfos.boatName + "</span><br><b>" + playerIte.extendedInfos.skipperName + "</b>";
+      if ((_a2 = playerIte2.extendedInfos) == null ? void 0 : _a2.skipperName)
+        skipperName += '<span class="txtUpper">' + playerIte2.extendedInfos.boatName + "</span><br><b>" + playerIte2.extendedInfos.skipperName + "</b>";
       let info = "";
-      playerIte.twd = playerIte.twd ?? ((_b = playerIte.metaDash) == null ? void 0 : _b.twd) ?? 0;
-      if (playerIte.type == "real") {
-        info = skipperName + "<br>HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b> | Speed: " + roundTo(playerIte.speed, 3) + " kts";
-        if (playerIte.twa > 0)
-          info += "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b>";
-        if (playerIte.sail != "-")
-          info += " | Sail: " + sailNames[playerIte];
-        if (playerIte.tws > 0)
-          info += "<br>TWS: " + roundTo(playerIte.tws, 3) + " kts";
-        if (playerIte.twd > 0)
-          info += " | TWD: " + roundTo(playerIte.twd, 3) + "°";
+      playerIte2.twd = playerIte2.twd ?? ((_b = playerIte2.metaDash) == null ? void 0 : _b.twd) ?? 0;
+      if (playerIte2.type == "real") {
+        info = skipperName + "<br>HDG: <b>" + roundTo(playerIte2.hdg, 2) + "°</b> | Speed: " + roundTo(playerIte2.speed, 3) + " kts";
+        if (playerIte2.twa > 0)
+          info += "<br>TWA: <b>" + roundTo(playerIte2.twa, 3) + "°</b>";
+        if (playerIte2.sail != "-")
+          info += " | Sail: " + sailNames[playerIte2];
+        if (playerIte2.tws > 0)
+          info += "<br>TWS: " + roundTo(playerIte2.tws, 3) + " kts";
+        if (playerIte2.twd > 0)
+          info += " | TWD: " + roundTo(playerIte2.twd, 3) + "°";
       } else {
-        info = skipperName + "<br>TWA: <b>" + roundTo(playerIte.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte.sail] || "- | Speed: " + roundTo(playerIte.speed, 3) + " kts<br>TWS: " + roundTo(playerIte.tws, 3) + " kts | TWD: " + roundTo(playerIte.twd, 3) + "°";
+        info = skipperName + "<br>TWA: <b>" + roundTo(playerIte2.twa, 3) + "°</b> | HDG: <b>" + roundTo(playerIte2.hdg, 2) + "°</b><br>Sail: " + sailNames[playerIte2.sail] || "- | Speed: " + roundTo(playerIte2.speed, 3) + " kts<br>TWS: " + roundTo(playerIte2.tws, 3) + " kts | TWD: " + roundTo(playerIte2.twd, 3) + "°";
       }
-      if (raceInfo.raceType == "record" && playerIte.startDate) {
-        info += "<br>Elapsed: <b>" + formatDHMS(playerIte.iteDate - playerIte.startDate) + "</b>";
+      if (raceInfo.raceType == "record" && playerIte2.startDate) {
+        info += "<br>Elapsed: <b>" + formatDHMS(playerIte2.iteDate - playerIte2.startDate) + "</b>";
       }
-      const categoryIdx = category.indexOf(playerIte.type);
+      const categoryIdx = category.indexOf(playerIte2.type);
       let boatColor = "";
       let borderBoatColor = "";
       if (userId == connectedPlayerId) {
@@ -14158,22 +15518,22 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
       } else {
         boatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bcolor : categoryStyle[categoryIdx].bcolor;
         borderBoatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bbcolor : categoryStyle[categoryIdx].bbcolor;
-        if (playerIte.type2 == "followed" && (playerIte.type == "normal" || playerIte.type == "sponsor")) {
+        if (playerIte2.type2 == "followed" && (playerIte2.type == "normal" || playerIte2.type == "sponsor")) {
           boatColor = "#32cd32";
           borderBoatColor = "#000000";
-          if (playerIte.team)
+          if (playerIte2.team)
             borderBoatColor = "#ae1030";
-        } else if (playerIte.team && playerIte.type != "top") {
+        } else if (playerIte2.team && playerIte2.type != "top") {
           boatColor = "#ae1030";
           borderBoatColor = "#000000";
-          if (playerIte.type2 == "followed") {
+          if (playerIte2.type2 == "followed") {
             borderBoatColor = "#32cd32";
           }
         }
       }
-      buildMarker(pos, mapState.fleetLayer, buildBoatIcon(boatColor, borderBoatColor, 0.8), info, zi, 0.8, playerIte.hdg);
+      buildMarker(pos, mapState.fleetLayer, buildBoatIcon(boatColor, borderBoatColor, 0.8), info, zi, 0.8, playerIte2.hdg);
       if (((_c = trackFleet[userId]) == null ? void 0 : _c.track) && ((_d = trackFleet[userId]) == null ? void 0 : _d.length) != 0) {
-        const playerPos = { lat: playerIte.pos.lat, lon: playerIte.pos.lon };
+        const playerPos = { lat: playerIte2.pos.lat, lon: playerIte2.pos.lon };
         let playerTrackPts = [];
         let isFirst = false;
         let prevPt = null;
@@ -14353,8 +15713,10 @@ async function initializeMap() {
       const center = map2.getCenter();
       const zoom2 = map2.getZoom();
       map2.off("baselayerchange", onBaseLayerChange);
-      map2.off("zoomend", set_userCustomZoom);
-      map2.off("moveend", set_userCustomZoom);
+      map2.off("moveend zoomend", set_userCustomZoom);
+      map2.off("moveend zoomend", () => {
+        requestAutoWindUpdate();
+      });
       map2.remove();
       POLAR.enabled = isArctic;
       const activeBase = isArctic ? Arctic_WMS : e.name === "Dark" ? OSM_DarkLayer : e.name === "Satellite" ? Esri_WorldImagery : OSM_Layer;
@@ -14383,44 +15745,15 @@ async function initializeMap() {
       const newLayerControl = L$1.control.layers(newBaseLayers);
       newLayerControl.addTo(newMap);
       ensureLayerControlClickable(newLayerControl);
-      newMap.addControl(new L$1.Control.ScaleNautic({
-        metric: true,
-        imperial: false,
-        nautic: true
-      }));
-      const optionsRuler2 = {
-        position: "topleft",
-        maxPoints: 2,
-        lengthUnit: {
-          factor: 0.539956803,
-          display: "nm",
-          decimal: 2,
-          label: "Distance:"
-        }
-      };
-      L$1.control.ruler(optionsRuler2).addTo(newMap);
-      L$1.control.coordinates({
-        useDMS: true,
-        labelTemplateLat: "Lat: {y}",
-        labelTemplateLng: " Lng: {x}",
-        useLatLngOrder: true,
-        labelFormatterLat: function(lat) {
-          let latFormatted = L$1.NumberFormatter.toDMS(lat);
-          latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith("-") ? " S" : " N");
-          return latFormatted.replace(/^-/, "");
-        },
-        labelFormatterLng: function(lng) {
-          let lngFormatted = L$1.NumberFormatter.toDMS(lng);
-          lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
-          return '<span class="labelGeo">' + lngFormatted.replace(/^-/, "") + "</span>";
-        }
-      }).addTo(newMap);
+      addMapControl(newMap);
       if (mapState.refLayer)
         mapState.refLayer.addTo(newMap);
       applyBoundsForCurrentMode(newMap);
-      newMap.on("zoomend", set_userCustomZoom);
-      newMap.on("moveend", set_userCustomZoom);
+      newMap.on("moveend zoomend", set_userCustomZoom);
       newMap.on("baselayerchange", onBaseLayerChange);
+      newMap.on("moveend zoomend", () => {
+        requestAutoWindUpdate();
+      });
       const raceInfo2 = getRaceInfo$1();
       const playerItes2 = getLegPlayerInfos();
       const raceItesFleet2 = getLegFleetInfos();
@@ -14439,39 +15772,7 @@ async function initializeMap() {
     POLAR.enabled = isArctic;
     applyBoundsForCurrentMode(map2);
   }
-  map2.addControl(new L$1.Control.ScaleNautic({
-    metric: true,
-    imperial: false,
-    nautic: true
-  }));
-  const optionsRuler = {
-    position: "topleft",
-    maxPoints: 2,
-    lengthUnit: {
-      factor: 0.539956803,
-      display: "nm",
-      decimal: 2,
-      label: "Distance:"
-    }
-  };
-  L$1.control.ruler(optionsRuler).addTo(map2);
-  L$1.control.coordinates({
-    useDMS: true,
-    labelTemplateLat: "Lat: {y}",
-    labelTemplateLng: " Lng: {x}",
-    useLatLngOrder: true,
-    labelFormatterLat: function(lat) {
-      let latFormatted = L$1.NumberFormatter.toDMS(lat);
-      latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith("-") ? " S" : " N");
-      return latFormatted.replace(/^-/, "");
-    },
-    labelFormatterLng: function(lng) {
-      let lngFormatted = L$1.NumberFormatter.toDMS(lng);
-      lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith("-") ? " W" : " E");
-      return '<span class="labelGeo">' + lngFormatted.replace(/^-/, "") + "</span>";
-    }
-  }).addTo(map2);
-  map2.attributionControl.addAttribution("&copy;SkipperDuMad / Trait de cotes &copy;Kurun56");
+  addMapControl(map2);
   mapState.refLayer = L$1.layerGroup();
   let title1 = "Start: <b>" + raceInfo.start.name + "</b><br>" + formatPosition(raceInfo.start.lat, raceInfo.start.lon);
   let latlng = buildPt2(raceInfo.start.lat, raceInfo.start.lon);
@@ -14566,12 +15867,15 @@ async function initializeMap() {
   set_userCustomZoom(false);
   applyBoundsForCurrentMode(map2);
   map2.on("baselayerchange", onBaseLayerChange);
-  map2.on("zoomend", set_userCustomZoom);
-  map2.on("moveend", set_userCustomZoom);
+  map2.on("zoomend moveend", set_userCustomZoom);
+  map2.on("moveend zoomend", () => {
+    requestAutoWindUpdate();
+  });
   mapState.map = map2;
   if ((_c = playerItes == null ? void 0 : playerItes.ite) == null ? void 0 : _c.pos)
     initButtonToCenterViewMap(playerItes.ite.pos.lat, playerItes.ite.pos.lon, mapState.map);
   enableCoordinateCopyingWithShortcut();
+  initAutoWindWorker();
   buildWindLayer();
   startWindWorker();
   updateWindLayer();
@@ -30716,9 +32020,9 @@ function getLongitude(left, scale) {
     return (left + 2) / scale - 360;
   }
 }
-function zezoCall(rid, playerIte, color2, raceUrl, timeoutMs = 1e4) {
+function zezoCall(rid, playerIte2, color2, raceUrl, timeoutMs = 1e4) {
   const baseURL = "http://zezo.org";
-  const url = baseURL + "/" + raceUrl + "/chart.pl?lat=" + playerIte.pos.lat + "&lon=" + playerIte.pos.lon + (playerIte.iteDate ? "&ts=" + playerIte.iteDate / 1e3 : "") + "&o=" + playerIte.options + "&twa=" + playerIte.twa + "&userid=" + playerIte.userId + "&auto=no";
+  const url = baseURL + "/" + raceUrl + "/chart.pl?lat=" + playerIte2.pos.lat + "&lon=" + playerIte2.pos.lon + (playerIte2.iteDate ? "&ts=" + playerIte2.iteDate / 1e3 : "") + "&o=" + playerIte2.options + "&twa=" + playerIte2.twa + "&userid=" + playerIte2.userId + "&auto=no";
   const btn = document.getElementById("bt_rt_addLmap");
   const setBusy = (busy) => {
     if (!btn)
@@ -30735,7 +32039,7 @@ function zezoCall(rid, playerIte, color2, raceUrl, timeoutMs = 1e4) {
       if (!text)
         return false;
       const result = text.split(pattern);
-      let routeName = "zezo " + playerIte.info.name;
+      let routeName = "zezo " + playerIte2.info.name;
       let routeNameClean = cleanSpecial(routeName);
       rtx_idx[rid] ?? (rtx_idx[rid] = {});
       const idxForRace = rtx_idx[rid];
@@ -30745,7 +32049,7 @@ function zezoCall(rid, playerIte, color2, raceUrl, timeoutMs = 1e4) {
         routeName += " " + n;
         routeNameClean = cleanSpecial(routeName);
       }
-      createEmptyRoute(rid, routeNameClean, playerIte.info.name, color2, routeName);
+      createEmptyRoute(rid, routeNameClean, playerIte2.info.name, color2, routeName);
       const mScale = /var scale = ([0-9]+)/.exec(result[0] ?? "");
       const scale = (mScale == null ? void 0 : mScale[1]) ? Number(mScale[1]) : null;
       if (!scale)
@@ -31031,12 +32335,12 @@ async function onAddRouteLmap() {
         alert("Unknown player - no routing available");
         return;
       }
-      const playerIte = raceItesFleet[playerId];
-      playerIte.options = buildPlayerOption("Lmap");
+      const playerIte2 = raceItesFleet[playerId];
+      playerIte2.options = buildPlayerOption("Lmap");
       const raceUrl = raceInfo.url + (raceInfo.betaflag ? "b" : "");
       document.getElementById("bt_rt_addLmap").innerText = "Loading";
       document.getElementById("bt_rt_addLmap").disabled = true;
-      zezoCall(rid, playerIte, document.getElementById("route_colorLmap").value, raceUrl);
+      zezoCall(rid, playerIte2, document.getElementById("route_colorLmap").value, raceUrl);
       actualZezoColor = "#" + Math.floor(Math.random() * 16777216).toString(16).padStart(6, "0");
       document.getElementById("route_colorLmap").value = actualZezoColor;
       break;
@@ -31626,42 +32930,6 @@ function uiBindingInit() {
       }
     },
     {
-      selector: "#track_infos",
-      onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.trace = checked;
-        saveUserPrefs(userPrefs);
-      },
-      onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.trace;
-      }
-    },
-    {
-      selector: "#projectionLine_Size",
-      onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.projectionLineLenght = value;
-        saveUserPrefs(userPrefs);
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.projectionLineLenght;
-      }
-    },
-    {
-      selector: "#view_InvisibleDoors",
-      onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.invisibleBuoy = checked;
-        saveUserPrefs(userPrefs);
-      },
-      onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.invisibleBuoy;
-      }
-    },
-    {
       selector: "#abbreviatedOption",
       onChange: (checked) => {
         const userPrefs = getUserPrefs();
@@ -31966,43 +33234,6 @@ function uiBindingInit() {
       onInit: (checked, el) => {
         const userPrefs = getUserPrefs();
         el.checked = userPrefs.map.showTracks;
-      }
-    },
-    {
-      selector: "#sel_borderColorLmap",
-      onChange: async (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.borderColor = value;
-        await saveUserPrefs(userPrefs);
-        onCoastColorChange();
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.borderColor;
-      }
-    },
-    {
-      selector: "#sel_projectionColorLmap",
-      onChange: async (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.projectionColor = value;
-        await saveUserPrefs(userPrefs);
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.projectionColor;
-      }
-    },
-    {
-      selector: "#projectionLine_Size",
-      onChange: async (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.projectionLineLenght = value;
-        await saveUserPrefs(userPrefs);
-      },
-      onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.projectionLineLenght;
       }
     },
     {

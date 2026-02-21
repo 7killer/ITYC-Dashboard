@@ -1,6 +1,11 @@
 import L from '@/dashboard/ui/map/leaflet-setup';
 import {formatPosition,formatShortDate,formatDHMS} from '../common.js';
-import {getUserPrefs} from "../../../common/userPrefs.js"
+import {getUserPrefs,saveUserPrefs} from "../../../common/userPrefs.js"
+
+import { mapState,redrawMapCheckPoints,redrawProjectionLine } from './map-race.js';
+import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAtTime,windUiState} from './map-wind.js';
+
+import {onCoastColorChange} from "./map-coasts.js"
 
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
@@ -439,4 +444,601 @@ export function buildMarkerTitle(point)
         + textTWD + textTWS
         + textSail + textSpeed + "<br>"
         + textStamina;
+}
+
+export     function addMapControl(map)
+{
+    map.addControl(new L.Control.ScaleNautic({
+        metric: true,
+        imperial: false,
+        nautic: true
+    }));
+
+    const optionsRuler = {
+        position: 'topleft',
+        maxPoints: 2,
+        lengthUnit: {
+            factor: 0.539956803,
+            display: 'nm',
+            decimal: 2,
+            label: 'Distance:'
+        },
+    };
+    L.control.ruler(optionsRuler).addTo(map);
+
+ /*   L.control.coordinates({
+        useDMS: true,
+        labelTemplateLat: "Lat: {y}",
+        labelTemplateLng: " Lng: {x}",
+        useLatLngOrder: true,
+        labelFormatterLat: function (lat) {
+            let latFormatted = L.NumberFormatter.toDMS(lat);
+            latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
+            return '<span class="labelGeo">' + latFormatted.replace(/^-/, '') + '</span>';
+            //return latFormatted.replace(/^-/, '');
+        },
+        labelFormatterLng: function (lng) {
+            let lngFormatted = L.NumberFormatter.toDMS(lng);
+            lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
+            return '<span class="labelGeo">' + lngFormatted.replace(/^-/, '') + '</span>';
+        },
+    }).addTo(map);
+*/
+    const ctrl = new windPosControl();
+    ctrl.addTo(map);
+
+    const ctrl2 = new WindToggleControl({
+        initialMode: mapState.windSettings.visible
+            ? (mapState.windSettings.timeMode === 'vr' ? 'vr' : 'gfs')
+            : 'none',
+        onToggle: async (mode) => {
+            if (mode === 'none') {
+            mapState.windSettings.visible = false;
+            // applique hide layer (ta fonction existante)
+            applyWindSettings();
+            return;
+            }
+
+            mapState.windSettings.visible = true;
+            mapState.windSettings.timeMode = mode; // 'gfs' ou 'vr'
+            applyWindSettings();
+            await applyWindAtTime(windUiState.currentUnix);
+        }
+    });
+    ctrl2.addTo(mapState.map);
+
+    addSettingsMenuControl(map, {
+    getWindMode: () => mapState.windSettings.mode || 'default',
+    setWindMode: (mode) => {
+        mapState.windSettings.mode = mode;
+        applyWindSettings();
+    },
+
+    getWindMaxKts: () => mapState.windMaxKts || 40,
+    setWindMaxKts: (kts) => {
+        mapState.windSettings.customMaxKts = kts;
+        if (mapState.windSettings.mode === 'custom') {
+            applyWindSettings();
+        }
+    },
+
+    getCoastColor: () => getUserPrefs().map?.borderColor || '#ff0000',
+    setCoastColor: async (color) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.borderColor = color;
+        await saveUserPrefs(userPrefs);
+        onCoastColorChange();
+
+    },
+
+    getProjectionColor: () => getUserPrefs().map?.projectionColor || '#b86dff',
+    setProjectionColor: async (color) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.projectionColor = color;
+        await saveUserPrefs(userPrefs);
+        redrawProjectionLine();
+    },
+
+    getProjectionLenght: () => getUserPrefs().map?.projectionLineLenght || 20,
+    setProjectionLenght: async (lght) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.projectionLineLenght = lght;
+        await saveUserPrefs(userPrefs);
+        redrawProjectionLine();
+    },
+    
+    getShowHiddenBouys: () => getUserPrefs().map?.invisibleBuoy || false,
+    setShowHiddenBouys: async (state) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.invisibleBuoy = state;
+        await saveUserPrefs(userPrefs);
+        redrawMapCheckPoints();
+
+    },  
+
+    });
+
+    map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
+}
+function degreesToCardinalDirection(deg) {
+    var cardinalDirection = '';
+
+    if (deg >= 0 && deg < 11.25 || deg >= 348.75) {
+      cardinalDirection = 'N';
+    } else if (deg >= 11.25 && deg < 33.75) {
+      cardinalDirection = 'NNE';
+    } else if (deg >= 33.75 && deg < 56.25) {
+      cardinalDirection = 'NE';
+    } else if (deg >= 56.25 && deg < 78.75) {
+      cardinalDirection = 'ENE';
+    } else if (deg >= 78.25 && deg < 101.25) {
+      cardinalDirection = 'E';
+    } else if (deg >= 101.25 && deg < 123.75) {
+      cardinalDirection = 'ESE';
+    } else if (deg >= 123.75 && deg < 146.25) {
+      cardinalDirection = 'SE';
+    } else if (deg >= 146.25 && deg < 168.75) {
+      cardinalDirection = 'SSE';
+    } else if (deg >= 168.75 && deg < 191.25) {
+      cardinalDirection = 'S';
+    } else if (deg >= 191.25 && deg < 213.75) {
+      cardinalDirection = 'SSW';
+    } else if (deg >= 213.75 && deg < 236.25) {
+      cardinalDirection = 'SW';
+    } else if (deg >= 236.25 && deg < 258.75) {
+      cardinalDirection = 'WSW';
+    } else if (deg >= 258.75 && deg < 281.25) {
+      cardinalDirection = 'W';
+    } else if (deg >= 281.25 && deg < 303.75) {
+      cardinalDirection = 'WNW';
+    } else if (deg >= 303.75 && deg < 326.25) {
+      cardinalDirection = 'NW';
+    } else if (deg >= 326.25 && deg < 348.75) {
+      cardinalDirection = 'NNW';
+    }
+
+    return cardinalDirection;
+  }
+const windPosControl = L.Control.extend({
+  options: {
+    position: 'bottomright',
+  },
+
+  onAdd: function (map) {
+    const container = L.DomUtil.create(
+      'div',
+      'leaflet-bar ityc-info-control ityc-posplay'
+    );
+ 
+     // ---- Colonne boutons lecture (zone rouge) ----
+     const pb = document.createElement('div');
+     pb.className = 'ityc-posplay-buttons';
+     pb.innerHTML = `
+       <button type="button" class="ityc-pb-btn" data-role="play"  title="Lecture">▶</button>
+       <button type="button" class="ityc-pb-btn" data-role="pause" title="Pause">⏸</button>
+       <button type="button" class="ityc-pb-btn" data-role="stop"  title="Stop">⏹</button>
+     `;
+ 
+     const play  = pb.querySelector('[data-role="play"]');
+     const pause = pb.querySelector('[data-role="pause"]');
+     const stop  = pb.querySelector('[data-role="stop"]');
+ 
+     play.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startAutoPlay(); });
+     pause.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); pauseAutoPlay(); });
+     stop.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); stopAutoPlay(true); });
+ 
+     // ---- Bloc infos (coords + vent) ----
+     const info = document.createElement('div');
+     info.className = 'ityc-posplay-info';
+  
+    const rowCoords = document.createElement('div');
+    rowCoords.className = 'ityc-info-coords';
+    rowCoords.textContent = 'Lat: —   Lng: —';
+
+    const rowWind = document.createElement('div');
+    rowWind.className = 'ityc-info-wind';
+    rowWind.style.display = 'none';
+    rowWind.textContent = 'TWD: —   TWS: —';
+
+    info.appendChild(rowCoords);
+    info.appendChild(rowWind);
+    container.appendChild(pb);
+    container.appendChild(info);
+
+    this._map = map;
+    this._rowCoords = rowCoords;
+    this._rowWind = rowWind;
+
+    // === Mouse move handler ===
+    const update = (e) => {
+        function formatLatDMS(lat)
+        {
+            let latFormatted = L.NumberFormatter.toDMS(lat);
+            latFormatted = latFormatted.replace(/''$/, '"') + (latFormatted.startsWith('-') ? ' S' : ' N');
+            return latFormatted.replace(/^-/, '');
+        }
+        function formatLngDMS(lng)
+        {
+            let lngFormatted = L.NumberFormatter.toDMS(lng);
+            lngFormatted = lngFormatted.replace(/''$/, '"') + (lngFormatted.startsWith('-') ? ' W' : ' E');
+            return lngFormatted.replace(/^-/, '');
+        }
+
+
+        const { lat, lng } = e.latlng;
+
+        rowCoords.innerHTML  =
+            `Lat: ${formatLatDMS(lat)}   Lng: ${formatLngDMS(lng)}`;
+
+        // Si vent actif et windy dispo
+        if (
+            mapState.windSettings.visible  &&
+            mapState.windyLayer &&
+            mapState.windyLayer._windy &&
+            mapState.windyLayer._windy.field
+        ) {
+            const field = mapState.windyLayer._windy.field;
+            const point = map.latLngToContainerPoint(e.latlng);
+            const v = field(point.x, point.y);
+
+            if (v && v[2] !== null) {
+                const speedKt = (v[2] * 1.94384).toFixed(1); // m/s -> kt
+                let dirDeg = Math.round(
+                    (Math.atan2(v[0], -v[1]) * 180) / Math.PI +180
+                );
+                if (dirDeg >= 360) dirDeg -= 360;
+                rowWind.textContent =
+                    `TWD: ${dirDeg}° (${degreesToCardinalDirection(dirDeg)})   TWS: ${speedKt} kt`;
+                rowWind.style.display = '';
+                pb.style.display = '';
+            } else {
+                rowWind.style.display = 'none';
+                pb.style.display = 'none';
+            }
+        } else {
+            rowWind.style.display = 'none';
+            pb.style.display = 'none';
+        }
+    };
+
+    this._updateFn = update;
+    map.on('mousemove', update);
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+    return container;
+  },
+
+  onRemove: function (map) {
+    if (this._updateFn) {
+      map.off('mousemove', this._updateFn);
+    }
+  },
+});
+
+const WindToggleControl = L.Control.extend({
+  options: { position: 'topright' },
+
+  initialize: function (opts = {}) {
+    L.Util.setOptions(this, opts);
+
+    // onToggle(mode) : 'none' | 'gfs' | 'vr'
+    this._onToggle = opts.onToggle || (() => {});
+
+    // état initial : 'none'|'gfs'|'vr'
+    const initialMode = (opts.initialMode === 'vr' || opts.initialMode === 'gfs')
+      ? opts.initialMode
+      : 'none';
+
+    this._mode = initialMode;
+    this._lastOnMode = (initialMode === 'none') ? (opts.defaultOnMode || 'gfs') : initialMode;
+
+    this._hideTimer = null;
+  },
+
+  onAdd: function (map) {
+    this._map = map;
+
+    const container = L.DomUtil.create('div', 'leaflet-bar ityc-toolbar ityc-windctl');
+
+    // Bouton icône
+    const btn = L.DomUtil.create('a', 'ityc-tool ityc-tool-wind', container);
+    btn.href = '#';
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('aria-label', 'Vent');
+    btn.innerHTML = `
+      <svg viewBox="0 0 24 24" class="ityc-icon" aria-hidden="true">
+        <path d="M4 8h10a3 3 0 1 0-3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 12h14a3 3 0 1 1-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 16h8a2 2 0 1 1-2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    `;
+
+    // Mini-menu (hover)
+    const menu = L.DomUtil.create('div', 'ityc-wind-menu', container);
+    menu.style.display = 'none';
+    menu.setAttribute('role', 'menu');
+
+    const groupName = `ityc_wind_${Math.random().toString(16).slice(2)}`;
+    menu.innerHTML = `
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="gfs">
+        <span>GFS 0.25</span>
+      </label>
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="vr">
+        <span>VR</span>
+      </label>
+      <label class="ityc-wind-opt">
+        <input type="radio" name="${groupName}" value="none">
+        <span>Aucun</span>
+      </label>
+    `;
+
+    this._container = container;
+    this._btn = btn;
+    this._menu = menu;
+
+    // init UI
+    this._syncRadios();
+    this._applyState();
+
+    // Leaflet events
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+
+    // Click bouton : toggle none <-> lastOnMode (utile sans hover)
+    L.DomEvent.on(btn, 'click', L.DomEvent.stop);
+    L.DomEvent.on(btn, 'click', () => {
+      const next = (this._mode === 'none') ? (this._lastOnMode || 'gfs') : 'none';
+      this.setMode(next, { emit: true });
+    });
+
+    // Hover open/close menu
+    const showMenu = () => {
+      clearTimeout(this._hideTimer);
+      this._hideTimer = null;
+      this._menu.style.display = '';
+      this._container.classList.add('is-menu-open');
+    };
+
+    const hideMenu = () => {
+      clearTimeout(this._hideTimer);
+      this._hideTimer = setTimeout(() => {
+        this._menu.style.display = 'none';
+        this._container.classList.remove('is-menu-open');
+      }, 180);
+    };
+
+    container.addEventListener('mouseenter', showMenu);
+    container.addEventListener('mouseleave', hideMenu);
+    menu.addEventListener('mouseenter', showMenu);
+    menu.addEventListener('mouseleave', hideMenu);
+
+    // Selection radio
+    menu.querySelectorAll('input[type="radio"]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const v = input.value; // gfs|vr|none
+        this.setMode(v, { emit: true });
+      });
+    });
+
+    return container;
+  },
+
+  setMode: function (mode, { emit = false } = {}) {
+    const m = (mode === 'vr' || mode === 'gfs') ? mode : 'none';
+    this._mode = m;
+    if (m !== 'none') this._lastOnMode = m;
+
+    this._syncRadios();
+    this._applyState();
+
+    if (emit) this._onToggle(this._mode);
+  },
+
+  getMode: function () {
+    return this._mode;
+  },
+
+  _syncRadios: function () {
+    if (!this._menu) return;
+    const inputs = this._menu.querySelectorAll('input[type="radio"]');
+    inputs.forEach((i) => {
+      i.checked = (i.value === this._mode);
+    });
+  },
+
+  _applyState: function () {
+    if (!this._btn) return;
+
+    const isOn = this._mode !== 'none';
+    this._btn.classList.toggle('is-on', isOn);
+    this._btn.classList.toggle('is-off', !isOn);
+
+    const title =
+      this._mode === 'vr' ? 'Vent (VR)' :
+      this._mode === 'gfs' ? 'Vent (GFS 0.25)' :
+      'Vent (Aucun)';
+
+    this._btn.title = title;
+    this._btn.setAttribute('aria-pressed', String(isOn));
+  },
+});
+
+export function addSettingsMenuControl(map, {
+  getWindMode,          // () => 'default'|'custom'|'auto'
+  setWindMode,          // (mode) => void
+  getWindMaxKts,        // () => number
+  setWindMaxKts,        // (kts) => void
+  getCoastColor,        // () => string  ex '#ff0000'
+  setCoastColor,        // (color) => void  (ton handler existant)
+  getProjectionColor,   // () => string  ex '#b86dff'
+  setProjectionColor,   // (color) => void  (ton handler existant)
+  getProjectionLenght,
+  setProjectionLenght,
+  getShowHiddenBouys,
+  setShowHiddenBouys
+
+} = {}) {
+  const SettingsControl = L.Control.extend({
+    options: { position: 'topright' },
+
+    onAdd() {
+      const root = L.DomUtil.create('div', 'leaflet-bar ityc-settings');
+
+      // bouton gear
+      const btn = L.DomUtil.create('a', 'ityc-tool ityc-tool-gear is-off', root);
+      btn.href = '#';
+      btn.title = 'Réglages';
+      btn.setAttribute('role', 'button');
+
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" class="ityc-icon" aria-hidden="true">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M19.4 15a8.7 8.7 0 0 0 .1-1l2-1.2-2-3.4-2.3.6a7.6 7.6 0 0 0-.8-.5L16 7h-4l-.4-2h-3.9l-.8 2.1a7.6 7.6 0 0 0-.8.5l-2.3-.6-2 3.4L3.6 14c0 .3 0 .7.1 1l-2 1.2 2 3.4 2.3-.6c.3.2.5.3.8.5L8 21h4l.4 2h3.9l.8-2.1c.3-.2.6-.3.8-.5l2.3.6 2-3.4-2-1.2Z"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      `;
+
+      // panel (menu hover)
+      const panel = L.DomUtil.create('div', 'ityc-settings-panel', root);
+      panel.innerHTML = `
+        <div class="ityc-settings-title">Réglages</div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Mode vent</label>
+          <select class="ityc-settings-select" data-role="wind-mode">
+            <option value="default">Défaut</option>
+            <option value="custom">Custom</option>
+            <option value="auto">Auto</option>
+          </select>
+        </div>
+
+        <div class="ityc-settings-row ityc-settings-row-custom" data-role="wind-custom">
+          <label class="ityc-settings-label">Max (kt)</label>
+          <input class="ityc-settings-range" data-role="wind-max" type="range" min="5" max="80" step="1" value="40">
+          <span class="ityc-settings-value" data-role="wind-max-val">40</span>
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Trait de côte</label>
+          <input class="ityc-settings-color" data-role="coast-color" type="color" value="#ff0000">
+        </div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Ligne de projection</label>
+          <input class="ityc-settings-color" data-role="projection-color" type="color" value="#ff0000">
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Longueur projection</label>
+          <input class="ityc-settings-value" data-role="projection-lenght" type="number" min="0" max="360" value="20">
+        </div>
+
+        <div class="ityc-settings-divider"></div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Afficher bouées cachées</label>
+          <input class="ityc-settings-checkbox" data-role="show-hidden-bouys" type="checkbox">
+        </div>
+
+      `;
+
+      // stop propagation (sinon map pan/zoom)
+      L.DomEvent.disableClickPropagation(root);
+      L.DomEvent.disableScrollPropagation(root);
+
+      // init values
+      const selMode = panel.querySelector('[data-role="wind-mode"]');
+      const rowCustom = panel.querySelector('[data-role="wind-custom"]');
+      const rngMax = panel.querySelector('[data-role="wind-max"]');
+      const lblMax = panel.querySelector('[data-role="wind-max-val"]');
+      const inpCoast = panel.querySelector('[data-role="coast-color"]');
+      const inpProjection = panel.querySelector('[data-role="projection-color"]');
+      const inpProjectionLenght = panel.querySelector('[data-role="projection-lenght"]');
+      const inpPShowHiddenbouys = panel.querySelector('[data-role="show-hidden-bouys"]');
+        
+
+      const mode0 = getWindMode ? getWindMode() : 'default';
+      selMode.value = mode0;
+
+      const max0 = getWindMaxKts ? Number(getWindMaxKts()) : 40;
+      rngMax.value = String(max0);
+      lblMax.textContent = String(max0);
+
+      const cc0 = getCoastColor ? (getCoastColor() || '#ff0000') : '#ff0000';
+      inpCoast.value = cc0;
+      
+      const cc1 = getProjectionColor ? (getProjectionColor() || '#b86dff') : '#b86dff';
+      inpProjection.value = cc1;
+
+      const pLght = getProjectionLenght ? (Number(getProjectionLenght()) || 20) : 30;
+      inpProjectionLenght.value = pLght;
+
+      const pHiddenBouys = getShowHiddenBouys ? getShowHiddenBouys() : false;
+      inpPShowHiddenbouys.checked = pHiddenBouys;
+
+
+      const refreshCustomVisibility = () => {
+        const mode = selMode.value;
+        rowCustom.style.display = (mode === 'custom') ? '' : 'none';
+      };
+      refreshCustomVisibility();
+
+      // handlers
+      selMode.addEventListener('change', () => {
+        const mode = selMode.value;
+        refreshCustomVisibility();
+        if (setWindMode) setWindMode(mode);
+      });
+
+      rngMax.addEventListener('input', () => {
+        lblMax.textContent = rngMax.value;
+      });
+      rngMax.addEventListener('change', () => {
+        const kts = Number(rngMax.value);
+        if (setWindMaxKts) setWindMaxKts(kts);
+      });
+
+      inpCoast.addEventListener('change', () => {
+        const color = inpCoast.value;
+        if (setCoastColor) setCoastColor(color);
+      });
+
+      inpProjection.addEventListener('change', () => {
+        const color = inpProjection.value;
+        if (setProjectionColor) setProjectionColor(color);
+      });
+
+      inpProjectionLenght.addEventListener('change', () => {
+        const pLght = inpProjectionLenght.value;
+        if (setProjectionLenght) setProjectionLenght(pLght);
+      });
+
+      inpPShowHiddenbouys.addEventListener('change', () => {
+        const sHiddenBouys = inpPShowHiddenbouys.checked;
+        if (setShowHiddenBouys) setShowHiddenBouys(sHiddenBouys);
+      });
+      // hover open/close (survol)
+      const open = () => root.classList.add('open');
+      const close = () => root.classList.remove('open');
+
+      root.addEventListener('mouseenter', open);
+      root.addEventListener('mouseleave', close);
+
+      // click sur gear = toggle (utile mobile / tactile)
+      L.DomEvent.on(btn, 'click', L.DomEvent.stop);
+      L.DomEvent.on(btn, 'click', () => {
+        root.classList.toggle('open');
+      });
+
+      return root;
+    },
+  });
+
+  const ctrl = new SettingsControl();
+  ctrl.addTo(map);
+  return ctrl;
 }

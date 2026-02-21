@@ -54,7 +54,6 @@ export const userPrefsDefault =
         }
     },
     map : {
-        trace : false,
         projectionLineLenght : 20,
         invisibleBuoy : false,
         showMarkers : false,

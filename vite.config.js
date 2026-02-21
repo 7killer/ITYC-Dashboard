@@ -13,7 +13,10 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, 'src'),
       '@background': path.resolve(__dirname, 'src/background'),
       '@webapp': path.resolve(__dirname, 'src/dashboard'),
-
+      'leaflet-velocity': path.resolve(
+        __dirname,
+        'vendor/leaflet-velocity'
+      ),
     }
   },
   build: {

@@ -50,8 +50,9 @@ function totalOptionCredits(raceInfo,playerOptions) {
 }
 
 /***** blocs UI *****/
-function card(title, bodyNodes, {icon=null} = {}) {
-  return h('section', {class:'card'},
+function card(title, bodyNodes, {icon=null, class: extraClass = ''} = {}) {
+  const sectionClass = ['card', extraClass].filter(Boolean).join(' ');
+  return h('section', {class: sectionClass},
     h('div', {class:'card-header'},
       icon ? h('span', {class:'badge'}, icon) : null,
       h('h3', null, title)
@@ -68,9 +69,12 @@ function tableModern({head=[], rows=[]}) {
 
 /***** sections *****/
 function viewIdentity(raceInfo,playerOptions) {
-  const rid = raceInfo.raceId+"_"+raceInfo.legNum;
-  const img = h('img', {src:`https://static.virtualregatta.com/offshore/leg/${rid}.jpg`, style: { height: '48px', borderRadius: '8px' }});
-  const badge = h('span', {class:'badge'}, img, 'Race');
+   const rid = raceInfo.raceId+"_"+raceInfo.legNum;
+  const img = h('img', {
+    class: 'rb-identity-thumb',
+    src:`https://static.virtualregatta.com/offshore/leg/${rid}.jpg`
+  });
+  const badge = h('span', {class:'badge'}, 'Race');
   const grid = h('div', {class:'kv'},
     h('div', {class:'k'}, 'Race Name (Id)'), h('div', {class:'v'}, `${raceInfo.legName} (${rid})`),
     h('div', {class:'k'}, 'Boat Name'), h('div', {class:'v'}, raceInfo.boatName ?? '-'),
@@ -79,39 +83,58 @@ function viewIdentity(raceInfo,playerOptions) {
     h('div', {class:'k'}, 'Price'), h('div', {class:'v'}, `Cat. ${raceInfo.priceLevel}`),
     h('div', {class:'k'}, 'Category'), h('div', {class:'v'}, getRankingCategory(playerOptions?.options)),
   );
-  return card('Race Details', [h('div', {class:'chips'}, badge), grid]);
+  const layout = h('div', {class:'rb-identity'},
+    h('div', {class:'rb-identity-media'}, badge, img),
+    grid
+  );
+  return card('Race Details', layout);
 }
 
 function viewCredits(raceInfo,playerIte) {
+  const headRow1 = [
+    'Game Credits',
+    'Free Credits',
+    'Current Race Credits (Total Options)',
+    'Gains'
+  ];
 
   const awarded = (playerIte?.rank > 0)
     ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel-1] / (Math.pow(playerIte.rank, 0.4)))
     : '-';
-
-  const head = ['Game Credits','Free Credits','Current Race Credits (Total Options)','Gains',
-    ...optionKeys.map(([,label]) => label)
-  ];
   const takenTotal = totalOptionCredits(raceInfo,playerIte?.options?.options);
-  const takenCells = optionKeys.map(([k]) => {
-    const takenStyle = isTaken(playerIte?.options?.options,k) ? {outline:'2px solid #25d366'} : {};
-    return h('span', {class: 'chip', style: takenStyle}, String(raceInfo?.optionPrices?.[k] ?? '-'))
-  });
-  const rows = [[
-    String(playerIte?.info?.credits ?? '-'),
-    String(raceInfo.freeCredits ?? '-'),
-    `${(playerIte?.info?.credits || playerIte?.info?.credits===0) ? playerIte.info.credits : '???'}  `,
-    String(awarded),
-    ...takenCells
-  ]];
+  
+  const creditsCell = String(playerIte?.info?.credits ?? '-');
+  const freeCell    = String(raceInfo.freeCredits ?? '-');
+  const currentCell = `${(playerIte?.info?.credits || playerIte?.info?.credits===0) ? playerIte.info.credits : '???'}  `;
+  const gainsCell   = String(awarded);
 
-  // insert the (-total) info visuellement à côté
-  rows[0][2] = frag(
-    h('span', null, rows[0][2]),
+  
+  // Ligne du haut : uniquement les 4 cellules "crédits"
+  const topRow = [
+    creditsCell,
+    freeCell,
+    currentCell,
+    gainsCell,
+  ];
+  
+  topRow[2] = frag(
+    h('span', null, topRow[2]),
     ' ',
     h('span', {class:'chip', style:{borderColor:'tomato', color:'tomato'}}, `(-${takenTotal})`)
   );
 
-  return card('Credits (Option équipée)', tableModern({head, rows}));
+  const tableTop = tableModern({ head: headRow1, rows: [topRow] });
+
+  const optionLabels = optionKeys.map(([, label]) => label);
+  
+  const bottomRow = optionKeys.map(([k]) => {
+    const takenStyle = isTaken(playerIte?.options?.options,k) ? {outline:'2px solid #25d366'} : {};
+    return h('span', {style: takenStyle}, String(raceInfo?.optionPrices?.[k] ?? '-'))
+  });
+
+  const tableBottom = tableModern({ head: optionLabels, rows: [bottomRow] });
+
+  return card('Credits (Option équipée)', [tableTop, tableBottom], { class: 'card-credits' });
 }
 
 function viewStages(raceInfo, playerIte) {
@@ -137,7 +160,11 @@ function viewStages(raceInfo, playerIte) {
       cpName = cpName.charAt(0).toUpperCase() + cpName.slice(1);
       if (cpName === 'Buoy') cpName = '🏳️ ' + cpName;
 
-      const passed = (playerIte?.ites[0]?.gateGroupCounters && playerIte.ites[0].gateGroupCounters[cp.group - 1]) ? h('span',{class:'pill pill--ok'},'Passed') : ' - ';
+      let passed = ' - ';
+      if(playerIte?.ites 
+        && playerIte?.ites[0]?.gateGroupCounters
+        && playerIte.ites[0].gateGroupCounters[cp.group - 1])
+          passed = h('span',{class:'pill pill--ok'},'Passed');
 
       rows.push([
         cpName,
