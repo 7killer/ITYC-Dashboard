@@ -4,18 +4,22 @@ import { roundTo } from './../common/utils.js';
 export function  theoreticalSpeed(polar,options = [],tws,twa,sailId = null) {
     if (polar == undefined || tws == undefined)
         return undefined;
-    let foil = foilingFactor(options, tws, twa, polar.foil);
-    let foiling = (foil - 1.0) * 100 / (polar.foil.speedRatio - 1.0);
-    let hull = options?.hull ? 1.003 : 1.0;
-    let ratio = polar.globalSpeedRatio;
-    let twsLookup = fractionStep(tws, polar.tws);
-    let twaLookup = fractionStep(twa, polar.twa);
+    const foilFactor = foilingFactor(options, tws, twa, polar.foil);
+    const foilRate = (foilFactor - 1.0) * 100 / (polar.foil.speedRatio - 1.0);
+    const hull = options?.hull ? polar.hull.speedRatio : 1.0;
+    const ratio = polar.globalSpeedRatio;
+    const twsLookup = fractionStep(tws, polar.tws);
+    const twaLookup = fractionStep(twa, polar.twa);
     const maxSpd = maxSpeed(options, twsLookup, twaLookup, polar.sail);
     const spd = (sailId!=null )?pSpeed(twaLookup,twsLookup,polar.sail[sailId].speed):0;
+    const totalSpeed = (sailId!=null )?(spd * foilFactor * hull * ratio):(maxSpd.speed * foilFactor * hull * ratio);
+
     return {
-        "speed": (sailId!=null )?roundTo(spd * foil * hull * ratio, 3):roundTo(maxSpd.speed * foil * hull * ratio, 3),
-        "sail": (sailId!=null )?sailId:maxSpd.sail,
-        "foiling": foiling
+        speed		: Number(roundTo(totalSpeed, 3)),
+        vmg			: totalSpeed * Math.cos(twa * Math.PI/180),
+        sail        : (sailId!=null )?sailId:maxSpd.sail,
+        foilFactor	: Number(roundTo(foilFactor, 3)),
+        foilRate	: Number(roundTo(foilRate, 1))
     };
 }
 
@@ -43,6 +47,36 @@ function maxSpeed (options, iS, iA, sailDefs) {
         speed: maxSpeed,
         sail: maxSail
     }
+}
+
+export function getSpeeds(boatPolars, options, tws, twa) {
+    return {
+        best		: theoreticalSpeed(boatPolars, options, tws, twa),
+        all			: allSailsSpeeds(boatPolars, options, tws, twa)
+    };
+}
+
+function allSailsSpeeds(boatPolars, options, tws, twa) {
+    var globalFactor= boatPolars.globalSpeedRatio;
+    var foilFactor	= foilingFactor(options, tws, twa, boatPolars.foil);
+    var hullFactor = options.hull ? boatPolars.hull.speedRatio : 1.0;
+    var twsLookup	= fractionStep(tws, boatPolars.tws);
+    var twaLookup	= fractionStep(twa, boatPolars.twa);
+    var speeds		= sailsSpeeds(twsLookup, twaLookup, boatPolars.sail);
+
+    Object.keys(speeds).forEach(function (key) {
+        speeds[key] = Number(roundTo(speeds[key] * foilFactor * hullFactor * globalFactor, 3));
+    });
+
+    return speeds;
+}
+function sailsSpeeds(iS, iA, sailDefs) {
+    var retSpeeds = {};
+
+    for (const sailDef of sailDefs) {
+        retSpeeds[sailDef.id] = pSpeed(iA, iS, sailDef.speed);
+    }
+    return retSpeeds;
 }
 
 
@@ -107,7 +141,7 @@ export function fractionStep (value, steps){
 }
 
 
-function isSailisInOptions(sailId,options)
+export function isSailisInOptions(sailId,options)
 {
     switch(sailId)
     {

@@ -1,13 +1,13 @@
 {
-    "debugDB": false,
+    "debugDB": true,
     "debugDBErr": true,
-    "debugDBIte": false,
+    "debugDBIte": true,
     "debugDBIteErr": true,
-    "debugIngester":false,
+    "debugIngester":true,
     "debugIngesterErr":true,
     "debugIteRun":true,
     "debugIteRunErr":true,
-    "debugFilter1":true,
+    "debugFilter1":false,
     "debugWind":true
 
   }

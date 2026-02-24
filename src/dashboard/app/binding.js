@@ -397,5 +397,7 @@ export function uiBindingInit() {
       selector: '#sel_rt_skipperLmap',
       onChange: (value) => {onSkipperSelectedChange('Lmap');}
     }
+
+
   ]);
 }
