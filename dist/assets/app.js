@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as display_selbox, a1 as changeState, a2 as cleanSpecial, a3 as convertDMS2Dec, a4 as onUserChangeRace, a5 as switchTheme, a6 as loadUserPrefs, a7 as initMemo, a8 as setConnectedPlayerId, a9 as updatePlayersList, aa as updateTeamsList, ab as updateConnectedPlayerInfos, ac as updateLegPlayerInfos, ad as updateLegPlayersOrder, ae as getLegListUpdate, af as setLegListUpdate, ag as updateLegList, ah as updatePolar, ai as getPlayersUpdate, aj as setPlayersUpdate, ak as updateLegFleetInfos, al as getTeamsUpdate, am as setTeamsUpdate, an as getPolarsUpdate, ao as setPolarsUpdate, ap as getLegPlayersInfosUpdate, aq as setLegPlayersInfosUpdate, ar as getLegFleetInfosUpdate, as as setLegFleetInfosUpdate, at as getLegPlayersOptionsUpdate, au as setLegPlayersOptionsUpdate, av as updateLegPlayersOptions, aw as getLegPlayersOrderUpdate, ax as setLegPlayersOrderUpdate, ay as setOpenedRaceId, az as updateOpenedRaceId, aA as updateLegPlayersTracks, aB as getLegPlayersTracksUpdate, aC as setLegPlayersTracksUpdate, aD as createKeyChangeListener } from "./_commonjsHelpers-ef85fc27.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-4dc76c15.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -73,7 +73,7 @@ function updateRaceListDisplay() {
 }
 function buildRaceStatusHtml() {
   var _a2;
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   const connectedRace = getOpenedRaceId();
   const raceInfo = getRaceInfo$1();
   const raceItes = getLegPlayerInfos();
@@ -81,13 +81,13 @@ function buildRaceStatusHtml() {
   if (!raceInfo || (raceInfo == null ? void 0 : raceInfo.length) == 0 || !raceItes)
     return;
   let raceStatusHeader = '<tr><th title="Call Router" colspan="2">RT</th><th title="Call Polars">PL</th><th title="Call WindInfo">WI</th><th title="Call ITYC">ITYC</th><th title="Open compass">C</th><th>Race</th><th>Time</th>' + raceTableHeaders() + '<th title="Auto Sail time remaining">aSail</th><th title="Boat speed">Speed</th><th title="Boat VMG">VMG</th><th>Best VMG</th><th>Best speed</th><th title="Stamina">Stamina</th>';
-  if (userPrefs.lang == "fr") {
+  if (userPrefs2.lang == "fr") {
     raceStatusHeader += '<th title="Temps de manoeuvre théorique">Virement</th><th title="Temps de manoeuvre théorique">Empannage</th><th title="Temps de manoeuvre théorique">Voile</th>';
   } else {
     raceStatusHeader += '<th title="Approximated manoeuvring loose">Tack</th><th title="Approximated manoeuvring loose">Gybe</th><th title="Approximated manoeuvring loose">Sail</th>';
   }
   raceStatusHeader += '<th title="Boat is aground">Agnd</th><th title="Boat is maneuvering, half speed">Mnvr</th>';
-  if (userPrefs.raceData.lastCmd)
+  if (userPrefs2.raceData.lastCmd)
     raceStatusHeader += "<th >Last Command</th>";
   raceStatusHeader += '<th title="ITYC option Status">Co</th>';
   raceStatusHeader += "</tr>";
@@ -110,7 +110,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
   var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
   if (!raceInfo)
     return "";
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   let info = "-";
   if (raceInfo.raceType === "leg") {
     info = "<span>" + raceInfo.legName + "</span>";
@@ -143,7 +143,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
     let lastCommandBG = "";
     let agroundBG = raceIte.aground ? "LightRed" : "lightgreen";
     let mnvrBG = ((_b = raceIte.metaDash) == null ? void 0 : _b.manoeuvering) ? "LightRed" : "lightgreen";
-    if (userPrefs.theme == "dark") {
+    if (userPrefs2.theme == "dark") {
       agroundBG = raceIte.aground ? "darkred" : "darkgreen";
       mnvrBG = ((_c = raceIte.metaDash) == null ? void 0 : _c.manoeuvering) ? "darkred" : "darkgreen";
     }
@@ -154,7 +154,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
     let lastCalcStyle = "";
     if (((_e = raceIte.metaDash) == null ? void 0 : _e.deltaReceiveCompute) > 9e5) {
       lastCalcStyle = 'style="background-color: red;';
-      lastCalcStyle += userPrefs.theme == "dark" ? ' color:black;"' : '"';
+      lastCalcStyle += userPrefs2.theme == "dark" ? ' color:black;"' : '"';
     }
     const manoeuver = (_f = raceIte.metaDash) == null ? void 0 : _f.manoeuver;
     const tack = manoeuver ? "<p>-" + manoeuver.tack.pena.dist + "nm | " + manoeuver.tack.pena.time + "s</p><p>" + manoeuver.tack.energyLoose + "% | " + manoeuver.tack.energyRecovery + "min</p>" : "-";
@@ -202,7 +202,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
     returnVal += '<td class="speed1">' + roundTo(raceIte.speed, 3) + "</td>";
     returnVal += '<td class="speed2">' + (((_l = raceIte.metaDash) == null ? void 0 : _l.vmg) ? roundTo(raceIte.metaDash.vmg, 3) : "-") + "</td>";
     returnVal += '<td class="bvmg"><p>' + bestVMGString + "</p>";
-    if (userPrefs.raceData.VMGSpeed)
+    if (userPrefs2.raceData.VMGSpeed)
       returnVal += "<p>(" + bestVMGTilte + ")</p>";
     returnVal += "</td>";
     returnVal += '<td class="bspeed">' + bspeedTitle + "</td>";
@@ -212,7 +212,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
     returnVal += '<td class="sailPenalties">' + sail + "</td>";
     returnVal += '<td class="agrd" style="background-color:' + agroundBG + ';">' + (raceIte.aground ? "AGROUND" : "No") + "</td>";
     returnVal += '<td class="man" style="background-color:' + mnvrBG + ';">' + (((_m = raceIte.metaDash) == null ? void 0 : _m.manoeuvering) ? "Yes" : "No") + "</td>";
-    if (userPrefs.raceData.lastCmd)
+    if (userPrefs2.raceData.lastCmd)
       returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
     returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
   } else {
@@ -222,7 +222,7 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
   return returnVal;
 }
 function buildRaceLogHtml() {
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   const raceInfo = getRaceInfo$1();
   const racePlayerInfos = getLegPlayerInfos();
   const raceOrder = getLegPlayersOrder();
@@ -248,8 +248,8 @@ function buildRaceLogHtml() {
         raceLogContent += buildRaceLogLine(raceLogLine);
     }
   });
-  const utcStyle = userPrefs.global.localTime ? "display: none;" : "";
-  const utcLocalStyle = userPrefs.global.localTime ? "" : "display: none;";
+  const utcStyle = userPrefs2.global.localTime ? "display: none;" : "";
+  const utcLocalStyle = userPrefs2.global.localTime ? "" : "display: none;";
   const logTxt = `
         <style>
             #UTC { ${utcStyle} }
@@ -292,8 +292,8 @@ function buildRaceLogLine(raceIte) {
     return Math.abs(1 - realSpeed / calculatedSpeed) > 0.01;
   }
   const iteDash = raceIte.metaDash;
-  const userPrefs = getUserPrefs();
-  const darkTheme = userPrefs.theme == "dark";
+  const userPrefs2 = getUserPrefs();
+  const darkTheme = userPrefs2.theme == "dark";
   if (!raceIte.tws || !iteDash)
     return "";
   let speedCStyle = "";
@@ -338,15 +338,15 @@ function buildRaceLogLine(raceIte) {
   return '<tr class="hovred">' + gentdRacelog("time", "time", null, "Time", DateUTC(raceIte.iteDate, 1)) + raceTableLines(raceIte, iteDash.bVmg) + infoSail(raceIte, false, false) + gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", roundTo(raceIte.speed, 3)) + gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", roundTo(iteDash.speedC, 3) + " (" + sailNames[raceIte.sail % 10] + ")") + gentdRacelog("foils", "foils", null, "Foils", foilTxt) + gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt) + gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", stamina ? roundTo(stamina, 2) + "%" : "-") + gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist) + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", roundTo(iteDash.deltaT, 0)) + gentdRacelog("position", "position", null, "Position", formatPosition(raceIte.pos.lat, raceIte.pos.lon)) + '<td class="sailPenalties" ' + getBG(iteDash.tsEndOfSailChange, raceIte.metaDash.previousIteDate) + ">" + sailChange + '</td><td class="gybe" ' + getBG(iteDash.tsEndOfGybe, iteDash.previousIteDate) + ">" + gybing + '</td><td class="tack" ' + getBG(iteDash.tsEndOfTack, iteDash.previousIteDate) + ">" + tacking + "</td></tr>";
 }
 function updateToggleRaceLogCommandsLines() {
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   const commandLines = document.querySelectorAll("tr.commandLine");
-  commandLines.forEach(function(line, index2) {
-    if (userPrefs.raceLog.hideLastCmd) {
+  commandLines.forEach(function(line2, index2) {
+    if (userPrefs2.raceLog.hideLastCmd) {
       if (index2 > 4) {
-        line.style.display = "none";
+        line2.style.display = "none";
       }
     } else {
-      line.style.display = "";
+      line2.style.display = "";
     }
   });
 }
@@ -389,8 +389,8 @@ function getSortOrder() {
   return sortOrder;
 }
 function isDisplayEnabled(playerIte2, userId, connectPlayerId) {
-  const userPrefs = getUserPrefs();
-  const userFilters = userPrefs.filters;
+  const userPrefs2 = getUserPrefs();
+  const userFilters = userPrefs2.filters;
   {
     console.groupCollapsed(`[isDisplayEnabled] Check for user ${userId}`);
     console.log("→ connectPlayerId :", connectPlayerId);
@@ -552,10 +552,10 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
   const iteDash = playerIte2.metaDash;
   if (!iteDash)
     return "";
-  const userPrefs = getUserPrefs();
-  const darkTheme = userPrefs.theme == "dark";
+  const userPrefs2 = getUserPrefs();
+  const darkTheme = userPrefs2.theme == "dark";
   const userId = playerIte2.userId;
-  const isDisplay = isDisplayEnabled(playerIte2, userId, connectedPlayerId) && (!userPrefs.filters.inRace || r.state == "racing");
+  const isDisplay = isDisplayEnabled(playerIte2, userId, connectedPlayerId) && (!userPrefs2.filters.inRace || r.state == "racing");
   if (!isDisplay)
     return "";
   let iconState = "";
@@ -626,7 +626,7 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
   const hdgBold = isTWAMode ? "font-weight: normal;" : "font-weight: bold;";
   const { optionsTxt, optionsTitle, optionsStyle, foilsType } = drawOptions(playerFleetInfos.options);
   let routerIcon = "&nbsp;";
-  if (userPrefs.router.sel = "zezo")
+  if (userPrefs2.router.sel = "zezo")
     if (raceInfo.zezoUrl)
       routerIcon = '<span id="rt:' + userId + '">&#x2388;</span>';
     else
@@ -642,9 +642,9 @@ function buildRaceFleetLine(playerFleetInfos, raceInfo, connectedPlayerId) {
   return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '"><td class="tdc">' + routerIcon + "</td>" + gentd("Time", "", null, formatTime(playerIte2.iteDate, 1)) + '<td class="Skipper" style="' + nameStyle + '"><div class="bull">' + bull + "</div> " + name + "</td>" + gentd("Team", "", null, teamName) + gentd("Rank", "", null, playerIte2.rank ? playerIte2.rank : "-") + (raceInfo.raceType !== "record" ? gentd("RaceTime", "", null, iteDash.raceTime ? formatDHMS(iteDash.raceTime) : "-") : "") + gentd("DTU", "", null, iteDash.DTU ? roundTo(iteDash.DTU, 3) : "-") + gentd("DTF", "", null, iteDash.dtf == iteDash.dtfC ? "(" + roundTo(iteDash.dtfC, 3) + ")" : roundTo(iteDash.dtf, 3)) + gentd("TWD", "", null, roundTo(playerIte2.twd ? playerIte2.twd : iteDash.twd, 3)) + gentd("TWS", "", null, roundTo(playerIte2.tws, 3)) + gentd("TWA", twaFG, null, roundTo(Math.abs(playerIte2.twa), 3)) + gentd("TWAIcon", 'style="color:grey; align:center; text-align:center;"', null, lock) + gentd("HDG", 'style="color:' + hdgFG + '";"' + hdgBold, null, roundTo(playerIte2.hdg, 3)) + gentd("Speed", "", null, roundTo(playerIte2.speed, 3)) + gentd("VMG", "", null, roundTo(iteDash.vmg, 3)) + gentd("Sail", "", null, "<span " + sailStyle + ">&#x25e2&#x25e3  </span>" + sailName) + gentd("SailIcon", 'style="color:grey; align:center; text-align:center;"', null, autoSail) + gentd("Factor", xfactorStyle, null, xfactorTxt) + gentd("Foils", "", null, foils) + recordRaceFields(raceInfo, playerIte2) + gentd("Position", "", null, playerIte2.pos ? formatPosition(playerIte2.pos.lat, playerIte2.pos.lon) : "-") + gentd("Options", optionsStyle, optionsTitle, optionsTxt) + gentd("State", "", txtTitle, iconState) + gentd("Remove", "", null, getLegSelectedPlayersState(userId) && userId != connectedPlayerId ? '<span class="removeSelectedBoat" data-id="' + userId + '" title="Remove this boat: ' + name + '">❌</span>' : "") + "</tr>";
 }
 function recordRaceFields(raceInfo, playerIte2) {
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   if (raceInfo.raceType === "record") {
-    const localTimes = userPrefs.global.localTime;
+    const localTimes = userPrefs2.global.localTime;
     if (playerIte2.state === "racing" && playerIte2.distanceToEnd) {
       let t;
       if (playerIte2.metaDash.eRT)
@@ -665,7 +665,7 @@ function recordRaceFields(raceInfo, playerIte2) {
   }
 }
 function drawOptions(playerOptions) {
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   let optionsTxt = "";
   let optionsStyle = "";
   let optionsTitle = "";
@@ -739,7 +739,7 @@ function drawOptions(playerOptions) {
   else if (!playerOptions.guessOptions || playerOptions.guessOptions == 0)
     optionsTxt = "?";
   optionsTitle = optionsTxt;
-  if (userPrefs.fleet.shortOption) {
+  if (userPrefs2.fleet.shortOption) {
     optionsTxt = optionsTxt.replace("All Options", "AO");
     optionsTxt = optionsTxt.replace("Full Pack", "FP");
     optionsTxt = optionsTxt.replace("reach", "R");
@@ -932,7 +932,7 @@ function viewCredits(raceInfo, playerIte2) {
 }
 function viewStages(raceInfo, playerIte2) {
   var _a2, _b, _c, _d;
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   const head = ["Type", "Name", "Id", "Position", "Position2", "Status"];
   const rows = [];
   rows.push([
@@ -941,7 +941,7 @@ function viewStages(raceInfo, playerIte2) {
     "Start",
     formatPosition(raceInfo.start.lat, raceInfo.start.lon),
     true,
-    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo.start.date, 1, userPrefs.global.localTime ? 3 : 4)))
+    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo.start.date, 1, userPrefs2.global.localTime ? 3 : 4)))
   ]);
   if (Array.isArray(raceInfo.checkpoints)) {
     for (const cp of raceInfo.checkpoints) {
@@ -968,7 +968,7 @@ function viewStages(raceInfo, playerIte2) {
     "End",
     formatPosition(raceInfo.end.lat, raceInfo.end.lon),
     ((_d = raceInfo.end) == null ? void 0 : _d.radius) ? `Radius : ${raceInfo.end.radius} mn` : " - ",
-    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo.end.date, 1, userPrefs.global.localTime ? 3 : 4)))
+    frag("Date : ", h("span", { class: "pill pill--muted" }, DateUTC(raceInfo.end.date, 1, userPrefs2.global.localTime ? 3 : 4)))
   ]);
   return card("Race Stages", tableModern({ head, rows }));
 }
@@ -10785,12 +10785,12 @@ var leafletRuler$1 = { exports: {} };
         var x = Math.cos(f1 * toRadian) * Math.sin(f2 * toRadian) - Math.sin(f1 * toRadian) * Math.cos(f2 * toRadian) * Math.cos((l2 - l1) * toRadian);
         var brng = Math.atan2(y, x) * ((this.options.angleUnit.factor ? this.options.angleUnit.factor / 2 : 180) / Math.PI);
         brng += brng < 0 ? this.options.angleUnit.factor ? this.options.angleUnit.factor : 360 : 0;
-        var R = this.options.lengthUnit.factor ? 6371 * this.options.lengthUnit.factor : 6371;
+        var R2 = this.options.lengthUnit.factor ? 6371 * this.options.lengthUnit.factor : 6371;
         var deltaF = (f2 - f1) * toRadian;
         var deltaL = (l2 - l1) * toRadian;
         var a = Math.sin(deltaF / 2) * Math.sin(deltaF / 2) + Math.cos(f1 * toRadian) * Math.cos(f2 * toRadian) * Math.sin(deltaL / 2) * Math.sin(deltaL / 2);
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var distance = R * c;
+        var distance = R2 * c;
         this._result = {
           Bearing: brng,
           Distance: distance
@@ -11053,7 +11053,7 @@ const Leaflet_Coordinates0_1_5 = "";
         pixelSize: 10,
         pathOptions: {}
       },
-      initialize: function initialize3(options) {
+      initialize: function initialize4(options) {
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
@@ -11083,7 +11083,7 @@ const Leaflet_Coordinates0_1_5 = "";
           weight: 2
         }
       },
-      initialize: function initialize3(options) {
+      initialize: function initialize4(options) {
         L$12.Util.setOptions(this, options);
         this.options.pathOptions.clickable = false;
       },
@@ -11110,7 +11110,7 @@ const Leaflet_Coordinates0_1_5 = "";
         markerOptions: {},
         rotate: false
       },
-      initialize: function initialize3(options) {
+      initialize: function initialize4(options) {
         L$12.Util.setOptions(this, options);
         this.options.markerOptions.clickable = false;
         this.options.markerOptions.draggable = false;
@@ -11135,7 +11135,7 @@ const Leaflet_Coordinates0_1_5 = "";
       options: {
         patterns: []
       },
-      initialize: function initialize3(paths, options) {
+      initialize: function initialize4(paths, options) {
         L$12.FeatureGroup.prototype.initialize.call(this);
         L$12.Util.setOptions(this, options);
         this._map = null;
@@ -14243,8 +14243,8 @@ function coastLayersCleanAll(map2, force = false) {
   coastDrawnState = false;
 }
 function styleLines(feature) {
-  const userPrefs = getUserPrefs();
-  const borderColor = userPrefs.map.borderColor;
+  const userPrefs2 = getUserPrefs();
+  const borderColor = userPrefs2.map.borderColor;
   return {
     color: borderColor,
     weight: 1,
@@ -14611,8 +14611,8 @@ function componentToHex(component) {
   return hex2.length === 1 ? "0" + hex2 : hex2;
 }
 function buildMarkerTitle(point) {
-  const userPrefs = getUserPrefs();
-  const localTimes = userPrefs.global.localTime;
+  const userPrefs2 = getUserPrefs();
+  const localTimes = userPrefs2.global.localTime;
   let position = formatPosition(point.lat, point.lon);
   const currentDate = /* @__PURE__ */ new Date();
   const currentTs = currentDate.getTime();
@@ -14690,9 +14690,9 @@ function addMapControl(map2) {
       return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.borderColor) || "#ff0000";
     },
     setCoastColor: async (color2) => {
-      const userPrefs = getUserPrefs();
-      userPrefs.map.borderColor = color2;
-      await saveUserPrefs(userPrefs);
+      const userPrefs2 = getUserPrefs();
+      userPrefs2.map.borderColor = color2;
+      await saveUserPrefs(userPrefs2);
       onCoastColorChange();
     },
     getProjectionColor: () => {
@@ -14700,9 +14700,9 @@ function addMapControl(map2) {
       return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.projectionColor) || "#b86dff";
     },
     setProjectionColor: async (color2) => {
-      const userPrefs = getUserPrefs();
-      userPrefs.map.projectionColor = color2;
-      await saveUserPrefs(userPrefs);
+      const userPrefs2 = getUserPrefs();
+      userPrefs2.map.projectionColor = color2;
+      await saveUserPrefs(userPrefs2);
       redrawProjectionLine();
     },
     getProjectionLenght: () => {
@@ -14710,9 +14710,9 @@ function addMapControl(map2) {
       return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.projectionLineLenght) || 20;
     },
     setProjectionLenght: async (lght) => {
-      const userPrefs = getUserPrefs();
-      userPrefs.map.projectionLineLenght = lght;
-      await saveUserPrefs(userPrefs);
+      const userPrefs2 = getUserPrefs();
+      userPrefs2.map.projectionLineLenght = lght;
+      await saveUserPrefs(userPrefs2);
       redrawProjectionLine();
     },
     getShowHiddenBouys: () => {
@@ -14720,9 +14720,9 @@ function addMapControl(map2) {
       return ((_a2 = getUserPrefs().map) == null ? void 0 : _a2.invisibleBuoy) || false;
     },
     setShowHiddenBouys: async (state) => {
-      const userPrefs = getUserPrefs();
-      userPrefs.map.invisibleBuoy = state;
-      await saveUserPrefs(userPrefs);
+      const userPrefs2 = getUserPrefs();
+      userPrefs2.map.invisibleBuoy = state;
+      await saveUserPrefs(userPrefs2);
       redrawMapCheckPoints();
     }
   });
@@ -15152,20 +15152,20 @@ function drawProjectionLine(pos, hdg, speed) {
     return;
   if (!mapState || !mapState.map)
     return;
-  const userPrefs = getUserPrefs();
+  const userPrefs2 = getUserPrefs();
   const map2 = mapState.map;
   if (mapState.me_PlLayer)
     map2.removeLayer(mapState.me_PlLayer);
   mapState.me_PlLayer = L.layerGroup();
   let tpath = [];
   tpath.push(pos[1]);
-  for (var i = 0; i < userPrefs.map.projectionLineLenght / 2; i++) {
+  for (var i = 0; i < userPrefs2.map.projectionLineLenght / 2; i++) {
     pos = computeNextPos(pos[1], hdg, speed, 2 * 60);
     tpath.push(pos[1]);
     const title = 2 * (i + 1) + "min";
-    buildCircle(pos, mapState.me_PlLayer, userPrefs.map.projectionColor, 1.5, 1, title);
+    buildCircle(pos, mapState.me_PlLayer, userPrefs2.map.projectionColor, 1.5, 1, title);
   }
-  buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs.map.projectionColor, 1, 0.4, "10, 10", "5");
+  buildTrace(buildPath(tpath), mapState.me_PlLayer, mapState.refPoints, userPrefs2.map.projectionColor, 1, 0.4, "10, 10", "5");
   mapState.me_PlLayer.addTo(map2);
 }
 const mapState = {
@@ -15239,8 +15239,8 @@ function updateMapCheckpoints(raceInfo, playerIte2) {
     map2.removeLayer(mapState.checkPointLayer);
   }
   mapState.checkPointLayer = L$1.layerGroup();
-  const userPrefs = getUserPrefs();
-  const showInvisibleDoors = userPrefs.map.invisibleBuoy;
+  const userPrefs2 = getUserPrefs();
+  const showInvisibleDoors = userPrefs2.map.invisibleBuoy;
   if (Array.isArray(raceInfo.checkpoints)) {
     for (const cp of raceInfo.checkpoints) {
       if (cp.display == "none" && !showInvisibleDoors) {
@@ -15326,9 +15326,9 @@ function updateMapWaypoints(playerIte2) {
 function updateMapMe(connectedPlayerId, playerIte2) {
   var _a2, _b;
   const trackFleet = getLegPlayersTracksFleet();
-  const userPrefs = getUserPrefs();
-  const localTimes = userPrefs.global.localTime;
-  const displayMarkers = userPrefs.map.showMarkers;
+  const userPrefs2 = getUserPrefs();
+  const localTimes = userPrefs2.global.localTime;
+  const displayMarkers = userPrefs2.map.showMarkers;
   if (!mapState || !mapState.map || !playerIte2)
     return;
   const map2 = mapState.map;
@@ -15458,10 +15458,10 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
     return;
   const map2 = mapState.map;
   const trackFleet = getLegPlayersTracksFleet();
-  const userPrefs = getUserPrefs();
-  const displayMarkers = userPrefs.map.showMarkers;
-  const displayTracks = userPrefs.map.showTracks;
-  const localTimes = userPrefs.global.localTime;
+  const userPrefs2 = getUserPrefs();
+  const displayMarkers = userPrefs2.map.showMarkers;
+  const displayTracks = userPrefs2.map.showTracks;
+  const localTimes = userPrefs2.global.localTime;
   if (mapState.fleetLayer)
     map2.removeLayer(mapState.fleetLayer);
   if (mapState.fleetLayerMarkers)
@@ -15516,8 +15516,8 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
         boatColor = "#b86dff";
         borderBoatColor = "#b86dff";
       } else {
-        boatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bcolor : categoryStyle[categoryIdx].bcolor;
-        borderBoatColor = userPrefs.theme == "dark" ? categoryStyleDark[categoryIdx].bbcolor : categoryStyle[categoryIdx].bbcolor;
+        boatColor = userPrefs2.theme == "dark" ? categoryStyleDark[categoryIdx].bcolor : categoryStyle[categoryIdx].bcolor;
+        borderBoatColor = userPrefs2.theme == "dark" ? categoryStyleDark[categoryIdx].bbcolor : categoryStyle[categoryIdx].bbcolor;
         if (playerIte2.type2 == "followed" && (playerIte2.type == "normal" || playerIte2.type == "sponsor")) {
           boatColor = "#32cd32";
           borderBoatColor = "#000000";
@@ -15686,8 +15686,8 @@ async function initializeMap() {
   if (Arctic_WMS) {
     baseLayers["Arctic (EPSG:3413)"] = Arctic_WMS;
   }
-  const userPrefs = getUserPrefs();
-  const userBaseMap = userPrefs.map.selectBaseMap;
+  const userPrefs2 = getUserPrefs();
+  const userBaseMap = userPrefs2.map.selectBaseMap;
   let selectBaseMap = OSM_Layer;
   if (userBaseMap === "Dark")
     selectBaseMap = OSM_DarkLayer;
@@ -17636,9 +17636,9 @@ function setRenderOpts(ctx, opts) {
     ctx.textBaseline = opts.textBaseline;
   }
 }
-function decorateText(ctx, x, y, line, opts) {
+function decorateText(ctx, x, y, line2, opts) {
   if (opts.strikethrough || opts.underline) {
-    const metrics = ctx.measureText(line);
+    const metrics = ctx.measureText(line2);
     const left = x - metrics.actualBoundingBoxLeft;
     const right = x + metrics.actualBoundingBoxRight;
     const top = y - metrics.actualBoundingBoxAscent;
@@ -17663,12 +17663,12 @@ function renderText(ctx, text, x, y, font, opts = {}) {
     text
   ];
   const stroke = opts.strokeWidth > 0 && opts.strokeColor !== "";
-  let i, line;
+  let i, line2;
   ctx.save();
   ctx.font = font.string;
   setRenderOpts(ctx, opts);
   for (i = 0; i < lines.length; ++i) {
-    line = lines[i];
+    line2 = lines[i];
     if (opts.backdrop) {
       drawBackdrop(ctx, opts.backdrop);
     }
@@ -17679,10 +17679,10 @@ function renderText(ctx, text, x, y, font, opts = {}) {
       if (!isNullOrUndef(opts.strokeWidth)) {
         ctx.lineWidth = opts.strokeWidth;
       }
-      ctx.strokeText(line, x, y, opts.maxWidth);
+      ctx.strokeText(line2, x, y, opts.maxWidth);
     }
-    ctx.fillText(line, x, y, opts.maxWidth);
-    decorateText(ctx, x, y, line, opts);
+    ctx.fillText(line2, x, y, opts.maxWidth);
+    decorateText(ctx, x, y, line2, opts);
     y += Number(font.lineHeight);
   }
   ctx.restore();
@@ -18629,11 +18629,11 @@ function _boundSegment(segment, points, bounds) {
   }
   return result;
 }
-function _boundSegments(line, bounds) {
+function _boundSegments(line2, bounds) {
   const result = [];
-  const segments = line.segments;
+  const segments = line2.segments;
   for (let i = 0; i < segments.length; i++) {
-    const sub = _boundSegment(segments[i], line.points, bounds);
+    const sub = _boundSegment(segments[i], line2.points, bounds);
     if (sub.length) {
       result.push(...sub);
     }
@@ -18699,17 +18699,17 @@ function solidSegments(points, start, max, loop) {
   }
   return result;
 }
-function _computeSegments(line, segmentOptions) {
-  const points = line.points;
-  const spanGaps = line.options.spanGaps;
+function _computeSegments(line2, segmentOptions) {
+  const points = line2.points;
+  const spanGaps = line2.options.spanGaps;
   const count = points.length;
   if (!count) {
     return [];
   }
-  const loop = !!line._loop;
+  const loop = !!line2._loop;
   const { start, end } = findStartAndEnd(points, count, loop, spanGaps);
   if (spanGaps === true) {
-    return splitByStyles(line, [
+    return splitByStyles(line2, [
       {
         start,
         end,
@@ -18718,19 +18718,19 @@ function _computeSegments(line, segmentOptions) {
     ], points, segmentOptions);
   }
   const max = end < start ? end + count : end;
-  const completeLoop = !!line._fullLoop && start === 0 && end === count - 1;
-  return splitByStyles(line, solidSegments(points, start, max, completeLoop), points, segmentOptions);
+  const completeLoop = !!line2._fullLoop && start === 0 && end === count - 1;
+  return splitByStyles(line2, solidSegments(points, start, max, completeLoop), points, segmentOptions);
 }
-function splitByStyles(line, segments, points, segmentOptions) {
+function splitByStyles(line2, segments, points, segmentOptions) {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
-  return doSplitByStyles(line, segments, points, segmentOptions);
+  return doSplitByStyles(line2, segments, points, segmentOptions);
 }
-function doSplitByStyles(line, segments, points, segmentOptions) {
-  const chartContext = line._chart.getContext();
-  const baseStyle = readStyle(line.options);
-  const { _datasetIndex: datasetIndex, options: { spanGaps } } = line;
+function doSplitByStyles(line2, segments, points, segmentOptions) {
+  const chartContext = line2._chart.getContext();
+  const baseStyle = readStyle(line2.options);
+  const { _datasetIndex: datasetIndex, options: { spanGaps } } = line2;
   const count = points.length;
   const result = [];
   let prevStyle = baseStyle;
@@ -20011,7 +20011,7 @@ class LineController extends DatasetController {
   }
   update(mode) {
     const meta = this._cachedMeta;
-    const { dataset: line, data: points = [], _dataset } = meta;
+    const { dataset: line2, data: points = [], _dataset } = meta;
     const animationsDisabled = this.chart._animationsDisabled;
     let { start, count } = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
     this._drawStart = start;
@@ -20020,16 +20020,16 @@ class LineController extends DatasetController {
       start = 0;
       count = points.length;
     }
-    line._chart = this.chart;
-    line._datasetIndex = this.index;
-    line._decimated = !!_dataset._decimated;
-    line.points = points;
+    line2._chart = this.chart;
+    line2._datasetIndex = this.index;
+    line2._decimated = !!_dataset._decimated;
+    line2.points = points;
     const options = this.resolveDatasetElementOptions(mode);
     if (!this.options.showLine) {
       options.borderWidth = 0;
     }
     options.segment = this.options.segment;
-    this.updateElement(line, void 0, {
+    this.updateElement(line2, void 0, {
       animated: !animationsDisabled,
       options
     }, mode);
@@ -21586,7 +21586,7 @@ class Scale extends Element$1 {
     ]);
   }
   fit() {
-    const minSize = {
+    const minSize2 = {
       width: 0,
       height: 0
     };
@@ -21596,11 +21596,11 @@ class Scale extends Element$1 {
     if (display) {
       const titleHeight = getTitleHeight(titleOpts, chart.options.font);
       if (isHorizontal) {
-        minSize.width = this.maxWidth;
-        minSize.height = getTickMarkLength(gridOpts) + titleHeight;
+        minSize2.width = this.maxWidth;
+        minSize2.height = getTickMarkLength(gridOpts) + titleHeight;
       } else {
-        minSize.height = this.maxHeight;
-        minSize.width = getTickMarkLength(gridOpts) + titleHeight;
+        minSize2.height = this.maxHeight;
+        minSize2.width = getTickMarkLength(gridOpts) + titleHeight;
       }
       if (tickOpts.display && this.ticks.length) {
         const { first, last, widest, highest } = this._getLabelSizes();
@@ -21610,10 +21610,10 @@ class Scale extends Element$1 {
         const sin = Math.sin(angleRadians);
         if (isHorizontal) {
           const labelHeight = tickOpts.mirror ? 0 : sin * widest.width + cos * highest.height;
-          minSize.height = Math.min(this.maxHeight, minSize.height + labelHeight + tickPadding);
+          minSize2.height = Math.min(this.maxHeight, minSize2.height + labelHeight + tickPadding);
         } else {
           const labelWidth = tickOpts.mirror ? 0 : cos * widest.width + sin * highest.height;
-          minSize.width = Math.min(this.maxWidth, minSize.width + labelWidth + tickPadding);
+          minSize2.width = Math.min(this.maxWidth, minSize2.width + labelWidth + tickPadding);
         }
         this._calculatePadding(first, last, sin, cos);
       }
@@ -21621,9 +21621,9 @@ class Scale extends Element$1 {
     this._handleMargins();
     if (isHorizontal) {
       this.width = this._length = chart.width - this._margins.left - this._margins.right;
-      this.height = minSize.height;
+      this.height = minSize2.height;
     } else {
-      this.width = minSize.width;
+      this.width = minSize2.width;
       this.height = this._length = chart.height - this._margins.top - this._margins.bottom;
     }
   }
@@ -23983,8 +23983,8 @@ function pathVars(points, segment, params = {}) {
     ilen: end < start && !outside ? count + end - start : end - start
   };
 }
-function pathSegment(ctx, line, segment, params) {
-  const { points, options } = line;
+function pathSegment(ctx, line2, segment, params) {
+  const { points, options } = line2;
   const { count, start, loop, ilen } = pathVars(points, segment, params);
   const lineMethod = getLineMethod(options);
   let { move = true, reverse } = params || {};
@@ -24007,8 +24007,8 @@ function pathSegment(ctx, line, segment, params) {
   }
   return !!loop;
 }
-function fastPathSegment(ctx, line, segment, params) {
-  const points = line.points;
+function fastPathSegment(ctx, line2, segment, params) {
+  const points = line2.points;
   const { count, start, ilen } = pathVars(points, segment, params);
   const { move = true, reverse } = params || {};
   let avgX = 0;
@@ -24052,10 +24052,10 @@ function fastPathSegment(ctx, line, segment, params) {
   }
   drawX();
 }
-function _getSegmentMethod(line) {
-  const opts = line.options;
+function _getSegmentMethod(line2) {
+  const opts = line2.options;
   const borderDash = opts.borderDash && opts.borderDash.length;
-  const useFastPath = !line._decimated && !line._loop && !opts.tension && opts.cubicInterpolationMode !== "monotone" && !opts.stepped && !borderDash;
+  const useFastPath = !line2._decimated && !line2._loop && !opts.tension && opts.cubicInterpolationMode !== "monotone" && !opts.stepped && !borderDash;
   return useFastPath ? fastPathSegment : pathSegment;
 }
 function _getInterpolationMethod(options) {
@@ -24067,24 +24067,24 @@ function _getInterpolationMethod(options) {
   }
   return _pointInLine;
 }
-function strokePathWithCache(ctx, line, start, count) {
-  let path = line._path;
+function strokePathWithCache(ctx, line2, start, count) {
+  let path = line2._path;
   if (!path) {
-    path = line._path = new Path2D();
-    if (line.path(path, start, count)) {
+    path = line2._path = new Path2D();
+    if (line2.path(path, start, count)) {
       path.closePath();
     }
   }
-  setStyle(ctx, line.options);
+  setStyle(ctx, line2.options);
   ctx.stroke(path);
 }
-function strokePathDirect(ctx, line, start, count) {
-  const { segments, options } = line;
-  const segmentMethod = _getSegmentMethod(line);
+function strokePathDirect(ctx, line2, start, count) {
+  const { segments, options } = line2;
+  const segmentMethod = _getSegmentMethod(line2);
   for (const segment of segments) {
     setStyle(ctx, options, segment.style);
     ctx.beginPath();
-    if (segmentMethod(ctx, line, segment, {
+    if (segmentMethod(ctx, line2, segment, {
       start,
       end: start + count - 1
     })) {
@@ -24094,11 +24094,11 @@ function strokePathDirect(ctx, line, start, count) {
   }
 }
 const usePath2D = typeof Path2D === "function";
-function draw$1(ctx, line, start, count) {
-  if (usePath2D && !line.options.segment) {
-    strokePathWithCache(ctx, line, start, count);
+function draw$1(ctx, line2, start, count) {
+  if (usePath2D && !line2.options.segment) {
+    strokePathWithCache(ctx, line2, start, count);
   } else {
-    strokePathDirect(ctx, line, start, count);
+    strokePathDirect(ctx, line2, start, count);
   }
 }
 class LineElement extends Element$1 {
@@ -24255,19 +24255,19 @@ class PointElement extends Element$1 {
       Object.assign(this, cfg);
     }
   }
-  inRange(mouseX, mouseY, useFinalPosition) {
+  inRange(mouseX2, mouseY2, useFinalPosition) {
     const options = this.options;
     const { x, y } = this.getProps([
       "x",
       "y"
     ], useFinalPosition);
-    return Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2) < Math.pow(options.hitRadius + options.radius, 2);
+    return Math.pow(mouseX2 - x, 2) + Math.pow(mouseY2 - y, 2) < Math.pow(options.hitRadius + options.radius, 2);
   }
-  inXRange(mouseX, useFinalPosition) {
-    return inRange$1(this, mouseX, "x", useFinalPosition);
+  inXRange(mouseX2, useFinalPosition) {
+    return inRange$1(this, mouseX2, "x", useFinalPosition);
   }
-  inYRange(mouseY, useFinalPosition) {
-    return inRange$1(this, mouseY, "y", useFinalPosition);
+  inYRange(mouseY2, useFinalPosition) {
+    return inRange$1(this, mouseY2, "y", useFinalPosition);
   }
   getCenterPoint(useFinalPosition) {
     const { x, y } = this.getProps([
@@ -24321,9 +24321,9 @@ __publicField(PointElement, "defaultRoutes", {
   backgroundColor: "backgroundColor",
   borderColor: "borderColor"
 });
-function _segments(line, target, property) {
-  const segments = line.segments;
-  const points = line.points;
+function _segments(line2, target, property) {
+  const segments = line2.segments;
+  const points = line2.points;
   const tpoints = target.points;
   const parts = [];
   for (const segment of segments) {
@@ -24375,11 +24375,11 @@ function _getBounds(property, first, last, loop) {
     end
   };
 }
-function _pointsFromSegments(boundary, line) {
+function _pointsFromSegments(boundary, line2) {
   const { x = null, y = null } = boundary || {};
-  const linePoints = line.points;
+  const linePoints = line2.points;
   const points = [];
-  line.segments.forEach(({ start, end }) => {
+  line2.segments.forEach(({ start, end }) => {
     end = _findSegmentEnd(start, end, linePoints);
     const first = linePoints[start];
     const last = linePoints[end];
@@ -24420,14 +24420,14 @@ function _getEdge(a, b, prop, fn) {
   }
   return a ? a[prop] : b ? b[prop] : 0;
 }
-function _createBoundaryLine(boundary, line) {
+function _createBoundaryLine(boundary, line2) {
   let points = [];
   let _loop = false;
   if (isArray(boundary)) {
     _loop = true;
     points = boundary;
   } else {
-    points = _pointsFromSegments(boundary, line);
+    points = _pointsFromSegments(boundary, line2);
   }
   return points.length ? new LineElement({
     points,
@@ -24467,8 +24467,8 @@ function _resolveTarget(sources, index2, propagate) {
   }
   return false;
 }
-function _decodeFill(line, index2, count) {
-  const fill2 = parseFillOption(line);
+function _decodeFill(line2, index2, count) {
+  const fill2 = parseFillOption(line2);
   if (isObject(fill2)) {
     return isNaN(fill2.value) ? false : fill2;
   }
@@ -24519,8 +24519,8 @@ function _getTargetValue(fill2, scale, startValue) {
   }
   return value;
 }
-function parseFillOption(line) {
-  const options = line.options;
+function parseFillOption(line2) {
+  const options = line2.options;
   const fillOption = options.fill;
   let fill2 = valueOrDefault(fillOption && fillOption.target, fillOption);
   if (fill2 === void 0) {
@@ -24535,15 +24535,15 @@ function parseFillOption(line) {
   return fill2;
 }
 function _buildStackLine(source) {
-  const { scale, index: index2, line } = source;
+  const { scale, index: index2, line: line2 } = source;
   const points = [];
-  const segments = line.segments;
-  const sourcePoints = line.points;
+  const segments = line2.segments;
+  const sourcePoints = line2.points;
   const linesBelow = getLinesBelow(scale, index2);
   linesBelow.push(_createBoundaryLine({
     x: null,
     y: scale.bottom
-  }, line));
+  }, line2));
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
     for (let j = segment.start; j <= segment.end; j++) {
@@ -24572,8 +24572,8 @@ function getLinesBelow(scale, index2) {
 function addPointsBelow(points, sourcePoint, linesBelow) {
   const postponed = [];
   for (let j = 0; j < linesBelow.length; j++) {
-    const line = linesBelow[j];
-    const { first, last, point } = findPoint(line, sourcePoint, "x");
+    const line2 = linesBelow[j];
+    const { first, last, point } = findPoint(line2, sourcePoint, "x");
     if (!point || first && last) {
       continue;
     }
@@ -24588,14 +24588,14 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
   }
   points.push(...postponed);
 }
-function findPoint(line, sourcePoint, property) {
-  const point = line.interpolate(sourcePoint, property);
+function findPoint(line2, sourcePoint, property) {
+  const point = line2.interpolate(sourcePoint, property);
   if (!point) {
     return {};
   }
   const pointValue = point[property];
-  const segments = line.segments;
-  const linePoints = line.points;
+  const segments = line2.segments;
+  const linePoints = line2.points;
   let first = false;
   let last = false;
   for (let i = 0; i < segments.length; i++) {
@@ -24640,7 +24640,7 @@ class simpleArc {
   }
 }
 function _getTarget(source) {
-  const { chart, fill: fill2, line } = source;
+  const { chart, fill: fill2, line: line2 } = source;
   if (isNumberFinite(fill2)) {
     return getLineByIndex(chart, fill2);
   }
@@ -24654,7 +24654,7 @@ function _getTarget(source) {
   if (boundary instanceof simpleArc) {
     return boundary;
   }
-  return _createBoundaryLine(boundary, line);
+  return _createBoundaryLine(boundary, line2);
 }
 function getLineByIndex(chart, index2) {
   const meta = chart.getDatasetMeta(index2);
@@ -24702,17 +24702,17 @@ function computeCircularBoundary(source) {
 }
 function _drawfill(ctx, source, area) {
   const target = _getTarget(source);
-  const { chart, index: index2, line, scale, axis } = source;
-  const lineOpts = line.options;
+  const { chart, index: index2, line: line2, scale, axis } = source;
+  const lineOpts = line2.options;
   const fillOption = lineOpts.fill;
   const color2 = lineOpts.backgroundColor;
   const { above = color2, below = color2 } = fillOption || {};
   const meta = chart.getDatasetMeta(index2);
   const clip = getDatasetClipArea(chart, meta);
-  if (target && line.points.length) {
+  if (target && line2.points.length) {
     clipArea(ctx, area);
     doFill(ctx, {
-      line,
+      line: line2,
       target,
       above,
       below,
@@ -24725,15 +24725,15 @@ function _drawfill(ctx, source, area) {
   }
 }
 function doFill(ctx, cfg) {
-  const { line, target, above, below, area, scale, clip } = cfg;
-  const property = line._loop ? "angle" : cfg.axis;
+  const { line: line2, target, above, below, area, scale, clip } = cfg;
+  const property = line2._loop ? "angle" : cfg.axis;
   ctx.save();
   let fillColor = below;
   if (below !== above) {
     if (property === "x") {
       clipVertical(ctx, target, area.top);
       fill(ctx, {
-        line,
+        line: line2,
         target,
         color: above,
         scale,
@@ -24746,7 +24746,7 @@ function doFill(ctx, cfg) {
     } else if (property === "y") {
       clipHorizontal(ctx, target, area.left);
       fill(ctx, {
-        line,
+        line: line2,
         target,
         color: below,
         scale,
@@ -24760,7 +24760,7 @@ function doFill(ctx, cfg) {
     }
   }
   fill(ctx, {
-    line,
+    line: line2,
     target,
     color: fillColor,
     scale,
@@ -24828,8 +24828,8 @@ function clipHorizontal(ctx, target, clipX) {
   ctx.clip();
 }
 function fill(ctx, cfg) {
-  const { line, target, property, color: color2, scale, clip } = cfg;
-  const segments = _segments(line, target, property);
+  const { line: line2, target, property, color: color2, scale, clip } = cfg;
+  const segments = _segments(line2, target, property);
   for (const { source: src, target: tgt, start, end } of segments) {
     const { style: { backgroundColor = color2 } = {} } = src;
     const notShape = target !== true;
@@ -24837,7 +24837,7 @@ function fill(ctx, cfg) {
     ctx.fillStyle = backgroundColor;
     clipBounds(ctx, scale, clip, notShape && _getBounds(property, start, end));
     ctx.beginPath();
-    const lineLoop = !!line.pathSegment(ctx, src);
+    const lineLoop = !!line2.pathSegment(ctx, src);
     let loop;
     if (notShape) {
       if (lineLoop) {
@@ -24897,20 +24897,20 @@ var index = {
   afterDatasetsUpdate(chart, _args, options) {
     const count = (chart.data.datasets || []).length;
     const sources = [];
-    let meta, i, line, source;
+    let meta, i, line2, source;
     for (i = 0; i < count; ++i) {
       meta = chart.getDatasetMeta(i);
-      line = meta.dataset;
+      line2 = meta.dataset;
       source = null;
-      if (line && line.options && line instanceof LineElement) {
+      if (line2 && line2.options && line2 instanceof LineElement) {
         source = {
           visible: chart.isDatasetVisible(i),
           index: i,
-          fill: _decodeFill(line, i, count),
+          fill: _decodeFill(line2, i, count),
           chart,
           axis: meta.controller.options.indexAxis,
           scale: meta.vScale,
-          line
+          line: line2
         };
       }
       meta.$filler = source;
@@ -25630,8 +25630,8 @@ function getTooltipSize(tooltip, options) {
     height += options.footerMarginTop + footerLineCount * footerFont.lineHeight + (footerLineCount - 1) * options.footerSpacing;
   }
   let widthPadding = 0;
-  const maxLineWidth = function(line) {
-    width = Math.max(width, ctx.measureText(line).width + widthPadding);
+  const maxLineWidth = function(line2) {
+    width = Math.max(width, ctx.measureText(line2).width + widthPadding);
   };
   ctx.save();
   ctx.font = titleFont.string;
@@ -26152,8 +26152,8 @@ class Tooltip extends Element$1 {
     let bodyLineHeight = bodyFont.lineHeight;
     let xLinePadding = 0;
     const rtlHelper = getRtlAdapter(options.rtl, this.x, this.width);
-    const fillLineOfText = function(line) {
-      ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
+    const fillLineOfText = function(line2) {
+      ctx.fillText(line2, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
       pt.y += bodyLineHeight + bodySpacing;
     };
     const bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
@@ -31203,8 +31203,8 @@ function buildGraphDataFromRaceItes() {
     const sid = Number.isFinite(+it.sail) ? +it.sail : 0;
     data.sailId.push(sid);
   }
-  const userPrefs = getUserPrefs();
-  theme = userPrefs.theme;
+  const userPrefs2 = getUserPrefs();
+  theme = userPrefs2.theme;
   return data;
 }
 function raceGraphOnLoad() {
@@ -31222,8 +31222,8 @@ function raceGraphOnLoad() {
     itycSyncPlugin,
     itycZoomSyncPlugin
   );
-  const userPrefs = getUserPrefs();
-  theme = userPrefs.theme;
+  const userPrefs2 = getUserPrefs();
+  theme = userPrefs2.theme;
   applyChartDefaultsForTheme();
 }
 function upDateGraph() {
@@ -31300,6 +31300,956 @@ function resetAllGraphsZoom() {
   (_a2 = source.resetZoom) == null ? void 0 : _a2.call(source);
   itycZoomSync.reset(source, "timeseries");
 }
+const DEFAULT_TWA_STEP = 0.5;
+const twsCache = /* @__PURE__ */ new Map();
+function ensureTwsSlice({ tws, twd, cog, options, boatPolars, twaStep = DEFAULT_TWA_STEP }) {
+  const key = Number(roundTo(tws, 1));
+  let slice = twsCache.get(key);
+  if (!slice || slice.twd !== twd || slice.cog !== cog || slice.options !== options || slice.boatPolars !== boatPolars || slice.twaStep !== twaStep) {
+    slice = buildTwsSlice({ tws: key, twd, cog, options, boatPolars, twaStep });
+    twsCache.set(key, slice);
+  }
+  return slice;
+}
+function buildTwsSlice({ tws, twd, cog, options, boatPolars, twaStep }) {
+  const polarsData = {};
+  const derivativesSpeed = [];
+  const derivativesVmg = [];
+  const derivativesVmc = [];
+  const bestVMG = {
+    upwind: { twa: 0, vmg: 0 },
+    downwind: { twa: 0, vmg: 0 }
+  };
+  const max = { twa: 0, speed: 0, sail: 0 };
+  let maxFoilFactor = 1;
+  const twaKeys = [];
+  for (let twa = 0; twa <= 180 + 1e-9; twa += twaStep) {
+    const twaKey = Number(roundTo(twa, 1));
+    twaKeys.push(twaKey);
+    const res = getSpeeds(boatPolars, options, tws, twaKey);
+    let hdg = twd - twaKey;
+    if (hdg < 0)
+      hdg += 360;
+    else if (hdg > 360)
+      hdg -= 360;
+    const vmc = res.best.speed * Math.cos((hdg - cog) * (Math.PI / 180));
+    res.best.vmc = vmc;
+    polarsData[twaKey] = res;
+    if (res.best.speed > max.speed) {
+      max.speed = res.best.speed;
+      max.twa = twaKey;
+      max.sail = res.best.sail;
+    }
+    if (res.best.vmg > bestVMG.upwind.vmg) {
+      bestVMG.upwind.vmg = res.best.vmg;
+      bestVMG.upwind.twa = twaKey;
+    } else if (res.best.vmg <= bestVMG.downwind.vmg) {
+      bestVMG.downwind.vmg = res.best.vmg;
+      bestVMG.downwind.twa = twaKey;
+    }
+    if (res.best.foilFactor > maxFoilFactor) {
+      maxFoilFactor = res.best.foilFactor;
+    }
+  }
+  bestVMG.upwind.vmg = Math.round(bestVMG.upwind.vmg * 1e4) / 1e4;
+  bestVMG.downwind.vmg = Math.round(bestVMG.downwind.vmg * 1e4) / 1e4;
+  for (let i = 1; i < twaKeys.length; i++) {
+    const tPrev = twaKeys[i - 1];
+    const tCurr = twaKeys[i];
+    const pPrev = polarsData[tPrev].best;
+    const pCurr = polarsData[tCurr].best;
+    derivativesSpeed.push(pCurr.speed - pPrev.speed);
+    derivativesVmg.push(pCurr.vmg - pPrev.vmg);
+    derivativesVmc.push(pCurr.vmc - pPrev.vmc);
+  }
+  return {
+    tws,
+    twd,
+    cog,
+    options,
+    boatPolars,
+    twaStep,
+    twaKeys,
+    polarsData,
+    derivativesSpeed,
+    derivativesVmg,
+    derivativesVmc,
+    bestVMG,
+    max,
+    maxFoilFactor
+  };
+}
+function computeSpikes(polarsData, twaKeys, derivatives, sensitivity, mode = "speed") {
+  const spikes = [];
+  for (let i = 1; i < derivatives.length; i++) {
+    const dPrev = derivatives[i - 1];
+    const dCurr = derivatives[i];
+    const delta = Math.abs(dCurr - dPrev);
+    if (delta <= sensitivity)
+      continue;
+    let type = "";
+    if (Math.sign(dCurr) === Math.sign(dPrev)) {
+      if (Math.sign(dCurr) > 0) {
+        if (Math.abs(dPrev) < Math.abs(dCurr))
+          type = "hole";
+        else if (Math.abs(dPrev) > Math.abs(dCurr))
+          type = "sum";
+      } else {
+        if (Math.abs(dPrev) < Math.abs(dCurr))
+          type = "sum";
+        else if (Math.abs(dPrev) > Math.abs(dCurr))
+          type = "hole";
+      }
+    } else if (Math.sign(dPrev) > 0 && Math.sign(dCurr) <= 0) {
+      type = "sum";
+    } else if (Math.sign(dPrev) < 0 && Math.sign(dCurr) >= 0) {
+      type = "hole";
+    } else if (Math.sign(dPrev) === 0) {
+      if (Math.sign(dCurr) > 0)
+        type = "hole";
+      else if (Math.sign(dCurr) < 0)
+        type = "sum";
+    }
+    const twa = twaKeys[i];
+    const best = polarsData[twa].best;
+    let baseVal = 0;
+    if (mode === "speed" || mode === "twa")
+      baseVal = best.speed;
+    else if (mode === "vmg")
+      baseVal = best.vmg;
+    else if (mode === "vmc")
+      baseVal = best.vmc;
+    if (baseVal < 0) {
+      type = type === "sum" ? "hole" : "sum";
+    }
+    spikes.push({
+      idx: twa,
+      speed: baseVal,
+      sail: best.sail,
+      type
+    });
+  }
+  return spikes;
+}
+function computePolarState({
+  twa,
+  tws,
+  twd,
+  cog,
+  raceId,
+  options,
+  boatPolars,
+  spikeSensitivity = 2e-3,
+  twaStep = DEFAULT_TWA_STEP
+}) {
+  if (!boatPolars)
+    throw new Error("computePolarState: boatPolars manquant");
+  tws = Number(roundTo(tws, 2));
+  twa = Math.abs(Number(roundTo(twa, 2)));
+  if (twa < 0)
+    twa = 0;
+  if (twa > 180)
+    twa = 180;
+  const slice = ensureTwsSlice({ tws, twd, cog, options, boatPolars, twaStep });
+  const twaKey = snapToGrid(twa, slice.twaStep);
+  const base = slice.polarsData[twaKey];
+  if (!base) {
+    const fallbackKey = slice.twaKeys[0];
+    return computePolarState({
+      twa: fallbackKey,
+      tws,
+      twd,
+      cog,
+      raceId,
+      options,
+      boatPolars,
+      spikeSensitivity,
+      twaStep
+    });
+  }
+  const current = {
+    speed: base.best.speed,
+    vmg: Math.abs(base.best.vmg),
+    bestSail: base.best.sail,
+    foilFactor: base.best.foilFactor,
+    foilRate: base.best.foilRate,
+    bestSailTWAMin: 0,
+    bestSailTWAMax: 0,
+    __twa: twaKey,
+    __tws: tws,
+    __twd: twd,
+    __cog: cog,
+    __raceId: raceId,
+    __options: options,
+    __spikeSensitivity: spikeSensitivity
+  };
+  const sailRange = computeSailTwaRange(slice.polarsData, boatPolars, options, base.best.sail, slice.twaKeys);
+  current.bestSailTWAMin = sailRange.min;
+  current.bestSailTWAMax = sailRange.max;
+  const spikesSpeed = computeSpikes(
+    slice.polarsData,
+    slice.twaKeys,
+    slice.derivativesSpeed,
+    spikeSensitivity,
+    "speed"
+  );
+  const spikesVmg = computeSpikes(
+    slice.polarsData,
+    slice.twaKeys,
+    slice.derivativesVmg,
+    spikeSensitivity,
+    "vmg"
+  );
+  const spikesVmc = computeSpikes(
+    slice.polarsData,
+    slice.twaKeys,
+    slice.derivativesVmc,
+    spikeSensitivity,
+    "vmc"
+  );
+  current.spikes = spikesSpeed;
+  const bestVMG = {
+    upwind: { ...slice.bestVMG.upwind },
+    downwind: {
+      twa: slice.bestVMG.downwind.twa,
+      vmg: Math.abs(slice.bestVMG.downwind.vmg)
+    }
+  };
+  return {
+    tws,
+    twa,
+    twaKey,
+    twd,
+    cog,
+    raceId,
+    options,
+    boatPolars,
+    polarsData: slice.polarsData,
+    // équivalent _polarsData
+    max: slice.max,
+    // équivalent _currentResultset.max
+    bestVMG,
+    // équivalent _currentResultset.bestVMG
+    maxFoilFactor: slice.maxFoilFactor,
+    // équivalent _maxFoilFactor
+    current,
+    // équivalent _currentResultset.current
+    sailsSpeeds: slice.polarsData[twaKey].all,
+    spikesSpeed,
+    spikesVmg,
+    spikesVmc
+  };
+}
+function computeSailTwaRange(polarsData, boatPolars, options, sailId, twaKeys) {
+  let min = null;
+  let max = null;
+  for (const twa of twaKeys) {
+    const data = polarsData[twa];
+    if (!data || !data.all)
+      continue;
+    const speedSail = data.all[sailId];
+    const best = data.best;
+    if (speedSail == null)
+      continue;
+    const inRange = speedSail * 1.014 > best.speed && best.sail !== sailId || speedSail >= best.speed && best.sail === sailId;
+    if (!inRange)
+      continue;
+    if (min === null || twa < min)
+      min = twa;
+    if (max === null || twa > max)
+      max = twa;
+  }
+  return {
+    min: min ?? 0,
+    max: max ?? 180
+  };
+}
+function snapToGrid(value, step) {
+  return Number((Math.round(value / step) * step).toFixed(1));
+}
+let divPolarGraph = null;
+let divPolarTws = null;
+let divPolarTwa = null;
+let inputSpikeSensitivity = null;
+let R = 300;
+const staticDx = 30.5;
+const staticDy = 20.5;
+let GRAPH_DX = staticDx;
+let GRAPH_DY = staticDy;
+let mouseX;
+let mouseY;
+let _polarsData = [];
+let _polarsDataTWA = [];
+let _currentResultset = {};
+let _maxFoilFactor = 1;
+const _chartScale = {
+  graduationValue: 5,
+  nbGraduations: 5,
+  max: 25
+};
+let polarScaling = 1;
+let polarScalingOld = 1;
+let minSize = 300;
+let scaleOffsetX = 0;
+let scaleOffsetY = 0;
+let polarRafId = null;
+let polarRafWithScale = false;
+function schedulePolarRedraw(polar, drawTheme, withScale = false) {
+  polarRafWithScale = polarRafWithScale || withScale;
+  if (polarRafId !== null)
+    return;
+  polarRafId = requestAnimationFrame(() => {
+    polarRafId = null;
+    plot_polar(polar, drawTheme, polarRafWithScale);
+    polarRafWithScale = false;
+  });
+}
+function refreshPolarChart(raceId, ite, options, polar, drawTheme, tws, twa, twd) {
+  getDataArray(twa, tws, twd, ite.metaDash.cog, raceId, options, polar);
+  divPolarTws.value = roundTo(tws, 2);
+  divPolarTwa.innerHTML = `${roundTo(twa, 2)} °`;
+  document.getElementById("polar_name").innerHTML = polar.label;
+  const polarDate = `Update at : ${polar._updatedAt}`;
+  document.getElementById("polar_date").innerHTML = polarDate;
+  schedulePolarRedraw(polar, userPrefs.theme, false);
+}
+function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
+  var _a2, _b;
+  const userPrefs2 = getUserPrefs();
+  const connectedRace = getOpenedRaceId();
+  const raceItes = getLegPlayerInfos();
+  const polar = getPolar();
+  if (!polar)
+    return;
+  const rid = `${connectedRace.raceId}-${connectedRace.legNum}`;
+  const ite = ((_a2 = raceItes == null ? void 0 : raceItes.ites) == null ? void 0 : _a2[0]) ?? null;
+  if (!ite)
+    return;
+  if (!divPolarTws)
+    initialize3();
+  const opt = raceItes.options;
+  const tws = twsI ?? (ite.tws === void 0 ? 10 : ite.tws);
+  const twa = twaI ?? (ite.twa === void 0 ? 90 : ite.twa < 0 ? -ite.twa : ite.twa);
+  const twd = twdI ?? (((_b = ite.metaDash) == null ? void 0 : _b.twd) === void 0 ? 90 : ite.metaDash.twd);
+  if (opt == null ? void 0 : opt.foils) {
+    document.getElementById("polarDivFoil").style = "display:block;";
+  } else {
+    document.getElementById("polarDivFoil").style = "display:none;";
+  }
+  refreshPolarChart(rid, ite, opt, polar, userPrefs2.theme, tws, twa, twd);
+}
+function getDataArray(twa, tws, twd, cog, raceId, options, boatPolars) {
+  const spikeInput = document.getElementById("polar_spike_sensitivity");
+  const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 2e-3 : 2e-3;
+  const state = computePolarState({
+    twa,
+    tws,
+    twd,
+    cog,
+    raceId,
+    options,
+    boatPolars,
+    spikeSensitivity
+    // twaStep: 0.5 // tu peux passer en param si tu veux changer la résolution
+  });
+  _polarsData = state.polarsData;
+  _maxFoilFactor = state.maxFoilFactor;
+  _currentResultset = {
+    max: state.max,
+    bestVMG: state.bestVMG,
+    current: state.current,
+    sailsSpeeds: state.sailsSpeeds
+  };
+  getPolarTWSData(state.current.__twa);
+  getPolarTWAData(state.current.__tws);
+  _drawData.spikesVmg = state.spikesVmg;
+  _drawData.spikesVmc = state.spikesVmc;
+}
+let _drawData = [];
+function getPolarTWSData(twa) {
+  _drawData = {
+    twa: [],
+    spd: [],
+    vmg: [],
+    vmc: [],
+    theoSail: [],
+    pointColorBest: [],
+    bestSail: [],
+    pointColorTheo: [],
+    spikes: _currentResultset.current.spikes
+  };
+  const actualSailId = _polarsData[twa].best.sail;
+  for (let i = 0; i <= 180; i = (i + 0.1).fix(1)) {
+    if (_polarsData[i].best.sail === "") {
+      _polarsData[i].best.sail = 1;
+    }
+    if (_polarsData[i].all[actualSailId] * 1.014 > _polarsData[i].best.speed && _polarsData[i].best.sail !== actualSailId) {
+      _drawData.bestSail.push(actualSailId);
+      _drawData.pointColorBest.push(polarSailColors[actualSailId - 1]);
+    } else {
+      _drawData.bestSail.push(_polarsData[i].best.sail);
+      _drawData.pointColorBest.push(polarSailColors[_polarsData[i].best.sail - 1]);
+    }
+    _drawData.theoSail.push(_polarsData[i].best.sail);
+    _drawData.pointColorTheo.push(polarSailColors[_polarsData[i].best.sail - 1]);
+    _drawData.twa.push(i);
+    _drawData.spd.push(_polarsData[i].best.speed);
+    _drawData.vmg.push(_polarsData[i].best.vmg);
+    _drawData.vmc.push(_polarsData[i].best.vmc);
+  }
+}
+let _drawDataTWA = [];
+function getPolarTWAData(tws) {
+  _drawDataTWA = {
+    tws: [],
+    spd: [],
+    theoSail: [],
+    pointColorBest: [],
+    bestSail: [],
+    pointColorTheo: []
+  };
+  tws = Number(roundTo(tws, 1));
+  const actualSailId = _polarsDataTWA[tws].best.sail;
+  for (let i = 0.5; i <= 45; i = (i + 0.1).fix(1)) {
+    if (_polarsDataTWA[i].best.sail === "") {
+      _polarsDataTWA[i].best.sail = 1;
+    }
+    if (_polarsDataTWA[i].all[actualSailId] * 1.014 > _polarsDataTWA[i].best.speed && _polarsDataTWA[i].best.sail !== actualSailId) {
+      _drawDataTWA.bestSail.push(actualSailId);
+      _drawDataTWA.pointColorBest.push(polarSailColors[actualSailId - 1]);
+    } else {
+      _drawDataTWA.bestSail.push(_polarsDataTWA[i].best.sail);
+      _drawDataTWA.pointColorBest.push(
+        polarSailColors[_polarsDataTWA[i].best.sail - 1]
+      );
+    }
+    _drawDataTWA.theoSail.push(_polarsDataTWA[i].best.sail);
+    _drawDataTWA.pointColorTheo.push(
+      polarSailColors[_polarsDataTWA[i].best.sail - 1]
+    );
+    _drawDataTWA.tws.push(i);
+    _drawDataTWA.spd.push(_polarsDataTWA[i].best.speed);
+  }
+}
+function radial(angle, radiusOffset, extraLght, bHideLabel, ctx, addLabel, arrDashStyle) {
+  const c = ctx;
+  const ra = (angle - 90) * Math.PI / 180;
+  if (arrDashStyle && arrDashStyle.length === 2) {
+    c.setLineDash(arrDashStyle);
+  } else {
+    c.setLineDash([]);
+  }
+  c.moveTo(0, 0);
+  c.lineTo(Math.cos(ra) * (R + extraLght), Math.sin(ra) * (R + extraLght));
+  if (!bHideLabel) {
+    const xLabel = Math.cos(ra) * (R + radiusOffset);
+    const textLabel = angle + (addLabel || "");
+    c.fillText(textLabel, xLabel, Math.sin(ra) * (R + radiusOffset));
+  }
+}
+function line(c, start, end, arrDashStyle) {
+  if (arrDashStyle && arrDashStyle.length === 2) {
+    c.setLineDash(arrDashStyle);
+  } else {
+    c.setLineDash([]);
+  }
+  c.moveTo(start.x, start.y);
+  c.lineTo(end.x, end.y);
+}
+function sailColor(sailName) {
+  return sailColors[sailName - 1];
+}
+function plot_scale(c, maxSpeed, drawTheme) {
+  c.textAlign = "right";
+  c.lineWidth = 0.4;
+  c.textBaseline = "middle";
+  c.strokeStyle = drawTheme === "dark" ? "#a5a5a5" : "black";
+  c.fillStyle = c.strokeStyle;
+  c.beginPath();
+  c.textAlign = "left";
+  for (let i = 0; i <= 180; i += 10) {
+    radial(i, 12, 5, false, c, "°");
+  }
+  c.stroke();
+  if (maxSpeed === void 0)
+    maxSpeed = 20;
+  _chartScale.graduationValue = maxSpeed <= 5 ? 1 : maxSpeed <= 10 ? 2 : maxSpeed <= 15 ? 3 : maxSpeed <= 20 ? 4 : maxSpeed <= 30 ? 5 : 10;
+  _chartScale.nbGraduations = Math.ceil((maxSpeed + 0.3) / _chartScale.graduationValue);
+  _chartScale.max = _chartScale.graduationValue * _chartScale.nbGraduations;
+  c.textAlign = "right";
+  c.fillText("0kt ", -2, 0);
+  for (let i = 1; i <= _chartScale.nbGraduations; i++) {
+    c.beginPath();
+    c.arc(0, 0, R / _chartScale.nbGraduations * i, -Math.PI / 2, +Math.PI / 2, false);
+    c.stroke();
+  }
+  const showSummit = document.getElementById("sel_polar_summit").checked;
+  const showHole = document.getElementById("sel_polar_hole").checked;
+  if ((showSummit || showHole) && _currentResultset.current.spikes && _currentResultset.current.spikes.length >= 1) {
+    c.lineWidth = 1.2;
+    for (let i = 0; i < _currentResultset.current.spikes.length; i++) {
+      const spike = _currentResultset.current.spikes[i];
+      if (showHole && spike.type === "hole" || showSummit && spike.type === "sum") {
+        c.beginPath();
+        if (spike.type === "sum") {
+          c.strokeStyle = "#00FF00";
+          c.fillStyle = "#00FF00";
+        } else if (spike.type === "hole") {
+          c.strokeStyle = "#FF0000";
+          c.fillStyle = "#FF0000";
+        } else {
+          c.strokeStyle = drawTheme === "dark" ? "#add8e6" : "#9b7233";
+          c.fillStyle = c.strokeStyle;
+        }
+        radial(spike.idx, 12, 0, true, c, "");
+        c.stroke();
+      }
+    }
+  }
+}
+function plotBoatSpeedAxis(c, drawTheme) {
+  c.save();
+  c.fillStyle = drawTheme === "dark" ? "#202124" : "white";
+  c.fillRect(-GRAPH_DX, -R, staticDx, R * 2);
+  c.restore();
+  c.textAlign = "right";
+  c.lineWidth = 0.8;
+  c.textBaseline = "middle";
+  c.strokeStyle = drawTheme === "dark" ? "#a5a5a5" : "black";
+  c.fillStyle = c.strokeStyle;
+  const start = { x: -(GRAPH_DX - staticDx), y: R + 5 };
+  const end = { x: -(GRAPH_DX - staticDx), y: -R - 5 };
+  line(c, start, end);
+  c.stroke();
+  c.lineWidth = 0.4;
+  for (let i = 1; i <= _chartScale.nbGraduations; i++) {
+    c.beginPath();
+    c.fillStyle = drawTheme === "dark" ? "#a5a5a5" : "black";
+    c.strokeStyle = c.fillStyle;
+    const yb = Math.sqrt(
+      Math.pow(R * i / _chartScale.nbGraduations, 2) - Math.pow(GRAPH_DX - staticDx, 2)
+    );
+    const label = `${i * _chartScale.graduationValue}kts`;
+    c.fillText(label, -(GRAPH_DX - staticDx) - 2, yb);
+    c.fillText(label, -(GRAPH_DX - staticDx) - 2, -yb);
+    c.stroke();
+  }
+}
+function plotMaxValues(c) {
+  c.save();
+  c.fillStyle = "rgba(255, 0, 0, 0.15)";
+  c.beginPath();
+  c.moveTo(0, 0);
+  c.arc(
+    0,
+    0,
+    R,
+    -Math.PI / 2,
+    _currentResultset.bestVMG.upwind.twa * Math.PI / 180 - Math.PI / 2,
+    false
+  );
+  c.closePath();
+  c.fill();
+  c.fillStyle = "rgba(255, 0, 0, 0.15)";
+  c.beginPath();
+  c.moveTo(0, 0);
+  c.arc(
+    0,
+    0,
+    R,
+    Math.PI / 2,
+    _currentResultset.bestVMG.downwind.twa * Math.PI / 180 - Math.PI / 2,
+    true
+  );
+  c.closePath();
+  c.fill();
+  c.fillStyle = "red";
+  c.strokeStyle = "red";
+  c.beginPath();
+  radial(_currentResultset.bestVMG.upwind.twa, 50, 40, false, c, "°", [3, 5]);
+  radial(_currentResultset.bestVMG.downwind.twa, 50, 40, false, c, "°", [3, 5]);
+  c.stroke();
+  c.restore();
+}
+function plotFoilRange(c) {
+  if (_maxFoilFactor === 1)
+    return;
+  for (let twa = 0; twa < 180; twa++) {
+    const hue2 = -500 * _polarsData[twa].best.foilFactor + 560;
+    const angleStart = (twa + 0) * Math.PI / 180 - Math.PI / 2;
+    const angleEnd = (twa + 1) * Math.PI / 180 - Math.PI / 2;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.fillStyle = `hsla(${hue2}, 100%, 50%, 1)`;
+    c.arc(0, 0, R + 4, angleStart, angleEnd, false);
+    c.arc(0, 0, R + 1, angleEnd, angleStart, true);
+    c.closePath();
+    c.fill();
+  }
+}
+function plot_polar(polar, drawTheme, withScale = false) {
+  onShow();
+  if (!polar)
+    return;
+  const c = divPolarGraph.getContext("2d");
+  parseFloat(divPolarTws.value);
+  let twa = divPolarTwa.innerHTML.replace(" °", "");
+  const full_sail = document.getElementById("sel_polar_full_sail").checked;
+  let last_sail = -1;
+  let nb_displayed_sail = 0;
+  let twaStart = 0;
+  let twaEnd = 180;
+  twa = Number(roundTo(twa, 1));
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  if (withScale)
+    polar_apply_scale();
+  c.translate(GRAPH_DX, R + GRAPH_DY);
+  c.fillStyle = drawTheme === "dark" ? "#202124" : "white";
+  c.fillRect(0, 0, R + staticDx, R + staticDy);
+  c.fillRect(0, 0, R + staticDx, -R + staticDy);
+  c.font = "bold 10px Arial";
+  plot_scale(c, _currentResultset.max.speed, drawTheme);
+  plotMaxValues(c);
+  c.save();
+  if (!full_sail) {
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.font = "bold 14px Arial";
+    c.lineWidth = 3;
+    for (let i = twaStart; i <= twaEnd; i += 0.1) {
+      const ii = Number(roundTo(i, 1));
+      const speed = _polarsData[ii].best.speed;
+      const sail = _polarsData[ii].best.sail;
+      c.lineTo(0, -speed * R / _chartScale.max);
+      if (sail !== last_sail) {
+        c.stroke();
+        c.strokeStyle = sailColor(sail);
+        c.fillStyle = c.strokeStyle;
+        c.beginPath();
+        c.lineTo(0, -speed * R / _chartScale.max);
+        nb_displayed_sail++;
+        if (nb_displayed_sail === 2) {
+          c.textAlign = "right";
+          c.fillText(sailNames[last_sail % 10], -10, -10 + -speed * R / _chartScale.max);
+        }
+        if (nb_displayed_sail >= 2) {
+          c.textAlign = "left";
+          c.fillText(sailNames[sail % 10], 10, -10 + -speed * R / _chartScale.max);
+        }
+        last_sail = sail;
+      }
+      c.rotate(Math.PI / 1800);
+    }
+    c.stroke();
+  } else {
+    for (const sailDef of polar.sail) {
+      if (isSailisInOptions(sailDef.id, _currentResultset.current.__options)) {
+        c.save();
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.strokeStyle = polarSailColors[sailDef.id - 1];
+        c.fillStyle = `${c.strokeStyle}1A`;
+        c.lineWidth = sailDef.id === _currentResultset.current.bestSail ? 2 : 1;
+        for (let i = twaStart; i <= twaEnd; i += 0.1) {
+          const ii = Number(roundTo(i, 1));
+          const speed = _polarsData[ii].all[sailDef.id];
+          c.lineTo(0, -speed * R / _chartScale.max);
+          c.rotate(Math.PI / 1800);
+        }
+        c.stroke();
+        c.fill();
+        c.restore();
+      }
+    }
+    c.lineWidth = 1;
+  }
+  c.restore();
+  if (!Number.isNaN(twa)) {
+    document.getElementById("polar_speed").innerHTML = `${roundTo(_currentResultset.current.speed, 3)} nds`;
+    document.getElementById("polar_vmg").innerHTML = `${Math.abs(
+      Math.round(
+        roundTo(_currentResultset.current.speed, 3) * Math.cos(twa * Math.PI / 180) * 1e3
+      ) / 1e3
+    )} nds`;
+    document.getElementById("polar_sail").innerHTML = sailNames[_currentResultset.current.bestSail];
+    c.save();
+    c.beginPath();
+    c.lineWidth = 2;
+    c.strokeStyle = drawTheme === "dark" ? "lightblue" : "blue";
+    c.fillStyle = c.strokeStyle;
+    radial(
+      twa,
+      85,
+      40,
+      false,
+      c,
+      `° : ${roundTo(_polarsData[twa].best.speed, 3)} nds`
+    );
+    c.stroke();
+    const ra = (twa - 90) * Math.PI / 180;
+    c.lineWidth = 8;
+    c.lineCap = "round";
+    c.beginPath();
+    c.moveTo(Math.cos(ra) * (R + 40), Math.sin(ra) * (R + 40));
+    c.lineTo(Math.cos(ra) * (R + 40), Math.sin(ra) * (R + 40));
+    c.stroke();
+    c.restore();
+    c.save();
+    c.font = "bold 10px Arial";
+    c.strokeStyle = sailColor(_currentResultset.current.bestSail);
+    c.fillStyle = c.strokeStyle;
+    c.lineWidth = 2;
+    if (_currentResultset.current.bestSailTWAMin !== 0) {
+      c.beginPath();
+      radial(
+        roundTo(_currentResultset.current.bestSailTWAMin, 1),
+        35,
+        20,
+        false,
+        c,
+        "°",
+        [3, 5]
+      );
+      c.stroke();
+    }
+    if (_currentResultset.current.bestSailTWAMax !== 0 && _currentResultset.current.bestSailTWAMax !== 180) {
+      c.beginPath();
+      radial(
+        roundTo(_currentResultset.current.bestSailTWAMax, 1),
+        35,
+        20,
+        false,
+        c,
+        "°",
+        [3, 5]
+      );
+      c.stroke();
+    }
+    c.restore();
+    limitsOptimumsHtml();
+  }
+  plotBoatSpeedAxis(c, drawTheme);
+  if (document.getElementById("sel_polar_foil").checked) {
+    plotFoilRange(c);
+  }
+  sailsSpeedHtml(twa, polar);
+  spikesSpeedHtml();
+}
+function sailsSpeedHtml(twa, polar) {
+  let tabSails = '<thead><tr><th  colspan="3">Voiles</th></tr></thead><tbody>';
+  for (const sailDef of polar.sail) {
+    if (isSailisInOptions(sailDef.id, _currentResultset.current.__options)) {
+      let style2 = "";
+      if (sailDef.id === _currentResultset.current.bestSail) {
+        style2 = 'style="font-weight: 1000;font-size: large;"';
+      }
+      tabSails += `<tr><td><span class="ingTBD"></span></td><td ${style2}>${sailNames[sailDef.id]}</td><td>${_polarsData[twa].all[sailDef.id]}`;
+      if (_polarsData[twa].all[sailDef.id] * 1.014 > _currentResultset.current.speed && sailDef.id !== _currentResultset.current.bestSail) {
+        tabSails += ` (${roundTo(_currentResultset.current.speed, 3)})`;
+      }
+      tabSails += " nds</td></tr>";
+    }
+  }
+  tabSails += "</tbody>";
+  document.getElementById("polarTableSailInfo").innerHTML = tabSails;
+}
+function spikesSpeedHtml() {
+  const showSummit = document.getElementById("sel_polar_summit").checked;
+  const showHole = document.getElementById("sel_polar_hole").checked;
+  if (!showSummit && !showHole) {
+    document.getElementById("polarTableSpikeInfo").innerHTML = "";
+    document.getElementById("polarDivSpikeInfo").style = "display:none;";
+    return;
+  }
+  let tabSpikes = '<thead><tr><th  colspan="4">Pics</th></tr><tr><th>Type</th><th>TWA</th><th>Speed</th><th>Sails</th></tr></thead><tbody>';
+  if (!_currentResultset.current.spikes || _currentResultset.current.spikes.length < 1) {
+    tabSpikes = '<tr><td colspan="3">Pas de pics/creux détecté</td></tr>';
+  } else {
+    let noneDrawn = true;
+    for (let i = 0; i < _currentResultset.current.spikes.length; i++) {
+      const spike = _currentResultset.current.spikes[i];
+      if (showHole && spike.type === "hole" || showSummit && spike.type === "sum") {
+        const txt = spike.type === "hole" ? "C" : "P";
+        tabSpikes += `<tr><td>${txt}</td><td>${spike.idx} °</td><td>${spike.speed.fix(3)} nds</td><td>${sailNames[spike.sail]}</td></tr>`;
+        noneDrawn = false;
+      }
+    }
+    if (noneDrawn) {
+      if (showHole) {
+        tabSpikes = '<tr><td colspan="3">Pas de creux détecté</td></tr>';
+      } else {
+        tabSpikes = '<tr><td colspan="3">Pas de pics détecté</td></tr>';
+      }
+    }
+  }
+  tabSpikes += "</tbody>";
+  document.getElementById("polarTableSpikeInfo").innerHTML = tabSpikes;
+  document.getElementById("polarDivSpikeInfo").style = "display:block;";
+}
+function limitsOptimumsHtml() {
+  let tabLO = '<thead><tr><th colspan="2">Limits</th></tr></thead><tbody>';
+  tabLO += '<tr><td colspan="2">Max Speed</td></tr>';
+  tabLO += `<tr><td>Twa</td><td>${roundTo(_currentResultset.max.twa, 2)} °</td></tr>`;
+  tabLO += `<tr><td>Speed</td><td>${roundTo(_currentResultset.max.speed, 3)} nds</td></tr>`;
+  tabLO += `<tr><td>Sail</td><td>${sailNames[_currentResultset.max.sail]}</td></tr>`;
+  tabLO += '<tr><td colspan="2"></td></tr>';
+  tabLO += '<tr><td colspan="2">Best VMG</td></tr>';
+  tabLO += `<tr><td>Twa Up</td><td>${roundTo(_currentResultset.bestVMG.upwind.twa, 2)} °</td></tr>`;
+  tabLO += `<tr><td>Twa Dw</td><td>${roundTo(_currentResultset.bestVMG.downwind.twa, 2)} °</td></tr>`;
+  tabLO += '<tr><td colspan="2"></td></tr>';
+  tabLO += `<tr><td colspan="2">Limite voiles ${sailNames[_currentResultset.current.bestSail]}</td></tr>`;
+  tabLO += `<tr><td colspan="2">TWS : ${_currentResultset.current.__tws} nds</td></tr>`;
+  tabLO += `<tr><td>Twa Min</td><td>${roundTo(_currentResultset.current.bestSailTWAMin, 2)} °</td></tr>`;
+  tabLO += `<tr><td>Twa Max</td><td>${roundTo(_currentResultset.current.bestSailTWAMax, 2)} °</td></tr>`;
+  tabLO += "</tbody>";
+  document.getElementById("polarTablelimitInfo").innerHTML = tabLO;
+}
+function polar_change_speed(e) {
+  let tws = parseFloat(divPolarTws.value);
+  if (Number.isNaN(tws))
+    return;
+  if (e) {
+    const id = e.target.id;
+    if (id === "polar_minus_1") {
+      tws -= 1;
+    } else if (id === "polar_minus_0_1") {
+      tws -= 0.1;
+    } else if (id === "polar_plus_0_1") {
+      tws += 0.1;
+    } else if (id === "polar_plus_1") {
+      tws += 1;
+    } else if (id === "polar_tws") {
+      tws = e.target.value;
+    }
+  }
+  if (tws < 0.1)
+    tws = 0.1;
+  if (tws > 50)
+    tws = 50;
+  buildRaceAnalyseAdvance(
+    tws,
+    _currentResultset.current.__twd,
+    _currentResultset.current.__twa
+  );
+}
+function getMousePos(c, e) {
+  const rect = c.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left - GRAPH_DX,
+    y: e.clientY - rect.top - GRAPH_DY
+  };
+}
+function polar_apply_scale() {
+  if (polarScaling > 1) {
+    const alpha2 = (1 - polarScaling) / polarScalingOld;
+    scaleOffsetX = alpha2 * mouseX;
+    scaleOffsetY = alpha2 * mouseY;
+  } else {
+    scaleOffsetX = 0;
+    scaleOffsetY = 0;
+  }
+  R = minSize * polarScaling;
+  GRAPH_DX = staticDx + scaleOffsetX;
+  GRAPH_DY = staticDy + scaleOffsetY;
+}
+function polar_mouse_wheel(e) {
+  if (_currentResultset.current.__raceId === void 0)
+    return;
+  if (e.deltaY > 0) {
+    polarScaling = polarScaling - 0.2 > 1 ? polarScaling - 0.2 : 1;
+  } else {
+    polarScaling += 0.2;
+  }
+  const userPrefs2 = getUserPrefs();
+  const polar = getPolar();
+  if (!polar)
+    return;
+  schedulePolarRedraw(polar, userPrefs2.theme, true);
+  polarScalingOld = polarScaling;
+  e.preventDefault();
+}
+function polar_change_twa(e) {
+  var _a2;
+  if (_currentResultset.current.__raceId === void 0 || !e)
+    return;
+  const eltId = (_a2 = e.target) == null ? void 0 : _a2.id;
+  let twa = _currentResultset.current.__twa;
+  let doRefresh = false;
+  if (eltId === "polar_twa_minus_1") {
+    twa = Number(roundTo(twa, 0));
+    twa = twa > 0 ? twa - 1 : 0;
+    doRefresh = true;
+  } else if (eltId === "polar_twa_minus_0_1") {
+    twa = Number(roundTo(twa, 1));
+    twa = twa > 0.1 ? twa - 0.1 : 0;
+    doRefresh = true;
+  } else if (eltId === "polar_twa_plus_0_1") {
+    twa = Number(roundTo(twa, 1));
+    twa = twa < 179.9 ? twa + 0.1 : 180;
+    doRefresh = true;
+  } else if (eltId === "polar_twa_plus_1") {
+    twa = Number(roundTo(twa, 0));
+    twa = twa < 180 ? twa + 1 : 180;
+    doRefresh = true;
+  } else {
+    const pos = getMousePos(divPolarGraph, e);
+    twa = Number(roundTo(Math.atan2(pos.x, R - pos.y) * 180 / Math.PI, 2));
+    if (twa < 0 && twa > -90)
+      twa = 0;
+    if (twa < 0 && twa < -90)
+      twa = 180;
+    if (e.buttons === 1) {
+      doRefresh = true;
+    } else {
+      mouseX = pos.x;
+      mouseY = pos.y;
+    }
+  }
+  if (doRefresh) {
+    buildRaceAnalyseAdvance(
+      _currentResultset.current.__tws,
+      _currentResultset.current.__twd,
+      twa
+    );
+  }
+}
+function initialize3() {
+  if (divPolarTws)
+    return;
+  divPolarTws = document.getElementById("polar_tws");
+  divPolarTwa = document.getElementById("polar_twa");
+  divPolarGraph = document.getElementById("polarGraph");
+  document.getElementById("polarDensity");
+  inputSpikeSensitivity = document.getElementById("polar_spike_sensitivity");
+  document.getElementById("sel_race");
+  divPolarGraph.width = divPolarGraph.offsetWidth;
+  divPolarGraph.height = divPolarGraph.offsetHeight;
+  document.getElementById("polar_minus_1").addEventListener("click", polar_change_speed);
+  document.getElementById("polar_minus_0_1").addEventListener("click", polar_change_speed);
+  document.getElementById("polar_plus_0_1").addEventListener("click", polar_change_speed);
+  document.getElementById("polar_plus_1").addEventListener("click", polar_change_speed);
+  divPolarTws.addEventListener("change", polar_change_speed);
+  inputSpikeSensitivity.addEventListener("change", polar_change_speed);
+  divPolarGraph.addEventListener("mousemove", polar_change_twa);
+  divPolarGraph.addEventListener("mousedown", polar_change_twa);
+  divPolarGraph.addEventListener("wheel", polar_mouse_wheel);
+  document.getElementById("polar_twa_minus_0_1").addEventListener("click", polar_change_twa);
+  document.getElementById("polar_twa_minus_1").addEventListener("click", polar_change_twa);
+  document.getElementById("polar_twa_plus_0_1").addEventListener("click", polar_change_twa);
+  document.getElementById("polar_twa_plus_1").addEventListener("click", polar_change_twa);
+}
+function onShow() {
+  const t = document.getElementById("polarGraphDiv");
+  divPolarGraph.style.width = `${t.offsetWidth}px`;
+  divPolarGraph.style.height = `${t.offsetHeight}px`;
+  divPolarGraph.width = t.offsetWidth;
+  divPolarGraph.height = t.offsetHeight;
+  minSize = t.offsetHeight / 2 - staticDx;
+  R = minSize * polarScaling;
+  GRAPH_DX = staticDx + scaleOffsetX;
+  GRAPH_DY = staticDy + scaleOffsetY;
+}
 let activeTab = 1;
 const tabList = Object.freeze({
   1: "raceLog",
@@ -31348,6 +32298,9 @@ function tabSwitch(tabId = null) {
       break;
     case "raceGraph":
       upDateGraph();
+      break;
+    case "raceAnalyse":
+      buildRaceAnalyseAdvance();
       break;
   }
 }
@@ -31409,8 +32362,8 @@ function importRoute(route, name) {
   const raceInfo = getRaceInfo$1();
   if (!mapState || !mapState.map || !raceInfo)
     return;
-  const userPrefs = getUserPrefs();
-  const displayMarkers = userPrefs.map.showMarkers;
+  const userPrefs2 = getUserPrefs();
+  const displayMarkers = userPrefs2.map.showMarkers;
   const map2 = mapState.map;
   const rid = raceInfo.raceId + "-" + raceInfo.legNum;
   mapState.route[rid] = mapState.route[rid] || {};
@@ -31476,8 +32429,8 @@ function showRoute(name) {
   if (!((_b = (_a2 = mapState.route) == null ? void 0 : _a2[rid]) == null ? void 0 : _b[name]))
     return;
   const lmapRoute = mapState.route[rid][name];
-  const userPrefs = getUserPrefs();
-  const displayMarkers = userPrefs.map.showMarkers;
+  const userPrefs2 = getUserPrefs();
+  const displayMarkers = userPrefs2.map.showMarkers;
   if (lmapRoute.traceLayer)
     lmapRoute.traceLayer.addTo(map2);
   if (lmapRoute.markersLayer && displayMarkers)
@@ -31521,8 +32474,8 @@ function onMarkersChange() {
     return;
   const map2 = mapState.map;
   const rid = raceInfo.raceId + "-" + raceInfo.legNum;
-  const userPrefs = getUserPrefs();
-  const displayMarkers = userPrefs.map.showMarkers;
+  const userPrefs2 = getUserPrefs();
+  const displayMarkers = userPrefs2.map.showMarkers;
   document.getElementById("sel_showMarkersLmap").checked = displayMarkers;
   if (mapState.route[rid]) {
     Object.keys(mapState.route[rid]).forEach(function(name) {
@@ -31551,8 +32504,8 @@ function hideShowTracks() {
   if (!mapState || !mapState.map)
     return;
   const map2 = mapState.map;
-  const userPrefs = getUserPrefs();
-  const displayTracks = userPrefs.map.showTracks;
+  const userPrefs2 = getUserPrefs();
+  const displayTracks = userPrefs2.map.showTracks;
   document.getElementById("sel_showTracksLmap").checked = displayTracks;
   if (mapState.fleetLayerTracks) {
     if (displayTracks)
@@ -32605,604 +33558,604 @@ function uiBindingInit() {
     {
       selector: "#auto_router",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.router.auto = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.router.auto = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.router.auto;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.router.auto;
       }
     },
     {
       selector: "#sel_router",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.router.sel = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.router.sel = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.router.sel;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.router.sel;
       }
     },
     {
       selector: "#nmea_output",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.nmea.enable = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.nmea.enable = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.nmea.enable;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.nmea.enable;
       }
     },
     {
       selector: "#sel_nmeaport",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.nmea.port = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.nmea.port = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.nmea.port;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.nmea.port;
       }
     },
     {
       selector: "#color_theme",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.theme = checked ? "dark" : "light";
-        saveUserPrefs(userPrefs);
-        switchTheme(userPrefs.theme);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.theme = checked ? "dark" : "light";
+        saveUserPrefs(userPrefs2);
+        switchTheme(userPrefs2.theme);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.theme == "dark";
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.theme == "dark";
       }
     },
     {
       selector: "#reuse_tab",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.reuseTab = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.reuseTab = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.global.reuseTab;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.global.reuseTab;
       }
     },
     {
       selector: "#local_time",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.localTime = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.localTime = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.global.localTime;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.global.localTime;
       }
     },
     {
       selector: "#uiFilterMode",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.alternateFilter = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.alternateFilter = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.global.alternateFilter;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.global.alternateFilter;
       }
     },
     {
       selector: "#vrzenPositionFormat",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.separatorPos = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.separatorPos = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.global.separatorPos;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.global.separatorPos;
       }
     },
     {
       selector: "#ITYC_record",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.ITYCSend = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.ITYCSend = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.global.ITYCSend;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.global.ITYCSend;
       }
     },
     {
       selector: "#sel_polarSite",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.global.polarSite = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.global.polarSite = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.global.polarSite;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.global.polarSite;
       }
     },
     {
       selector: "#fullScreen_Size",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.drawing.ratio = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.drawing.ratio = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.drawing.ratio;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.drawing.ratio;
       }
     },
     {
       selector: "#fullScreen_Game",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.drawing.fullScreen = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.drawing.fullScreen = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.drawing.fullScreen;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.drawing.fullScreen;
       }
     },
     {
       selector: "#showBVMGSpeed",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceData.VMGSpeed = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceData.VMGSpeed = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceData.VMGSpeed;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceData.VMGSpeed;
       }
     },
     {
       selector: "#with_LastCommand",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceData.lastCmd = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceData.lastCmd = checked;
+        saveUserPrefs(userPrefs2);
       },
       //todo add racestatus redraw
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceData.lastCmd;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceData.lastCmd;
       }
     },
     {
       selector: "#hideCommandsLines",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.hideLastCmd = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.hideLastCmd = checked;
+        saveUserPrefs(userPrefs2);
       },
       //todo add racelog redraw
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.hideLastCmd;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.hideLastCmd;
       }
     },
     {
       selector: "#racelog_rank",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.rank = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.rank = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.rank;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.rank;
       }
     },
     {
       selector: "#racelog_dtl",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.DTL = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.DTL = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.DTL;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.DTL;
       }
     },
     {
       selector: "#racelog_dtf",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.DTF = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.DTF = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.DTF;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.DTF;
       }
     },
     {
       selector: "#racelog_reportedSpeed",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.vR = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.vR = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.vR;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.vR;
       }
     },
     {
       selector: "#racelog_calcSpeed",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.vC = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.vC = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.vC;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.vC;
       }
     },
     {
       selector: "#racelog_foils",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.foil = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.foil = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.foil;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.foil;
       }
     },
     {
       selector: "#racelog_factor",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.factor = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.factor = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.factor;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.factor;
       }
     },
     {
       selector: "#racelog_stamina",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.stamina = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.stamina = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.stamina;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.stamina;
       }
     },
     {
       selector: "#racelog_deltaDistance",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.deltaD = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.deltaD = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.deltaD;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.deltaD;
       }
     },
     {
       selector: "#racelog_deltaTime",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.deltaT = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.deltaT = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.deltaT;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.deltaT;
       }
     },
     {
       selector: "#racelog_position",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.raceLog.column.position = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.raceLog.column.position = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.raceLog.column.position;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.raceLog.column.position;
       }
     },
     {
       selector: "#abbreviatedOption",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.shortOption = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.shortOption = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.shortOption;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.shortOption;
       }
     },
     {
       selector: "#auto_clean",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.cleaning = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.cleaning = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.cleaning;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.cleaning;
       }
     },
     {
       selector: "#auto_cleanInterval",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.cleaningInterval = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.map.cleaningInterval = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.cleaningInterval;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.map.cleaningInterval;
       }
     },
     {
       selector: "#sailRankRaceId",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.sailRankId = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.map.sailRankId = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.map.sailRankId;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.map.sailRankId;
       }
     },
     {
       selector: "#fleet_team",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.team = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.team = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.team;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.team;
       }
     },
     {
       selector: "#fleet_rank",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.rank = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.rank = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.rank;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.rank;
       }
     },
     {
       selector: "#fleet_racetime",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.raceTime = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.raceTime = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.raceTime;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.raceTime;
       }
     },
     {
       selector: "#fleet_dtu",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.DTU = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.DTU = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.DTU;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.DTU;
       }
     },
     {
       selector: "#fleet_dtf",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.DTF = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.DTF = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.DTF;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.DTF;
       }
     },
     {
       selector: "#fleet_twd",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.TWD = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.TWD = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.TWD;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.TWD;
       }
     },
     {
       selector: "#fleet_tws",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.TWS = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.TWS = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.TWS;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.TWS;
       }
     },
     {
       selector: "#fleet_twa",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.TWA = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.TWA = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.TWA;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.TWA;
       }
     },
     {
       selector: "#fleet_hdg",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.HDG = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.HDG = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.HDG;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.HDG;
       }
     },
     {
       selector: "#fleet_speed",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.speed = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.speed = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.speed;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.speed;
       }
     },
     {
       selector: "#fleet_vmg",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.VMG = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.VMG = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.VMG;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.VMG;
       }
     },
     {
       selector: "#fleet_sail",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.sail = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.sail = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.sail;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.sail;
       }
     },
     {
       selector: "#fleet_factor",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.factor = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.factor = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.factor;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.factor;
       }
     },
     {
       selector: "#fleet_foils",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.foil = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.foil = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.foil;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.foil;
       }
     },
     {
       selector: "#fleet_position",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.position = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.position = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.position;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.position;
       }
     },
     {
       selector: "#fleet_options",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.option = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.option = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.option;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.option;
       }
     },
     {
       selector: "#fleet_state",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.state = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.state = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.state;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.state;
       }
     },
     {
       selector: "#fleet_remove",
       onChange: (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.fleet.column.select = checked;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.fleet.column.select = checked;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.fleet.column.select;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.fleet.column.select;
       }
     },
     {
       selector: "#sel_Seperator",
       onChange: (value) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.separator = value;
-        saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.separator = value;
+        saveUserPrefs(userPrefs2);
       },
       onInit: (value, el) => {
-        const userPrefs = getUserPrefs();
-        el.value = userPrefs.separator;
+        const userPrefs2 = getUserPrefs();
+        el.value = userPrefs2.separator;
       }
     },
     {
@@ -33213,27 +34166,27 @@ function uiBindingInit() {
     {
       selector: "#sel_showMarkersLmap",
       onChange: async (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.showMarkers = checked ? false : true;
-        await saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.map.showMarkers = checked ? false : true;
+        await saveUserPrefs(userPrefs2);
         onMarkersChange();
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.showMarkers;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.map.showMarkers;
       }
     },
     {
       selector: "#sel_showTracksLmap",
       onChange: async (checked) => {
-        const userPrefs = getUserPrefs();
-        userPrefs.map.showTracks = checked ? false : true;
-        await saveUserPrefs(userPrefs);
+        const userPrefs2 = getUserPrefs();
+        userPrefs2.map.showTracks = checked ? false : true;
+        await saveUserPrefs(userPrefs2);
         hideShowTracks();
       },
       onInit: (checked, el) => {
-        const userPrefs = getUserPrefs();
-        el.checked = userPrefs.map.showTracks;
+        const userPrefs2 = getUserPrefs();
+        el.checked = userPrefs2.map.showTracks;
       }
     },
     {

@@ -1,0 +1,45 @@
+{
+  "name": "leaflet-velocity",
+  "version": "2.1.4",
+  "description": "A custom layer for leaflet to visualise arbitrary velocities",
+  "main": "dist/leaflet-velocity.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "node ./node_modules/gulp/bin/gulp.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onaci/leaflet-velocity.git"
+  },
+  "keywords": [
+    "leaflet",
+    "velocity",
+    "ocean",
+    "current",
+    "wind",
+    "canvas",
+    "noaa",
+    "visualisation",
+    "overlay"
+  ],
+  "author": "daniel.wild@csiro.au",
+  "license": "See LICENSE in LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/onaci/leaflet-velocity/issues"
+  },
+  "homepage": "https://github.com/onaci/leaflet-velocity#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "babel-preset-es2015": "^6.9.0",
+    "cssnano": "^5.1.14",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-concat-css": "^3.1.0",
+    "gulp-postcss": "^9.0.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}

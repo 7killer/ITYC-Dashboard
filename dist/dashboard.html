@@ -9,7 +9,7 @@
         
       <script type="module" crossorigin src="./assets/app.js"></script>
       <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-7faf532e.js">
-      <link rel="modulepreload" crossorigin href="./assets/_commonjsHelpers-ef85fc27.js">
+      <link rel="modulepreload" crossorigin href="./assets/utils-4dc76c15.js">
       <link rel="stylesheet" href="./assets/dashboard-fd59745a.css">
     </head>
 <body>
@@ -316,7 +316,155 @@
         </table>
     </div>
     <div id="tab-content9" class="content hidden">
-        <iframe id="ityc_frame" src="" width="100%" height="100%" style="border:none; " frameborder="0" ></iframe>
+        <div id="polarLeft" class="expertAnalysis" width="70%" height="20%">
+            <div id="polarDivName" >
+                <label id="polar_nameHeader"><b>Polar: </b></label>
+                <label id="polar_name" >-</label>
+                <label id="polar_date" >-</label>
+            </div>
+            <div id="polarTWSDiv" >
+                
+                <div class=" " id="polarChartTitle">
+                    <label id="polarChartTitle_name" ></label> 
+                    <ul><li class="but">
+                        <input type="checkbox" id="sel_polar_resetZoomTWS" name="checkbox1" class="content hidden" >
+                        <label for="sel_polar_resetZoomTWS" id="lbl_polar_resetZoomTWS">Reset Zoom</label>
+                    </li></ul>
+                </div> 
+                <canvas id="polarTWSChart"  class="myfChart" ></canvas>          
+            </div>
+            <div id="polarTWADiv" >
+                <div  id="polarChartTWATitle">
+                    <label id="polarChartTitleTWA_name" ></label> 
+                    <ul></ul><li class="but">
+                        <input type="checkbox" id="sel_polar_resetZoomTWA" name="checkbox1" class="content hidden" >
+                        <label for="sel_polar_resetZoomTWA" id="lbl_polar_resetZoomTWA">Reset Zoom</label>
+                    </li></ul>
+                </div> 
+                <canvas id="polarTWAChart"  class="myfChart" ></canvas>          
+            </div>   
+            <div id="polarVMGDiv" >
+                <div  id="polarChartVMGTitle">
+                    <label id="polarChartVMGTitle_name" ></label> 
+                    <ul></ul><li class="but">
+                        <input type="checkbox" id="sel_polar_resetZoomVMG" name="checkbox1" class="content hidden" >
+                        <label for="sel_polar_resetZoomVMG" id="lbl_polar_resetZoomVMG">Reset Zoom</label>
+                    </li></ul>
+                </div> 
+                <canvas id="polarVMGChart"  class="myfChart" ></canvas>          
+            </div>
+            <div id="polarVMCDiv" >
+                <div class=" " id="polarChartVMCTitle">
+                    <label id="polarChartVMCTitle_name" ></label> 
+                    <ul></ul><li class="but">
+                        <input type="checkbox" id="sel_polar_resetZoomVMC" name="checkbox1" class="content hidden" >
+                        <label for="sel_polar_resetZoomVMC" id="lbl_polar_resetZoomVMC">Reset Zoom</label>
+                    </li></ul>
+                </div> 
+                <canvas id="polarVMCChart"  class="myfChart" ></canvas>          
+            </div>
+            <div id="polarDensityDiv" >
+                <canvas id="polarDensity" ></canvas>
+            </div> 
+        </div>
+        
+        <div id="polarDiv" class="expertAnalysis">
+            <div id="polarDivTop">
+                <div id="polarDivTwsCtrl">
+                    <label><b>TWS </b></label>
+                    <button id="polar_reset"> ⟳ </button>
+                    <button id="polar_minus_1">&lt;&lt;</button>
+                    <button id="polar_minus_0_1">&lt;</button>
+                    <input type="text" maxlength="5" size="4" id="polar_tws" style="text-align:right">
+                    <button id="polar_plus_0_1">&gt;</button>
+                    <button id="polar_plus_1">&gt;&gt;</button>
+                    <fieldset class="fieldset" id="sel_polarviewers" align="left" >
+                        <!--<legend>Filters</legend>-->
+                        <ul class="tab2">
+                            <li class="tab polarTab">
+                                <input type="checkbox" id="sel_polar_full_sail" name="checkbox1" class="content hidden" checked>
+                                <label for="sel_polar_full_sail" id="lbl_polar_full_sail">Full sails</label>
+                            </li>
+                            <li class="tab polarTab" id="polarDivFoil">
+                                    <input type="checkbox" id="sel_polar_foil" name="checkbox4" class="content hidden" checked>
+                                    <label for="sel_polar_foil" id="lbl_polar_foil">Foils</label>
+                            </li>
+                            <li class="tab polarTab">
+                                <input type="checkbox" id="sel_polar_summit" name="checkbox2" class="content hidden" checked>
+                                <label for="sel_polar_summit" id="lbl_polar_summit">Pics</label>
+                            </li>
+                            <li class="tab polarTab">
+                                <input type="checkbox" id="sel_polar_hole" name="checkbox2" class="content hidden" checked>
+                                <label for="sel_polar_hole" id="lbl_polar_hole">Creux</label>
+                            </li>
+                            <li class="tab polarTab">
+                            <!--    <input type="text" maxlength="8" size="4" id="polar_spike_sensitivity" style="text-align:right" value="0.002">-->
+                                <input type="number" step="0.0001"  id="polar_spike_sensitivity" style="text-align:right" value="0.002">
+                            </li>
+                        </ul>
+                    </fieldset>
+
+                </div>
+            </div>
+            <div id="polarDivCenter">
+                <div id="polarDivLeft">
+                    <div id="polarGraphDiv">
+                        <canvas id="polarGraph"></canvas>
+                    </div>
+                </div>
+                <div id="polarDivRight">
+                    <div id="polarDivMainInfo" >
+                        <table class="table_polar">
+                            <thead>
+                                <tr><th colspan="3">Actuelle</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>TWA:</td> 
+                                    <td><span id="polar_twa">-</span></td>
+                                    <td id="polarBtsTwa">
+                                        <span id="polar_twa_ctrl1">
+                                            <button class ="polar_ctrl_bt" id="polar_twa_minus_0_1" title="-0.1°">- </button>
+                                            <button class ="polar_ctrl_bt" id="polar_twa_minus_1" title="-1°">--</button>
+                                        </span>
+                                        <span id="polar_twa_ctrl2">
+                                            <button class ="polar_ctrl_bt" id="polar_twa_plus_0_1" title="+0.1°">+</button>
+                                            <button class ="polar_ctrl_bt" id="polar_twa_plus_1" title="+1°">++</button>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr style="font-weight: bold">
+                                    <td>Speed:</td>
+                                    <td colspan="2"><span id="polar_speed">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>VMG:</td>
+                                    <td colspan="2"><span id="polar_vmg">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Sail:</td>
+                                    <td colspan="2"><span id="polar_sail">-</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="polarDivlimitInfo" >
+                        <table id="polarTablelimitInfo" class="table_polar">
+                        </table>
+                    </div>
+                    <div id="polarDivSailInfo" >
+                        <table id="polarTableSailInfo" class="table_polar">
+                        </table>
+                    </div>
+                    <div id="polarDivSpikeInfo" >
+                        <table id="polarTableSpikeInfo" class="table_polar">
+                        </table>
+                    </div>
+                </div>
+                
+            </div> 
+        </div> 
+        <iframe id="ityc_frame" class="basicsAnalysis" src="" width="100%" height="100%" style="border:none; " frameborder="0" ></iframe>
     </div>
     <div id="tab-content6" class="content hidden">
         <div class="shadowbox" style="margin-top:40px">

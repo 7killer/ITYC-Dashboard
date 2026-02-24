@@ -1,4 +1,4 @@
-import { R as getDefaultExportFromCjs, aE as processDBOperations, S as getData, aF as cfg, c as roundTo, aG as getLatestAndPreviousByTriplet, aH as getLatestEntriesPerUser, aI as saveData, Z as gcDistance, $ as courseAngle, aJ as angle, U as toRad, aK as toDeg, aL as calculateCOGLoxo, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aM as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, h as getUserPrefs, aN as getAllData, aO as deleteData, aD as createKeyChangeListener } from "./_commonjsHelpers-ef85fc27.js";
+import { R as getDefaultExportFromCjs, aH as processDBOperations, S as getData, aI as cfg, h as getUserPrefs, aJ as getLatestAndPreviousByTriplet, aK as getLatestEntriesPerUser, aL as saveData, aM as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aN as angle, U as toRad, aO as toDeg, c as roundTo, aP as bestVMG, aQ as calculateCOGLoxo, aR as manoeuveringPenalities, aS as computeEnergyLoose, aT as computeEnergyRecovery, aU as foilingFactor, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aV as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aW as getAllData, aX as deleteData, aG as createKeyChangeListener } from "./utils-4dc76c15.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -3162,8 +3162,8 @@ async function ingestBoatInfos(boatData) {
       stripUnknown: true,
       abortEarly: false
     });
-    let currendId = await getData("internal", "lastLoggedUser");
-    currendId = currendId == null ? void 0 : currendId.loggedUser;
+    let currendId2 = await getData("internal", "lastLoggedUser");
+    currendId2 = currendId2 == null ? void 0 : currendId2.loggedUser;
     if ((_a = boatInfos.res) == null ? void 0 : _a.leg) {
       const l = boatInfos.res.leg;
       raceId = l.race_id;
@@ -3172,7 +3172,6 @@ async function ingestBoatInfos(boatData) {
         type: "putOrUpdate",
         legList: [
           {
-            //          key:[l.race_id,l.leg_num], 
             id: `${l._id.race_id}-${l._id.num}`,
             raceId: l._id.race_id,
             legNum: l._id.num,
@@ -3205,7 +3204,6 @@ async function ingestBoatInfos(boatData) {
         ...((_e = (_d = l.boat) == null ? void 0 : _d.stats) == null ? void 0 : _e.weight) && ((_f = l.boat) == null ? void 0 : _f.polar_id) && {
           polars: [
             {
-              //                key: l.boat.polar_id,
               id: l.boat.polar_id,
               weight: l.boat.stats.weight
             }
@@ -3231,7 +3229,7 @@ async function ingestBoatInfos(boatData) {
       raceId = l.race_id;
       legNum = l.leg_num;
       userId = bs._id.user_id;
-      currendId = bs._id.user_id;
+      currendId2 = bs._id.user_id;
       ope.push({
         type: "putOrUpdate",
         internal: [
@@ -3256,12 +3254,9 @@ async function ingestBoatInfos(boatData) {
         ],
         players: [
           {
-            //            key: bs._id.user_id,   
             id: bs._id.user_id,
             name: bs.displayName,
             timestamp: Date.now()
-            //                  isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
-            //            credits : bs.currency1
           }
         ]
       });
@@ -3271,7 +3266,7 @@ async function ingestBoatInfos(boatData) {
       raceId = bs._id.race_id;
       legNum = bs._id.leg_num;
       userId = bs._id.user_id;
-      if (bs._id.user_id == currendId) {
+      if (bs._id.user_id == currendId2) {
         rstTimer = true;
         if (bs.fullOptions) {
           bs.options = [
@@ -3470,7 +3465,6 @@ function ingestAccountDetails(account) {
             ts: Date.now()
           },
           {
-            //                        key: 'lastLoggedUser',
             id: "lastLoggedUser",
             loggedUser: validAccount.userId
           },
@@ -3481,7 +3475,6 @@ function ingestAccountDetails(account) {
         ],
         players: [
           {
-            //                        key: validAccount.userId,  
             id: validAccount.userId,
             name: validAccount.displayName,
             teamId: ((_b = validAccount.scriptData.team) == null ? void 0 : _b.id) ?? null,
@@ -3493,10 +3486,8 @@ function ingestAccountDetails(account) {
         ...((_d = validAccount.scriptData.team) == null ? void 0 : _d.id) && {
           teams: [
             {
-              //                            key: validAccount.scriptData.team.id,  
               id: validAccount.scriptData.team.id,
               name: validAccount.scriptData.team.name
-              // Ajoute d'autres propriétés si nécessaire
             }
           ]
         }
@@ -3518,7 +3509,6 @@ function ingestEndLegPrep(endLegPrep) {
         type: "putOrUpdate",
         legList: [
           {
-            //            key : [l._id.race_id,l._id.num],
             id: `${l._id.race_id}-${l._id.num}`,
             raceId: l._id.race_id,
             legNum: l._id.num,
@@ -3548,7 +3538,6 @@ function ingestEndLegPrep(endLegPrep) {
             restrictedZones: l.restrictedZones
           },
           {
-            //              key : 'update',
             id: "update",
             update: (/* @__PURE__ */ new Date()).toISOString()
           }
@@ -3556,7 +3545,6 @@ function ingestEndLegPrep(endLegPrep) {
         ...((_d = (_c = l.boat) == null ? void 0 : _c.stats) == null ? void 0 : _d.weight) && ((_e = l.boat) == null ? void 0 : _e.polar_id) && {
           polars: [
             {
-              //                key: l.boat.polar_id,
               id: l.boat.polar_id,
               weight: l.boat.stats.weight
             }
@@ -3606,7 +3594,6 @@ function ingestRaceList(legListData) {
         const validated = raceSchema.validateSync(r, { stripUnknown: true });
         const idInfo = validated._id || {};
         legList.push({
-          //         key : [validated._id.race_id,validated._id.num],
           id: `${validated.raceId}-${validated.legNum}`,
           raceId: validated.raceId,
           legNum: validated.legNum,
@@ -3635,7 +3622,6 @@ function ingestRaceList(legListData) {
         if (((_e = (_d = validated.boat) == null ? void 0 : _d.stats) == null ? void 0 : _e.weight) && ((_f = validated.boat) == null ? void 0 : _f.polar_id)) {
           polars.push(
             {
-              //              key: validated.boat.polar_id,
               id: validated.boat.polar_id,
               weight: validated.boat.stats.weight
             }
@@ -3644,9 +3630,9 @@ function ingestRaceList(legListData) {
         validCount++;
       } catch (validationErr) {
         if (cfg.debugIngester)
-          ;
+          console.warn(`❌ Validation failed for raceId=${r.raceId}, legNum=${r.legNum ?? "?"}`);
         if (cfg.debugIngester)
-          ;
+          console.warn(validationErr.errors);
         errorCount++;
       }
     }
@@ -3671,7 +3657,7 @@ function ingestRaceList(legListData) {
       processDBOperations(dbOpe);
     }
     if (cfg.debugIngester)
-      ;
+      console.log(`✅ ${validCount} race(s) ingérées, ❌ ${errorCount} erreur(s).`);
   } catch (err) {
     console.error("❌ Erreur globale dans legListDataModel :", err.errors);
   }
@@ -3694,7 +3680,6 @@ async function ingestFleetData(request, response) {
     const connectedUserInfos = await getData("players", req.user_id);
     let currentTeamId = (connectedUserInfos == null ? void 0 : connectedUserInfos.teamId) ? connectedUserInfos.teamId : null;
     const legFleetInfos = res.res.map((p) => ({
-      //      key:[req.race_id,req.leg_num,p.userId,p.lastCalcDate],   
       id: `${req.race_id}-${req.leg_num}-${p.userId}-${p.lastCalcDate}`,
       raceId: req.race_id,
       legNum: req.leg_num,
@@ -3749,7 +3734,7 @@ async function ingestFleetData(request, response) {
     ];
     processDBOperations(dbOpe);
     if (cfg.debugIngester)
-      ;
+      console.log(`✅ Ingested ${legFleetInfos.length} fleet players for race ${req.race_id}, leg ${req.leg_num}`);
   } catch (err) {
     console.error("❌ Fleet ingest failed:", err.errors);
   }
@@ -3764,7 +3749,6 @@ function ingestGameSetting(gameSetting) {
         ...stamina && {
           internal: [
             {
-              //              key: "paramStamina",
               id: "paramStamina",
               paramStamina: stamina
             },
@@ -3935,377 +3919,681 @@ async function ingestGhostTrack(request, response) {
     return false;
   });
 }
-function theoreticalSpeed(polar, options = [], tws, twa, sailId = null) {
-  if (polar == void 0 || tws == void 0)
-    return void 0;
-  let foil = foilingFactor(options, tws, twa, polar.foil);
-  let foiling = (foil - 1) * 100 / (polar.foil.speedRatio - 1);
-  let hull = (options == null ? void 0 : options.hull) ? 1.003 : 1;
-  let ratio = polar.globalSpeedRatio;
-  let twsLookup = fractionStep(tws, polar.tws);
-  let twaLookup = fractionStep(twa, polar.twa);
-  const maxSpd = maxSpeed(options, twsLookup, twaLookup, polar.sail);
-  const spd = sailId != null ? pSpeed(twaLookup, twsLookup, polar.sail[sailId].speed) : 0;
-  return {
-    "speed": sailId != null ? roundTo(spd * foil * hull * ratio, 3) : roundTo(maxSpd.speed * foil * hull * ratio, 3),
-    "sail": sailId != null ? sailId : maxSpd.sail,
-    "foiling": foiling
-  };
-}
-function maxSpeed(options, iS, iA, sailDefs) {
-  let maxSpeed2 = 0;
-  let maxSail = "";
-  for (const sailDef of sailDefs) {
-    if (sailDef.id === 1 || sailDef.id === 2 || sailDef.id === 3 && (options == null ? void 0 : options.heavy) || sailDef.id === 4 && (options == null ? void 0 : options.light) || sailDef.id === 5 && (options == null ? void 0 : options.reach) || sailDef.id === 6 && (options == null ? void 0 : options.heavy) || sailDef.id === 7 && (options == null ? void 0 : options.light)) {
-      let speed = pSpeed(iA, iS, sailDef.speed);
-      if (speed > maxSpeed2) {
-        maxSpeed2 = speed;
-        maxSail = sailDef.id;
+const TEAM_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFRlYW1MaXN0LnBocA==");
+const PLAYER_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFBsYXllckxpc3QucGhw");
+const RACE_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFJhY2VMaXN0LnBocA==");
+const RACE_OPTIONS_BASE_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldE9wdGlvbkxpc3QucGhwP3JpZD0=");
+const SEND_LEG_DATA_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VJbmZvLnBocA==");
+const SEND_INFO_OPT_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbk9wdC5waHA=");
+const SEND_FLEET_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VEYXRhLnBocA==");
+const SEND_RANK_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhbmsucGhw");
+let teamListInFlightPromise = null;
+let playerListInFlightPromise = null;
+let raceListInFlightPromise = null;
+const raceOptionsInFlight = /* @__PURE__ */ new Map();
+const sendLegInFlight = /* @__PURE__ */ new Map();
+const MIN_ITYC_INTERVAL_MS = 5 * 60 * 1e3;
+let lastTeamListFetchTs = 0;
+let lastPlayerListFetchTs = 0;
+let lastRaceListFetchTs = 0;
+const lastRaceOptionsFetchTs = /* @__PURE__ */ new Map();
+async function getTeamListITYC(opts = {}) {
+  const { forceRefresh = false } = opts;
+  const now = Date.now();
+  if (!forceRefresh && now - lastTeamListFetchTs < MIN_ITYC_INTERVAL_MS) {
+    console.log("[getTeamListITYC] skipped (throttled, < 5min)");
+    return null;
+  }
+  if (teamListInFlightPromise && !forceRefresh) {
+    return teamListInFlightPromise;
+  }
+  lastTeamListFetchTs = now;
+  teamListInFlightPromise = (async () => {
+    try {
+      const response = await fetch(TEAM_LIST_URL, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getTeamListITYC] HTTP error:", response.status, response.statusText);
+        return null;
       }
+      let itycTeamList;
+      try {
+        itycTeamList = await response.json();
+      } catch (err) {
+        console.error("[getTeamListITYC] JSON parse error:", err);
+        return null;
+      }
+      if (!Array.isArray(itycTeamList) || itycTeamList.length === 0) {
+        console.warn("[getTeamListITYC] Empty or invalid team list");
+        return null;
+      }
+      itycTeamList.shift();
+      const teamList = [];
+      itycTeamList.forEach((team) => {
+        if (!team || !team.tid)
+          return;
+        teamList.push({
+          id: team.tid,
+          name: team.teamName
+        });
+      });
+      if (teamList.length === 0) {
+        console.warn("[getTeamListITYC] No valid teams after filtering");
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "teamsUpdate",
+              ts: Date.now()
+            }
+          ],
+          teams: teamList
+        }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getTeamListITYC] DB operation error:", err);
+      }
+      return teamList;
+    } catch (err) {
+      console.error("[getTeamListITYC] Unexpected error:", err);
+      return null;
+    } finally {
+      teamListInFlightPromise = null;
     }
+  })();
+  return teamListInFlightPromise;
+}
+async function getPlayerListITYC(opts = {}) {
+  const { forceRefresh = false } = opts;
+  const now = Date.now();
+  if (!forceRefresh && now - lastPlayerListFetchTs < MIN_ITYC_INTERVAL_MS) {
+    console.log("[getPlayerListITYC] skipped (throttled, < 5min)");
+    return null;
   }
+  if (playerListInFlightPromise && !forceRefresh) {
+    return playerListInFlightPromise;
+  }
+  lastPlayerListFetchTs = now;
+  playerListInFlightPromise = (async () => {
+    try {
+      const response = await fetch(PLAYER_LIST_URL, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getPlayerListITYC] HTTP error:", response.status, response.statusText);
+        return null;
+      }
+      let itycPlayerList;
+      try {
+        itycPlayerList = await response.json();
+      } catch (err) {
+        console.error("[getPlayerListITYC] JSON parse error:", err);
+        return null;
+      }
+      if (!Array.isArray(itycPlayerList) || itycPlayerList.length === 0) {
+        console.warn("[getPlayerListITYC] Empty or invalid player list");
+        return null;
+      }
+      const now2 = Date.now();
+      const players = [];
+      itycPlayerList.forEach((player) => {
+        if (!player || !player.uid)
+          return;
+        const teamId = player.tid && player.tid !== "-" ? player.tid : null;
+        players.push({
+          id: player.uid,
+          name: player.name,
+          teamId,
+          timestamp: now2
+        });
+      });
+      if (players.length === 0) {
+        console.warn("[getPlayerListITYC] No valid players after filtering");
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "playersUpdate",
+              ts: now2
+            }
+          ],
+          players
+        }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getPlayerListITYC] DB operation error:", err);
+      }
+      return players;
+    } catch (err) {
+      console.error("[getPlayerListITYC] Unexpected error:", err);
+      return null;
+    } finally {
+      playerListInFlightPromise = null;
+    }
+  })();
+  return playerListInFlightPromise;
+}
+async function getRaceListITYC(opts = {}) {
+  const { forceRefresh = false } = opts;
+  const now = Date.now();
+  if (!forceRefresh && now - lastRaceListFetchTs < MIN_ITYC_INTERVAL_MS) {
+    console.log("[getRaceListITYC] skipped (throttled, < 5min)");
+    return null;
+  }
+  if (raceListInFlightPromise && !forceRefresh) {
+    return raceListInFlightPromise;
+  }
+  lastRaceListFetchTs = now;
+  raceListInFlightPromise = (async () => {
+    try {
+      const response = await fetch(RACE_LIST_URL, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getRaceListITYC] HTTP error:", response.status, response.statusText);
+        return null;
+      }
+      let itycRaceList;
+      try {
+        itycRaceList = await response.json();
+      } catch (err) {
+        console.error("[getRaceListITYC] JSON parse error:", err);
+        return null;
+      }
+      if (!Array.isArray(itycRaceList) || itycRaceList.length === 0) {
+        console.warn("[getRaceListITYC] Empty or invalid race list");
+        return null;
+      }
+      const now2 = Date.now();
+      const legList = [];
+      itycRaceList.forEach((race) => {
+        if (!race || !race.rid)
+          return;
+        const [raceIdRaw, legNumRaw] = String(race.rid).split("_");
+        if (!raceIdRaw || !legNumRaw)
+          return;
+        const raceId = Number.isNaN(Number(raceIdRaw)) ? raceIdRaw : Number(raceIdRaw);
+        const legNum = Number.isNaN(Number(legNumRaw)) ? legNumRaw : Number(legNumRaw);
+        const legName = race.legName ?? null;
+        const raceName = race.name ?? null;
+        const raceType = race.type ?? null;
+        const vsrLevel = race.vsrRank ?? race.vsr ?? null;
+        const start = race.startDate ?? race.start ?? null;
+        const end = race.endDate ?? race.end ?? null;
+        const polar_id = race.polar_id ?? null;
+        legList.push({
+          id: `${raceId}-${legNum}`,
+          raceId,
+          legNum,
+          legName,
+          raceName,
+          raceType,
+          vsrLevel,
+          start,
+          end,
+          polar_id
+        });
+      });
+      if (legList.length === 0) {
+        console.warn("[getRaceListITYC] No valid legs after mapping");
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "legListUpdate",
+              ts: now2
+            }
+          ],
+          legList
+        }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getRaceListITYC] DB operation error:", err);
+      }
+      return legList;
+    } catch (err) {
+      console.error("[getRaceListITYC] Unexpected error:", err);
+      return null;
+    } finally {
+      raceListInFlightPromise = null;
+    }
+  })();
+  return raceListInFlightPromise;
+}
+function decodeOptionString(optRaw) {
+  if (!optRaw || optRaw === "?")
+    return "";
+  const allOpts = "foil heavy hull light reach winch comfortLoungePug magicFurler vrtexJacket radio";
+  if (optRaw === "FP" || optRaw === "AO") {
+    return allOpts;
+  }
+  let opt = optRaw;
+  opt = opt.replace("h", "hull");
+  opt = opt.replace("H", "heavy");
+  opt = opt.replace("L", "light");
+  opt = opt.replace("R", "reach");
+  opt = opt.replace("W", "winch");
+  opt = opt.replace("F", "foil");
+  opt = opt.replace("M", "magicFurler");
+  opt = opt.replace("J", "vrtexJacket");
+  opt = opt.replace("C", "comfortLoungePug");
+  return opt;
+}
+function buildOptionsFlags(optString) {
+  const s = optString || "";
   return {
-    speed: maxSpeed2,
-    sail: maxSail
+    foil: s.includes("foil"),
+    heavy: s.includes("heavy"),
+    hull: s.includes("hull"),
+    light: s.includes("light"),
+    reach: s.includes("reach"),
+    winch: s.includes("winch"),
+    comfortLoungePug: s.includes("comfortLoungePug"),
+    magicFurler: s.includes("magicFurler"),
+    vrtexJacket: s.includes("vrtexJacket"),
+    radio: s.includes("radio")
   };
 }
-function pSpeed(iA, iS, speeds) {
-  return bilinear(
-    iA.fraction,
-    iS.fraction,
-    speeds[iA.index - 1][iS.index - 1],
-    speeds[iA.index][iS.index - 1],
-    speeds[iA.index - 1][iS.index],
-    speeds[iA.index][iS.index]
-  );
-}
-function bilinear(x, y, f00, f10, f01, f11) {
-  return f00 * (1 - x) * (1 - y) + f10 * x * (1 - y) + f01 * (1 - x) * y + f11 * x * y;
-}
-function foilingFactor(options, tws, twa, foil) {
-  let speedSteps = [0, foil.twsMin - foil.twsMerge, foil.twsMin, foil.twsMax, foil.twsMax + foil.twsMerge, Infinity];
-  let twaSteps = [0, foil.twaMin - foil.twaMerge, foil.twaMin, foil.twaMax, foil.twaMax + foil.twaMerge, Infinity];
-  let foilMat = [
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, foil.speedRatio, foil.speedRatio, 1, 1],
-    [1, 1, foil.speedRatio, foil.speedRatio, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1]
-  ];
-  if (options == null ? void 0 : options.foil) {
-    let iS = fractionStep(tws, speedSteps);
-    let iA = fractionStep(twa, twaSteps);
-    return bilinear(
-      iA.fraction,
-      iS.fraction,
-      foilMat[iA.index - 1][iS.index - 1],
-      foilMat[iA.index][iS.index - 1],
-      foilMat[iA.index - 1][iS.index],
-      foilMat[iA.index][iS.index]
-    );
-  } else {
-    return 1;
+async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
+  const { forceRefresh = false } = opts;
+  if (!raceId || !legNum)
+    return;
+  const rid = `${raceId}_${legNum}`;
+  const key = rid;
+  const now = Date.now();
+  const lastTs = lastRaceOptionsFetchTs.get(key) || 0;
+  if (!forceRefresh && now - lastTs < MIN_ITYC_INTERVAL_MS) {
+    console.log("[getRaceOptionsListITYC] skipped (throttled, < 5min) for", rid);
+    return null;
   }
-}
-function fractionStep(value, steps) {
-  let absVal = Math.abs(value);
-  let index = 0;
-  while (index < steps.length && steps[index] <= absVal) {
-    index++;
+  if (raceOptionsInFlight.has(key) && !forceRefresh) {
+    return raceOptionsInFlight.get(key);
   }
-  if (index >= steps.length) {
-    return {
-      index: steps.length - 1,
-      fraction: 1
-    };
-  }
-  return {
-    index,
-    fraction: (absVal - steps[index - 1]) / (steps[index] - steps[index - 1])
-  };
-}
-function isSailisInOptions(sailId, options) {
-  switch (sailId) {
-    default:
-    case 1:
-    case 2:
-      return true;
-    case 3:
-    case 6:
-      return options == null ? void 0 : options.heavy;
-    case 4:
-    case 7:
-      return options == null ? void 0 : options.light;
-    case 5:
-      return options == null ? void 0 : options.reach;
-  }
-}
-const computeEnergyLoose = (polar, paramStamina, options = {}, tws) => {
-  if (!polar) {
-    return { gybe: null, tack: null, sail: null };
-  }
-  const { consumption = {} } = paramStamina ?? {};
-  const { points = {}, winds: windsCfg = {}, boats: boatsCfg = null } = consumption;
-  const computeStaminaLoose = (basePt, type = "M") => {
-    const getBoatCoefficient = (boatWeightKg) => {
-      if (!boatsCfg)
-        return -1;
-      const keys = Object.keys(boatsCfg).map(Number).sort((a, b) => a - b);
-      if (!keys.length)
-        return -1;
-      if (boatWeightKg <= keys[0])
-        return boatsCfg[keys[0]];
-      if (boatWeightKg >= keys[keys.length - 1])
-        return boatsCfg[keys[keys.length - 1]];
-      let lower = keys[0];
-      keys[0];
-      for (let i = 0; i < keys.length; i++) {
-        if (boatWeightKg >= keys[i])
-          lower = keys[i];
-        if (boatWeightKg < keys[i]) {
-          keys[i];
-          break;
+  lastRaceOptionsFetchTs.set(key, now);
+  const promise = (async () => {
+    try {
+      const url = `${RACE_OPTIONS_BASE_URL}${encodeURIComponent(rid)}`;
+      const response = await fetch(url, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getRaceOptionsListITYC] HTTP error:", response.status, response.statusText);
+        return null;
+      }
+      let itycRaceOptList;
+      try {
+        itycRaceOptList = await response.json();
+      } catch (err) {
+        console.error("[getRaceOptionsListITYC] JSON parse error:", err);
+        return null;
+      }
+      if (!Array.isArray(itycRaceOptList) || itycRaceOptList.length === 0) {
+        console.warn("[getRaceOptionsListITYC] Empty or invalid options list for", rid);
+        return null;
+      }
+      const legPlayersOptions = [];
+      for (const onlineplayerOpt of itycRaceOptList) {
+        if (!onlineplayerOpt.playerId) {
+          if (!onlineplayerOpt.uid)
+            return;
+          onlineplayerOpt.playerId = onlineplayerOpt.uid;
+        }
+        if (onlineplayerOpt.opt && onlineplayerOpt.opt != "?") {
+          onlineplayerOpt.opt = decodeOptionString(onlineplayerOpt.opt);
+        } else if (onlineplayerOpt.options) {
+          onlineplayerOpt.opt = onlineplayerOpt.options;
+        }
+        const pOpt = buildOptionsFlags(onlineplayerOpt.opt);
+        if (!onlineplayerOpt.guessOptions) {
+          if (onlineplayerOpt.guessOpt !== void 0)
+            onlineplayerOpt.guessOptions = onlineplayerOpt.guessOpt;
+          else
+            onlineplayerOpt.guessOptions = 0;
+        }
+        if (!onlineplayerOpt.stTs && onlineplayerOpt.startRaceTime)
+          onlineplayerOpt.stTs = onlineplayerOpt.startRaceTime;
+        const playerOptionRace = await getData("legPlayersOptions", [raceId, legNum, onlineplayerOpt.playerId]) ?? { options: [], guessOptions: 0, timestamp: 0 };
+        if (playerOptionRace.timestamp != 0) {
+          if (onlineplayerOpt.update > playerOptionRace.timestamp) {
+            playerOptionRace.options = pOpt;
+            if (onlineplayerOpt.stTs == 0 || onlineplayerOpt.stTs == "0" || onlineplayerOpt.stTs == "-")
+              onlineplayerOpt.startRaceTime = "-";
+            else {
+              onlineplayerOpt.startRaceTime = Number(onlineplayerOpt.stTs);
+            }
+          }
+          playerOptionRace.guessOptions |= onlineplayerOpt.guessOptions;
+          legPlayersOptions.push({
+            raceId,
+            legNum,
+            userId: onlineplayerOpt.playerId,
+            id: `${raceId}_${legNum}_${onlineplayerOpt.playerId}_${onlineplayerOpt.update}`,
+            options: pOpt,
+            guessOptions: playerOptionRace.guessOptions,
+            timestamp: onlineplayerOpt.update
+            // startRaceTime: p.startRaceTime, // ⬅️ laissé de côté pour l'instant comme demandé
+          });
+        } else {
+          legPlayersOptions.push({
+            raceId,
+            legNum,
+            userId: onlineplayerOpt.playerId,
+            id: `${raceId}_${legNum}_${onlineplayerOpt.playerId}_${onlineplayerOpt.update}`,
+            options: pOpt,
+            guessOptions: onlineplayerOpt.guessOptions,
+            timestamp: onlineplayerOpt.update
+            // startRaceTime: p.startRaceTime, // ⬅️ laissé de côté pour l'instant comme demandé
+          });
         }
       }
-      return boatsCfg[lower];
-    };
-    const getWindConsumptionFactor = (windSpeed) => {
-      const vrJacketWinds = { 0: 1, 10: 1, 20: 1.2, 30: 1.8 };
-      const windsTable = (options == null ? void 0 : options.vrtexJacket) ? vrJacketWinds : windsCfg;
-      const keys = Object.keys(windsTable).map(Number).sort((a, b) => a - b);
-      if (!keys.length)
-        return 1;
-      if (windSpeed <= keys[0])
-        return windsTable[keys[0]];
-      if (windSpeed >= keys[keys.length - 1])
-        return windsTable[keys[keys.length - 1]];
-      let lower = keys[0], upper = keys[0];
-      for (let i = 0; i < keys.length; i++) {
-        if (windSpeed >= keys[i])
-          lower = keys[i];
-        if (windSpeed < keys[i]) {
-          upper = keys[i];
-          break;
+      if (legPlayersOptions.length === 0) {
+        console.warn("[getRaceOptionsListITYC] No valid merged options for", rid);
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "legPlayersOptionsUpdate",
+              ts: Date.now()
+            }
+          ],
+          legPlayersOptions
         }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getRaceOptionsListITYC] DB operation error:", err);
       }
-      const ratio = (windSpeed - lower) / (upper - lower);
-      return windsTable[lower] + ratio * (windsTable[upper] - windsTable[lower]);
-    };
-    const boatCoeff = (polar == null ? void 0 : polar.weight) ? getBoatCoefficient(polar.weight / 1e3) : 1;
-    let stamina = basePt * boatCoeff;
-    if (type === "S" && (options == null ? void 0 : options.magicFurler)) {
-      stamina *= 0.8;
+    } catch (err) {
+      console.error("[getRaceOptionsListITYC] Unexpected error:", err);
+      return null;
+    } finally {
+      raceOptionsInFlight.delete(key);
     }
-    const factor = getWindConsumptionFactor(tws);
-    return (factor * stamina).toFixed(2);
-  };
-  return {
-    gybe: computeStaminaLoose(points.gybe),
-    tack: computeStaminaLoose(points.tack),
-    sail: computeStaminaLoose(points.sail, "S")
-  };
-};
-const computeEnergyRecovery = (pts, tws, paramStamina, options = {}) => {
-  if (!tws)
-    return "-";
-  let ltws = paramStamina.recovery.loWind;
-  let htws = paramStamina.recovery.hiWind;
-  let lRecovery = paramStamina.recovery.loTime * 60;
-  let hRecovery = paramStamina.recovery.hiTime * 60;
-  let minByPt = 1;
-  if (tws <= ltws) {
-    minByPt = lRecovery;
-  } else if (tws >= htws) {
-    minByPt = hRecovery;
-  } else {
-    let aFactor = (hRecovery + lRecovery) / 2;
-    let bFactor = (hRecovery - lRecovery) / 2;
-    minByPt = aFactor - Math.cos((tws - ltws) / (htws - ltws) * Math.PI) * bFactor;
-  }
-  if (options == null ? void 0 : options.comfortLoungePug)
-    minByPt *= 0.8;
-  return (pts / Number(paramStamina.recovery.points) * minByPt / 60).toFixed(0);
-};
-const computeEnergyPenalitiesFactor = (stamina) => {
-  let coeff = stamina * -0.015 + 2;
-  return coeff ? coeff < 0.5 ? 0.5 : coeff : 1;
-};
-function manoeuveringPenalities(polar, ite, stamina, options) {
-  if (!polar || !ite)
-    return {
-      "gybe": null,
-      "tack": null,
-      "sail": null,
-      "staminaFactor": null
-    };
-  const penalty = (speed2, options2, fraction2, spec, boatcoeff, type = "M") => {
-    if (!spec) {
-      return {
-        "time": null,
-        "dist": null
-      };
-    }
-    if (options2 == null ? void 0 : options2.winch) {
-      spec = spec.pro;
-    } else {
-      spec = spec.std;
-    }
-    let time = (spec.lw.timer + (spec.hw.timer - spec.lw.timer) * fraction2) * boatcoeff;
-    if (type == "S") {
-      if (options2 == null ? void 0 : options2.magicFurler) {
-        time *= 0.8;
-      }
-    }
-    let dist = speed2 * time / 3600;
-    return {
-      "time": time.toFixed(),
-      "dist": (dist * (1 - spec.lw.ratio)).toFixed(3)
-    };
-  };
-  let winch = polar.winch;
-  let tws = ite.tws;
-  let speed = ite.speed;
-  let fraction;
-  if (winch.lws <= tws && tws <= winch.hws) {
-    fraction = 0.5 - Math.cos((tws - winch.lws) / (winch.hws - winch.lws) * Math.PI) * 0.5;
-  } else if (tws < winch.lws) {
-    fraction = 0;
-  } else {
-    fraction = 1;
-  }
-  let boatCoeff = 1;
-  if (stamina) {
-    boatCoeff = computeEnergyPenalitiesFactor(stamina);
-  }
-  return {
-    gybe: penalty(speed, options, fraction, winch.gybe, boatCoeff),
-    tack: penalty(speed, options, fraction, winch.tack, boatCoeff),
-    sail: penalty(speed, options, fraction, winch.sailChange, boatCoeff, "S"),
-    staminaFactor: boatCoeff
-  };
+  })();
+  raceOptionsInFlight.set(key, promise);
+  return promise;
 }
-function bestVMG(tws, polars, options, sailId, currTwa) {
+async function sendLegDataITYC(message, opts = {}) {
   var _a, _b, _c, _d;
-  const best = {
-    vmgUp: 0,
-    twaUp: 0,
-    sailUp: 0,
-    vmgDown: 0,
-    twaDown: 0,
-    sailDown: 0,
-    bspeed: 0,
-    btwa: 0,
-    sailBSpeed: 0,
-    sailTWAMin: 0,
-    sailTWAMax: 0,
-    sailTWSMin: 0,
-    sailTWSMax: 0
+  const { force = false } = opts;
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.global.ITYCSend)
+    return;
+  if (!((_a = message.res) == null ? void 0 : _a.leg))
+    return;
+  const legData = message.res.leg;
+  const legItycData = {
+    rid: ((_b = legData.id) == null ? void 0 : _b.raceId) + "." + ((_c = legData.id) == null ? void 0 : _c.legNum),
+    checkpoints: legData.checkpoints,
+    course: legData.course,
+    ice_limits: legData.ice_limits,
+    loadingScreenLogo: legData.loadingScreenLogo,
+    name: legData.name,
+    open: legData.open,
+    priceLevel: legData.priceLevel,
+    race: legData,
+    start: legData.start,
+    end: legData.end,
+    gfsWinds: legData.fineWinds ? "0.25" : "1.0",
+    optionPrices: legData.optionPrices,
+    ...legData.boat ? { boat: legData.boat } : {},
+    ...((_d = legData.boat) == null ? void 0 : _d.polar_id) ? { polar_id: legData.boat.polar_id } : {}
   };
-  if (!((_a = polars == null ? void 0 : polars.tws) == null ? void 0 : _a.length) || !((_b = polars == null ? void 0 : polars.twa) == null ? void 0 : _b.length) || !((_c = polars == null ? void 0 : polars.sail) == null ? void 0 : _c.length))
-    return best;
-  const DEG2RAD = Math.PI / 180;
-  const tol = 0.014;
-  const inOpts = (id) => isSailisInOptions(id, options);
-  const safeStep = (step, arrLen) => ({
-    index: Math.min(Math.max(step.index, 1), arrLen - 1),
-    fraction: Math.min(Math.max(step.fraction, 0), 1)
+  if (!(legItycData == null ? void 0 : legItycData.rid)) {
+    console.warn("[sendLegDataITYC] missing rid");
+    return false;
+  }
+  const key = legItycData.rid;
+  if (sendLegInFlight.has(key) && !force) {
+    return sendLegInFlight.get(key);
+  }
+  const promise = (async () => {
+    try {
+      const payload = "/**/" + JSON.stringify(legItycData);
+      const response = await fetch(SEND_LEG_DATA_URL, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: payload
+      });
+      if (!response.ok) {
+        console.warn(
+          "[sendLegDataITYC] HTTP error:",
+          response.status,
+          response.statusText
+        );
+        return false;
+      }
+      try {
+        await response.json();
+      } catch {
+      }
+      return true;
+    } catch (err) {
+      console.error("[sendLegDataITYC] Unexpected error:", err);
+      return false;
+    } finally {
+      sendLegInFlight.delete(key);
+    }
+  })();
+  sendLegInFlight.set(key, promise);
+  return promise;
+}
+let lastSendDate = 0;
+let lastCalcDate = 0;
+let mesData = [];
+function initMessageITYC(type, rid, name, myId, rtype) {
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.global.ITYCSend)
+    return;
+  mesData[type] = [];
+  mesData[type]["raceId"] = rid;
+  mesData[type]["raceName"] = name;
+  mesData[type]["myId"] = myId;
+  if (type == "fleet") {
+    lastCalcDate = 0;
+  } else {
+    mesData[type]["measTime"] = 0;
+  }
+}
+function sendInfoITYC(type, withRandom = true) {
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.global.ITYCSend)
+    return;
+  const execute = () => sendInfoCore(type);
+  if (withRandom) {
+    const delayMs = Math.floor(Math.random() * 300) * 10;
+    setTimeout(execute, delayMs);
+  } else {
+    execute();
+  }
+}
+function sendInfoCore(type) {
+  if (!mesData[type]) {
+    console.warn("[sendInfo] no mesData for type:", type);
+    return;
+  }
+  if (type === "fleet") {
+    lastSendDate = lastCalcDate;
+  } else {
+    mesData[type]["measTime"] = Math.round(Date.now() / 6e4) * 6e4;
+  }
+  let webdata = "";
+  Object.keys(mesData[type]).forEach((key) => {
+    webdata += "/**/" + JSON.stringify(mesData[type][key]);
   });
-  const hRatio = (options == null ? void 0 : options.hull) ? ((_d = polars == null ? void 0 : polars.hull) == null ? void 0 : _d.speedRatio) ?? 1 : 1;
-  const sStep = safeStep(fractionStep(tws, polars.tws), polars.tws.length);
-  let twaDetect = [];
-  for (let twaIndex = 250; twaIndex < 1800; twaIndex++) {
-    const aTWA = twaIndex / 10;
-    const aStepRaw = fractionStep(aTWA, polars.twa);
-    const aStep = safeStep(aStepRaw, polars.twa.length);
-    let actualSailSpd = 0;
-    let bestSpdAtThisTWA = 0;
-    let bestSpdSailAtThisTWA = null;
-    for (const sail of polars.sail) {
-      if (!inOpts(sail.id))
-        continue;
-      const f = foilingFactor(options, tws, polars.twa[aStep.index], polars.foil);
-      const rspeed = bilinear(
-        aStep.fraction,
-        sStep.fraction,
-        sail.speed[aStep.index - 1][sStep.index - 1],
-        sail.speed[aStep.index][sStep.index - 1],
-        sail.speed[aStep.index - 1][sStep.index],
-        sail.speed[aStep.index][sStep.index]
-      );
-      const speed = rspeed * f * hRatio;
-      const vmg = speed * Math.cos(aTWA * DEG2RAD);
-      if (vmg > best.vmgUp) {
-        best.vmgUp = vmg;
-        best.twaUp = aTWA;
-        best.sailUp = sail.id;
-      } else if (vmg < best.vmgDown) {
-        best.vmgDown = vmg;
-        best.twaDown = aTWA;
-        best.sailDown = sail.id;
-      }
-      if (speed > best.bspeed) {
-        best.bspeed = speed;
-        best.btwa = aTWA;
-        best.sailBSpeed = sail.id;
-      }
-      if (speed > bestSpdAtThisTWA) {
-        bestSpdAtThisTWA = speed;
-        bestSpdSailAtThisTWA = sail.id;
-      }
-      if (sail.id === sailId)
-        actualSailSpd = speed;
-    }
-    if (actualSailSpd >= bestSpdAtThisTWA && bestSpdSailAtThisTWA === sailId || actualSailSpd * (1 + tol) > bestSpdAtThisTWA && bestSpdSailAtThisTWA !== sailId) {
-      twaDetect.push(aTWA);
-    }
+  const dat = JSON.stringify(webdata);
+  let url;
+  if (type === "fleet") {
+    url = SEND_FLEET_URL;
+  } else if (type === "rank") {
+    url = SEND_RANK_URL;
+  } else {
+    console.warn("[sendInfo] unknown type:", type);
+    return;
   }
-  if (twaDetect.length) {
-    best.sailTWAMin = twaDetect.reduce((m, v) => Math.min(m, v), Infinity);
-    best.sailTWAMax = twaDetect.reduce((m, v) => Math.max(m, v), -Infinity);
-  }
-  const aStep2 = safeStep(fractionStep(currTwa, polars.twa), polars.twa.length);
-  let twsDetect = [];
-  for (let twsIndex = 100; twsIndex < 4300; twsIndex++) {
-    const aTWS = twsIndex / 100;
-    const sStep2 = safeStep(fractionStep(aTWS, polars.tws), polars.tws.length);
-    let actualSailSpd = 0;
-    let bestSpdAtThisTWS = 0;
-    let bestSpdSailAtThisTWS = null;
-    for (const sail of polars.sail) {
-      if (!inOpts(sail.id))
-        continue;
-      const f = foilingFactor(options, aTWS, polars.twa[aStep2.index], polars.foil);
-      const rspeed = bilinear(
-        aStep2.fraction,
-        sStep2.fraction,
-        sail.speed[aStep2.index - 1][sStep2.index - 1],
-        sail.speed[aStep2.index][sStep2.index - 1],
-        sail.speed[aStep2.index - 1][sStep2.index],
-        sail.speed[aStep2.index][sStep2.index]
-      );
-      const speed = rspeed * f * hRatio;
-      if (speed > bestSpdAtThisTWS) {
-        bestSpdAtThisTWS = speed;
-        bestSpdSailAtThisTWS = sail.id;
-      }
-      if (sail.id === sailId)
-        actualSailSpd = speed;
+  fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: dat
+  }).then((response) => {
+    if (!response.ok) {
+      console.warn("[sendInfo] HTTP error:", response.status);
     }
-    if (actualSailSpd >= bestSpdAtThisTWS && bestSpdSailAtThisTWS === sailId || actualSailSpd * (1 + tol) > bestSpdAtThisTWS && bestSpdSailAtThisTWS !== sailId) {
-      twsDetect.push(aTWS);
-    }
+  }).catch((err) => {
+    console.error("[sendInfo] network error:", err);
+  });
+}
+async function sendInfoOptITYC(message) {
+  var _a, _b, _c, _d, _e;
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.global.ITYCSend)
+    return false;
+  const bs = (_a = message == null ? void 0 : message.res) == null ? void 0 : _a.bs;
+  if (!bs) {
+    return false;
   }
-  if (twsDetect.length) {
-    best.sailTWSMin = twsDetect.reduce((m, v) => Math.min(m, v), Infinity);
-    best.sailTWSMax = twsDetect.reduce((m, v) => Math.max(m, v), -Infinity);
+  let currentIdData = await getData("internal", "lastLoggedUser");
+  const currentId = currentIdData == null ? void 0 : currentIdData.loggedUser;
+  if (!currentId || bs._id.user_id === currentId) {
+    return false;
   }
-  return best;
+  const raceId = (_b = bs._id) == null ? void 0 : _b.race_id;
+  const legNum = (_c = bs._id) == null ? void 0 : _c.leg_num;
+  if (raceId == null || legNum == null) {
+    return false;
+  }
+  const legInfos = await getData("legList", [raceId, legNum]);
+  if (!legInfos) {
+    return false;
+  }
+  const rid = `${raceId}.${legNum}`;
+  if (bs.fullOptions) {
+    bs.options = [
+      "foil",
+      "heavy",
+      "hull",
+      "light",
+      "reach",
+      "radio",
+      "winch",
+      "comfortLoungePug",
+      "magicFurler",
+      "vrtexJacket"
+    ];
+  }
+  if (!bs.options)
+    return;
+  bs.options.replace("All Options", "AO");
+  bs.options.replace("Full Pack", "FP");
+  bs.options.replace("reach", "R");
+  bs.options.replace("light", "L");
+  bs.options.replace("heavy", "H");
+  bs.options.replace("winch", "W");
+  bs.options.replace("foil", "F");
+  bs.options.replace("hull", "h");
+  bs.options.replace("magicFurler", "M");
+  bs.options.replace("vrtexJacket", "J");
+  bs.options.replace("comfortLoungePug", "C");
+  initMessageITYC("opt", rid, legInfos.legName, currendId, legInfos.raceType);
+  const webinfo = {
+    date: bs.lastCalcDate,
+    uid: currendId,
+    name: bs.displayName,
+    teamId: ((_d = bs.team) == null ? void 0 : _d.id) ?? "-",
+    teamName: ((_e = bs.team) == null ? void 0 : _e.name) ?? "-",
+    opt: bs.options,
+    ...bs.startDate ? { startRaceTime: bs.startDate } : {}
+  };
+  mesData["opt"][currendId] = webinfo;
+  mesData["opt"]["measTime"] = Math.round(Date.now() / 6e4) * 6e3;
+  var webdata = "";
+  Object.keys(mesData["opt"]).forEach(function(key) {
+    webdata += "/**/" + JSON.stringify(mesData["opt"][key]);
+  });
+  const dat = JSON.stringify(webdata);
+  try {
+    const response = await fetch(SEND_INFO_OPT_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: dat
+    });
+    return response.ok;
+  } catch (err) {
+    console.error("[sendInfoOptITYC] Unexpected error:", err);
+    return false;
+  }
+}
+async function addInfoFleetITYC(pInfo, legInfos) {
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.global.ITYCSend)
+    return false;
+  const pOption = pInfo.playerOption ? pInfo.playerOption : "?";
+  const ite = pInfo.latest ? pInfo.latest : null;
+  if (!ite)
+    return;
+  const playerInfo = ite.userId ? await getData("players", ite.userId) : null;
+  if (!playerInfo)
+    return;
+  if (playerInfo.teamId) {
+    const teamInfos = await getData("teams", playerInfo.teamId);
+    if (teamInfos == null ? void 0 : teamInfos.name)
+      playerInfo.teamName = teamInfos == null ? void 0 : teamInfos.name;
+  } else
+    playerInfo.teamName = null;
+  if (ite.lastCalcDate < lastSendDate)
+    return;
+  lastCalcDate = ite.lastCalcDate;
+  const webinfo = {
+    date: ite.lastCalcDate,
+    uid: ite.userId,
+    name: playerInfo.name,
+    teamId: playerInfo.teamId ?? "-",
+    teamName: playerInfo.teamName ?? "-",
+    speed: ite.speed,
+    heading: ite.hdg,
+    tws: ite.tws,
+    twd: ite.metaDash.twd,
+    twa: ite.twa,
+    twaAuto: ite.isRegulated,
+    sail: ite.sail || "-",
+    foil: ite.metaDash.xplained ? ite.metaDash.realFoilFactor : "-",
+    xf: ite.metaDash.xplained ? ite.metaDash.xfactor : "-",
+    xfs: ite.metaDash.xplained ? ite.metaDash.sailCoverage : "-",
+    posLat: ite.pos ? ite.pos.lat : "-",
+    posLong: ite.pos ? ite.pos.lon : "-",
+    state: ite.state,
+    rank: ite.rank ? ite.rank : "-",
+    stamina: "-",
+    dist: ite.metaDash.dtf ? ite.metaDash.dtf : 99999999999,
+    guessOpt: pOption.guessOptions ? pOption.guessOptions : 0
+  };
+  mesData["fleet"][ite.userId] = webinfo;
 }
 async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlayerLatest, polar) {
   var _a, _b;
   if (!latest || !currentPlayerLatest || !polar)
-    return;
+    return null;
   const metaDash = latest.metaDash ? latest.metaDash : [];
   const playerPos = latest.pos;
   const currentPlayerPos = currentPlayerLatest.pos;
@@ -4481,7 +4769,6 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
   } else
     await saveData("legFleetInfos", latest, null, { updateIfExists: true });
   if (playerOption.guessOptions != playerGuessOptionPrev) {
-    latest.metaDash = metaDash;
     const playerOptionRaceRecord = {
       raceId: legInfos.raceId,
       legNum: legInfos.legNum,
@@ -4491,6 +4778,7 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
     };
     await saveData("legPlayersOptions", playerOptionRaceRecord, null, { updateIfExists: true });
   }
+  return { playerOption, latest };
 }
 async function computeFleetIte(raceId, legNum) {
   if (!raceId || !legNum)
@@ -4516,10 +4804,13 @@ async function computeFleetIte(raceId, legNum) {
     timeout: 4e3,
     storeName: "legFleetInfos"
   });
+  initMessageITYC("fleet", `${raceId}.${legNum}`, legInfos.legName, currentUserId.loggedUser, legInfos.raceType);
   for (const [userId, entry] of Object.entries(items)) {
     const playerOptionRace = await getData("legPlayersOptions", [raceId, legNum, userId]) ?? { options: [], guessOptions: 0 };
-    await computeFleetPlayerIte(legInfos, entry, playerOptionRace, currentPlayerIte, polar);
+    const pInfo = await computeFleetPlayerIte(legInfos, entry, playerOptionRace, currentPlayerIte, polar);
+    await addInfoFleetITYC(pInfo);
   }
+  sendInfoITYC("fleet");
   await saveData("internal", { id: "legFleetInfosDashUpdate", ts: Date.now() }, null, { updateIfExists: true });
 }
 async function computeOwnIte(raceId, legNum, userId) {
@@ -4971,7 +5262,7 @@ async function ensurePreviousRunFh09and12(model) {
   }
 }
 async function syncLatestWindpacks() {
-  const manifest = await fetchLatestManifest("latest");
+  const manifest = await fetchManifest("latest");
   const { run, forecasts } = manifest;
   const model = WIND_MODEL;
   const avail = (forecasts || []).filter((f) => f && f.exists);
@@ -5229,6 +5520,30 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     delayInMinutes: 1,
     periodInMinutes: 2
   });
+  chrome.alarms.create("ityc-infos-update", {
+    delayInMinutes: 15,
+    periodInMinutes: 15
+  });
+  try {
+    await syncLatestWindpacksWindowed();
+    await getTeamListITYC({ forceRefresh: true });
+    await getPlayerListITYC({ forceRefresh: true });
+    await getRaceListITYC({ forceRefresh: true });
+  } catch (e) {
+    console.error("[teams] [players] [raceList] [synchroWind] initial sync onInstalled failed", e);
+  }
+});
+chrome.runtime.onStartup.addListener(() => {
+  (async () => {
+    try {
+      await syncLatestWindpacksWindowed();
+      await getTeamListITYC();
+      await getPlayerListITYC();
+      await getRaceListITYC();
+    } catch (e) {
+      console.error("[teams] [players] [raceList] [synchroWind] initial sync onStartup failed", e);
+    }
+  })();
 });
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "wind-sync-5d") {
@@ -5236,7 +5551,17 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       try {
         await syncLatestWindpacksWindowed();
       } catch (e) {
-        console.error("[wind] erreur sur alarm sync-5d", e);
+        console.error("[synchroWind] erreur sur alarm sync-5d", e);
+      }
+    })();
+  } else if (alarm.name === "ityc-infos-update") {
+    (async () => {
+      try {
+        await getTeamListITYC();
+        await getPlayerListITYC();
+        await getRaceListITYC();
+      } catch (e) {
+        console.error("[teams] [players] [raceList] periodic sync failed", e);
       }
     })();
   }
@@ -5276,6 +5601,8 @@ chrome.runtime.onMessageExternal.addListener(
         if (event === "getboatinfos") {
           const ret = await ingestBoatInfos(body);
           rstTimer = ret.rstTimer;
+          await sendLegDataITYC(body);
+          await sendInfoOptITYC(body);
         } else if (event === "getfleet") {
           await ingestFleetData(postData, body);
         }
@@ -5300,6 +5627,7 @@ dashStateInfosListener.start({
       currentRace.legNum,
       currentId.loggedUser
     );
+    await getRaceOptionsListITYC(currentRace.raceId, currentRace.legNum);
   }
 });
 const legPlayersInfosListener = createKeyChangeListener(
@@ -5376,6 +5704,7 @@ connectedRaceListener.start({
       newValue.legNum,
       currentId.loggedUser
     );
+    await getRaceOptionsListITYC(newValue.raceId, newValue.legNum);
   }
 });
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
