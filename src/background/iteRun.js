@@ -20,12 +20,15 @@ import { theoreticalSpeed ,
 } from './../polar/utils.js';
 import cfg from '@/config.json';
 
+import { 
+    initMessageITYC,addInfoFleetITYC,sendInfoITYC
+ } from './itycInterface.js'; 
 
 
 async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayerLatest , polar)
 {
 
-    if(!latest || !currentPlayerLatest || !polar) return;
+    if(!latest || !currentPlayerLatest || !polar) return null;
     
     const metaDash = latest.metaDash?latest.metaDash:[];
 //    let metaDash = latest.metaDash;
@@ -254,7 +257,6 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
     
     if(playerOption.guessOptions != playerGuessOptionPrev)
     {
-        latest.metaDash = metaDash;
         const playerOptionRaceRecord = {
             raceId : legInfos.raceId,
             legNum : legInfos.legNum,
@@ -264,6 +266,7 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
         };
         await saveData('legPlayersOptions', playerOptionRaceRecord,null,{ updateIfExists: true });
     } 
+    return {playerOption,latest};
 }
 
   
@@ -281,7 +284,6 @@ export async function computeFleetIte(raceId, legNum) {
     const currentPlayerIte = latest;
     if(!currentPlayerIte) return;
 
-
     const now = Date.now();
     const fifteenMinutesAgo = now - 15 * 60 * 1000;
   
@@ -291,11 +293,17 @@ export async function computeFleetIte(raceId, legNum) {
       timeout: 4000,
       storeName: 'legFleetInfos'
     });
+    
+    initMessageITYC("fleet",`${raceId}.${legNum}`,legInfos.legName,currentUserId.loggedUser,legInfos.raceType);
+
     for (const [userId, entry] of Object.entries(items)) {
         const playerOptionRace = (await getData('legPlayersOptions', [raceId, legNum, userId])) ?? {options:[],guessOptions:0};
  
-        await computeFleetPlayerIte(legInfos, entry,playerOptionRace,currentPlayerIte , polar)
+        const pInfo = await computeFleetPlayerIte(legInfos, entry,playerOptionRace,currentPlayerIte , polar);
+        await addInfoFleetITYC(pInfo,legInfos);
     }
+    sendInfoITYC("fleet");
+
     await saveData('internal', {id: "legFleetInfosDashUpdate",ts:Date.now()},null,{ updateIfExists: true });
 }
 

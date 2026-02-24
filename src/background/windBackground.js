@@ -171,7 +171,7 @@ async function ensurePreviousRunFh09and12(model) {
 }
 
 export async function syncLatestWindpacks() {
-  const manifest = await fetchLatestManifest('latest');
+  const manifest = await fetchManifest('latest');
   const { run, forecasts } = manifest;
   const model = WIND_MODEL;
 

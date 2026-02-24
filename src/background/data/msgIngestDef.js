@@ -87,8 +87,7 @@ export async function ingestBoatInfos(boatData)
       ope.push( {
         type : "putOrUpdate",
         legList: [
-          {
-  //          key:[l.race_id,l.leg_num], 
+          { 
             id: `${l._id.race_id}-${l._id.num}`,
             raceId: l._id.race_id,
             legNum: l._id.num,
@@ -120,11 +119,10 @@ export async function ingestBoatInfos(boatData)
         ],
         ...((l.boat?.stats?.weight && l.boat?.polar_id) && {
           polars: [
-              {
-//                key: l.boat.polar_id,
-                id: l.boat.polar_id,
-                weight : l.boat.stats.weight
-              }
+            {
+              id: l.boat.polar_id,
+              weight : l.boat.stats.weight
+            }
           ]
         }),
         internal: [
@@ -176,13 +174,10 @@ export async function ingestBoatInfos(boatData)
           },
         ],
         players : [
-          {                       
-//            key: bs._id.user_id,   
+          {
             id : bs._id.user_id,
             name : bs.displayName,
-            timestamp: Date.now(),
-//                  isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
-//            credits : bs.currency1
+            timestamp: Date.now()
           }      
         ],
       });
@@ -190,7 +185,6 @@ export async function ingestBoatInfos(boatData)
     }
     if(boatInfos.res?.bs) {
       const bs = boatInfos.res.bs;
-      //todo manage player and track
 
       raceId = bs._id.race_id;
       legNum = bs._id.leg_num;
@@ -391,8 +385,7 @@ export function ingestAccountDetails(account)
                     id: "playersUpdate",
                     ts: Date.now(),
                   },
-                  {   
-//                        key: 'lastLoggedUser',
+                  {
                       id : 'lastLoggedUser',
                       loggedUser : validAccount.userId 
                   },
@@ -404,8 +397,7 @@ export function ingestAccountDetails(account)
                     : [])
                 ],
                 players : [
-                    { 
-//                        key: validAccount.userId,  
+                    {
                         id : validAccount.userId,
                         name : validAccount.displayName,
                         teamId : validAccount.scriptData.team?.id?? null,
@@ -417,9 +409,8 @@ export function ingestAccountDetails(account)
                 ...(validAccount.scriptData.team?.id && {
                     teams: [
                         {
-//                            key: validAccount.scriptData.team.id,  
-                            id: validAccount.scriptData.team.id,
-                            name: validAccount.scriptData.team.name // Ajoute d'autres propriétés si nécessaire
+                            id: validAccount.scriptData.team.id, 
+                            name: validAccount.scriptData.team.name
                         }
                     ]
                 })
@@ -445,38 +436,35 @@ export function ingestEndLegPrep(endLegPrep)
         type: "putOrUpdate",
         legList: [
             {
-//            key : [l._id.race_id,l._id.num],
-            id: `${l._id.race_id}-${l._id.num}`,
-            raceId: l._id.race_id,
-            legNum: l._id.num,
-            status: l.status,
-            legName: l.name,
-            raceName: l.race.name,
-            raceType: l.race.type,
-            vsrLevel: l.vsrLevel,
-            estimatedTime: l.estimatedTime,
-            estimatedLength: l.estimatedLength,
-            fineWinds: l.fineWinds,
-            start: l.start,
-            end: l.end,
-            close: l.close,
-            open: l.open,
-            polar_id: l.boat?.polar_id,
-            boatName: l.boat?.name,
-            pilotBoatCredits: l.pilotBoatCredits,
-            priceLevel: l.priceLevel,
-            freeCredits: l.freeCredits,
-            lastUpdate: l.lastUpdate,
-            optionPrices: l.optionPrices,
-            checkpoints: l.checkpoints,
-            ice_limits: l.ice_limits,
-            fineWinds: l.fineWinds,
-            course: l.course,
-            restrictedZones : l.restrictedZones
-
+              id: `${l._id.race_id}-${l._id.num}`,
+              raceId: l._id.race_id,
+              legNum: l._id.num,
+              status: l.status,
+              legName: l.name,
+              raceName: l.race.name,
+              raceType: l.race.type,
+              vsrLevel: l.vsrLevel,
+              estimatedTime: l.estimatedTime,
+              estimatedLength: l.estimatedLength,
+              fineWinds: l.fineWinds,
+              start: l.start,
+              end: l.end,
+              close: l.close,
+              open: l.open,
+              polar_id: l.boat?.polar_id,
+              boatName: l.boat?.name,
+              pilotBoatCredits: l.pilotBoatCredits,
+              priceLevel: l.priceLevel,
+              freeCredits: l.freeCredits,
+              lastUpdate: l.lastUpdate,
+              optionPrices: l.optionPrices,
+              checkpoints: l.checkpoints,
+              ice_limits: l.ice_limits,
+              fineWinds: l.fineWinds,
+              course: l.course,
+              restrictedZones : l.restrictedZones
             },
             {
-//              key : 'update',
               id: 'update',
               update: new Date().toISOString()        
             }
@@ -484,7 +472,6 @@ export function ingestEndLegPrep(endLegPrep)
         ...((l.boat?.stats?.weight && l.boat?.polar_id) && {
           polars: [
               {
-//                key: l.boat.polar_id,
                 id: l.boat.polar_id,
                 weight : l.boat.stats.weight
               }
@@ -525,7 +512,6 @@ export function ingestEndLegPrep(endLegPrep)
 
 export function ingestRaceList(legListData) {
   try {
-    // ✅ Validation globale
     const validData = legListDataModel.validateSync(legListData, {
       stripUnknown: true,
       abortEarly: false
@@ -539,12 +525,10 @@ export function ingestRaceList(legListData) {
 
     for (const r of races) {
       try {
-        // ✅ Validation individuelle de chaque race
         const validated = raceSchema.validateSync(r, { stripUnknown: true });
         const idInfo = validated._id || {};
 
         legList.push({
- //         key : [validated._id.race_id,validated._id.num],
           id: `${validated.raceId}-${validated.legNum}`,
           raceId: validated.raceId,
           legNum: validated.legNum,
@@ -574,7 +558,6 @@ export function ingestRaceList(legListData) {
         {
           polars.push(
             {
-//              key: validated.boat.polar_id,
               id: validated.boat.polar_id,
               weight : validated.boat.stats.weight
             }
@@ -621,7 +604,6 @@ export function ingestRaceList(legListData) {
 
 export async function ingestFleetData(request, response) {
   try {
-    // ✅ Validation synchrone de la requête
     const req = getFleetRequestDataSchema.validateSync(request, {
       stripUnknown: true
     });
@@ -629,16 +611,12 @@ export async function ingestFleetData(request, response) {
     const filteredResponse = {
       ...response,
       res: (response.res || [])
-        // 1️⃣ Exclure pilotBoat
         .filter(p => p.userId !== "pilotBoat")
-        // 2️⃣ Corriger le state pour les bateaux "real"
         .map(p => ({
           ...p,
           state: p.type === "real" && p.state === null ? "racing" : p.state
         }))
     };
-
-    // ✅ Validation synchrone de la réponse
     const res = getFleetResponseSchema.validateSync(filteredResponse, {
       stripUnknown: true
     });
@@ -646,8 +624,7 @@ export async function ingestFleetData(request, response) {
     const connectedUserInfos = await getData("players",req.user_id);
     let currentTeamId = connectedUserInfos?.teamId?connectedUserInfos.teamId:null;
 
-    const legFleetInfos = res.res.map(p => ({  
-//      key:[req.race_id,req.leg_num,p.userId,p.lastCalcDate],   
+    const legFleetInfos = res.res.map(p => ({    
       id: `${req.race_id}-${req.leg_num}-${p.userId}-${p.lastCalcDate}`,
       raceId: req.race_id,
       legNum: req.leg_num,
@@ -723,7 +700,6 @@ export function ingestGameSetting(gameSetting) {
         ...(stamina && {
           internal: [
             {
-//              key: "paramStamina",
               id: "paramStamina",
               paramStamina: stamina,
             },
@@ -848,7 +824,6 @@ export function ingestBoatAction(boatActionTxt)
         }),
 
     }];
-//todo upate playerinfos and fleetInfos avec info userAction
     processDBOperations(dbOpe);   
      return true;
   })
@@ -861,8 +836,6 @@ export function ingestBoatAction(boatActionTxt)
 
 
 export async function ingestGhostTrack(request, response) {
-
-  // ✅ Validation synchrone de la requête
   const req = ghostTrackRequestDataSchema.validateSync(request, {
     stripUnknown: true
   });

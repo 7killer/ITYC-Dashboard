@@ -4,7 +4,8 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 7;
+const DB_VERSION = 8;
+const MIN_BULK_SIZE = 10;
 
 export async function openDatabase() {
     try {
@@ -285,8 +286,123 @@ export async function deleteData(storeName, key) {
         throw error;
     }
 }
+// Helper interne pour les écritures en bulk dans une transaction existante
+async function bulkSaveRecordInStore(store, storeName, record, operation) {
+    const updateIfExists = (operation === "putOrUpdate");
+    const hasInlineKey = !!store.keyPath;
 
+    // Clone léger pour être sûr de ne pas muter l'original
+    const data = record;
+    const key  = record?.key; // utile pour les stores sans keyPath
 
+    // Helper: calcule/valide la clé inline à partir du keyPath
+    const resolveInlineKey = () => {
+        const kp = store.keyPath;
+        if (!kp) return undefined;
+
+        if (typeof kp === 'string') {
+            const v = data?.[kp];
+            if (v === undefined || v === null) {
+                throw new Error(
+                    `bulkSave: store "${storeName}" utilise keyPath="${kp}" mais data.${kp} est manquant`
+                );
+            }
+            return v;
+        }
+
+        if (Array.isArray(kp)) {
+            const arr = kp.map((k) => {
+                const v = data?.[k];
+                if (v === undefined || v === null) {
+                    throw new Error(
+                        `bulkSave: store "${storeName}" keyPath composé ${JSON.stringify(kp)} → data.${k} manquant`
+                    );
+                }
+                return v;
+            });
+            return arr;
+        }
+
+        throw new Error(
+            `bulkSave: store "${storeName}" keyPath de type non supporté: ${typeof kp}`
+        );
+    };
+
+    if (hasInlineKey) {
+        // 🔐 Clé basée sur le keyPath (la key paramètre est ignorée)
+        if (key !== undefined && cfg.debugDB) {
+            console.warn(
+                `[${storeName}] keyPath défini (${store.keyPath}) → propriété "key" de record ignorée en bulk`
+            );
+        }
+
+        const recordKey = resolveInlineKey();
+
+        if (updateIfExists) {
+            const existing = await store.get(recordKey);
+            if (existing) {
+                await store.put({ ...existing, ...data }); // pas de 2e arg
+                if (cfg.debugDB)
+                    console.log(`🟡 bulk update (inline) in ${storeName}:`, recordKey);
+            } else {
+                await store.put(data);
+                if (cfg.debugDB)
+                    console.log(`🟢 bulk insert (inline) in ${storeName}:`, recordKey);
+            }
+        } else {
+            await store.put(data);
+            if (cfg.debugDB)
+                console.log(`💾 bulk save (inline) in ${storeName}:`, recordKey);
+        }
+    } else {
+        // 🔓 Clé externe (pas de keyPath)
+        const needsKey = !store.autoIncrement && (key === undefined || key === null);
+        if (needsKey) {
+            throw new Error(
+                `bulkSave: store "${storeName}" sans keyPath et sans autoIncrement → "record.key" requis`
+            );
+        }
+
+        if (updateIfExists) {
+            const existing =
+                key !== undefined && key !== null ? await store.get(key) : null;
+            if (existing) {
+                if (key !== undefined && key !== null) {
+                    await store.put({ ...existing, ...data }, key);
+                } else {
+                    await store.put({ ...existing, ...data }); // autoIncrement
+                }
+                if (cfg.debugDB)
+                    console.log(
+                        `🟡 bulk update (explicit) in ${storeName}:`,
+                        key ?? "(autoIncrement)"
+                    );
+            } else {
+                if (key !== undefined && key !== null) {
+                    await store.put(data, key);
+                } else {
+                    await store.put(data); // autoIncrement
+                }
+                if (cfg.debugDB)
+                    console.log(
+                        `🟢 bulk insert (explicit) in ${storeName}:`,
+                        key ?? "(autoIncrement)"
+                    );
+            }
+        } else {
+            if (key !== undefined && key !== null) {
+                await store.put(data, key);
+            } else {
+                await store.put(data); // autoIncrement
+            }
+            if (cfg.debugDB)
+                console.log(
+                    `💾 bulk save (explicit) in ${storeName}:`,
+                    key ?? "(autoIncrement)"
+                );
+        }
+    }
+}
 export async function saveData(storeName, data, key, options = {}) {
     const { updateIfExists = false } = options;
   
@@ -410,49 +526,86 @@ export function handleIndexedDBError(error, context = 'IndexedDB Operation') {
     if(cfg.debugDB) console.groupEnd();
 }
 
-export function processDBOperations(dbOperations) {
-    dbOperations.forEach(operation => {
-        const { type, ...stores } = operation; // Récupère le type d'opération et les stores concernés
+export async function processDBOperations(dbOperations) {
+    if (!Array.isArray(dbOperations) || dbOperations.length === 0) return;
 
-        Object.entries(stores).forEach(([storeName, records]) => {
-            if (Array.isArray(records)) {
-                records.forEach(record => {
-                    executeDBOperation(type, storeName, record);
-                });
+    const db = await openDatabase();
+
+    try {
+        for (const operation of dbOperations) {
+            const { type, ...stores } = operation; // type + les stores concernés
+
+            for (const [storeName, records] of Object.entries(stores)) {
+                if (!Array.isArray(records) || records.length === 0) continue;
+
+                const canBulk = (type === "put" || type === "putOrUpdate");
+                const useBulk = canBulk && records.length > MIN_BULK_SIZE;
+
+                if (useBulk) {
+                    if (cfg.debugDB)
+                        console.log(
+                            `[processDBOperations] BULK mode for store "${storeName}" (${records.length} records, type=${type})`
+                        );
+
+                    const tx = db.transaction(storeName, "readwrite");
+                    const store = tx.objectStore(storeName);
+
+                    for (const record of records) {
+                        await bulkSaveRecordInStore(store, storeName, record, type);
+                    }
+
+                    await tx.done;
+                } else {
+                    if (cfg.debugDB)
+                        console.log(
+                            `[processDBOperations] SMALL batch mode for store "${storeName}" (${records.length} records, type=${type})`
+                        );
+
+                    // On garde le comportement existant pour les petits volumes
+                    for (const record of records) {
+                        await executeDBOperation(type, storeName, record);
+                    }
+                }
             }
-        });
-    });
+        }
+    } catch (error) {
+        if (cfg.debugDBErr)
+            console.error("[processDBOperations] error:", error);
+        handleIndexedDBError(error, "processDBOperations");
+        throw error;
+    } finally {
+        db.close();
+    }
 }
-
 export async function executeDBOperation(operation, storeName, data, callback = null) {
     try {
         switch (operation) {
             case "put":
-                await saveData(storeName, data,data.key);
+                await saveData(storeName, data, data.key);
                 break;
 
-            case "get":
-                const result = await getData(storeName, $data.key);
+            case "get": {
+                const result = await getData(storeName, data.key); // <-- $data → data
                 if (callback) callback(result);
                 return result;
+            }
 
             case "putOrUpdate":
-                await saveData(storeName, data,data.key,{ updateIfExists: true });
+                await saveData(storeName, data, data.key, { updateIfExists: true });
                 break;
 
             default:
-                if(cfg.debugDBErr) console.error("Opération non reconnue :", operation);
+                if (cfg.debugDBErr) console.error("Opération non reconnue :", operation);
                 throw new Error(`Opération non reconnue : ${operation}`);
         }
     } catch (error) {
-        if(cfg.debugDBErr) console.error(`Erreur lors de l'opération ${operation} sur ${storeName}:`, error);
+        if (cfg.debugDBErr) console.error(`Erreur lors de l'opération ${operation} sur ${storeName}:`, error);
         handleIndexedDBError(error, `DB Operation: ${operation}`);
-        
-        // Si un callback d'erreur est nécessaire
+
         if (callback && typeof callback === 'function') {
             callback(null, error);
         }
-        
+
         throw error;
     }
 }

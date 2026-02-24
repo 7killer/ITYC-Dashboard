@@ -12,6 +12,11 @@ import {
   WIND_MODEL,
 } from './windBackground.js';
 
+import { 
+    getTeamListITYC,getRaceListITYC,getPlayerListITYC,getRaceOptionsListITYC,
+    sendLegDataITYC,sendInfoOptITYC
+ } from './itycInterface.js'; 
+
 const version = '1.0';
 let debuggeeTab;
 let dashboardTab;
@@ -202,18 +207,55 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
         delayInMinutes: 1,
         periodInMinutes: 2,
     });
+    chrome.alarms.create('ityc-infos-update', {
+        delayInMinutes: 15,
+        periodInMinutes: 15,
+    });
+
+    
+    try {
+        await syncLatestWindpacksWindowed();
+        await getTeamListITYC({ forceRefresh: true });
+        await getPlayerListITYC({ forceRefresh: true });
+        await getRaceListITYC({ forceRefresh: true });
+    } catch (e) {
+        console.error('[teams] [players] [raceList] [synchroWind] initial sync onInstalled failed', e);
+    }  
+});
+
+chrome.runtime.onStartup.addListener(() => {
+    (async () => {
+        try {
+            await syncLatestWindpacksWindowed();
+            await getTeamListITYC(); 
+            await getPlayerListITYC();
+            await getRaceListITYC();
+        } catch (e) {
+            console.error('[teams] [players] [raceList] [synchroWind] initial sync onStartup failed', e);
+        }
+    })();
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-if (alarm.name === 'wind-sync-5d') {
- (async () => {
-   try {
-     await syncLatestWindpacksWindowed();
-   } catch (e) {
-     console.error('[wind] erreur sur alarm sync-5d', e);
-   }
- })();
-}
+    if (alarm.name === 'wind-sync-5d') {
+        (async () => {
+            try {
+                await syncLatestWindpacksWindowed();
+            } catch (e) {
+                console.error('[synchroWind] erreur sur alarm sync-5d', e);
+            }
+        })();
+    } else if (alarm.name === 'ityc-infos-update') {
+        (async () => {
+            try {
+              await getTeamListITYC();
+              await getPlayerListITYC();
+              await getRaceListITYC();
+            } catch (e) {
+                console.error('[teams] [players] [raceList] periodic sync failed', e);
+            }
+        })();
+    }
 });
 
 /* =========================================================
@@ -260,6 +302,8 @@ chrome.runtime.onMessageExternal.addListener(
                 if (event === 'getboatinfos') {
                     const ret = await msgInjest.ingestBoatInfos(body);
                     rstTimer = ret.rstTimer;
+                    await sendLegDataITYC(body);
+                    await sendInfoOptITYC(body);
                 } else if (event === 'getfleet') {
                     await msgInjest.ingestFleetData(postData, body);
                 }
@@ -289,6 +333,7 @@ dashStateInfosListener.start({
             currentRace.legNum,
             currentId.loggedUser
         );
+        await getRaceOptionsListITYC(currentRace.raceId,currentRace.legNum);
     },
 });
 
@@ -365,6 +410,7 @@ connectedRaceListener.start({
             newValue.legNum,
             currentId.loggedUser
         );
+        await getRaceOptionsListITYC(newValue.raceId,newValue.legNum);
     },
 });
 
