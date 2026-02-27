@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-4dc76c15.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-529e91f7.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -391,12 +391,6 @@ function getSortOrder() {
 function isDisplayEnabled(playerIte2, userId, connectPlayerId) {
   const userPrefs2 = getUserPrefs();
   const userFilters = userPrefs2.filters;
-  {
-    console.groupCollapsed(`[isDisplayEnabled] Check for user ${userId}`);
-    console.log("→ connectPlayerId :", connectPlayerId);
-    console.log("→ playerIte :", playerIte2);
-    console.log("→ userFilters :", userFilters);
-  }
   const conditions = {
     self: userId === connectPlayerId,
     followed: playerIte2.type2 === "followed" && userFilters.friends,
@@ -410,13 +404,6 @@ function isDisplayEnabled(playerIte2, userId, connectPlayerId) {
     inRace: playerIte2.state === "racing" && userFilters.inRace
   };
   const result = Object.values(conditions).some(Boolean);
-  {
-    Object.entries(conditions).forEach(([key, value]) => {
-      console.log(`  ${key.padEnd(10)}:`, value);
-    });
-    console.log("✅ Result :", result);
-    console.groupEnd();
-  }
   return result;
 }
 function getFleetSortValue(pInfos, sortField2) {
@@ -31604,8 +31591,8 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
     polarRafWithScale = false;
   });
 }
-function refreshPolarChart(raceId, ite, options, polar, drawTheme, tws, twa, twd) {
-  getDataArray(twa, tws, twd, ite.metaDash.cog, raceId, options, polar);
+function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
+  getDataArray(twa, tws, twd, ite.metaDash.cog, rid, options, polar);
   divPolarTws.value = roundTo(tws, 2);
   divPolarTwa.innerHTML = `${roundTo(twa, 2)} °`;
   document.getElementById("polar_name").innerHTML = polar.label;
@@ -31614,7 +31601,7 @@ function refreshPolarChart(raceId, ite, options, polar, drawTheme, tws, twa, twd
   schedulePolarRedraw(polar, userPrefs.theme, false);
 }
 function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
-  var _a2, _b;
+  var _a2, _b, _c;
   const userPrefs2 = getUserPrefs();
   const connectedRace = getOpenedRaceId();
   const raceItes = getLegPlayerInfos();
@@ -31627,10 +31614,10 @@ function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
     return;
   if (!divPolarTws)
     initialize3();
-  const opt = raceItes.options;
+  const opt = (_b = raceItes.options) == null ? void 0 : _b.options;
   const tws = twsI ?? (ite.tws === void 0 ? 10 : ite.tws);
   const twa = twaI ?? (ite.twa === void 0 ? 90 : ite.twa < 0 ? -ite.twa : ite.twa);
-  const twd = twdI ?? (((_b = ite.metaDash) == null ? void 0 : _b.twd) === void 0 ? 90 : ite.metaDash.twd);
+  const twd = twdI ?? (((_c = ite.metaDash) == null ? void 0 : _c.twd) === void 0 ? 90 : ite.metaDash.twd);
   if (opt == null ? void 0 : opt.foils) {
     document.getElementById("polarDivFoil").style = "display:block;";
   } else {
@@ -31638,7 +31625,7 @@ function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   }
   refreshPolarChart(rid, ite, opt, polar, userPrefs2.theme, tws, twa, twd);
 }
-function getDataArray(twa, tws, twd, cog, raceId, options, boatPolars) {
+function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
   const spikeInput = document.getElementById("polar_spike_sensitivity");
   const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 2e-3 : 2e-3;
   const state = computePolarState({
@@ -31646,7 +31633,7 @@ function getDataArray(twa, tws, twd, cog, raceId, options, boatPolars) {
     tws,
     twd,
     cog,
-    raceId,
+    rid,
     options,
     boatPolars,
     spikeSensitivity

@@ -79,8 +79,8 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
         polarRafWithScale = false;
     });
 }
-function refreshPolarChart(raceId, ite, options, polar, drawTheme, tws, twa, twd) {
-  getDataArray(twa, tws, twd, ite.metaDash.cog, raceId, options, polar);
+function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
+  getDataArray(twa, tws, twd, ite.metaDash.cog, rid, options, polar);
 
   divPolarTws.value = roundTo(tws, 2);
   divPolarTwa.innerHTML = `${roundTo(twa, 2)} °`;
@@ -106,7 +106,7 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
 
   if (!divPolarTws) initialize();
 
-  const opt = raceItes.options;
+  const opt = raceItes.options?.options;
 
   const tws = twsI ?? (ite.tws === undefined ? 10 : ite.tws);
   const twa = twaI ?? (ite.twa === undefined ? 90 : (ite.twa < 0 ? -ite.twa : ite.twa));
@@ -124,7 +124,7 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
 /* =========================================================================
  *  DATA
  * ========================================================================= */
-function getDataArray(twa, tws, twd, cog, raceId, options, boatPolars) {
+function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
     // Lis une seule fois la sensibilité spikes (DOM) et délègue au moteur
     const spikeInput = document.getElementById("polar_spike_sensitivity");
     const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 0.002 : 0.002;
@@ -134,7 +134,7 @@ function getDataArray(twa, tws, twd, cog, raceId, options, boatPolars) {
         tws,
         twd,
         cog,
-        raceId,
+        rid,
         options,
         boatPolars,
         spikeSensitivity,

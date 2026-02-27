@@ -3,7 +3,7 @@ import {getData,getAllData,getLatestEntriesPerUser,getEntriesForTriplet,getLegPl
 
 let connectedPlayerId;
 let connectedPlayerInfos = [];
-let openedRaceId ={raceId : null, legNum : null, polarId :null};
+let openedRaceId ={raceId : null, legNum : null, polar_id :null};
 let openedRaceIdHistory = [];
 let raceInfo = [];
 let legListUpdate = 0;
@@ -313,9 +313,9 @@ export function getPolar()
 
 export async function updatePolar()
 {
-    if(raceInfo?.polarId)
+    if(raceInfo?.polar_id)
     {
-        const polarData = await getData("polars",raceInfo.polarId)
+        const polarData = await getData("polars",raceInfo.polar_id)
                         .catch(error => {console.error("getPolar error :", error);});
         polar = [];
         if(polarData)
@@ -576,7 +576,8 @@ export function getOpenedRaceId()
 export async function updateOpenedRaceId()
 {
     await updateLegList();
-    openedRaceId.polarId = raceInfo.polar_id;
+    openedRaceId.polar_id = raceInfo.polar_id;
+    await updatePolar();
     legSelectedPlayers = [];
     if(connectedPlayerId) legSelectedPlayers[connectedPlayerId] = true;
 }
