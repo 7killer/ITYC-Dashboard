@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-529e91f7.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-dcde5c71.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -31287,8 +31287,10 @@ function resetAllGraphsZoom() {
   (_a2 = source.resetZoom) == null ? void 0 : _a2.call(source);
   itycZoomSync.reset(source, "timeseries");
 }
-const DEFAULT_TWA_STEP = 0.5;
+const DEFAULT_TWA_STEP = 0.1;
+const DEFAULT_TWS_STEP = 0.1;
 const twsCache = /* @__PURE__ */ new Map();
+const twaCache = /* @__PURE__ */ new Map();
 function ensureTwsSlice({ tws, twd, cog, options, boatPolars, twaStep = DEFAULT_TWA_STEP }) {
   const key = Number(roundTo(tws, 1));
   let slice = twsCache.get(key);
@@ -31319,7 +31321,7 @@ function buildTwsSlice({ tws, twd, cog, options, boatPolars, twaStep }) {
       hdg += 360;
     else if (hdg > 360)
       hdg -= 360;
-    const vmc = res.best.speed * Math.cos((hdg - cog) * (Math.PI / 180));
+    const vmc = cog !== void 0 ? res.best.speed * Math.cos((hdg - cog) * (Math.PI / 180)) : 0;
     res.best.vmc = vmc;
     polarsData[twaKey] = res;
     if (res.best.speed > max.speed) {
@@ -31364,6 +31366,48 @@ function buildTwsSlice({ tws, twd, cog, options, boatPolars, twaStep }) {
     bestVMG,
     max,
     maxFoilFactor
+  };
+}
+function ensureTwaSlice({ twa, twd, cog, options, boatPolars, twsStep = DEFAULT_TWS_STEP }) {
+  const key = Number(roundTo(twa, 1));
+  let slice = twaCache.get(key);
+  if (!slice || slice.options !== options || slice.boatPolars !== boatPolars || slice.twsStep !== twsStep) {
+    slice = buildTwaSlice({ twa: key, twd, options, boatPolars, twsStep });
+    twaCache.set(key, slice);
+  }
+  return slice;
+}
+function buildTwaSlice({ twa, options, boatPolars, twsStep }) {
+  const polarsDataTWA = {};
+  const derivativesSpeed = [];
+  const max = { twa: 0, speed: 0, sail: 0 };
+  const twsKeys = [];
+  for (let tws = 5; tws <= 45 + 1e-9; tws += twsStep) {
+    const twsKey = Number(roundTo(tws, 1));
+    twsKeys.push(twsKey);
+    const res = getSpeeds(boatPolars, options, twsKey, twa);
+    polarsDataTWA[twsKey] = res;
+    if (res.best.speed > max.speed) {
+      max.speed = res.best.speed;
+      max.twa = twsKey;
+      max.sail = res.best.sail;
+    }
+  }
+  for (let i = 1; i < twsKeys.length; i++) {
+    const tPrev = twsKeys[i - 1];
+    const tCurr = twsKeys[i];
+    const pPrev = polarsDataTWA[tPrev].best;
+    const pCurr = polarsDataTWA[tCurr].best;
+    derivativesSpeed.push(pCurr.speed - pPrev.speed);
+  }
+  return {
+    twa,
+    options,
+    boatPolars,
+    twsStep,
+    twsKeys,
+    polarsDataTWA,
+    derivativesSpeed
   };
 }
 function computeSpikes(polarsData, twaKeys, derivatives, sensitivity, mode = "speed") {
@@ -31427,16 +31471,40 @@ function computePolarState({
   options,
   boatPolars,
   spikeSensitivity = 2e-3,
-  twaStep = DEFAULT_TWA_STEP
+  twaStep = DEFAULT_TWA_STEP,
+  twsStep = DEFAULT_TWS_STEP
 }) {
+  console.groupCollapsed(`[computePolarState] receive param`);
+  console.log("→ raceId :", raceId);
+  console.log("→ options :", options);
+  console.log("→ polar :", boatPolars);
+  console.log("→ twa :", twa);
+  console.log("→ tws :", tws);
+  console.log("→ twd :", twd);
+  console.log("→ cog :", cog);
+  console.groupEnd();
   if (!boatPolars)
     throw new Error("computePolarState: boatPolars manquant");
-  tws = Number(roundTo(tws, 2));
-  twa = Math.abs(Number(roundTo(twa, 2)));
-  if (twa < 0)
+  if (!raceId)
+    throw new Error("computePolarState: raceId manquant");
+  const twsI = Number(roundTo(tws, 2));
+  const twaI = Math.abs(Number(roundTo(twa, 2)));
+  if (twaI == void 0 || twaI == null)
+    twa = 90;
+  else if (twaI < 0)
     twa = 0;
-  if (twa > 180)
+  else if (twaI > 180)
     twa = 180;
+  else
+    twa = twaI;
+  if (twsI == void 0 || twsI == null)
+    tws = 10;
+  else if (twsI < 0.5)
+    tws = 0.5;
+  else if (twsI > 45)
+    tws = 45;
+  else
+    tws = twsI;
   const slice = ensureTwsSlice({ tws, twd, cog, options, boatPolars, twaStep });
   const twaKey = snapToGrid(twa, slice.twaStep);
   const base = slice.polarsData[twaKey];
@@ -31451,7 +31519,26 @@ function computePolarState({
       options,
       boatPolars,
       spikeSensitivity,
-      twaStep
+      twaStep,
+      twsStep
+    });
+  }
+  const slice2 = ensureTwaSlice({ twa, options, boatPolars, twsStep });
+  const twsKey = snapToGrid(tws, slice.twsStep);
+  const base2 = slice2.polarsDataTWA[twsKey];
+  if (!base2) {
+    const fallbackKey = slice2.twsKeys[0];
+    return computePolarState({
+      twa,
+      tws: fallbackKey,
+      twd,
+      cog,
+      raceId,
+      options,
+      boatPolars,
+      spikeSensitivity,
+      twaStep,
+      twsStep
     });
   }
   const current = {
@@ -31494,6 +31581,13 @@ function computePolarState({
     spikeSensitivity,
     "vmc"
   );
+  const spikesTws = computeSpikes(
+    slice2.polarsDataTWA,
+    slice2.twsKeys,
+    slice2.derivativesSpeed,
+    spikeSensitivity,
+    "tws"
+  );
   current.spikes = spikesSpeed;
   const bestVMG = {
     upwind: { ...slice.bestVMG.upwind },
@@ -31506,6 +31600,7 @@ function computePolarState({
     tws,
     twa,
     twaKey,
+    twsKey,
     twd,
     cog,
     raceId,
@@ -31513,6 +31608,7 @@ function computePolarState({
     boatPolars,
     polarsData: slice.polarsData,
     // équivalent _polarsData
+    polarsDataTWA: slice2.polarsDataTWA,
     max: slice.max,
     // équivalent _currentResultset.max
     bestVMG,
@@ -31524,7 +31620,8 @@ function computePolarState({
     sailsSpeeds: slice.polarsData[twaKey].all,
     spikesSpeed,
     spikesVmg,
-    spikesVmc
+    spikesVmc,
+    spikesTws
   };
 }
 function computeSailTwaRange(polarsData, boatPolars, options, sailId, twaKeys) {
@@ -31592,7 +31689,9 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
   });
 }
 function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
-  getDataArray(twa, tws, twd, ite.metaDash.cog, rid, options, polar);
+  var _a2;
+  const cog = ((_a2 = ite.metaDash) == null ? void 0 : _a2.cog) === void 0 ? void 0 : ite.cog;
+  getDataArray(rid, options, polar, twa, tws, twd, cog);
   divPolarTws.value = roundTo(tws, 2);
   divPolarTwa.innerHTML = `${roundTo(twa, 2)} °`;
   document.getElementById("polar_name").innerHTML = polar.label;
@@ -31617,7 +31716,7 @@ function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   const opt = (_b = raceItes.options) == null ? void 0 : _b.options;
   const tws = twsI ?? (ite.tws === void 0 ? 10 : ite.tws);
   const twa = twaI ?? (ite.twa === void 0 ? 90 : ite.twa < 0 ? -ite.twa : ite.twa);
-  const twd = twdI ?? (((_c = ite.metaDash) == null ? void 0 : _c.twd) === void 0 ? 90 : ite.metaDash.twd);
+  const twd = twdI ?? (((_c = ite.metaDash) == null ? void 0 : _c.twd) === void 0 ? ite.twd === void 0 ? 90 : ite.twd : ite.metaDash.twd);
   if (opt == null ? void 0 : opt.foils) {
     document.getElementById("polarDivFoil").style = "display:block;";
   } else {
@@ -31625,7 +31724,7 @@ function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   }
   refreshPolarChart(rid, ite, opt, polar, userPrefs2.theme, tws, twa, twd);
 }
-function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
+function getDataArray(rid, options, boatPolars, twa, tws, twd, cog) {
   const spikeInput = document.getElementById("polar_spike_sensitivity");
   const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 2e-3 : 2e-3;
   const state = computePolarState({
@@ -31633,13 +31732,14 @@ function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
     tws,
     twd,
     cog,
-    rid,
+    raceId: rid,
     options,
     boatPolars,
     spikeSensitivity
     // twaStep: 0.5 // tu peux passer en param si tu veux changer la résolution
   });
   _polarsData = state.polarsData;
+  _polarsDataTWA = state.polarsDataTWA;
   _maxFoilFactor = state.maxFoilFactor;
   _currentResultset = {
     max: state.max,
@@ -31666,19 +31766,20 @@ function getPolarTWSData(twa) {
     spikes: _currentResultset.current.spikes
   };
   const actualSailId = _polarsData[twa].best.sail;
-  for (let i = 0; i <= 180; i = (i + 0.1).fix(1)) {
+  for (let j = 0; j <= 1800; j++) {
+    const i = j / 10;
     if (_polarsData[i].best.sail === "") {
       _polarsData[i].best.sail = 1;
     }
     if (_polarsData[i].all[actualSailId] * 1.014 > _polarsData[i].best.speed && _polarsData[i].best.sail !== actualSailId) {
       _drawData.bestSail.push(actualSailId);
-      _drawData.pointColorBest.push(polarSailColors[actualSailId - 1]);
+      _drawData.pointColorBest.push(sailColors[actualSailId]);
     } else {
       _drawData.bestSail.push(_polarsData[i].best.sail);
-      _drawData.pointColorBest.push(polarSailColors[_polarsData[i].best.sail - 1]);
+      _drawData.pointColorBest.push(sailColors[_polarsData[i].best.sail]);
     }
     _drawData.theoSail.push(_polarsData[i].best.sail);
-    _drawData.pointColorTheo.push(polarSailColors[_polarsData[i].best.sail - 1]);
+    _drawData.pointColorTheo.push(sailColors[_polarsData[i].best.sail]);
     _drawData.twa.push(i);
     _drawData.spd.push(_polarsData[i].best.speed);
     _drawData.vmg.push(_polarsData[i].best.vmg);
@@ -31695,24 +31796,25 @@ function getPolarTWAData(tws) {
     bestSail: [],
     pointColorTheo: []
   };
-  tws = Number(roundTo(tws, 1));
-  const actualSailId = _polarsDataTWA[tws].best.sail;
-  for (let i = 0.5; i <= 45; i = (i + 0.1).fix(1)) {
+  const twsF = Number(roundTo(tws, 1));
+  const actualSailId = _polarsDataTWA[twsF].best.sail;
+  for (let j = 5; j <= 450; j++) {
+    const i = j / 10;
     if (_polarsDataTWA[i].best.sail === "") {
       _polarsDataTWA[i].best.sail = 1;
     }
     if (_polarsDataTWA[i].all[actualSailId] * 1.014 > _polarsDataTWA[i].best.speed && _polarsDataTWA[i].best.sail !== actualSailId) {
       _drawDataTWA.bestSail.push(actualSailId);
-      _drawDataTWA.pointColorBest.push(polarSailColors[actualSailId - 1]);
+      _drawDataTWA.pointColorBest.push(sailColors[actualSailId]);
     } else {
       _drawDataTWA.bestSail.push(_polarsDataTWA[i].best.sail);
       _drawDataTWA.pointColorBest.push(
-        polarSailColors[_polarsDataTWA[i].best.sail - 1]
+        sailColors[_polarsDataTWA[i].best.sail]
       );
     }
     _drawDataTWA.theoSail.push(_polarsDataTWA[i].best.sail);
     _drawDataTWA.pointColorTheo.push(
-      polarSailColors[_polarsDataTWA[i].best.sail - 1]
+      sailColors[_polarsDataTWA[i].best.sail]
     );
     _drawDataTWA.tws.push(i);
     _drawDataTWA.spd.push(_polarsDataTWA[i].best.speed);
@@ -31742,9 +31844,6 @@ function line(c, start, end, arrDashStyle) {
   }
   c.moveTo(start.x, start.y);
   c.lineTo(end.x, end.y);
-}
-function sailColor(sailName) {
-  return sailColors[sailName - 1];
 }
 function plot_scale(c, maxSpeed, drawTheme) {
   c.textAlign = "right";
@@ -31911,7 +32010,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
       c.lineTo(0, -speed * R / _chartScale.max);
       if (sail !== last_sail) {
         c.stroke();
-        c.strokeStyle = sailColor(sail);
+        c.strokeStyle = sailColors[sail];
         c.fillStyle = c.strokeStyle;
         c.beginPath();
         c.lineTo(0, -speed * R / _chartScale.max);
@@ -31935,7 +32034,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
         c.save();
         c.beginPath();
         c.moveTo(0, 0);
-        c.strokeStyle = polarSailColors[sailDef.id - 1];
+        c.strokeStyle = sailColors[sailDef.id];
         c.fillStyle = `${c.strokeStyle}1A`;
         c.lineWidth = sailDef.id === _currentResultset.current.bestSail ? 2 : 1;
         for (let i = twaStart; i <= twaEnd; i += 0.1) {
@@ -31984,7 +32083,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
     c.restore();
     c.save();
     c.font = "bold 10px Arial";
-    c.strokeStyle = sailColor(_currentResultset.current.bestSail);
+    c.strokeStyle = sailColors[_currentResultset.current.bestSail];
     c.fillStyle = c.strokeStyle;
     c.lineWidth = 2;
     if (_currentResultset.current.bestSailTWAMin !== 0) {

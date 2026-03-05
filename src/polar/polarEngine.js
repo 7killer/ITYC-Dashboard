@@ -10,11 +10,13 @@ import { getSpeeds } from './utils.js';
 import { roundTo } from '../common/utils.js';
 
 // Résolution angulaire (tu peux passer à 0.25 si tu veux plus fin)
-const DEFAULT_TWA_STEP = 0.5;
+const DEFAULT_TWA_STEP = 0.1;
+const DEFAULT_TWS_STEP = 0.1;
 
 // Cache des "slices" polaires par TWS
 // key = TWS arrondi à 0.5 nds
 const twsCache = new Map();
+const twaCache = new Map();
 
 /**
  * Calcule / récupère une "slice" polaire pour un TWS donné.
@@ -70,7 +72,7 @@ function buildTwsSlice({ tws, twd, cog, options, boatPolars, twaStep }) {
     if (hdg < 0) hdg += 360;
     else if (hdg > 360) hdg -= 360;
 
-    const vmc = res.best.speed * Math.cos((hdg - cog) * (Math.PI / 180));
+    const vmc = cog!==undefined?(res.best.speed * Math.cos((hdg - cog) * (Math.PI / 180))):0;
     res.best.vmc = vmc;
 
     polarsData[twaKey] = res;
@@ -127,6 +129,81 @@ function buildTwsSlice({ tws, twd, cog, options, boatPolars, twaStep }) {
     bestVMG,
     max,
     maxFoilFactor
+  };
+}
+/**
+ * Calcule / récupère une "slice" polaire pour un TWS donné.
+ * La slice contient tous les TWA (0 → 180° par pas twaStep).
+ */
+function ensureTwaSlice({ twa, twd, cog, options, boatPolars, twsStep = DEFAULT_TWS_STEP }) {
+  const key = Number(roundTo(twa, 1)); // 0.1 près, suffisant pour la clé
+  let slice = twaCache.get(key);
+
+
+  // Si inexistante ou contexte différent → on recalcule
+  if (
+    !slice ||
+    slice.options !== options ||
+    slice.boatPolars !== boatPolars ||
+    slice.twsStep !== twsStep
+  ) {
+    slice = buildTwaSlice({ twa: key, twd, options, boatPolars, twsStep });
+    twaCache.set(key, slice);
+  }
+
+  return slice;
+}
+
+/**
+ * Construit la slice polaire pour un TWA : grille TWS -> speeds, max, VMG, dérivées…
+ */
+function buildTwaSlice({ twa, options, boatPolars, twsStep }) {
+  const polarsDataTWA = {};          // key: TWA (nombre), value: { best, all }
+  const derivativesSpeed = [];    // dérivées successives de speed
+
+  const bestVMG = {
+    upwind: { twa: 0, vmg: 0 },
+    downwind: { twa: 0, vmg: 0 }
+  };
+
+  const max = { twa: 0, speed: 0, sail: 0 };
+
+  // 1) boucle TWS
+  const twsKeys = [];
+  for (let tws = 5; tws <= 45 + 1e-9; tws += twsStep) {
+    const twsKey = Number(roundTo(tws, 1));
+    twsKeys.push(twsKey);
+
+    const res = getSpeeds(boatPolars, options,twsKey , twa);
+
+    polarsDataTWA[twsKey] = res;
+
+    // Max speed
+    if (res.best.speed > max.speed) {
+      max.speed = res.best.speed;
+      max.twa = twsKey;
+      max.sail = res.best.sail;
+    }
+  }
+
+  // 2) dérivées par rapport au TWA (pour les spikes)
+  for (let i = 1; i < twsKeys.length; i++) {
+    const tPrev = twsKeys[i - 1];
+    const tCurr = twsKeys[i];
+    const pPrev = polarsDataTWA[tPrev].best;
+    const pCurr = polarsDataTWA[tCurr].best;
+
+    derivativesSpeed.push(pCurr.speed - pPrev.speed);
+  }
+
+  return {
+    twa,
+    options,
+    boatPolars,
+    twsStep,
+    twsKeys,
+    polarsDataTWA,
+    derivativesSpeed,
   };
 }
 
@@ -214,23 +291,43 @@ export function computePolarState({
   options,
   boatPolars,
   spikeSensitivity = 0.002,
-  twaStep = DEFAULT_TWA_STEP
+  twaStep = DEFAULT_TWA_STEP,
+  twsStep = DEFAULT_TWS_STEP
 }) {
+      console.groupCollapsed(`[computePolarState] receive param`);
+    console.log("→ raceId :",   raceId);
+    console.log("→ options :", options);
+    console.log("→ polar :", boatPolars);
+    console.log("→ twa :", twa);
+    console.log("→ tws :", tws);
+    console.log("→ twd :", twd);
+    console.log("→ cog :", cog);
+    console.groupEnd();
+
   if (!boatPolars) throw new Error('computePolarState: boatPolars manquant');
+  if (!raceId) throw new Error('computePolarState: raceId manquant');
 
   // Normalisation entrées
-  tws = Number(roundTo(tws, 2));
-  twa = Math.abs(Number(roundTo(twa, 2)));
-  if (twa < 0) twa = 0;
-  if (twa > 180) twa = 180;
+  const twsI = Number(roundTo(tws, 2));
+  const twaI = Math.abs(Number(roundTo(twa, 2)));
+  
+  if(twaI == undefined || twaI == null)
+    twa = 90;
+  else if (twaI < 0) twa = 0;
+  else if (twaI > 180) twa = 180;
+  else twa = twaI;
 
+  if(twsI == undefined || twsI == null)
+    tws = 10;
+  else if (twsI < 0.5) tws = 0.5;
+  else if (twsI > 45) tws = 45;
+  else tws = twsI;
+  
   const slice = ensureTwsSlice({ tws, twd, cog, options, boatPolars, twaStep });
-
-  // On "snap" le twa demandé sur la grille (0, 0.5, 1.0, ...)
   const twaKey = snapToGrid(twa, slice.twaStep);
-
   const base = slice.polarsData[twaKey];
   if (!base) {
+    
     // Pas de point exactement à twaKey → on s'aligne sur 0° pour éviter le crash
     // (cas très rare si twa hors [0..180])
     const fallbackKey = slice.twaKeys[0];
@@ -243,9 +340,31 @@ export function computePolarState({
       options,
       boatPolars,
       spikeSensitivity,
-      twaStep
+      twaStep,
+      twsStep
     });
   }
+
+  const slice2 = ensureTwaSlice({ twa, options, boatPolars, twsStep });
+  const twsKey = snapToGrid(tws, slice.twsStep);
+  const base2 = slice2.polarsDataTWA[twsKey];
+  if (!base2) {
+    // Pas de point exactement à twaKey → on s'aligne sur 0° pour éviter le crash
+    // (cas très rare si twa hors [0..180])
+    const fallbackKey = slice2.twsKeys[0];
+    return computePolarState({
+      twa,
+      tws: fallbackKey,
+      twd,
+      cog,
+      raceId,
+      options,
+      boatPolars,
+      spikeSensitivity,
+      twaStep,
+      twsStep
+    });
+  }  
 
   // État courant (au TWA demandé)
   const current = {
@@ -292,6 +411,13 @@ export function computePolarState({
     spikeSensitivity,
     'vmc'
   );
+  const spikesTws = computeSpikes(
+    slice2.polarsDataTWA,
+    slice2.twsKeys,
+    slice2.derivativesSpeed,
+    spikeSensitivity,
+    'tws'
+  );
   current.spikes = spikesSpeed;
 
   // VMG downwind est négatif dans les polaires → on stocke sa valeur absolue comme dans ton code
@@ -307,6 +433,7 @@ export function computePolarState({
     tws,
     twa,
     twaKey,
+    twsKey,
     twd,
     cog,
     raceId,
@@ -314,6 +441,7 @@ export function computePolarState({
     boatPolars,
 
     polarsData: slice.polarsData,           // équivalent _polarsData
+    polarsDataTWA : slice2.polarsDataTWA,
     max: slice.max,                         // équivalent _currentResultset.max
     bestVMG,                                // équivalent _currentResultset.bestVMG
     maxFoilFactor: slice.maxFoilFactor,     // équivalent _maxFoilFactor
@@ -321,7 +449,8 @@ export function computePolarState({
     sailsSpeeds: slice.polarsData[twaKey].all,
     spikesSpeed,
     spikesVmg,
-    spikesVmc
+    spikesVmc,
+    spikesTws
   };
 }
 

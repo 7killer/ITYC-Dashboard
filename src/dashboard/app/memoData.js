@@ -315,7 +315,8 @@ export async function updatePolar()
 {
     if(raceInfo?.polar_id)
     {
-        const polarData = await getData("polars",raceInfo.polar_id)
+        const polarKey = Number(raceInfo.polar_id);
+        const polarData = await getData("polars",polarKey)
                         .catch(error => {console.error("getPolar error :", error);});
         polar = [];
         if(polarData)

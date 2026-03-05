@@ -80,8 +80,10 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
     });
 }
 function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
-  getDataArray(twa, tws, twd, ite.metaDash.cog, rid, options, polar);
+  const cog = ite.metaDash?.cog === undefined ? undefined:ite.cog;
 
+  getDataArray(rid, options, polar,twa, tws, twd, cog );
+  
   divPolarTws.value = roundTo(tws, 2);
   divPolarTwa.innerHTML = `${roundTo(twa, 2)} °`;
   document.getElementById('polar_name').innerHTML = polar.label;
@@ -110,7 +112,7 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
 
   const tws = twsI ?? (ite.tws === undefined ? 10 : ite.tws);
   const twa = twaI ?? (ite.twa === undefined ? 90 : (ite.twa < 0 ? -ite.twa : ite.twa));
-  const twd = twdI ?? (ite.metaDash?.twd === undefined ? 90 : ite.metaDash.twd);
+  const twd = twdI ?? (ite.metaDash?.twd === undefined ? (ite.twd === undefined?90:ite.twd) : ite.metaDash.twd);
 
   if (opt?.foils) {
     document.getElementById('polarDivFoil').style = 'display:block;';
@@ -124,7 +126,7 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
 /* =========================================================================
  *  DATA
  * ========================================================================= */
-function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
+function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
     // Lis une seule fois la sensibilité spikes (DOM) et délègue au moteur
     const spikeInput = document.getElementById("polar_spike_sensitivity");
     const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 0.002 : 0.002;
@@ -134,7 +136,7 @@ function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
         tws,
         twd,
         cog,
-        rid,
+        raceId: rid,
         options,
         boatPolars,
         spikeSensitivity,
@@ -143,6 +145,8 @@ function getDataArray(twa, tws, twd, cog, rid, options, boatPolars) {
 
     // On remplit tes anciennes structures pour ne pas toucher au reste du code
     _polarsData = state.polarsData;
+    _polarsDataTWA = state.polarsDataTWA;
+    
     _maxFoilFactor = state.maxFoilFactor;
 
     _currentResultset = {
@@ -179,7 +183,8 @@ function getPolarTWSData(twa) {
 
   const actualSailId = _polarsData[twa].best.sail;
 
-  for (let i = 0; i <= 180; i = (i + 0.1).fix(1)) {
+  for (let j = 0; j <= 1800; j++) {
+    const i = j / 10;
     if (_polarsData[i].best.sail === '') {
       _polarsData[i].best.sail = 1;
     }
@@ -190,14 +195,14 @@ function getPolarTWSData(twa) {
       _polarsData[i].best.sail !== actualSailId
     ) {
       _drawData.bestSail.push(actualSailId);
-      _drawData.pointColorBest.push(polarSailColors[actualSailId - 1]);
+      _drawData.pointColorBest.push(sailColors[actualSailId]);
     } else {
       _drawData.bestSail.push(_polarsData[i].best.sail);
-      _drawData.pointColorBest.push(polarSailColors[_polarsData[i].best.sail - 1]);
+      _drawData.pointColorBest.push(sailColors[_polarsData[i].best.sail]);
     }
 
     _drawData.theoSail.push(_polarsData[i].best.sail);
-    _drawData.pointColorTheo.push(polarSailColors[_polarsData[i].best.sail - 1]);
+    _drawData.pointColorTheo.push(sailColors[_polarsData[i].best.sail]);
 
     _drawData.twa.push(i);
     _drawData.spd.push(_polarsData[i].best.speed);
@@ -218,10 +223,10 @@ function getPolarTWAData(tws) {
     pointColorTheo: []
   };
 
-  tws = Number(roundTo(tws, 1));
-  const actualSailId = _polarsDataTWA[tws].best.sail;
-
-  for (let i = 0.5; i <= 45; i = (i + 0.1).fix(1)) {
+  const twsF = Number(roundTo(tws, 1));
+  const actualSailId = _polarsDataTWA[twsF].best.sail;
+  for (let j = 5; j <= 450; j++) {
+    const i = j / 10;
     if (_polarsDataTWA[i].best.sail === '') {
       _polarsDataTWA[i].best.sail = 1;
     }
@@ -231,17 +236,17 @@ function getPolarTWAData(tws) {
       _polarsDataTWA[i].best.sail !== actualSailId
     ) {
       _drawDataTWA.bestSail.push(actualSailId);
-      _drawDataTWA.pointColorBest.push(polarSailColors[actualSailId - 1]);
+      _drawDataTWA.pointColorBest.push(sailColors[actualSailId]);
     } else {
       _drawDataTWA.bestSail.push(_polarsDataTWA[i].best.sail);
       _drawDataTWA.pointColorBest.push(
-        polarSailColors[_polarsDataTWA[i].best.sail - 1]
+        sailColors[_polarsDataTWA[i].best.sail]
       );
     }
 
     _drawDataTWA.theoSail.push(_polarsDataTWA[i].best.sail);
     _drawDataTWA.pointColorTheo.push(
-      polarSailColors[_polarsDataTWA[i].best.sail - 1]
+      sailColors[_polarsDataTWA[i].best.sail]
     );
 
     _drawDataTWA.tws.push(i);
@@ -272,7 +277,7 @@ function getSpikesArray(polarsData, derivatives, sensitivity, startVal, mode = '
       type = Math.sign(derivatives[i]) > 0 ? 'hole' : 'sum';
     }
 
-    const idx = ((i / 10).fix(1) + startVal).fix(1);
+    const idx = Math.round(((i / 10) + startVal) * 10) / 10;
 
     let bSpeed = 0;
     if (mode === 'speed' || mode === 'twa') {
@@ -330,10 +335,6 @@ function line(c, start, end, arrDashStyle) {
   }
   c.moveTo(start.x, start.y);
   c.lineTo(end.x, end.y);
-}
-
-function sailColor(sailName) {
-  return sailColors[sailName - 1];
 }
 
 function plot_scale(c, maxSpeed, drawTheme) {
@@ -559,7 +560,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
 
       if (sail !== last_sail) {
         c.stroke();
-        c.strokeStyle = sailColor(sail);
+        c.strokeStyle = sailColors[sail];
         c.fillStyle = c.strokeStyle;
         c.beginPath();
         c.lineTo(0, -speed * R / _chartScale.max);
@@ -587,7 +588,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
         c.save();
         c.beginPath();
         c.moveTo(0, 0);
-        c.strokeStyle = polarSailColors[sailDef.id - 1];
+        c.strokeStyle = sailColors[sailDef.id];
         c.fillStyle = `${c.strokeStyle}1A`;
         c.lineWidth = sailDef.id === _currentResultset.current.bestSail ? 2 : 1;
 
@@ -654,7 +655,7 @@ function plot_polar(polar, drawTheme, withScale = false) {
     // limites de changement de voile
     c.save();
     c.font = 'bold 10px Arial';
-    c.strokeStyle = sailColor(_currentResultset.current.bestSail);
+    c.strokeStyle =  sailColors[_currentResultset.current.bestSail];
     c.fillStyle = c.strokeStyle;
     c.lineWidth = 2;
 
