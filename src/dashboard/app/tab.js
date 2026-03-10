@@ -39,7 +39,7 @@ export function tabSwitch(tabId = null)
     display_selbox("hidden");
 
     for (const [key, value] of Object.entries(tabList)) {
-        if(value == "raceMap")
+        if(value == "raceMap" || value == "raceAnalyse" )
             document.getElementById("tab-content" + key).style.display = (tabId == key ? "flex" : "none");
         else document.getElementById("tab-content" + key).style.display = (tabId == key ? "block" : "none");
     }
@@ -69,6 +69,7 @@ export function tabSwitch(tabId = null)
             break;
         case "raceAnalyse":
             buildRaceAnalyseAdvance();
+            document.getElementById("ityc_frame").style.display = "none";
 //            document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;    
             break;
         case "notif":

@@ -170,7 +170,7 @@ function buildTwaSlice({ twa, options, boatPolars, twsStep }) {
 
   // 1) boucle TWS
   const twsKeys = [];
-  for (let tws = 5; tws <= 45 + 1e-9; tws += twsStep) {
+  for (let tws = 0.5; tws <= 45 + 1e-9; tws += twsStep) {
     const twsKey = Number(roundTo(tws, 1));
     twsKeys.push(twsKey);
 
@@ -282,7 +282,7 @@ function computeSpikes(polarsData, twaKeys, derivatives, sensitivity, mode = 'sp
  *    spikesSpeed, spikesVmg, spikesVmc
  *  }
  */
-export function computePolarState({
+export function computePolarState(
   twa,
   tws,
   twd,
@@ -293,7 +293,7 @@ export function computePolarState({
   spikeSensitivity = 0.002,
   twaStep = DEFAULT_TWA_STEP,
   twsStep = DEFAULT_TWS_STEP
-}) {
+) {
       console.groupCollapsed(`[computePolarState] receive param`);
     console.log("→ raceId :",   raceId);
     console.log("→ options :", options);
@@ -331,8 +331,8 @@ export function computePolarState({
     // Pas de point exactement à twaKey → on s'aligne sur 0° pour éviter le crash
     // (cas très rare si twa hors [0..180])
     const fallbackKey = slice.twaKeys[0];
-    return computePolarState({
-      twa: fallbackKey,
+    return computePolarState(
+      fallbackKey,
       tws,
       twd,
       cog,
@@ -342,19 +342,19 @@ export function computePolarState({
       spikeSensitivity,
       twaStep,
       twsStep
-    });
+    );
   }
 
   const slice2 = ensureTwaSlice({ twa, options, boatPolars, twsStep });
-  const twsKey = snapToGrid(tws, slice.twsStep);
+  const twsKey = snapToGrid(tws, slice2.twsStep);
   const base2 = slice2.polarsDataTWA[twsKey];
   if (!base2) {
     // Pas de point exactement à twaKey → on s'aligne sur 0° pour éviter le crash
     // (cas très rare si twa hors [0..180])
     const fallbackKey = slice2.twsKeys[0];
-    return computePolarState({
+    return computePolarState(
       twa,
-      tws: fallbackKey,
+      fallbackKey,
       twd,
       cog,
       raceId,
@@ -363,7 +363,7 @@ export function computePolarState({
       spikeSensitivity,
       twaStep,
       twsStep
-    });
+    );
   }  
 
   // État courant (au TWA demandé)

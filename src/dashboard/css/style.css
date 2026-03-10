@@ -534,7 +534,7 @@ fieldset {
     padding: 0 0;
 }
 
-.tab2 .tab,.tab3 .tab {
+.tab2 .tab,.tab3 .tab ,.but{
     float: left;
     display: block;
     margin: 0 2px;
@@ -544,7 +544,7 @@ fieldset {
     padding: 0 2px 3px 2px;
 }
 
-.tab2 .tab>input[type="checkbox"] {
+.tab2 .tab>input[type="checkbox"] ,.but>input[type="checkbox"] {
     position: absolute;
     display: none;
 }
@@ -580,7 +580,7 @@ fieldset {
     content: "☑"; /* Symbole pour coché */
 }
 
-.tab2 .tab>label {
+.tab2 .tab>label ,.but>label{
     display: block;
     padding: 1px 10px;
     font-size: 11px;
@@ -590,7 +590,7 @@ fieldset {
     background: #EEEEEE;
     line-height: 1.6;
 }
-.tab2 .tab>label:hover {
+.tab2 .tab>label:hover,.but>label:hover {
     display: block;
     padding: 1px 10px;
     font-size: 11px;
@@ -600,7 +600,7 @@ fieldset {
     background: #d1d1d1;
 }
 
-.tab2 .tab>label:active {
+.tab2 .tab>label:active , .but>label:active{
     display: block;
     padding: 1px 10px;
     font-size: 11px;
@@ -610,7 +610,7 @@ fieldset {
     background: #555555;
 }
 
-.tab2>.tab>[id^="sel_"]:checked + label {
+.tab2>.tab>[id^="sel_"]:checked + label ,.but>[id^="sel_"]:checked + label {
     top: 0;
     background: #555555;
     color: #F5F5F5;
@@ -1914,5 +1914,131 @@ light
 .ityc-wind-opt:hover{ opacity: 0.9; }
 
 
+#polarLeft {
+    width : 60%;
+    height : 100%;
+    gap: 10px;
+
+}
+
+
+#polar_name, #polar_date,#polarDivName >label , #polarDivTwsCtrl > label {
+    color: var(--td_color);
+    margin-left: 1em;
+}
+#polarDivName {
+    display: flex;
+}
+#polar_nameHeader {
+    padding-left: 20%;
+}
+
+#polarChartTitle ,#polarChartTWATitle{
+    text-align: center;
+    font-size: 1.2em;
+    color: var(--td_color);
+    background-color: var(--bg_body_color);
+}
+.table_polar {
+    text-indent: initial;
+    border-spacing: 2px;
+    border: unset;    
+    width: 100%;
+    margin-bottom: 2em;
+}
+ .polar_ctrl_bt {
+    width : 3em;
+
+ }
+
+#polarDiv {
+    width : 39%;
+    height : 100%;
+}
+#polarDivTop {
+    width : 100%;
+    height : 3%;
+    display: flex;
+    margin-bottom: 2em;
+}
+
+
+#polarDivName {
+    width : 100%;
+    height : 3%;
+    padding-top: 0.5em;
+    grid-column: 1 / -1;
+}
+#polarDivTwsCtrl {
+    width : 100%;
+    height : 100%;
+    
+}
+
+#polarDivCenter {
+    width : 100%;
+    height : 89%;
+    display: flex;
+
+}
+#polarDivLeft {
+    width : 69%;
+    height : 100%;
+
+}
+#polarGraphDiv {
+    width : 100%;
+    height : 100%;
+
+}
+/*#polarGraph {
+
+}*/
+#polarDivRight {
+    width : 30%;
+    height : 100%;
+}
+#polarBtsTwa {
+    text-align: center;
+}
+#polarDivFoil {
+    display: none;
+}
+#polarTWSChart, #polarTWAChart {
+    background-color: var(--bg_body_color);
+
+}
+#polarTWSDiv, #polarTWADiv , #polarVMGDiv, #polarVMCDiv{
+    background-color: var(--bg_body_color);
+    height: 47%;
+    padding: 0 6em 1em 4em;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+}
+.polarChartBox {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+.polarChartBox canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+.polarTab {
+    padding-top: 0.75em!important;
+}
+
+
+#sel_polarviewers {
+    position: absolute;
+    visibility: visible;
+    margin-left: 2em;
+    margin-top: -0.5em;
+
+}
 
 

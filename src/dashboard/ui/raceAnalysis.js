@@ -11,6 +11,11 @@ import {
   getLegPlayerInfos
 } from '../app/memoData.js';
 
+import {plotPolarTwsChart,
+plotPolarVmgChart,
+plotPolarVmcChart,
+plotPolarTwaChart} from './charts/polarGraph.js'
+
 /* =========================================================================
  *  STATE / CONSTANTES
  * ========================================================================= */
@@ -81,7 +86,15 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
 }
 function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
   const cog = ite.metaDash?.cog === undefined ? undefined:ite.cog;
-
+      console.groupCollapsed(`[refreshPolarChart] receive param`);
+    console.log("→ raceId :",   rid);
+    console.log("→ options :", options);
+    console.log("→ polar :", polar);
+    console.log("→ twa :", twa);
+    console.log("→ tws :", tws);
+    console.log("→ twd :", twd);
+    console.log("→ ite :", ite);
+    console.groupEnd();
   getDataArray(rid, options, polar,twa, tws, twd, cog );
   
   divPolarTws.value = roundTo(tws, 2);
@@ -91,7 +104,12 @@ function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
   const polarDate = `Update at : ${polar._updatedAt}`;
   document.getElementById('polar_date').innerHTML = polarDate;
 
-  schedulePolarRedraw(polar, userPrefs.theme, false);
+  schedulePolarRedraw(polar, drawTheme, false);
+  plotPolarTwsChart(_drawData,_currentResultset.current.__tws);
+  plotPolarVmgChart(_drawData,_currentResultset.current.__tws);
+  plotPolarVmcChart(_drawData,_currentResultset.current.__tws,_currentResultset.current.__twd);
+  plotPolarTwaChart(_drawDataTWA,_currentResultset.current.__twa);
+    
 }
 
 export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
@@ -119,7 +137,6 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   } else {
     document.getElementById('polarDivFoil').style = 'display:none;';
   }
-
   refreshPolarChart(rid, ite, opt, polar, userPrefs.theme, tws, twa, twd);
 }
 
@@ -130,18 +147,17 @@ function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
     // Lis une seule fois la sensibilité spikes (DOM) et délègue au moteur
     const spikeInput = document.getElementById("polar_spike_sensitivity");
     const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 0.002 : 0.002;
-
-    const state = computePolarState({
+    const state = computePolarState(
         twa,
         tws,
         twd,
         cog,
-        raceId: rid,
+        rid,
         options,
         boatPolars,
         spikeSensitivity,
         // twaStep: 0.5 // tu peux passer en param si tu veux changer la résolution
-    });
+    );
 
     // On remplit tes anciennes structures pour ne pas toucher au reste du code
     _polarsData = state.polarsData;
@@ -774,7 +790,7 @@ function spikesSpeedHtml() {
         tabSpikes += '<tr>' +
           `<td>${txt}</td>` +
           `<td>${spike.idx} °</td>` +
-          `<td>${spike.speed.fix(3)} nds</td>` +
+          `<td>${spike.speed.toFixed(3)} nds</td>` +
           `<td>${sailNames[spike.sail]}</td>` +
           '</tr>';
 

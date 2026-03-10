@@ -314,53 +314,63 @@
     <div id="tab-content9" class="content hidden">
         <div id="polarLeft" class="expertAnalysis" width="70%" height="20%">
             <div id="polarDivName" >
-                <label id="polar_nameHeader"><b>Polar: </b></label>
-                <label id="polar_name" >-</label>
-                <label id="polar_date" >-</label>
+                <div  id="polar_nameHeader"><b>Polar: </b></div>
+                <div  id="polar_name" >-</div>
+                <div  id="polar_date" >-</div>
             </div>
             <div id="polarTWSDiv" >
                 
                 <div class=" " id="polarChartTitle">
-                    <label id="polarChartTitle_name" ></label> 
+                    <div  id="polarChartTitle_name" class="polarChartHeaderTitle"></div>
                     <ul><li class="but">
                         <input type="checkbox" id="sel_polar_resetZoomTWS" name="checkbox1" class="content hidden" >
                         <label for="sel_polar_resetZoomTWS" id="lbl_polar_resetZoomTWS">Reset Zoom</label>
                     </li></ul>
                 </div> 
-                <canvas id="polarTWSChart"  class="myfChart" ></canvas>          
+                <div class="polarChartBox">
+                    <canvas id="polarTWSChart"  class="myfChart" ></canvas>  
+                </div>        
             </div>
             <div id="polarTWADiv" >
                 <div  id="polarChartTWATitle">
-                    <label id="polarChartTitleTWA_name" ></label> 
-                    <ul></ul><li class="but">
+                    <div  id="polarChartTitleTWA_name" class="polarChartHeaderTitle"></div>
+                    <ul><li class="but">
                         <input type="checkbox" id="sel_polar_resetZoomTWA" name="checkbox1" class="content hidden" >
                         <label for="sel_polar_resetZoomTWA" id="lbl_polar_resetZoomTWA">Reset Zoom</label>
                     </li></ul>
                 </div> 
-                <canvas id="polarTWAChart"  class="myfChart" ></canvas>          
+                <div class="polarChartBox">
+                    <canvas id="polarTWAChart"  class="myfChart" ></canvas> 
+                </div>         
             </div>   
             <div id="polarVMGDiv" >
                 <div  id="polarChartVMGTitle">
-                    <label id="polarChartVMGTitle_name" ></label> 
-                    <ul></ul><li class="but">
+                    <div  id="polarChartVMGTitle_name" class="polarChartHeaderTitle"></div>
+                    <ul><li class="but">
                         <input type="checkbox" id="sel_polar_resetZoomVMG" name="checkbox1" class="content hidden" >
                         <label for="sel_polar_resetZoomVMG" id="lbl_polar_resetZoomVMG">Reset Zoom</label>
                     </li></ul>
                 </div> 
-                <canvas id="polarVMGChart"  class="myfChart" ></canvas>          
+                <div class="polarChartBox">
+                    <canvas id="polarVMGChart"  class="myfChart" ></canvas> 
+                </div>         
             </div>
             <div id="polarVMCDiv" >
                 <div class=" " id="polarChartVMCTitle">
-                    <label id="polarChartVMCTitle_name" ></label> 
-                    <ul></ul><li class="but">
+                    <div  id="polarChartVMCTitle_name" class="polarChartHeaderTitle"></div>
+                    <ul><li class="but">
                         <input type="checkbox" id="sel_polar_resetZoomVMC" name="checkbox1" class="content hidden" >
                         <label for="sel_polar_resetZoomVMC" id="lbl_polar_resetZoomVMC">Reset Zoom</label>
                     </li></ul>
                 </div> 
-                <canvas id="polarVMCChart"  class="myfChart" ></canvas>          
+                <div class="polarChartBox">
+                    <canvas id="polarVMCChart"  class="myfChart" ></canvas>  
+                </div>        
             </div>
             <div id="polarDensityDiv" >
-                <canvas id="polarDensity" ></canvas>
+                <div class="polarChartBox">
+                    <canvas id="polarDensity" ></canvas>
+                </div>
             </div> 
         </div>
         
