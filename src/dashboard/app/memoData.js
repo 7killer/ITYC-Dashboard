@@ -38,6 +38,7 @@ export async function initMemo()
 
     await updatePlayersList();
     await updateTeamsList();
+    await updateLegList();
     await updateConnectedPlayerInfos();
 
     if(currentRace && currentRace.raceId && currentRace.legNum)

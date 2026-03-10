@@ -1,4 +1,4 @@
-import { R as getDefaultExportFromCjs, aH as processDBOperations, S as getData, aI as cfg, h as getUserPrefs, aJ as getLatestAndPreviousByTriplet, aK as getLatestEntriesPerUser, aL as saveData, aM as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aN as angle, U as toRad, aO as toDeg, c as roundTo, aP as bestVMG, aQ as calculateCOGLoxo, aR as manoeuveringPenalities, aS as computeEnergyLoose, aT as computeEnergyRecovery, aU as foilingFactor, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aV as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aW as getAllData, aX as deleteData, aG as createKeyChangeListener } from "./utils-dcde5c71.js";
+import { R as getDefaultExportFromCjs, aH as processDBOperations, S as getData, aI as cfg, aJ as getAllData, h as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aO as angle, U as toRad, aP as toDeg, c as roundTo, aQ as bestVMG, aR as calculateCOGLoxo, aS as manoeuveringPenalities, aT as computeEnergyLoose, aU as computeEnergyRecovery, aV as foilingFactor, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aW as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aX as deleteData, aG as createKeyChangeListener } from "./utils-ee7d46e9.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -4038,16 +4038,29 @@ async function getPlayerListITYC(opts = {}) {
       }
       const now2 = Date.now();
       const players = [];
+      const playersDatas = await getAllData("players").catch((error) => {
+        console.error("getplayerList error :", error);
+      });
+      const playersIndex = new Map(playersDatas.map((p) => [p.id, p]));
+      const existingPlayers = [];
+      const newPlayers = [];
       itycPlayerList.forEach((player) => {
         if (!player || !player.uid)
           return;
+        const dbPlayer = playersIndex.get(player.uid);
         const teamId = player.tid && player.tid !== "-" ? player.tid : null;
-        players.push({
-          id: player.uid,
-          name: player.name,
-          teamId,
-          timestamp: now2
-        });
+        let doUpdate = false;
+        if (!dbPlayer)
+          doUpdate = true;
+        else if (dbPlayer.teamId != teamId || dbPlayer.name != player.name)
+          doUpdate = true;
+        if (doUpdate)
+          players.push({
+            id: player.uid,
+            name: player.name,
+            teamId,
+            timestamp: now2
+          });
       });
       if (players.length === 0) {
         console.warn("[getPlayerListITYC] No valid players after filtering");
@@ -4112,20 +4125,34 @@ async function getRaceListITYC(opts = {}) {
       const now2 = Date.now();
       const legList = [];
       itycRaceList.forEach((race) => {
+        var _a, _b;
         if (!race || !race.rid)
           return;
+        const raceInfo = JSON.parse(race.data);
         const [raceIdRaw, legNumRaw] = String(race.rid).split("_");
         if (!raceIdRaw || !legNumRaw)
           return;
         const raceId = Number.isNaN(Number(raceIdRaw)) ? raceIdRaw : Number(raceIdRaw);
         const legNum = Number.isNaN(Number(legNumRaw)) ? legNumRaw : Number(legNumRaw);
+        if (raceId == 825)
+          console.log("fuck");
         const legName = race.legName ?? null;
         const raceName = race.name ?? null;
         const raceType = race.type ?? null;
         const vsrLevel = race.vsrRank ?? race.vsr ?? null;
-        const start = race.startDate ?? race.start ?? null;
-        const end = race.endDate ?? race.end ?? null;
-        const polar_id = race.polar_id ?? null;
+        const start = (raceInfo == null ? void 0 : raceInfo.start) ?? null;
+        const end = (raceInfo == null ? void 0 : raceInfo.end) ?? null;
+        const close = race.start ?? null;
+        const open = race.end ?? null;
+        const polar_id = ((_a = raceInfo.boat) == null ? void 0 : _a.polar_id) ?? null;
+        const fineWinds = raceInfo.gfsWinds ?? null;
+        const boatName = ((_b = raceInfo.boat) == null ? void 0 : _b.name) ?? null;
+        const priceLevel = raceInfo.priceLevel ?? null;
+        const optionPrices = raceInfo.optionPrices ?? null;
+        const checkpoints = raceInfo.checkpoints ?? [];
+        const ice_limits = raceInfo.ice_limits ?? [];
+        const course = raceInfo.course ?? [];
+        const restrictedZones = raceInfo.restrictedZones ?? [];
         legList.push({
           id: `${raceId}-${legNum}`,
           raceId,
@@ -4133,10 +4160,17 @@ async function getRaceListITYC(opts = {}) {
           legName,
           raceName,
           raceType,
-          vsrLevel,
           start,
           end,
-          polar_id
+          polar_id,
+          fineWinds,
+          boatName,
+          priceLevel,
+          optionPrices,
+          checkpoints,
+          ice_limits,
+          course,
+          restrictedZones
         });
       });
       if (legList.length === 0) {

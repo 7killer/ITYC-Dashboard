@@ -795,7 +795,8 @@ export async function initializeMap()
     buildMarker(latlng,mapState.refLayer,buildTextIcon('','yellow','red',"F"),title1,0);
     mapState.refPoints.push(latlng[1]);
     
-    buildCircleEndRace(latlng,mapState.refLayer, 'red', raceInfo.end.radius * 1852.0);
+    const endRaduis = raceInfo.end.radius??0.5;
+    buildCircleEndRace(latlng,mapState.refLayer, 'red', endRaduis * 1852.0);
     
     // course
     const cpath = buildPath_bspline(raceInfo.course,raceInfo.start.lat,raceInfo.start.lon,raceInfo.end.lat,raceInfo.end.lon);
