@@ -7,7 +7,7 @@ import {buildPt2, buildMarker,
     buildPath_bspline,buildTrace,buildPath,buildBoatIcon,
     yellowRLIconP, yellowRRIconP, yellowRLIcon, yellowRRIcon,
     redRLIconP, redRLIcon, greenRRIconP, greenRRIcon,
-    addMapControl
+    addMapControl,buildTraceRhumb
 } from './map-utils.js'
 import {formatPosition,formatShortDate,formatTimestampToReadableDate,formatDHMS
 } from '../common.js';
@@ -121,8 +121,8 @@ function updateMapCheckpoints(raceInfo,playerIte) {
             const label_g = (passed ? "<div class='tagGatePassed'>PASSED</div>" : "") 
                 + "Checkpoint " + cp.group + "." + cp.id +  ": <b>" + cp.name + "</b><br>";
             const label_g_more = "<br>Type: <b>" + cpType + "</b> | Engine: " + cp.engine;
-            const side_s =  (cp.side == "stbd") ? "Starboard" : "Port";
-            const side_e = (cp.side == "stbd") ? "Port" : "Starboard";
+            const side_s =  cp.rhumb?"any":((cp.side == "stbd") ? "Starboard" : "Port");
+            const side_e = cp.rhumb?"any":((cp.side == "stbd") ? "Port" : "Starboard");
             const label_s = label_g + formatPosition(cp.start.lat, cp.start.lon) + label_g_more + " | Side: " + side_s;
             const label_e = label_g + formatPosition(cp.end.lat, cp.end.lon) + label_g_more + " | Side: " + side_e;
 
@@ -131,6 +131,11 @@ function updateMapCheckpoints(raceInfo,playerIte) {
                 const iconEnd = (cp.side == "stbd")?(passed?redRLIconP:redRLIcon):(passed?greenRRIconP:greenRRIcon);
                 buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op,0);
                 buildMarker(position_e, mapState.checkPointLayer, iconEnd, label_e, 8, op,0);
+            } else if(cp.rhumb) {
+                const iconStart = passed?yellowRRIconP:yellowRRIcon;
+                buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op,0);
+                buildMarker(position_e, mapState.checkPointLayer, iconStart, label_e, 8, op,0);            
+            
             } else {
                 const iconStart = (cp.side == "stbd")?(passed?yellowRRIconP:yellowRRIcon):(passed?yellowRLIconP:yellowRLIcon)
                 buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op,0);
@@ -141,7 +146,10 @@ function updateMapCheckpoints(raceInfo,playerIte) {
             const tpath = [];
             tpath.push(position_e[1]);
             tpath.push(position_s[1]);
-            buildTrace(buildPath(tpath),mapState.checkPointLayer,mapState.refPoints,pathColor,1,op,'20, 20','10');               
+            if(cp.rhumb) 
+                buildTraceRhumb(buildPath(tpath),mapState.checkPointLayer,mapState.refPoints,pathColor,1,op,'20, 20','10',512);
+            else
+                buildTrace(buildPath(tpath),mapState.checkPointLayer,mapState.refPoints,pathColor,1,op,'20, 20','10');               
         }
     }
     mapState.checkPointLayer.addTo(map); 
@@ -821,12 +829,13 @@ export async function initializeMap()
 
         if(!isDummy)
         {
-            const iceDataMiddleIndex = Math.ceil(iceData.length / 2);
-            const iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
-            const iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
+            const iceDataMiddleIndex = Math.ceil(south.length / 2);
+            const iceDataFirstHalf = south.slice(0, iceDataMiddleIndex);
+            const iceDataSecondHalf = south.slice(iceDataMiddleIndex);
             buildTrace(buildPath(iceDataFirstHalf),mapState.refLayer,mapState.refPoints,"#FF0000",1.5,0.5,false);
             buildTrace(buildPath(iceDataSecondHalf),mapState.refLayer,mapState.refPoints,"#FF0000",1.5,0.5,false);
-            if (Util.isOdd(iceData.length)) buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]),mapState.refLayer,mapState.refPoints,"#FF0000",1.5,0.5,false);    
+            buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]),mapState.refLayer,mapState.refPoints,"#FF0000",1.5,0.5,false);    
+        
         }
     }
     const rz = raceInfo?.restrictedZones;

@@ -346,12 +346,17 @@ export function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
         path.push({lat:finishLat,lon:finshLng});
     }
 
+    path = [
+        path[0],
+        path[0],
+        ...path,
+        path[path.length - 1],
+        path[path.length - 1]
+    ];
     const paths = convertLng0To360(path);
-    cpath[cpathNum].push(buildPt(paths[0].lat, (paths[0].lon?paths[0].lon:paths[0].lng)));
-
-    if(path.length >1)
+    if(paths.length >1)
     {
-        for (let i = 2; i < paths.length - 1; i++) {
+        for (let i = 2; i < paths.length-1; i++) {
             for (let t = 0; t < 1; t += 0.1) {
                 const  ax = (-paths[i - 2].lat + 3 * paths[i - 1].lat - 3 * paths[i].lat + paths[i + 1].lat) / 6;
                 const  ay = (-paths[i - 2].lon + 3 * paths[i - 1].lon - 3 * paths[i].lon + paths[i + 1].lon) / 6;
@@ -371,7 +376,120 @@ export function buildPath_bspline(pathEntry,initLat,initLng,finishLat,finshLng)
     return cpath;
 }
 
+function clampMercatorLat(lat) {
+    return Math.max(-85.05112878, Math.min(85.05112878, lat));
+}
 
+function mercatorY(latDeg) {
+    const lat = clampMercatorLat(latDeg) * Math.PI / 180;
+    return Math.log(Math.tan(Math.PI / 4 + lat / 2));
+}
+
+function inverseMercatorY(y) {
+    return (2 * Math.atan(Math.exp(y)) - Math.PI / 2) * 180 / Math.PI;
+}
+
+function buildRhumbSegmentPoints(from, to, steps = 32) {
+    const lat1 = from.lat;
+    const lon1 = from.lng;
+    const lat2 = to.lat;
+    const lon2 = to.lng;
+
+    const y1 = mercatorY(lat1);
+    const y2 = mercatorY(lat2);
+
+    const pts = [];
+
+    for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+
+        const y = y1 + (y2 - y1) * t;
+        const lon = lon1 + (lon2 - lon1) * t;
+        const lat = inverseMercatorY(y);
+
+        pts.push(L.latLng(lat, lon, true));
+    }
+
+    return pts;
+}
+
+function buildRhumbPolylinePoints(path, stepsPerSegment = 32) {
+    if (!path || path.length === 0) return [];
+    if (path.length === 1) return [path[0]];
+
+    const pts = [];
+
+    for (let i = 0; i < path.length - 1; i++) {
+        const segPts = buildRhumbSegmentPoints(path[i], path[i + 1], stepsPerSegment);
+
+        if (i > 0) {
+            segPts.shift();
+        }
+
+        pts.push(...segPts);
+    }
+
+    return pts;
+}
+
+export function buildTraceRhumb(
+    tpath,
+    layer,
+    pointsContainer,
+    color,
+    weight,
+    opacity,
+    dashArray,
+    dashOffset,
+    stepsPerSegment = 32
+) {
+    let nbTrackLine = 0;
+    const trackLine = [];
+
+    for (let i = 0; i < tpath.length; i++) {
+        const path = [[], [], []];
+
+        for (let j = 0; j < tpath[i].length; j++) {
+            const pos = buildPt2(tpath[i][j].lat, tpath[i][j].lng);
+            path[0].push(pos[0]);
+            path[1].push(pos[1]);
+            path[2].push(pos[2]);
+            pointsContainer.push(pos[1]);
+        }
+
+        for (let j = 0; j < path.length; j++) {
+            const rhumbPoints = buildRhumbPolylinePoints(path[j], stepsPerSegment);
+
+            const trackLineP = L.polyline(rhumbPoints, {
+                color,
+                opacity,
+                weight,
+                wrap: false
+            });
+
+            if (dashArray) trackLineP.options.dashArray = dashArray;
+            if (dashOffset) trackLineP.options.dashOffset = dashOffset;
+
+            trackLineP.on('mouseover', function () {
+                trackLineP.setStyle({
+                    weight: opacity * 2,
+                });
+            });
+
+            trackLineP.on('mouseout', function () {
+                trackLineP.setStyle({
+                    weight: opacity,
+                });
+            });
+
+            trackLine[nbTrackLine] = trackLineP;
+            trackLine[nbTrackLine].addTo(layer);
+            nbTrackLine++;
+        }
+    }
+
+    return trackLine;
+}
 
 export function createProjectionPoint(ts,lat,lon)
 {
