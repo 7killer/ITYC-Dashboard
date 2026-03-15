@@ -268,7 +268,7 @@ export async function getRaceListITYC(opts = {}) {
             itycRaceList.forEach((race) => {
                 if (!race || !race.rid) return;
 
-                const raceInfo =  JSON.parse(race.data);
+                const raceInfo =  (race.data && race.data!="")?JSON.parse(race.data):null;
                 // rid au format "raceId_legNum"
                 const [raceIdRaw, legNumRaw] = String(race.rid).split("_");
                 if (!raceIdRaw || !legNumRaw) return;
@@ -280,21 +280,21 @@ export async function getRaceListITYC(opts = {}) {
                 const legName  = race.legName  ?? null;
                 const raceName = race.name     ?? null;
                 const raceType = race.type     ?? null;
-                const vsrLevel = race.vsrRank ?? race.vsr ?? null;
+                const vsrLevel = race.vsrRank ?? race.vsr ?? 0;
                 const start    = raceInfo?.start ?? null;
                 const end      = raceInfo?.end   ?? null;
                 const close    = race.start ?? null;
                 const open     = race.end   ?? null;
-                const polar_id = raceInfo.boat?.polar_id ?? null;
+                const polar_id = raceInfo?.boat?.polar_id ?? null;
 
-                const fineWinds = raceInfo.gfsWinds ?? null;
-                const boatName = raceInfo.boat?.name ?? null;
-                const priceLevel = raceInfo.priceLevel ?? null;
-                const optionPrices  = raceInfo.optionPrices ?? null;
-                const checkpoints = raceInfo.checkpoints ?? [];
-                const ice_limits = raceInfo.ice_limits ?? [];
-                const course = raceInfo.course ?? [];
-                const restrictedZones = raceInfo.restrictedZones ?? []
+                const fineWinds = raceInfo?.gfsWinds ?? null;
+                const boatName = raceInfo?.boat?.name ?? null;
+                const priceLevel = raceInfo?.priceLevel ?? null;
+                const optionPrices  = raceInfo?.optionPrices ?? null;
+                const checkpoints = raceInfo?.checkpoints ?? [];
+                const ice_limits = raceInfo?.ice_limits ?? [];
+                const course = raceInfo?.course ?? [];
+                const restrictedZones = raceInfo?.restrictedZones ?? []
 
 
 
@@ -311,6 +311,7 @@ export async function getRaceListITYC(opts = {}) {
                 fineWinds,
                 boatName,
                 priceLevel,
+                vsrLevel,
                 optionPrices,
                 checkpoints,
                 ice_limits,
