@@ -155,7 +155,7 @@ function getFleetSortValue(pInfos, sortField) {
 
         case "xoption_options":
             // ex : nombre d’options activées
-            return pInfos.options ? Object.keys(pInfos.options).length : 0;
+            return isOptionsActivated(pInfos.options) ? Object.keys(pInfos.options).length : 0;
 
         case "state":
             // ordre custom des états

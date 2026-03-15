@@ -11,7 +11,7 @@ import {getConnectedPlayerId,
 
 import { deleteAllRoutes,hideRoute,showRoute,importRoute} from './map/map-routes.js'
 import { 
-    isBitSet,guessOptionBits,
+    isBitSet,guessOptionBits,isOptionsActivated
 } from '../../common/utils.js';
 
 import { mapState } from './map/map-race.js';
@@ -352,7 +352,7 @@ export function onSkipperSelectedChange(type)
     upDateCheckbox("opt_FP_"+type,false)
 
     const playerIteOpt = raceItesFleet[playerId]?.options;
-    if(playerIteOpt.options) {
+    if(isOptionsActivated(playerIteOpt.options)) {
         const pOptions = playerIteOpt.options;
         if(pOptions.options.reach) upDateCheckbox("opt_c0_"+type,true); 
         if(pOptions.options.light) upDateCheckbox("opt_ljg_"+type,true); 

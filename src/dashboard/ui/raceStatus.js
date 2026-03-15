@@ -73,7 +73,7 @@ export function buildRaceStatusHtml()
             const key = `${legId.raceId}-${legId.legNum}`;
             const legIte = legPlayerInfosHistory[key];
             const legInfo = raceList[key];
-            tableContent += buildRaceStatusHtmlLine(legInfo ,legIte.ites[0]);
+            tableContent += buildRaceStatusHtmlLine(legInfo ,(legIte.ites && legIte.ites[0]?legIte.ites[0]:null));
         }
     }
     
@@ -249,7 +249,8 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
 
     } else
     {
-        returnVal += '<td class="name">No info received for this race</td>';
+        const colSpan = userPrefs.raceData.lastCmd?21:20;
+        returnVal += '<td class="name" colspan='+colSpan+'>No info received for this race</td>';
     }
     returnVal += '</tr>';
     return returnVal;

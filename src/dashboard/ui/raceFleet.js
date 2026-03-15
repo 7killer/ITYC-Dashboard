@@ -320,10 +320,12 @@ function drawOptions(playerOptions) {
 
     let optSail = "";
     let optPerf = "";
-    if(playerOptions.options) 
+    const pOptions = playerOptions.options;
+    if(pOptions?.light || pOptions?.reach || pOptions?.heavy
+    || pOptions?.foil || pOptions?.winch || pOptions?.hull
+    || pOptions?.comfortLoungePug || pOptions?.magicFurler || pOptions?.vrtexJacket 
+    ) 
     {
-        const pOptions = playerOptions.options;
-        
         if(pOptions.light || pOptions.reach || pOptions.heavy)
             optSail = "[";
         if(pOptions.reach) optSail += "reach,";

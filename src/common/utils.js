@@ -238,3 +238,23 @@ export function convertDMS2Dec(lat,lon)
     }
 
 }
+
+export function isOptionsActivated(opt)
+{
+    if(!opt
+    || ( !opt.reach
+    && !opt.light
+    && !opt.heavy
+    && !opt.hull
+    && !opt.foil
+    && !opt.winch
+    && !opt.comfortLoungePug
+    && !opt.magicFurler
+    && !opt.vrtexJacket))
+    {
+        return false;
+    } else
+    {
+        return true;
+    }
+}

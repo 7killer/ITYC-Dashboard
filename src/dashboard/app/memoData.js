@@ -189,7 +189,6 @@ export async function updateLegList() {
     return { raceList, raceInfo };
   } catch (error) {
     console.error('[updateLegList] error:', error);
-    // À toi de voir si tu veux réinitialiser ou préserver l’ancien état
     raceList = raceList ?? {};
     raceInfo = raceInfo ?? null;
     return { raceList, raceInfo };

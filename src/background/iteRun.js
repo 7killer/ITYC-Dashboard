@@ -9,7 +9,8 @@ import { gcDistance,
     roundTo,
     isBitSet,
     guessOptionBits,
-    calculateCOGLoxo
+    calculateCOGLoxo,
+    isOptionsActivated
 } from './../common/utils.js';
 import { theoreticalSpeed ,
     bestVMG,
@@ -95,8 +96,8 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
           //  let iS = fractionStep(latest.tws, polar.tws);
 
             // "Plain" speed
-            const speedTFull = theoreticalSpeed(polar,null,latest.tws, latest.twa, currentSail - 1)
-            let speedT = speedTFull.speed;
+            const speedTFull = theoreticalSpeed(polar,null,latest.tws, latest.twa, currentSail - 1,true)
+            const speedT = speedTFull.speed;
             // Speedup factors
             let foilFactor = foilingFactor({foil:true}, latest.tws, latest.twa, polar.foil);
             let hullFactor = polar.hull.speedRatio;
@@ -133,18 +134,25 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
                     xplained = true;
                     if (epsEqual(hullFactor, foilFactor)) {
                         // Both hull and foil match.
-                        realFoilFactor = foils;
-                        playerOption.guessOptions |= guessOptionBits["foilActivated"];
-                        playerOption.guessOptions |= guessOptionBits["hullDetected"];
-                        playerOption.guessOptions &= ~guessOptionBits["hull"];  
+                        if (foilFactor > 1.0) {
+                            realFoilFactor = foils;
+                            playerOption.guessOptions |= guessOptionBits["foilActivated"];
+                            playerOption.guessOptions |= guessOptionBits["hullDetected"];
+                            playerOption.guessOptions &= ~guessOptionBits["hull"];                
+            
+                        } else
+                        {
+                            realFoilFactor = null;
+                            playerOption.guessOptions |= guessOptionBits["foilDetected"];
+                            playerOption.guessOptions &= ~guessOptionBits["foil"];
+                            playerOption.guessOptions |= guessOptionBits["hullActivated"];
+                        } 
                     } else {
                         playerOption.guessOptions |= guessOptionBits["hullActivated"];
-                        
                         if (foilFactor > 1.0) {
                             realFoilFactor = null;
                             playerOption.guessOptions |= guessOptionBits["foilDetected"];
                             playerOption.guessOptions &= ~guessOptionBits["foil"];                
-            
                         }
                     }
                 } else if (epsEqual(latest.speed, speedT * foilFactor)) {
@@ -159,14 +167,14 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
                     playerOption.guessOptions |= guessOptionBits["foilActivated"];
                     playerOption.guessOptions |= guessOptionBits["hullActivated"];
                 } else {
-                    if(playerOption?.options
+                    if(isOptionsActivated(playerOption?.options)
                         || (isBitSet(playerOption?.guessOptions,guessOptionBits["foilDetected"])
                          && isBitSet(playerOption?.guessOptions,guessOptionBits["hullDetected"]))
                       ) 
                     {
                         let hullOpt = isBitSet(playerOption?.guessOptions,guessOptionBits["hull"]);
                         let foilOpt = isBitSet(playerOption?.guessOptions,guessOptionBits["foil"]);
-                        if(playerOption?.options)
+                        if(isOptionsActivated(playerOption?.options))
                         {
                             hullOpt = playerOption?.options.hull;
                             foilOpt =  playerOption?.options.foil;   
