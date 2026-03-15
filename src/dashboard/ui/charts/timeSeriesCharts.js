@@ -197,6 +197,34 @@ export function makeZoomOptions(groupId = "linked") {
     },
   };
 }
+function getDynamicLinearStepSize(min, max) {
+  const delta = Number(max) - Number(min);
+
+  let stepSize = 10;
+  if (delta <= 0.05) stepSize = 0.01;
+  else if (delta <= 0.1) stepSize = 0.02;
+  else if (delta <= 0.5) stepSize = 0.1;
+  else if (delta <= 1) stepSize = 0.2;
+  else if (delta <= 5) stepSize = 1;
+  else if (delta <= 10) stepSize = 2;
+  else if (delta <= 40) stepSize = 5;
+
+  return stepSize;
+}
+
+function applyDynamicLinearTicks(chart, axisKey = "x") {
+  const scale = chart?.scales?.[axisKey];
+  if (!scale) return;
+
+  const min = Number(scale.min);
+  const max = Number(scale.max);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return;
+
+  chart.options.scales ||= {};
+  chart.options.scales[axisKey] ||= {};
+  chart.options.scales[axisKey].ticks ||= {};
+  chart.options.scales[axisKey].ticks.stepSize = getDynamicLinearStepSize(min, max);
+}
 
 /* =========================================================
  * Preserve current X range (zoom/pan window)
@@ -396,6 +424,8 @@ export function createLinkedLineChart(Chart, {
   colorAt = () => undefined,
   dashAt = () => null,
   xTickLabel = (v) => String(v),
+  xMin = undefined,
+  xMax = undefined,
   tooltipTitle = (items) => (items?.[0]?.label ?? ""),
   tooltipLabel = (ctx) => {
     const y = ctx.parsed?.y;
@@ -405,6 +435,7 @@ export function createLinkedLineChart(Chart, {
   theme = "dark",
 }) {
   const gridColor = getGridColor(Chart, theme);
+  const zoomOptions = makeZoomOptions(groupId);
   const points = xValues.map((x, i) => ({ x, y: yValues[i] }));
 
   const ds = {
@@ -418,7 +449,7 @@ export function createLinkedLineChart(Chart, {
     },
   };
 
-  return new Chart(getCanvas(canvasId), {
+  const chart = new Chart(getCanvas(canvasId), {
     type: "line",
     data: { datasets: [ds] },
     options: {
@@ -427,7 +458,29 @@ export function createLinkedLineChart(Chart, {
       parsing: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        zoom: makeZoomOptions(groupId),
+        zoom: {
+          ...zoomOptions,
+          pan: {
+            ...zoomOptions.pan,
+            onPanComplete({ chart }) {
+              applyDynamicLinearTicks(chart, "x");
+              if (typeof zoomOptions.pan?.onPanComplete === "function") {
+                zoomOptions.pan.onPanComplete({ chart });
+              }
+              chart.update("none");
+            },
+          },
+          zoom: {
+            ...zoomOptions.zoom,
+            onZoomComplete({ chart }) {
+              applyDynamicLinearTicks(chart, "x");
+              if (typeof zoomOptions.zoom?.onZoomComplete === "function") {
+                zoomOptions.zoom.onZoomComplete({ chart });
+              }
+              chart.update("none");
+            },
+          },
+        },
         itycSyncPlugin: { groupId },
         itycZoomSyncPlugin: { groupId },
         itycLineAtIndex: { lines: lineAtIndex },
@@ -444,8 +497,10 @@ export function createLinkedLineChart(Chart, {
       scales: {
         x: {
           type: "linear",
+          min: xMin,
+          max: xMax,
           grid: { color: gridColor },
-          ticks: { callback: xTickLabel },
+          ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, callback: xTickLabel },
         },
         y: {
           grid: { color: gridColor },
@@ -460,6 +515,9 @@ export function createLinkedLineChart(Chart, {
       },
     },
   });
+  applyDynamicLinearTicks(chart, "x");
+  chart.update("none");
+  return chart;
 }
 
 export function updateLinkedLineChart(chart, { xValues, yValues, lineAtIndex }) {

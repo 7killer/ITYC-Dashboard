@@ -117,13 +117,16 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   const connectedRace = getOpenedRaceId();
   const raceItes = getLegPlayerInfos();
   const polar = getPolar();
-  if (!polar) return;
-
+    if (!polar || polar.length == 0) {
+    document.querySelectorAll('.expertAnalysis').forEach(el => el.style.display = 'none');
+    return;
+  }
+  document.querySelectorAll('.expertAnalysis').forEach(el => el.style.display = 'block');
+      
   const rid = `${connectedRace.raceId}-${connectedRace.legNum}`;
 
-  const ite = raceItes?.ites?.[0] ?? null;
-  if (!ite) return;
-
+  const ite = raceItes?.ites?.[0] ?? {twa : 90,tws : 10,twd : 90,cog : undefined};
+    
   if (!divPolarTws) initialize();
 
   const opt = raceItes.options?.options;
@@ -132,7 +135,7 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   const twa = twaI ?? (ite.twa === undefined ? 90 : (ite.twa < 0 ? -ite.twa : ite.twa));
   const twd = twdI ?? (ite.metaDash?.twd === undefined ? (ite.twd === undefined?90:ite.twd) : ite.metaDash.twd);
 
-  if (opt?.foils) {
+  if (opt?.foil) {
     document.getElementById('polarDivFoil').style = 'display:block;';
   } else {
     document.getElementById('polarDivFoil').style = 'display:none;';
@@ -180,6 +183,7 @@ function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
     // Et leur injecter les spikes VMG / VMC issus du moteur
     _drawData.spikesVmg = state.spikesVmg;
     _drawData.spikesVmc = state.spikesVmc;
+    _drawDataTWA.spikes = state.spikesTws;
 }
 
 let _drawData = [];

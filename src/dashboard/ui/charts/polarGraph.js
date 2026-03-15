@@ -11,11 +11,11 @@ let __itycAddonChartsRegistered = false;
 function ensureAddonChartsRegistered() {
   if (__itycAddonChartsRegistered) return;
   // Chart is expected as global (legacy addon) OR imported by the bundler elsewhere.
-  registerTimeSeriesPlugins(Chart);
+//  registerTimeSeriesPlugins(Chart);
   __itycAddonChartsRegistered = true;
 }
 
-const POLAR_GROUP_ID = "polarTws";
+const POLAR_TWS_GROUP_ID = "polarTws";
 const POLAR_TWA_GROUP_ID = "polarTwa";
 
 let polarTWSChart;
@@ -23,7 +23,7 @@ let polarVMGChart;
 let polarVMCChart;
 let polarTWAChart;
 
-function buildSpikeLines(drawData, baseXValues) {
+function buildSpikeLines(spikes, baseXValues) {
   const summit = document.getElementById("sel_polar_summit")?.checked;
   const hole = document.getElementById("sel_polar_hole")?.checked;
 
@@ -31,7 +31,7 @@ function buildSpikeLines(drawData, baseXValues) {
   const base0 = Number(baseXValues?.[0] ?? 0);
 
   const out = [];
-  for (const s of drawData?.spikes ?? []) {
+  for (const s of spikes ?? []) {
     if (s?.type === "summit" && !summit) continue;
     if (s?.type === "hole" && !hole) continue;
 
@@ -47,7 +47,7 @@ export function plotPolarTwsChart(drawData, currentTws) {
   ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
 
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData?.spikes, drawData.twa);
 
   document.getElementById("polarChartTitle_name").innerHTML =
     "Vitesse Bateau (nds) TWS " + currentTws + "nds";
@@ -58,7 +58,7 @@ export function plotPolarTwsChart(drawData, currentTws) {
     canvasId: "polarTWSChart",
     title: "Auto",
     unitSuffix: " nds",
-    groupId: POLAR_GROUP_ID,
+    groupId: POLAR_TWA_GROUP_ID,
     xValues: drawData.twa,
     yValues: drawData.spd,
     lineAtIndex: spikes,
@@ -69,8 +69,8 @@ export function plotPolarTwsChart(drawData, currentTws) {
       drawData.theoSail[i] !== drawData.bestSail[i]
         ? [6, 6]
         : null,
-    xTickLabel: (v, idx, values) =>
-      dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) =>
+      dynamicWindsSpeedAxisTicks(v," °"),
     tooltipTitle: (items) => {
       const x = items?.[0]?.parsed?.x;
       return "TWA : " + roundTo(x, 1) + " °";
@@ -93,7 +93,7 @@ export function plotPolarVmgChart(drawData, currentTws) {
   ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
 
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData?.spikesVmg, drawData.twa);
 
   document.getElementById("polarChartVMGTitle_name").innerHTML =
     "VMG (nds) TWS " + currentTws + "nds";
@@ -115,8 +115,8 @@ export function plotPolarVmgChart(drawData, currentTws) {
       drawData.theoSail[i] !== drawData.bestSail[i]
         ? [6, 6]
         : null,
-    xTickLabel: (v, idx, values) =>
-      dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) =>
+      dynamicWindsSpeedAxisTicks(v, " °"),
     tooltipTitle: (items) => {
       const x = items?.[0]?.parsed?.x;
       return "TWA : " + roundTo(x, 1) + " °";
@@ -139,7 +139,7 @@ export function plotPolarVmcChart(drawData, currentTws) {
   ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
 
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData?.spikesVmc, drawData.twa);
 
   document.getElementById("polarChartVMCTitle_name").innerHTML =
     "VMC (nds) TWS " + currentTws + "nds";
@@ -161,8 +161,8 @@ export function plotPolarVmcChart(drawData, currentTws) {
       drawData.theoSail[i] !== drawData.bestSail[i]
         ? [6, 6]
         : null,
-    xTickLabel: (v, idx, values) =>
-      dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) =>
+      dynamicWindsSpeedAxisTicks(v," °"),
     tooltipTitle: (items) => {
       const x = items?.[0]?.parsed?.x;
       return "TWA : " + roundTo(x, 1) + " °";
@@ -185,7 +185,7 @@ export function plotPolarTwaChart(drawData, currentTwa) {
   ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
 
-  const spikes = buildSpikeLines(drawData, drawData.tws);
+  const spikes = buildSpikeLines(drawData?.spikes, drawData.tws);
 
   document.getElementById("polarChartTitleTWA_name").innerHTML =
     "Vitesse Bateau (nds) TWA " + currentTwa + "°";
@@ -196,7 +196,7 @@ export function plotPolarTwaChart(drawData, currentTwa) {
     canvasId: "polarTWAChart",
     title: "Auto",
     unitSuffix: " nds",
-    groupId: POLAR_TWA_GROUP_ID,
+    groupId: POLAR_TWS_GROUP_ID,
     xValues: drawData.tws,
     yValues: drawData.spd,
     lineAtIndex: spikes,
@@ -207,8 +207,8 @@ export function plotPolarTwaChart(drawData, currentTwa) {
       drawData.theoSail[i] !== drawData.bestSail[i]
         ? [6, 6]
         : null,
-    xTickLabel: (v, idx, values) =>
-      dynamicWindsSpeedAxisTicks(v, values, drawData.tws, " nds"),
+    xTickLabel: (v) =>
+      dynamicWindsSpeedAxisTicks(v, " nds"),
     tooltipTitle: (items) => {
       const x = items?.[0]?.parsed?.x;
       return "TWS : " + roundTo(x, 1) + " nds";
@@ -263,40 +263,7 @@ if (typeof window !== "undefined") {
   window.plotPolarResetZoomVMG = plotPolarResetZoomVMG;
   window.plotPolarResetZoomVMC = plotPolarResetZoomVMC;
 }
-
-function dynamicWindsSpeedAxisTicks(value,values,axisValue,unit)
-{
-	//1 min max values	
-	let min = 500;
-	let max = 0;
-	values.forEach(element => {
-    const val = element.value<0?0:element.value.toFixed(1);
-		const ws = Number(axisValue[val]);
-		if(ws < min) min = ws ;
-		if(ws  > max) max = ws ;
-	});
-	
-	//2 delta donne modulo
-	const delta = max-min;
-	let mod = 10;
-	if(delta <= 0.5) mod = 0.1;
-	else if(delta <= 1) mod = 0.2;
-	else if(delta <= 5) mod = 1;
-	else if(delta <= 10) mod = 2;
-	else if(delta <= 40) mod = 5;
-	
-	//return value;
-	//3 build xref table
-	const xref = [];
-	for(var i=min;i<=max;) {
-		xref.push(i);
-		i += mod;
-	}
-	
-	//4 test is value in ref table
-	if(xref.find(element => element==axisValue[value]))
-		return axisValue[value] + unit;
-	else if(value===0)
-		return value;
-	
+function dynamicWindsSpeedAxisTicks(tickValue, unit = "") {
+  const tick = Math.round(Number(tickValue) * 10) / 10;
+  return Number.isFinite(tick) ? `${tick}${unit}` : "";
 }

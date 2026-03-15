@@ -211,7 +211,6 @@ function viewIceLimits(raceInfo) {
       formatPosition(south[i].lat, south[i].lon),
     ]);
   }
-
   return card('Limites des glaces', tableModern({head, rows}));
 }
 

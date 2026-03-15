@@ -78,6 +78,10 @@ export async function openDatabase() {
                       id: "state",
                       state: 'dashInstalled'
                   });
+                  store.add({
+                      id: "NMEAstate",
+                      state: 'off'
+                  });
               }
               if (!db.objectStoreNames.contains('players')) {
                   db.createObjectStore('players', { keyPath: 'id' });
