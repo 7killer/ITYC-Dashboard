@@ -770,43 +770,66 @@ function spikesSpeedHtml() {
     document.getElementById('polarDivSpikeInfo').style = 'display:none;';
     return;
   }
-
+  let title = '';
+  if(showSummit)
+  {
+    title = 'Pics';
+    if(showHole)
+      title += ' / ';
+  }
+  if(showHole)
+    title += 'Creux';
+  
   let tabSpikes = '<thead>' +
-    '<tr><th  colspan="4">Pics</th></tr>' +
-    '<tr><th>Type</th><th>TWA</th><th>Speed</th><th>Sails</th></tr>' +
+    '<tr><th  colspan="9">'+ title + '</th></tr>' +
+    '<tr><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th></tr>' +
     '</thead>' +
     '<tbody>';
 
-  if (!_currentResultset.current.spikes || _currentResultset.current.spikes.length < 1) {
-    tabSpikes = '<tr><td colspan="3">Pas de pics/creux détecté</td></tr>';
+  const spikes = _currentResultset.current.spikes;
+
+  if (!spikes || spikes.length < 1) {
+    tabSpikes = '<tr><td colspan="9">Pas de pics/creux détecté</td></tr>';
   } else {
     let noneDrawn = true;
-
-    for (let i = 0; i < _currentResultset.current.spikes.length; i++) {
-      const spike = _currentResultset.current.spikes[i];
-
+    let lineNumber = 0;
+    for (let i = 0; i < spikes.length; i++) {
+      const spike = spikes[i];
+      if(lineNumber == 0) tabSpikes += '<tr>';
+      lineNumber += 1;
       if (
         (showHole && spike.type === 'hole') ||
         (showSummit && spike.type === 'sum')
       ) {
-        const txt = spike.type === 'hole' ? 'C' : 'P';
-
-        tabSpikes += '<tr>' +
-          `<td>${txt}</td>` +
-          `<td>${spike.idx} °</td>` +
-          `<td>${spike.speed.toFixed(3)} nds</td>` +
-          `<td>${sailNames[spike.sail]}</td>` +
-          '</tr>';
-
+        const colorType = spike.type === 'hole' ? 'red' : 'green';
+        tabSpikes +=  `<td style="color:${colorType}">${spike.idx} °</td>` +
+          `<td style="color:${colorType}">${spike.speed.toFixed(3)} nds</td>` +
+          `<td style="color:${colorType}">${sailNames[spike.sail]}</td>`;
+        if(lineNumber == 3)
+        {
+          tabSpikes += '</tr>';
+          lineNumber = 0;
+        }   
         noneDrawn = false;
       }
     }
+    if(lineNumber !=0)
+    {
+      for(let i = 0;i<(3-lineNumber);i++) {
+        tabSpikes += '<td colspan="3"></td>';
+      }
+      tabSpikes += '</tr>';
+    }
 
     if (noneDrawn) {
-      if (showHole) {
-        tabSpikes = '<tr><td colspan="3">Pas de creux détecté</td></tr>';
+      if (showSummit) {
+        tabSpikes = '<tr><td colspan="9">Pas de pics'
+        if (showHole) {
+          tabSpikes += '/creux'
+        }
+        tabSpikes += ' détecté</td></tr>';
       } else {
-        tabSpikes = '<tr><td colspan="3">Pas de pics détecté</td></tr>';
+        tabSpikes = '<tr><td colspan="9">Pas de creu détecté</td></tr>';
       }
     }
   }

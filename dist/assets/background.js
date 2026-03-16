@@ -1,4 +1,4 @@
-import { R as getDefaultExportFromCjs, aH as processDBOperations, S as getData, aI as cfg, aJ as getAllData, h as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aO as angle, U as toRad, aP as toDeg, c as roundTo, aQ as bestVMG, aR as calculateCOGLoxo, aS as manoeuveringPenalities, aT as computeEnergyLoose, aU as computeEnergyRecovery, aV as foilingFactor, N as guessOptionBits, M as isBitSet, s as sailNames, u as getxFactorStyle, aW as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aX as deleteData, aG as createKeyChangeListener } from "./utils-ee7d46e9.js";
+import { R as getDefaultExportFromCjs, aI as processDBOperations, S as getData, aJ as cfg, aK as getAllData, h as getUserPrefs, aL as getLatestAndPreviousByTriplet, aM as getLatestEntriesPerUser, aN as saveData, aO as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aP as angle, U as toRad, aQ as toDeg, c as roundTo, aR as bestVMG, aS as calculateCOGLoxo, aT as manoeuveringPenalities, aU as computeEnergyLoose, aV as computeEnergyRecovery, aW as foilingFactor, N as guessOptionBits, a7 as isOptionsActivated, M as isBitSet, s as sailNames, u as getxFactorStyle, aX as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aY as deleteData, aH as createKeyChangeListener } from "./utils-c153c7c7.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -4128,7 +4128,7 @@ async function getRaceListITYC(opts = {}) {
         var _a, _b;
         if (!race || !race.rid)
           return;
-        const raceInfo = JSON.parse(race.data);
+        const raceInfo = race.data && race.data != "" ? JSON.parse(race.data) : null;
         const [raceIdRaw, legNumRaw] = String(race.rid).split("_");
         if (!raceIdRaw || !legNumRaw)
           return;
@@ -4139,20 +4139,20 @@ async function getRaceListITYC(opts = {}) {
         const legName = race.legName ?? null;
         const raceName = race.name ?? null;
         const raceType = race.type ?? null;
-        const vsrLevel = race.vsrRank ?? race.vsr ?? null;
+        const vsrLevel = race.vsrRank ?? race.vsr ?? 0;
         const start = (raceInfo == null ? void 0 : raceInfo.start) ?? null;
         const end = (raceInfo == null ? void 0 : raceInfo.end) ?? null;
         const close = race.start ?? null;
         const open = race.end ?? null;
-        const polar_id = ((_a = raceInfo.boat) == null ? void 0 : _a.polar_id) ?? null;
-        const fineWinds = raceInfo.gfsWinds ?? null;
-        const boatName = ((_b = raceInfo.boat) == null ? void 0 : _b.name) ?? null;
-        const priceLevel = raceInfo.priceLevel ?? null;
-        const optionPrices = raceInfo.optionPrices ?? null;
-        const checkpoints = raceInfo.checkpoints ?? [];
-        const ice_limits = raceInfo.ice_limits ?? [];
-        const course = raceInfo.course ?? [];
-        const restrictedZones = raceInfo.restrictedZones ?? [];
+        const polar_id = ((_a = raceInfo == null ? void 0 : raceInfo.boat) == null ? void 0 : _a.polar_id) ?? null;
+        const fineWinds = (raceInfo == null ? void 0 : raceInfo.gfsWinds) ?? null;
+        const boatName = ((_b = raceInfo == null ? void 0 : raceInfo.boat) == null ? void 0 : _b.name) ?? null;
+        const priceLevel = (raceInfo == null ? void 0 : raceInfo.priceLevel) ?? null;
+        const optionPrices = (raceInfo == null ? void 0 : raceInfo.optionPrices) ?? null;
+        const checkpoints = (raceInfo == null ? void 0 : raceInfo.checkpoints) ?? [];
+        const ice_limits = (raceInfo == null ? void 0 : raceInfo.ice_limits) ?? [];
+        const course = (raceInfo == null ? void 0 : raceInfo.course) ?? [];
+        const restrictedZones = (raceInfo == null ? void 0 : raceInfo.restrictedZones) ?? [];
         legList.push({
           id: `${raceId}-${legNum}`,
           raceId,
@@ -4166,6 +4166,7 @@ async function getRaceListITYC(opts = {}) {
           fineWinds,
           boatName,
           priceLevel,
+          vsrLevel,
           optionPrices,
           checkpoints,
           ice_limits,
@@ -4679,8 +4680,8 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
     const currentSail = latest.sail % 10;
     let sailDef = polar.sail[currentSail - 1];
     if (latest.state == "racing" && sailDef && latest.twa && latest.tws) {
-      const speedTFull = theoreticalSpeed(polar, null, latest.tws, latest.twa, currentSail - 1);
-      let speedT = speedTFull.speed;
+      const speedTFull = theoreticalSpeed(polar, null, latest.tws, latest.twa, currentSail - 1, true);
+      const speedT = speedTFull.speed;
       let foilFactor = foilingFactor({ foil: true }, latest.tws, latest.twa, polar.foil);
       let hullFactor = polar.hull.speedRatio;
       const epsEqual = (a, b) => {
@@ -4709,10 +4710,17 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
         if (epsEqual(latest.speed, speedT * hullFactor)) {
           xplained = true;
           if (epsEqual(hullFactor, foilFactor)) {
-            realFoilFactor = foils;
-            playerOption.guessOptions |= guessOptionBits["foilActivated"];
-            playerOption.guessOptions |= guessOptionBits["hullDetected"];
-            playerOption.guessOptions &= ~guessOptionBits["hull"];
+            if (foilFactor > 1) {
+              realFoilFactor = foils;
+              playerOption.guessOptions |= guessOptionBits["foilActivated"];
+              playerOption.guessOptions |= guessOptionBits["hullDetected"];
+              playerOption.guessOptions &= ~guessOptionBits["hull"];
+            } else {
+              realFoilFactor = null;
+              playerOption.guessOptions |= guessOptionBits["foilDetected"];
+              playerOption.guessOptions &= ~guessOptionBits["foil"];
+              playerOption.guessOptions |= guessOptionBits["hullActivated"];
+            }
           } else {
             playerOption.guessOptions |= guessOptionBits["hullActivated"];
             if (foilFactor > 1) {
@@ -4733,10 +4741,10 @@ async function computeFleetPlayerIte(legInfos, latest, playerOption, currentPlay
           playerOption.guessOptions |= guessOptionBits["foilActivated"];
           playerOption.guessOptions |= guessOptionBits["hullActivated"];
         } else {
-          if ((playerOption == null ? void 0 : playerOption.options) || isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["foilDetected"]) && isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["hullDetected"])) {
+          if (isOptionsActivated(playerOption == null ? void 0 : playerOption.options) || isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["foilDetected"]) && isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["hullDetected"])) {
             let hullOpt = isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["hull"]);
             let foilOpt = isBitSet(playerOption == null ? void 0 : playerOption.guessOptions, guessOptionBits["foil"]);
-            if (playerOption == null ? void 0 : playerOption.options) {
+            if (isOptionsActivated(playerOption == null ? void 0 : playerOption.options)) {
               hullOpt = playerOption == null ? void 0 : playerOption.options.hull;
               foilOpt = playerOption == null ? void 0 : playerOption.options.foil;
             }

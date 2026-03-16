@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo$1, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames$1, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as onUserChangeRace, a8 as switchTheme, a9 as loadUserPrefs, aa as initMemo, ab as setConnectedPlayerId, ac as updatePlayersList, ad as updateTeamsList, ae as updateConnectedPlayerInfos, af as updateLegPlayerInfos, ag as updateLegPlayersOrder, ah as getLegListUpdate, ai as setLegListUpdate, aj as updateLegList, ak as updatePolar, al as getPlayersUpdate, am as setPlayersUpdate, an as updateLegFleetInfos, ao as getTeamsUpdate, ap as setTeamsUpdate, aq as getPolarsUpdate, ar as setPolarsUpdate, as as getLegPlayersInfosUpdate, at as setLegPlayersInfosUpdate, au as getLegFleetInfosUpdate, av as setLegFleetInfosUpdate, aw as getLegPlayersOptionsUpdate, ax as setLegPlayersOptionsUpdate, ay as updateLegPlayersOptions, az as getLegPlayersOrderUpdate, aA as setLegPlayersOrderUpdate, aB as setOpenedRaceId, aC as updateOpenedRaceId, aD as updateLegPlayersTracks, aE as getLegPlayersTracksUpdate, aF as setLegPlayersTracksUpdate, aG as createKeyChangeListener } from "./utils-ee7d46e9.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo$1, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames$1, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as isOptionsActivated$1, a8 as onUserChangeRace, a9 as switchTheme, aa as loadUserPrefs, ab as initMemo, ac as setConnectedPlayerId, ad as updatePlayersList, ae as updateTeamsList, af as updateConnectedPlayerInfos, ag as updateLegPlayerInfos, ah as updateLegPlayersOrder, ai as getLegListUpdate, aj as setLegListUpdate, ak as updateLegList, al as updatePolar, am as getPlayersUpdate, an as setPlayersUpdate, ao as updateLegFleetInfos, ap as getTeamsUpdate, aq as setTeamsUpdate, ar as getPolarsUpdate, as as setPolarsUpdate, at as getLegPlayersInfosUpdate, au as setLegPlayersInfosUpdate, av as getLegFleetInfosUpdate, aw as setLegFleetInfosUpdate, ax as getLegPlayersOptionsUpdate, ay as setLegPlayersOptionsUpdate, az as updateLegPlayersOptions, aA as getLegPlayersOrderUpdate, aB as setLegPlayersOrderUpdate, aC as setOpenedRaceId, aD as updateOpenedRaceId, aE as updateLegPlayersTracks, aF as getLegPlayersTracksUpdate, aG as setLegPlayersTracksUpdate, aH as createKeyChangeListener } from "./utils-c153c7c7.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -100,7 +100,7 @@ function buildRaceStatusHtml() {
       const key = `${legId.raceId}-${legId.legNum}`;
       const legIte = legPlayerInfosHistory[key];
       const legInfo2 = raceList[key];
-      tableContent += buildRaceStatusHtmlLine(legInfo2, legIte.ites[0]);
+      tableContent += buildRaceStatusHtmlLine(legInfo2, legIte.ites && legIte.ites[0] ? legIte.ites[0] : null);
     }
   }
   const tablecontainer = document.getElementById("raceStatus");
@@ -216,7 +216,8 @@ function buildRaceStatusHtmlLine(raceInfo, raceIte) {
       returnVal += "<td " + lastCommandBG + '">' + lastCommand + "</td>";
     returnVal += '<td><span style="color:' + itycLedColor + ';font-size:16px;"><b>&#9679</b></span></td>';
   } else {
-    returnVal += '<td class="name">No info received for this race</td>';
+    const colSpan = userPrefs.raceData.lastCmd ? 21 : 20;
+    returnVal += '<td class="name" colspan=' + colSpan + ">No info received for this race</td>";
   }
   returnVal += "</tr>";
   return returnVal;
@@ -450,7 +451,7 @@ function getFleetSortValue(pInfos, sortField2) {
     case "avgSpeed":
       return (iteDash == null ? void 0 : iteDash.avgSpeed) ?? 0;
     case "xoption_options":
-      return pInfos.options ? Object.keys(pInfos.options).length : 0;
+      return isOptionsActivated(pInfos.options) ? Object.keys(pInfos.options).length : 0;
     case "state":
       const order = {
         racing: 1,
@@ -661,8 +662,8 @@ function drawOptions(playerOptions) {
     return { optionsTxt: "", optionsTitle: "", optionsStyle: "", foilsType: false };
   let optSail = "";
   let optPerf = "";
-  if (playerOptions.options) {
-    const pOptions = playerOptions.options;
+  const pOptions = playerOptions.options;
+  if ((pOptions == null ? void 0 : pOptions.light) || (pOptions == null ? void 0 : pOptions.reach) || (pOptions == null ? void 0 : pOptions.heavy) || (pOptions == null ? void 0 : pOptions.foil) || (pOptions == null ? void 0 : pOptions.winch) || (pOptions == null ? void 0 : pOptions.hull) || (pOptions == null ? void 0 : pOptions.comfortLoungePug) || (pOptions == null ? void 0 : pOptions.magicFurler) || (pOptions == null ? void 0 : pOptions.vrtexJacket)) {
     if (pOptions.light || pOptions.reach || pOptions.heavy)
       optSail = "[";
     if (pOptions.reach)
@@ -688,24 +689,24 @@ function drawOptions(playerOptions) {
     if (pOptions.vrtexJacket)
       optPerf += "vrtexJacket,";
   } else if (playerOptions.guessOptions && playerOptions.guessOptions != 0) {
-    const pOptions = playerOptions.guessOptions;
-    if (isBitSet(pOptions, guessOptionBits["reach"]) || isBitSet(pOptions, guessOptionBits["light"]) || isBitSet(pOptions, guessOptionBits["heavy"]))
+    const pOptions2 = playerOptions.guessOptions;
+    if (isBitSet(pOptions2, guessOptionBits["reach"]) || isBitSet(pOptions2, guessOptionBits["light"]) || isBitSet(pOptions2, guessOptionBits["heavy"]))
       optSail = "[";
-    if (isBitSet(pOptions, guessOptionBits["reach"]))
+    if (isBitSet(pOptions2, guessOptionBits["reach"]))
       optSail += "reach,";
-    if (isBitSet(pOptions, guessOptionBits["light"]))
+    if (isBitSet(pOptions2, guessOptionBits["light"]))
       optSail += "light,";
-    if (isBitSet(pOptions, guessOptionBits["heavy"]))
+    if (isBitSet(pOptions2, guessOptionBits["heavy"]))
       optSail += "heavy,";
-    if (isBitSet(pOptions, guessOptionBits["winchDetected"]) && isBitSet(pOptions, guessOptionBits["winch"]) || isBitSet(pOptions, guessOptionBits["foilDetected"]) && isBitSet(pOptions, guessOptionBits["foil"]) || isBitSet(pOptions, guessOptionBits["hullDetected"]) && isBitSet(pOptions, guessOptionBits["hull"]))
+    if (isBitSet(pOptions2, guessOptionBits["winchDetected"]) && isBitSet(pOptions2, guessOptionBits["winch"]) || isBitSet(pOptions2, guessOptionBits["foilDetected"]) && isBitSet(pOptions2, guessOptionBits["foil"]) || isBitSet(pOptions2, guessOptionBits["hullDetected"]) && isBitSet(pOptions2, guessOptionBits["hull"]))
       optPerf = "[";
-    if (isBitSet(pOptions, guessOptionBits["winchDetected"]) && isBitSet(pOptions, guessOptionBits["winch"]))
+    if (isBitSet(pOptions2, guessOptionBits["winchDetected"]) && isBitSet(pOptions2, guessOptionBits["winch"]))
       optPerf += "winch,";
-    if (isBitSet(pOptions, guessOptionBits["foilDetected"]) && isBitSet(pOptions, guessOptionBits["foil"])) {
+    if (isBitSet(pOptions2, guessOptionBits["foilDetected"]) && isBitSet(pOptions2, guessOptionBits["foil"])) {
       optPerf += "foil,";
       foilsType = true;
     }
-    if (isBitSet(pOptions, guessOptionBits["hullDetected"]) && isBitSet(pOptions, guessOptionBits["hull"]))
+    if (isBitSet(pOptions2, guessOptionBits["hullDetected"]) && isBitSet(pOptions2, guessOptionBits["hull"]))
       optPerf += "hull,";
     optionsStyle = 'style="font-style: italic;"';
   }
@@ -1173,7 +1174,7 @@ function requireLeafletSrc() {
           cancelFn.call(window, id);
         }
       }
-      var Util2 = {
+      var Util = {
         __proto__: null,
         extend,
         create: create$2,
@@ -10530,7 +10531,7 @@ function requireLeafletSrc() {
       exports2.TileLayer = TileLayer;
       exports2.Tooltip = Tooltip2;
       exports2.Transformation = Transformation;
-      exports2.Util = Util2;
+      exports2.Util = Util;
       exports2.VideoOverlay = VideoOverlay;
       exports2.bind = bind;
       exports2.bounds = toBounds;
@@ -14553,9 +14554,15 @@ function buildPath_bspline(pathEntry, initLat, initLng, finishLat, finshLng) {
   if (finishLat && finshLng) {
     path.push({ lat: finishLat, lon: finshLng });
   }
+  path = [
+    path[0],
+    path[0],
+    ...path,
+    path[path.length - 1],
+    path[path.length - 1]
+  ];
   const paths = convertLng0To360(path);
-  cpath[cpathNum].push(buildPt(paths[0].lat, paths[0].lon ? paths[0].lon : paths[0].lng));
-  if (path.length > 1) {
+  if (paths.length > 1) {
     for (let i = 2; i < paths.length - 1; i++) {
       for (let t = 0; t < 1; t += 0.1) {
         const ax = (-paths[i - 2].lat + 3 * paths[i - 1].lat - 3 * paths[i].lat + paths[i + 1].lat) / 6;
@@ -14574,6 +14581,89 @@ function buildPath_bspline(pathEntry, initLat, initLng, finishLat, finshLng) {
     }
   }
   return cpath;
+}
+function clampMercatorLat(lat) {
+  return Math.max(-85.05112878, Math.min(85.05112878, lat));
+}
+function mercatorY(latDeg) {
+  const lat = clampMercatorLat(latDeg) * Math.PI / 180;
+  return Math.log(Math.tan(Math.PI / 4 + lat / 2));
+}
+function inverseMercatorY(y) {
+  return (2 * Math.atan(Math.exp(y)) - Math.PI / 2) * 180 / Math.PI;
+}
+function buildRhumbSegmentPoints(from2, to2, steps2 = 32) {
+  const lat1 = from2.lat;
+  const lon1 = from2.lng;
+  const lat2 = to2.lat;
+  const lon2 = to2.lng;
+  const y1 = mercatorY(lat1);
+  const y2 = mercatorY(lat2);
+  const pts = [];
+  for (let i = 0; i <= steps2; i++) {
+    const t = i / steps2;
+    const y = y1 + (y2 - y1) * t;
+    const lon = lon1 + (lon2 - lon1) * t;
+    const lat = inverseMercatorY(y);
+    pts.push(L$1.latLng(lat, lon, true));
+  }
+  return pts;
+}
+function buildRhumbPolylinePoints(path, stepsPerSegment = 32) {
+  if (!path || path.length === 0)
+    return [];
+  if (path.length === 1)
+    return [path[0]];
+  const pts = [];
+  for (let i = 0; i < path.length - 1; i++) {
+    const segPts = buildRhumbSegmentPoints(path[i], path[i + 1], stepsPerSegment);
+    if (i > 0) {
+      segPts.shift();
+    }
+    pts.push(...segPts);
+  }
+  return pts;
+}
+function buildTraceRhumb(tpath, layer, pointsContainer, color2, weight, opacity, dashArray, dashOffset, stepsPerSegment = 32) {
+  let nbTrackLine = 0;
+  const trackLine = [];
+  for (let i = 0; i < tpath.length; i++) {
+    const path = [[], [], []];
+    for (let j = 0; j < tpath[i].length; j++) {
+      const pos = buildPt2(tpath[i][j].lat, tpath[i][j].lng);
+      path[0].push(pos[0]);
+      path[1].push(pos[1]);
+      path[2].push(pos[2]);
+      pointsContainer.push(pos[1]);
+    }
+    for (let j = 0; j < path.length; j++) {
+      const rhumbPoints = buildRhumbPolylinePoints(path[j], stepsPerSegment);
+      const trackLineP = L$1.polyline(rhumbPoints, {
+        color: color2,
+        opacity,
+        weight,
+        wrap: false
+      });
+      if (dashArray)
+        trackLineP.options.dashArray = dashArray;
+      if (dashOffset)
+        trackLineP.options.dashOffset = dashOffset;
+      trackLineP.on("mouseover", function() {
+        trackLineP.setStyle({
+          weight: opacity * 2
+        });
+      });
+      trackLineP.on("mouseout", function() {
+        trackLineP.setStyle({
+          weight: opacity
+        });
+      });
+      trackLine[nbTrackLine] = trackLineP;
+      trackLine[nbTrackLine].addTo(layer);
+      nbTrackLine++;
+    }
+  }
+  return trackLine;
 }
 function createProjectionPoint(ts, lat, lon) {
   return {
@@ -15243,8 +15333,8 @@ function updateMapCheckpoints(raceInfo, playerIte2) {
         op = 0.6;
       const label_g = (passed ? "<div class='tagGatePassed'>PASSED</div>" : "") + "Checkpoint " + cp.group + "." + cp.id + ": <b>" + cp.name + "</b><br>";
       const label_g_more = "<br>Type: <b>" + cpType + "</b> | Engine: " + cp.engine;
-      const side_s = cp.side == "stbd" ? "Starboard" : "Port";
-      const side_e = cp.side == "stbd" ? "Port" : "Starboard";
+      const side_s = cp.rhumb ? "any" : cp.side == "stbd" ? "Starboard" : "Port";
+      const side_e = cp.rhumb ? "any" : cp.side == "stbd" ? "Port" : "Starboard";
       const label_s = label_g + formatPosition(cp.start.lat, cp.start.lon) + label_g_more + " | Side: " + side_s;
       const label_e = label_g + formatPosition(cp.end.lat, cp.end.lon) + label_g_more + " | Side: " + side_e;
       if (cp.display == "buoy" || cp.side == "stbd") {
@@ -15252,6 +15342,10 @@ function updateMapCheckpoints(raceInfo, playerIte2) {
         const iconEnd = cp.side == "stbd" ? passed ? redRLIconP : redRLIcon : passed ? greenRRIconP : greenRRIcon;
         buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op, 0);
         buildMarker(position_e, mapState.checkPointLayer, iconEnd, label_e, 8, op, 0);
+      } else if (cp.rhumb) {
+        const iconStart = passed ? yellowRRIconP : yellowRRIcon;
+        buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op, 0);
+        buildMarker(position_e, mapState.checkPointLayer, iconStart, label_e, 8, op, 0);
       } else {
         const iconStart = cp.side == "stbd" ? passed ? yellowRRIconP : yellowRRIcon : passed ? yellowRLIconP : yellowRLIcon;
         buildMarker(position_s, mapState.checkPointLayer, iconStart, label_s, 8, op, 0);
@@ -15262,7 +15356,10 @@ function updateMapCheckpoints(raceInfo, playerIte2) {
       const tpath = [];
       tpath.push(position_e[1]);
       tpath.push(position_s[1]);
-      buildTrace(buildPath(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10");
+      if (cp.rhumb)
+        buildTraceRhumb(buildPath(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10", 512);
+      else
+        buildTrace(buildPath(tpath), mapState.checkPointLayer, mapState.refPoints, pathColor, 1, op, "20, 20", "10");
     }
   }
   mapState.checkPointLayer.addTo(map2);
@@ -15784,13 +15881,12 @@ async function initializeMap() {
   if (Array.isArray(south) && south.length !== 0) {
     const isDummy = south.length === 5 && south[0].lat === -90 && south[0].lon === -180 && south[2].lat === -90 && south[2].lon === 0 && south[4].lat === -90 && south[4].lon === 180;
     if (!isDummy) {
-      const iceDataMiddleIndex = Math.ceil(iceData.length / 2);
-      const iceDataFirstHalf = iceData.slice(0, iceDataMiddleIndex);
-      const iceDataSecondHalf = iceData.slice(iceDataMiddleIndex);
+      const iceDataMiddleIndex = Math.ceil(south.length / 2);
+      const iceDataFirstHalf = south.slice(0, iceDataMiddleIndex);
+      const iceDataSecondHalf = south.slice(iceDataMiddleIndex);
       buildTrace(buildPath(iceDataFirstHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
       buildTrace(buildPath(iceDataSecondHalf), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
-      if (Util.isOdd(iceData.length))
-        buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
+      buildTrace(buildPath([iceDataFirstHalf[iceDataFirstHalf.length - 1], iceDataSecondHalf[0]]), mapState.refLayer, mapState.refPoints, "#FF0000", 1.5, 0.5, false);
     }
   }
   const rz = raceInfo == null ? void 0 : raceInfo.restrictedZones;
@@ -31029,6 +31125,39 @@ function makeZoomOptions(groupId = "linked") {
     }
   };
 }
+function getDynamicLinearStepSize(min, max) {
+  const delta = Number(max) - Number(min);
+  let stepSize = 10;
+  if (delta <= 0.05)
+    stepSize = 0.01;
+  else if (delta <= 0.1)
+    stepSize = 0.02;
+  else if (delta <= 0.5)
+    stepSize = 0.1;
+  else if (delta <= 1)
+    stepSize = 0.2;
+  else if (delta <= 5)
+    stepSize = 1;
+  else if (delta <= 10)
+    stepSize = 2;
+  else if (delta <= 40)
+    stepSize = 5;
+  return stepSize;
+}
+function applyDynamicLinearTicks(chart, axisKey = "x") {
+  var _a2, _b, _c, _d;
+  const scale = (_a2 = chart == null ? void 0 : chart.scales) == null ? void 0 : _a2[axisKey];
+  if (!scale)
+    return;
+  const min = Number(scale.min);
+  const max = Number(scale.max);
+  if (!Number.isFinite(min) || !Number.isFinite(max))
+    return;
+  (_b = chart.options).scales || (_b.scales = {});
+  (_c = chart.options.scales)[axisKey] || (_c[axisKey] = {});
+  (_d = chart.options.scales[axisKey]).ticks || (_d.ticks = {});
+  chart.options.scales[axisKey].ticks.stepSize = getDynamicLinearStepSize(min, max);
+}
 function getXRange(chart) {
   var _a2, _b, _c, _d, _e, _f, _g;
   const x = (_a2 = chart == null ? void 0 : chart.scales) == null ? void 0 : _a2.x;
@@ -31214,6 +31343,8 @@ function createLinkedLineChart(Chart2, {
   colorAt = () => void 0,
   dashAt = () => null,
   xTickLabel = (v) => String(v),
+  xMin = void 0,
+  xMax = void 0,
   tooltipTitle = (items) => {
     var _a2;
     return ((_a2 = items == null ? void 0 : items[0]) == null ? void 0 : _a2.label) ?? "";
@@ -31227,6 +31358,7 @@ function createLinkedLineChart(Chart2, {
   theme = "dark"
 }) {
   const gridColor = getGridColor(Chart2, theme);
+  const zoomOptions = makeZoomOptions(groupId);
   const points = xValues.map((x, i) => ({ x, y: yValues[i] }));
   const ds = {
     label: title,
@@ -31238,7 +31370,7 @@ function createLinkedLineChart(Chart2, {
       borderDash: (c) => dashAt(c.p0DataIndex) ?? void 0
     }
   };
-  return new Chart2(getCanvas(canvasId), {
+  const chart = new Chart2(getCanvas(canvasId), {
     type: "line",
     data: { datasets: [ds] },
     options: {
@@ -31247,7 +31379,31 @@ function createLinkedLineChart(Chart2, {
       parsing: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        zoom: makeZoomOptions(groupId),
+        zoom: {
+          ...zoomOptions,
+          pan: {
+            ...zoomOptions.pan,
+            onPanComplete({ chart: chart2 }) {
+              var _a2;
+              applyDynamicLinearTicks(chart2, "x");
+              if (typeof ((_a2 = zoomOptions.pan) == null ? void 0 : _a2.onPanComplete) === "function") {
+                zoomOptions.pan.onPanComplete({ chart: chart2 });
+              }
+              chart2.update("none");
+            }
+          },
+          zoom: {
+            ...zoomOptions.zoom,
+            onZoomComplete({ chart: chart2 }) {
+              var _a2;
+              applyDynamicLinearTicks(chart2, "x");
+              if (typeof ((_a2 = zoomOptions.zoom) == null ? void 0 : _a2.onZoomComplete) === "function") {
+                zoomOptions.zoom.onZoomComplete({ chart: chart2 });
+              }
+              chart2.update("none");
+            }
+          }
+        },
         itycSyncPlugin: { groupId },
         itycZoomSyncPlugin: { groupId },
         itycLineAtIndex: { lines: lineAtIndex },
@@ -31264,8 +31420,10 @@ function createLinkedLineChart(Chart2, {
       scales: {
         x: {
           type: "linear",
+          min: xMin,
+          max: xMax,
           grid: { color: gridColor },
-          ticks: { callback: xTickLabel }
+          ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, callback: xTickLabel }
         },
         y: {
           grid: { color: gridColor },
@@ -31281,6 +31439,9 @@ function createLinkedLineChart(Chart2, {
       }
     }
   });
+  applyDynamicLinearTicks(chart, "x");
+  chart.update("none");
+  return chart;
 }
 function resetZoomGroup(sourceChart, groupId = "linked") {
   itycZoomSync.reset(sourceChart, groupId);
@@ -31809,20 +31970,13 @@ function computeSailTwaRange(polarsData, boatPolars, options, sailId, twaKeys) {
 function snapToGrid(value, step) {
   return Number((Math.round(value / step) * step).toFixed(1));
 }
-let __itycAddonChartsRegistered = false;
-function ensureAddonChartsRegistered() {
-  if (__itycAddonChartsRegistered)
-    return;
-  registerTimeSeriesPlugins(Chart);
-  __itycAddonChartsRegistered = true;
-}
-const POLAR_GROUP_ID = "polarTws";
+const POLAR_TWS_GROUP_ID = "polarTws";
 const POLAR_TWA_GROUP_ID = "polarTwa";
 let polarTWSChart;
 let polarVMGChart;
 let polarVMCChart;
 let polarTWAChart;
-function buildSpikeLines(drawData, baseXValues) {
+function buildSpikeLines(spikes, baseXValues) {
   var _a2, _b;
   const summit = (_a2 = document.getElementById("sel_polar_summit")) == null ? void 0 : _a2.checked;
   const hole = (_b = document.getElementById("sel_polar_hole")) == null ? void 0 : _b.checked;
@@ -31830,7 +31984,7 @@ function buildSpikeLines(drawData, baseXValues) {
     return [];
   const base0 = Number((baseXValues == null ? void 0 : baseXValues[0]) ?? 0);
   const out = [];
-  for (const s of (drawData == null ? void 0 : drawData.spikes) ?? []) {
+  for (const s of spikes ?? []) {
     if ((s == null ? void 0 : s.type) === "summit" && !summit)
       continue;
     if ((s == null ? void 0 : s.type) === "hole" && !hole)
@@ -31843,9 +31997,8 @@ function buildSpikeLines(drawData, baseXValues) {
   return out;
 }
 function plotPolarTwsChart(drawData, currentTws) {
-  ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData == null ? void 0 : drawData.spikes, drawData.twa);
   document.getElementById("polarChartTitle_name").innerHTML = "Vitesse Bateau (nds) TWS " + currentTws + "nds";
   if (polarTWSChart)
     polarTWSChart.destroy();
@@ -31853,7 +32006,7 @@ function plotPolarTwsChart(drawData, currentTws) {
     canvasId: "polarTWSChart",
     title: "Auto",
     unitSuffix: " nds",
-    groupId: POLAR_GROUP_ID,
+    groupId: POLAR_TWA_GROUP_ID,
     xValues: drawData.twa,
     yValues: drawData.spd,
     lineAtIndex: spikes,
@@ -31865,7 +32018,7 @@ function plotPolarTwsChart(drawData, currentTws) {
       var _a2, _b;
       return ((_a2 = drawData.theoSail) == null ? void 0 : _a2[i]) !== void 0 && ((_b = drawData.bestSail) == null ? void 0 : _b[i]) !== void 0 && drawData.theoSail[i] !== drawData.bestSail[i] ? [6, 6] : null;
     },
-    xTickLabel: (v, idx2, values) => dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) => dynamicWindsSpeedAxisTicks(v, " °"),
     tooltipTitle: (items) => {
       var _a2, _b;
       const x = (_b = (_a2 = items == null ? void 0 : items[0]) == null ? void 0 : _a2.parsed) == null ? void 0 : _b.x;
@@ -31887,9 +32040,8 @@ function plotPolarTwsChart(drawData, currentTws) {
   });
 }
 function plotPolarVmgChart(drawData, currentTws) {
-  ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData == null ? void 0 : drawData.spikesVmg, drawData.twa);
   document.getElementById("polarChartVMGTitle_name").innerHTML = "VMG (nds) TWS " + currentTws + "nds";
   if (polarVMGChart)
     polarVMGChart.destroy();
@@ -31909,7 +32061,7 @@ function plotPolarVmgChart(drawData, currentTws) {
       var _a2, _b;
       return ((_a2 = drawData.theoSail) == null ? void 0 : _a2[i]) !== void 0 && ((_b = drawData.bestSail) == null ? void 0 : _b[i]) !== void 0 && drawData.theoSail[i] !== drawData.bestSail[i] ? [6, 6] : null;
     },
-    xTickLabel: (v, idx2, values) => dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) => dynamicWindsSpeedAxisTicks(v, " °"),
     tooltipTitle: (items) => {
       var _a2, _b;
       const x = (_b = (_a2 = items == null ? void 0 : items[0]) == null ? void 0 : _a2.parsed) == null ? void 0 : _b.x;
@@ -31931,9 +32083,8 @@ function plotPolarVmgChart(drawData, currentTws) {
   });
 }
 function plotPolarVmcChart(drawData, currentTws) {
-  ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
-  const spikes = buildSpikeLines(drawData, drawData.twa);
+  const spikes = buildSpikeLines(drawData == null ? void 0 : drawData.spikesVmc, drawData.twa);
   document.getElementById("polarChartVMCTitle_name").innerHTML = "VMC (nds) TWS " + currentTws + "nds";
   if (polarVMCChart)
     polarVMCChart.destroy();
@@ -31953,7 +32104,7 @@ function plotPolarVmcChart(drawData, currentTws) {
       var _a2, _b;
       return ((_a2 = drawData.theoSail) == null ? void 0 : _a2[i]) !== void 0 && ((_b = drawData.bestSail) == null ? void 0 : _b[i]) !== void 0 && drawData.theoSail[i] !== drawData.bestSail[i] ? [6, 6] : null;
     },
-    xTickLabel: (v, idx2, values) => dynamicWindsSpeedAxisTicks(v, values, drawData.twa, " °"),
+    xTickLabel: (v) => dynamicWindsSpeedAxisTicks(v, " °"),
     tooltipTitle: (items) => {
       var _a2, _b;
       const x = (_b = (_a2 = items == null ? void 0 : items[0]) == null ? void 0 : _a2.parsed) == null ? void 0 : _b.x;
@@ -31975,9 +32126,8 @@ function plotPolarVmcChart(drawData, currentTws) {
   });
 }
 function plotPolarTwaChart(drawData, currentTwa) {
-  ensureAddonChartsRegistered();
   applyChartDefaultsForTheme(Chart);
-  const spikes = buildSpikeLines(drawData, drawData.tws);
+  const spikes = buildSpikeLines(drawData == null ? void 0 : drawData.spikes, drawData.tws);
   document.getElementById("polarChartTitleTWA_name").innerHTML = "Vitesse Bateau (nds) TWA " + currentTwa + "°";
   if (polarTWAChart)
     polarTWAChart.destroy();
@@ -31985,7 +32135,7 @@ function plotPolarTwaChart(drawData, currentTwa) {
     canvasId: "polarTWAChart",
     title: "Auto",
     unitSuffix: " nds",
-    groupId: POLAR_TWA_GROUP_ID,
+    groupId: POLAR_TWS_GROUP_ID,
     xValues: drawData.tws,
     yValues: drawData.spd,
     lineAtIndex: spikes,
@@ -31997,7 +32147,7 @@ function plotPolarTwaChart(drawData, currentTwa) {
       var _a2, _b;
       return ((_a2 = drawData.theoSail) == null ? void 0 : _a2[i]) !== void 0 && ((_b = drawData.bestSail) == null ? void 0 : _b[i]) !== void 0 && drawData.theoSail[i] !== drawData.bestSail[i] ? [6, 6] : null;
     },
-    xTickLabel: (v, idx2, values) => dynamicWindsSpeedAxisTicks(v, values, drawData.tws, " nds"),
+    xTickLabel: (v) => dynamicWindsSpeedAxisTicks(v, " nds"),
     tooltipTitle: (items) => {
       var _a2, _b;
       const x = (_b = (_a2 = items == null ? void 0 : items[0]) == null ? void 0 : _a2.parsed) == null ? void 0 : _b.x;
@@ -32056,38 +32206,9 @@ if (typeof window !== "undefined") {
   window.plotPolarResetZoomVMG = plotPolarResetZoomVMG;
   window.plotPolarResetZoomVMC = plotPolarResetZoomVMC;
 }
-function dynamicWindsSpeedAxisTicks(value, values, axisValue, unit) {
-  let min = 500;
-  let max = 0;
-  values.forEach((element) => {
-    const val = element.value < 0 ? 0 : element.value.toFixed(1);
-    const ws = Number(axisValue[val]);
-    if (ws < min)
-      min = ws;
-    if (ws > max)
-      max = ws;
-  });
-  const delta = max - min;
-  let mod = 10;
-  if (delta <= 0.5)
-    mod = 0.1;
-  else if (delta <= 1)
-    mod = 0.2;
-  else if (delta <= 5)
-    mod = 1;
-  else if (delta <= 10)
-    mod = 2;
-  else if (delta <= 40)
-    mod = 5;
-  const xref = [];
-  for (var i = min; i <= max; ) {
-    xref.push(i);
-    i += mod;
-  }
-  if (xref.find((element) => element == axisValue[value]))
-    return axisValue[value] + unit;
-  else if (value === 0)
-    return value;
+function dynamicWindsSpeedAxisTicks(tickValue, unit = "") {
+  const tick = Math.round(Number(tickValue) * 10) / 10;
+  return Number.isFinite(tick) ? `${tick}${unit}` : "";
 }
 let divPolarGraph = null;
 let divPolarTws = null;
@@ -32156,19 +32277,20 @@ function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
   const connectedRace = getOpenedRaceId();
   const raceItes = getLegPlayerInfos();
   const polar = getPolar();
-  if (!polar)
+  if (!polar || polar.length == 0) {
+    document.querySelectorAll(".expertAnalysis").forEach((el) => el.style.display = "none");
     return;
+  }
+  document.querySelectorAll(".expertAnalysis").forEach((el) => el.style.display = "block");
   const rid = `${connectedRace.raceId}-${connectedRace.legNum}`;
-  const ite = ((_a2 = raceItes == null ? void 0 : raceItes.ites) == null ? void 0 : _a2[0]) ?? null;
-  if (!ite)
-    return;
+  const ite = ((_a2 = raceItes == null ? void 0 : raceItes.ites) == null ? void 0 : _a2[0]) ?? { twa: 90, tws: 10, twd: 90, cog: void 0 };
   if (!divPolarTws)
     initialize3();
   const opt = (_b = raceItes.options) == null ? void 0 : _b.options;
   const tws = twsI ?? (ite.tws === void 0 ? 10 : ite.tws);
   const twa = twaI ?? (ite.twa === void 0 ? 90 : ite.twa < 0 ? -ite.twa : ite.twa);
   const twd = twdI ?? (((_c = ite.metaDash) == null ? void 0 : _c.twd) === void 0 ? ite.twd === void 0 ? 90 : ite.twd : ite.metaDash.twd);
-  if (opt == null ? void 0 : opt.foils) {
+  if (opt == null ? void 0 : opt.foil) {
     document.getElementById("polarDivFoil").style = "display:block;";
   } else {
     document.getElementById("polarDivFoil").style = "display:none;";
@@ -32202,6 +32324,7 @@ function getDataArray(rid, options, boatPolars, twa, tws, twd, cog) {
   getPolarTWAData(state.current.__tws);
   _drawData.spikesVmg = state.spikesVmg;
   _drawData.spikesVmc = state.spikesVmc;
+  _drawDataTWA.spikes = state.spikesTws;
 }
 let _drawData = [];
 function getPolarTWSData(twa) {
@@ -32599,24 +32722,51 @@ function spikesSpeedHtml() {
     document.getElementById("polarDivSpikeInfo").style = "display:none;";
     return;
   }
-  let tabSpikes = '<thead><tr><th  colspan="4">Pics</th></tr><tr><th>Type</th><th>TWA</th><th>Speed</th><th>Sails</th></tr></thead><tbody>';
-  if (!_currentResultset.current.spikes || _currentResultset.current.spikes.length < 1) {
-    tabSpikes = '<tr><td colspan="3">Pas de pics/creux détecté</td></tr>';
+  let title = "";
+  if (showSummit) {
+    title = "Pics";
+    if (showHole)
+      title += " / ";
+  }
+  if (showHole)
+    title += "Creux";
+  let tabSpikes = '<thead><tr><th  colspan="9">' + title + "</th></tr><tr><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th></tr></thead><tbody>";
+  const spikes = _currentResultset.current.spikes;
+  if (!spikes || spikes.length < 1) {
+    tabSpikes = '<tr><td colspan="9">Pas de pics/creux détecté</td></tr>';
   } else {
     let noneDrawn = true;
-    for (let i = 0; i < _currentResultset.current.spikes.length; i++) {
-      const spike = _currentResultset.current.spikes[i];
+    let lineNumber = 0;
+    for (let i = 0; i < spikes.length; i++) {
+      const spike = spikes[i];
+      if (lineNumber == 0)
+        tabSpikes += "<tr>";
+      lineNumber += 1;
       if (showHole && spike.type === "hole" || showSummit && spike.type === "sum") {
-        const txt = spike.type === "hole" ? "C" : "P";
-        tabSpikes += `<tr><td>${txt}</td><td>${spike.idx} °</td><td>${spike.speed.toFixed(3)} nds</td><td>${sailNames$1[spike.sail]}</td></tr>`;
+        const colorType = spike.type === "hole" ? "red" : "green";
+        tabSpikes += `<td style="color:${colorType}">${spike.idx} °</td><td style="color:${colorType}">${spike.speed.toFixed(3)} nds</td><td style="color:${colorType}">${sailNames$1[spike.sail]}</td>`;
+        if (lineNumber == 3) {
+          tabSpikes += "</tr>";
+          lineNumber = 0;
+        }
         noneDrawn = false;
       }
     }
+    if (lineNumber != 0) {
+      for (let i = 0; i < 3 - lineNumber; i++) {
+        tabSpikes += "<td></td>";
+      }
+      tabSpikes += "</tr>";
+    }
     if (noneDrawn) {
-      if (showHole) {
-        tabSpikes = '<tr><td colspan="3">Pas de creux détecté</td></tr>';
+      if (showSummit) {
+        tabSpikes = '<tr><td colspan="9">Pas de pics';
+        if (showHole) {
+          tabSpikes += "/creux";
+        }
+        tabSpikes += " détecté</td></tr>";
       } else {
-        tabSpikes = '<tr><td colspan="3">Pas de pics détecté</td></tr>';
+        tabSpikes = '<tr><td colspan="9">Pas de creu détecté</td></tr>';
       }
     }
   }
@@ -33884,7 +34034,7 @@ function onSkipperSelectedChange(type) {
   upDateCheckbox("opt_winch_" + type, false);
   upDateCheckbox("opt_FP_" + type, false);
   const playerIteOpt = (_a2 = raceItesFleet[playerId]) == null ? void 0 : _a2.options;
-  if (playerIteOpt.options) {
+  if (isOptionsActivated$1(playerIteOpt.options)) {
     const pOptions = playerIteOpt.options;
     if (pOptions.options.reach)
       upDateCheckbox("opt_c0_" + type, true);
