@@ -27,7 +27,7 @@ export function onPlayerConnect() {
   setText("lb_boatname", playerInfo.name);
   setText("lb_credits", playerInfo.credits);
   updateVIPTag(playerInfo.isVIP);
-  if(playerInfo.team.length !=0)
+  if(playerInfo.team?.length)
   {
     setText("lb_teamname", playerInfo.team.name);
   }

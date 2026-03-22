@@ -1,4 +1,6 @@
-import { R as getDefaultExportFromCjs, aI as processDBOperations, S as getData, aJ as cfg, aK as getAllData, h as getUserPrefs, aL as getLatestAndPreviousByTriplet, aM as getLatestEntriesPerUser, aN as saveData, aO as theoreticalSpeed, Z as gcDistance, $ as courseAngle, aP as angle, U as toRad, aQ as toDeg, c as roundTo, aR as bestVMG, aS as calculateCOGLoxo, aT as manoeuveringPenalities, aU as computeEnergyLoose, aV as computeEnergyRecovery, aW as foilingFactor, N as guessOptionBits, a7 as isOptionsActivated, M as isBitSet, s as sailNames, u as getxFactorStyle, aX as twaBackGround, f as formatHM, w as getBG, d as formatTimeNotif, i as infoSail, q as formatPosition, aY as deleteData, aH as createKeyChangeListener } from "./utils-c153c7c7.js";
+import { V as getDefaultExportFromCjs, aH as processDBOperations, W as getData, aI as cfg, aJ as getAllData, e as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, aO as bestVMG, aP as manoeuveringPenalities, aQ as computeEnergyLoose, aR as computeEnergyRecovery, aS as foilingFactor, s as sailNames, t as getxFactorStyle, aT as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aU as deleteData, z as isDisplayEnabled, aG as createKeyChangeListener } from "./utils-95a370d9.js";
+import { a as gcDistance, c as courseAngle, f as angle, t as toRad, h as toDeg, r as roundTo, j as calculateCOGLoxo, g as guessOptionBits, e as isOptionsActivated, i as isBitSet } from "./utils-068774e3.js";
+import { c as crc32 } from "./nmeaUtils-8a8ec4be.js";
 function Cache(maxSize) {
   this._maxSize = maxSize;
   this.clear();
@@ -3919,6 +3921,57 @@ async function ingestGhostTrack(request, response) {
     return false;
   });
 }
+const OFFSCREEN_PATH = "offscreen.html";
+let creatingPromise = null;
+async function hasOffscreenDocument(path = OFFSCREEN_PATH) {
+  const offscreenUrl = chrome.runtime.getURL(path);
+  if ("getContexts" in chrome.runtime) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ["OFFSCREEN_DOCUMENT"],
+      documentUrls: [offscreenUrl]
+    });
+    return contexts.length > 0;
+  }
+  const matchedClients = await clients.matchAll();
+  return matchedClients.some((client) => client.url === offscreenUrl);
+}
+async function ensureOffscreen(path = OFFSCREEN_PATH) {
+  if (await hasOffscreenDocument(path)) {
+    return false;
+  }
+  if (creatingPromise) {
+    await creatingPromise;
+    return false;
+  }
+  creatingPromise = chrome.offscreen.createDocument({
+    url: path,
+    reasons: ["WORKERS"],
+    justification: "Run persistent NMEA timers and background transport outside the MV3 service worker"
+  });
+  try {
+    await creatingPromise;
+    return true;
+  } finally {
+    creatingPromise = null;
+  }
+}
+async function sendToOffscreen(type, payload = {}, path = OFFSCREEN_PATH) {
+  await ensureOffscreen(path);
+  return await chrome.runtime.sendMessage({
+    target: "offscreen",
+    type,
+    ...payload
+  });
+}
+async function startNmeaOffscreen(snapshot, path = OFFSCREEN_PATH) {
+  return await sendToOffscreen("nmea/start", { snapshot }, path);
+}
+async function stopNmeaOffscreen(snapshot = {}, path = OFFSCREEN_PATH) {
+  return await sendToOffscreen("nmea/stop", { snapshot }, path);
+}
+async function updateNmeaOffscreenSnapshot(snapshot, path = OFFSCREEN_PATH) {
+  return await sendToOffscreen("nmea/updateSnapshot", { snapshot }, path);
+}
 const TEAM_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFRlYW1MaXN0LnBocA==");
 const PLAYER_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFBsYXllckxpc3QucGhw");
 const RACE_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFJhY2VMaXN0LnBocA==");
@@ -4493,7 +4546,6 @@ function sendInfoCore(type) {
       console.warn("[sendInfo] HTTP error:", response.status);
     }
   }).catch((err) => {
-    console.error("[sendInfo] network error:", err);
   });
 }
 async function sendInfoOptITYC(message) {
@@ -4575,7 +4627,6 @@ async function sendInfoOptITYC(message) {
     });
     return response.ok;
   } catch (err) {
-    console.error("[sendInfoOptITYC] Unexpected error:", err);
     return false;
   }
 }
@@ -5432,6 +5483,129 @@ async function syncLatestWindpacksWindowed() {
   }
   return { model, run, runId, count: windowForecasts.length, downloaded, allComplete };
 }
+const NmeaState = {
+  proxyPort: "8081",
+  raceId: null,
+  legNum: null,
+  playerInfo: null,
+  fleetInfo: [],
+  currentUserId: null,
+  state: "off"
+};
+function setNmeaActiveRace(raceId, legNum) {
+  NmeaState.raceId = raceId;
+  NmeaState.legNum = legNum;
+}
+async function setNmeaState(state) {
+  if (NmeaState.state != state) {
+    void saveData(
+      "internal",
+      { id: "NMEAstate", state },
+      null,
+      { updateIfExists: true }
+    );
+    NmeaState.state = state;
+  }
+}
+async function setNmeaPlayerInfos(raceId, legNum, userId) {
+  var _a;
+  if (!raceId || !legNum || !userId)
+    return;
+  const { latest, meta } = await getLatestAndPreviousByTriplet(raceId, legNum, userId, { storeName: "legPlayersInfos" });
+  if (meta.timedOut || !latest)
+    return;
+  if (NmeaState.raceId != raceId || NmeaState.legNum != legNum)
+    setNmeaActiveRace(raceId, legNum);
+  NmeaState.currentUserId = userId;
+  NmeaState.playerInfo = {
+    iteDate: latest.iteDate,
+    pos: latest.pos,
+    speed: latest.speed,
+    hdg: latest.hdg,
+    tws: latest.tws,
+    twa: latest.twa,
+    realStamina: (_a = latest.metaDash) == null ? void 0 : _a.realStamina,
+    sail: latest.sail
+  };
+}
+async function setNmeaFleetInfos(raceId, legNum) {
+  if (!raceId || !legNum || !NmeaState.currentUserId)
+    return;
+  if (NmeaState.raceId != raceId || NmeaState.legNum != legNum)
+    setNmeaActiveRace(raceId, legNum);
+  NmeaState.fleetInfo = [];
+  const now = Date.now();
+  const fifteenMinutesAgo = now - 15 * 60 * 1e3;
+  const { items, meta } = await getLatestEntriesPerUser(raceId, legNum, {
+    since: fifteenMinutesAgo,
+    until: now,
+    timeout: 4e3,
+    storeName: "legFleetInfos"
+  });
+  for (const [userId, entry] of Object.entries(items)) {
+    if (isDisplayEnabled(entry, userId, NmeaState.currentUserId) && NmeaState.currentUserId != userId) {
+      const pDbcInfos = await getData("players", userId) ?? null;
+      if (!(pDbcInfos == null ? void 0 : pDbcInfos.name))
+        continue;
+      const mmsi = crc32(pDbcInfos.name) & 1073741823;
+      const pInfos = {
+        mmsi,
+        displayName: pDbcInfos == null ? void 0 : pDbcInfos.name,
+        speed: entry.speed,
+        pos: entry.pos,
+        hdg: entry.hdg
+      };
+      NmeaState.fleetInfo.push(pInfos);
+    }
+  }
+}
+async function loadNmeaPrefs() {
+  var _a, _b;
+  const dbUserPrefs = await getData("internal", "userPrefs").catch(() => null);
+  const prefs = (dbUserPrefs == null ? void 0 : dbUserPrefs.prefs) ?? null;
+  return {
+    requested: (_a = prefs == null ? void 0 : prefs.nmea) == null ? void 0 : _a.requested,
+    port: String(((_b = prefs == null ? void 0 : prefs.nmea) == null ? void 0 : _b.port) ?? 8081)
+  };
+}
+async function buildNmeaSnapshotFromDb() {
+  const currentRace = await getData("internal", "lastOpennedRace").catch(() => null);
+  const currentId = await getData("internal", "lastLoggedUser").catch(() => null);
+  const prefs = await loadNmeaPrefs();
+  NmeaState.proxyPort = prefs.port;
+  if (!(currentRace == null ? void 0 : currentRace.raceId) || !(currentRace == null ? void 0 : currentRace.legNum)) {
+    return {
+      requested: prefs.requested,
+      proxyPort: prefs.port,
+      raceId: null,
+      legNum: null,
+      currentUserId: (currentId == null ? void 0 : currentId.loggedUser) ?? null,
+      playerInfo: null,
+      fleetInfo: []
+    };
+  }
+  setNmeaActiveRace(currentRace.raceId, currentRace.legNum);
+  if (currentId == null ? void 0 : currentId.loggedUser) {
+    await setNmeaPlayerInfos(
+      currentRace.raceId,
+      currentRace.legNum,
+      currentId.loggedUser
+    );
+    await setNmeaFleetInfos(
+      currentRace.raceId,
+      currentRace.legNum
+    );
+  }
+  return {
+    requested: prefs.requested,
+    proxyPort: prefs.port,
+    raceId: NmeaState.raceId,
+    legNum: NmeaState.legNum,
+    currentUserId: NmeaState.currentUserId,
+    playerInfo: NmeaState.playerInfo,
+    fleetInfo: NmeaState.fleetInfo
+  };
+}
 let debuggeeTab;
 let dashboardTab;
 const pending = /* @__PURE__ */ new Map();
@@ -5447,7 +5621,23 @@ chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
     pending.get(msg.id).reject(new Error(msg.error || "Offscreen/Worker error"));
     pending.delete(msg.id);
   }
+  if (msg.type === "nmea/state") {
+    setNmeaState(msg.state);
+  }
 });
+async function pushNmeaSnapshot() {
+  const snapshot = await buildNmeaSnapshotFromDb();
+  await updateNmeaOffscreenSnapshot(snapshot);
+  return snapshot;
+}
+async function syncNmeaLifecycleFromPrefs() {
+  const snapshot = await buildNmeaSnapshotFromDb();
+  if (snapshot.requested) {
+    await startNmeaOffscreen(snapshot);
+  } else {
+    await stopNmeaOffscreen(snapshot);
+  }
+}
 chrome.action.onClicked.addListener(onStartDash);
 function onStartDash(tab) {
   if (tab && tab.url && tab.url.indexOf("virtualregatta.com") >= 0) {
@@ -5571,8 +5761,9 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     await getTeamListITYC({ forceRefresh: true });
     await getPlayerListITYC({ forceRefresh: true });
     await getRaceListITYC({ forceRefresh: true });
+    await syncNmeaLifecycleFromPrefs();
   } catch (e) {
-    console.error("[teams] [players] [raceList] [synchroWind] initial sync onInstalled failed", e);
+    console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed", e);
   }
 });
 chrome.runtime.onStartup.addListener(() => {
@@ -5582,8 +5773,9 @@ chrome.runtime.onStartup.addListener(() => {
       await getTeamListITYC();
       await getPlayerListITYC();
       await getRaceListITYC();
+      await syncNmeaLifecycleFromPrefs();
     } catch (e) {
-      console.error("[teams] [players] [raceList] [synchroWind] initial sync onStartup failed", e);
+      console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed", e);
     }
   })();
 });
@@ -5694,6 +5886,12 @@ legPlayersInfosListener.start({
       currentRace.legNum,
       currentId.loggedUser
     );
+    await setNmeaPlayerInfos(
+      currentRace.raceId,
+      currentRace.legNum,
+      currentId.loggedUser
+    );
+    await pushNmeaSnapshot();
   }
 });
 const legFleetInfosListener = createKeyChangeListener(
@@ -5708,6 +5906,8 @@ legFleetInfosListener.start({
       return;
     await manageDashState("raceOpened");
     await computeFleetIte(currentRace.raceId, currentRace.legNum);
+    await setNmeaFleetInfos(currentRace.raceId, currentRace.legNum);
+    await pushNmeaSnapshot();
   }
 });
 const connectedUserListener = createKeyChangeListener(
@@ -5746,7 +5946,19 @@ connectedRaceListener.start({
       newValue.legNum,
       currentId.loggedUser
     );
+    await setNmeaActiveRace(newValue.raceId, newValue.legNum);
     await getRaceOptionsListITYC(newValue.raceId, newValue.legNum);
+    await pushNmeaSnapshot();
+  }
+});
+const userPrefsListener = createKeyChangeListener(
+  "internal",
+  "userPrefs"
+);
+userPrefsListener.start({
+  referenceValue: { prefs: null },
+  onChange: async ({ oldValue, newValue }) => {
+    await syncNmeaLifecycleFromPrefs();
   }
 });
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

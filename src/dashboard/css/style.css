@@ -6,6 +6,7 @@
     --th_color :    #ededed;
     --th_bg_color : #398AF5;
     --th_border : 1px solid black;
+    --td_border : 1px solid black;
     --border_color : black;
     
     --filter_color : #000000;
@@ -72,6 +73,7 @@ light
     --th_color :    #a5a5a5;
     --th_bg_color : rgb(41,42,45);
     --th_border : 1px solid rgb(73, 76, 80);
+    --td_border : 1px solid rgb(73, 76, 80);
 
     --filter_color : #a5a5a5;
     
@@ -93,7 +95,6 @@ light
     --td_eRT_color: #170000; 
     --td_avg_color: #170000;
     --td_brg_color: #200f00;
-    --th_border : 1px solid rgb(73, 76, 80);
 
 
     --a_link : "lightskyblue";
@@ -287,7 +288,7 @@ th {
 }
 
 td {
-    border: 1px solid grey;
+    border: var(--td_border);
     padding: 0px 5px;
     background-color: var(--td_bg_color);
     color: var(--td_color);

@@ -1,7 +1,7 @@
 import { 
     roundTo
 } from '../../common/utils.js';
-import {formatHM,formatTimeNotif,infoSail,twaBackGround,getxFactorStyle,formatPosition,getBG} from './common.js'
+import {formatHM,formatSeconds,formatTimeNotif,infoSail,twaBackGround,getxFactorStyle,formatPosition,getBG} from './common.js'
 import {sailNames} from "./constant.js"
 import {getData,getLatestAndPreviousByTriplet} from '../../common/dbOpes.js';
 

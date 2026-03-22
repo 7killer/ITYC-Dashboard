@@ -1,5 +1,6 @@
 
 import {getUserPrefs} from "../../common/userPrefs.js"
+import {isOptionsActivated} from "../../common/utils.js"
 import cfg from '@/config.json';
 let sortOrder = 0;
 let sortField = "none";

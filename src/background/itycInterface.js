@@ -701,7 +701,7 @@ function sendInfoCore(type) {
         }
     })
     .catch((err) => {
-        console.error("[sendInfo] network error:", err);
+//        console.error("[sendInfo] network error:", err);
     });
 }
 
@@ -793,7 +793,7 @@ export async function sendInfoOptITYC(message)
 
         return response.ok;
     } catch (err) {
-        console.error("[sendInfoOptITYC] Unexpected error:", err);
+ //       console.error("[sendInfoOptITYC] Unexpected error:", err);
         return false;
     }
 }

@@ -6,7 +6,8 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, c as roundTo$1, f as formatHM, d as formatTimeNotif, e as raceTableLines, i as infoSail, h as getUserPrefs, j as getOpenedRaceId, k as getLegPlayerInfos, l as getOpenedRaceHistory, m as getLegPlayerInfosHistory, n as getParamStamina, o as genthRacelog, p as dateUTCSmall, D as DateUTC, s as sailNames$1, q as formatPosition, t as formatSeconds, u as getxFactorStyle, v as gentdRacelog, w as getBG, x as getLegPlayersOrder, y as genth, z as getLegSelectedPlayersState, A as category, B as categoryStyleDark, C as categoryStyle, E as sailColors, F as gentd, G as formatTime, H as formatDHMS, I as formatShortDate, J as setLegSelectedPlayers, K as getLegFleetInfos, L as getConnectedPlayerId, M as isBitSet, N as guessOptionBits, O as getRankingCategory, P as creditsMaxAwardedByPriceLevel, Q as commonjsGlobal, R as getDefaultExportFromCjs, S as getData, T as saveUserPrefs, U as toRad, V as getLegPlayersTracksFleet, W as formatTimestampToReadableDate, X as getLegPlayersTrackLeader, Y as getLegPlayersTracksGhost, Z as gcDistance, _ as getPlayersList, $ as courseAngle, a0 as getSpeeds, a1 as getPolar, a2 as isSailisInOptions, a3 as display_selbox, a4 as changeState, a5 as cleanSpecial, a6 as convertDMS2Dec, a7 as isOptionsActivated$1, a8 as onUserChangeRace, a9 as switchTheme, aa as loadUserPrefs, ab as initMemo, ac as setConnectedPlayerId, ad as updatePlayersList, ae as updateTeamsList, af as updateConnectedPlayerInfos, ag as updateLegPlayerInfos, ah as updateLegPlayersOrder, ai as getLegListUpdate, aj as setLegListUpdate, ak as updateLegList, al as updatePolar, am as getPlayersUpdate, an as setPlayersUpdate, ao as updateLegFleetInfos, ap as getTeamsUpdate, aq as setTeamsUpdate, ar as getPolarsUpdate, as as setPolarsUpdate, at as getLegPlayersInfosUpdate, au as setLegPlayersInfosUpdate, av as getLegFleetInfosUpdate, aw as setLegFleetInfosUpdate, ax as getLegPlayersOptionsUpdate, ay as setLegPlayersOptionsUpdate, az as updateLegPlayersOptions, aA as getLegPlayersOrderUpdate, aB as setLegPlayersOrderUpdate, aC as setOpenedRaceId, aD as updateOpenedRaceId, aE as updateLegPlayersTracks, aF as getLegPlayersTracksUpdate, aG as setLegPlayersTracksUpdate, aH as createKeyChangeListener } from "./utils-c153c7c7.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, f as formatHM, c as formatTimeNotif, d as raceTableLines, i as infoSail, e as getUserPrefs, h as getOpenedRaceId, j as getLegPlayerInfos, k as getOpenedRaceHistory, l as getLegPlayerInfosHistory, m as getParamStamina, n as genthRacelog, o as dateUTCSmall, D as DateUTC, s as sailNames$1, p as formatPosition, q as formatSeconds, t as getxFactorStyle, u as gentdRacelog, v as getBG, w as getLegPlayersOrder, x as genth, y as compareFleetPlayers, z as isDisplayEnabled, A as getLegSelectedPlayersState, B as category, C as categoryStyleDark, E as categoryStyle, F as sailColors, G as gentd, H as formatTime, I as formatDHMS, J as formatShortDate, K as setLegSelectedPlayers, L as FLEET_SORT_KEY_BY_TH_ID, M as getLegFleetInfos, N as getConnectedPlayerId, O as getSortField, P as getSortOrder, Q as setSortOrder, R as setSortField, S as getRankingCategory, T as creditsMaxAwardedByPriceLevel, U as commonjsGlobal, V as getDefaultExportFromCjs, W as getData, X as saveUserPrefs, Y as getLegPlayersTracksFleet, Z as formatTimestampToReadableDate, _ as getLegPlayersTrackLeader, $ as getLegPlayersTracksGhost, a0 as getPlayersList, a1 as getSpeeds, a2 as getPolar, a3 as isSailisInOptions, a4 as display_selbox, a5 as changeState, a6 as onUserChangeRace, a7 as switchTheme, a8 as loadUserPrefs, a9 as initMemo, aa as setConnectedPlayerId, ab as updatePlayersList, ac as updateTeamsList, ad as updateConnectedPlayerInfos, ae as updateLegPlayerInfos, af as updateLegPlayersOrder, ag as getLegListUpdate, ah as setLegListUpdate, ai as updateLegList, aj as updatePolar, ak as getPlayersUpdate, al as setPlayersUpdate, am as updateLegFleetInfos, an as getTeamsUpdate, ao as setTeamsUpdate, ap as getPolarsUpdate, aq as setPolarsUpdate, ar as getLegPlayersInfosUpdate, as as setLegPlayersInfosUpdate, at as getLegFleetInfosUpdate, au as setLegFleetInfosUpdate, av as getLegPlayersOptionsUpdate, aw as setLegPlayersOptionsUpdate, ax as updateLegPlayersOptions, ay as getLegPlayersOrderUpdate, az as setLegPlayersOrderUpdate, aA as setOpenedRaceId, aB as updateOpenedRaceId, aC as updateLegPlayersTracks, aD as getLegPlayersTracksUpdate, aE as setLegPlayersTracksUpdate, aF as updateNmeaIndicator, aG as createKeyChangeListener } from "./utils-95a370d9.js";
+import { r as roundTo$1, i as isBitSet, g as guessOptionBits, t as toRad, a as gcDistance, c as courseAngle, b as cleanSpecial, d as convertDMS2Dec, e as isOptionsActivated } from "./utils-068774e3.js";
 const style = "";
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -28,13 +29,14 @@ function updateVIPTag(isVIP) {
   }
 }
 function onPlayerConnect() {
+  var _a2;
   const playerInfo = getConnectedPlayerInfos();
   if (playerInfo.length == 0)
     return;
   setText("lb_boatname", playerInfo.name);
   setText("lb_credits", playerInfo.credits);
   updateVIPTag(playerInfo.isVIP);
-  if (playerInfo.team.length != 0) {
+  if ((_a2 = playerInfo.team) == null ? void 0 : _a2.length) {
     setText("lb_teamname", playerInfo.team.name);
   }
 }
@@ -351,138 +353,6 @@ function updateToggleRaceLogCommandsLines() {
     }
   });
 }
-let sortOrder = 0;
-let sortField = "none";
-const FLEET_SORT_KEY_BY_TH_ID = {
-  th_lu: "lastCalcDate",
-  th_name: "displayName",
-  th_teamname: "teamname",
-  th_rank: "rank",
-  th_racetime: "raceTime",
-  th_dtu: "distanceToUs",
-  th_dtf: "dtf",
-  th_twd: "twd",
-  th_tws: "tws",
-  th_twa: "twa",
-  th_hdg: "heading",
-  th_speed: "speed",
-  th_vmg: "vmg",
-  th_sail: "sail",
-  th_factor: "xfactor",
-  th_foils: "xoption_foils",
-  th_sd: "startDate",
-  th_eRT: "eRT",
-  th_avgS: "avgSpeed",
-  th_options: "xoption_options",
-  th_state: "state"
-  // pas de tri pour: th_rt, th_psn, th_remove
-};
-function setSortField(value) {
-  sortField = value;
-}
-function setSortOrder(value) {
-  sortOrder = value;
-}
-function getSortField() {
-  return sortField;
-}
-function getSortOrder() {
-  return sortOrder;
-}
-function isDisplayEnabled(playerIte2, userId, connectPlayerId) {
-  const userPrefs = getUserPrefs();
-  const userFilters = userPrefs.filters;
-  const conditions = {
-    self: userId === connectPlayerId,
-    followed: playerIte2.type2 === "followed" && userFilters.friends,
-    team: playerIte2.type2 === "team" && userFilters.team,
-    normal: playerIte2.type2 === "normal" && userFilters.opponents,
-    top: (playerIte2.type === "top" || playerIte2.type2 === "top") && userFilters.top,
-    certified: playerIte2.type2 === "certified" && userFilters.certified,
-    real: playerIte2.type2 === "real" && userFilters.real,
-    sponsor: (playerIte2.type === "sponsor" || playerIte2.type2 === "sponsor") && userFilters.sponsors,
-    selected: playerIte2.choice === true && userFilters.selected,
-    inRace: playerIte2.state === "racing" && userFilters.inRace
-  };
-  const result = Object.values(conditions).some(Boolean);
-  return result;
-}
-function getFleetSortValue(pInfos, sortField2) {
-  var _a2, _b;
-  const ite = pInfos == null ? void 0 : pInfos.ite;
-  const iteDash = ite == null ? void 0 : ite.metaDash;
-  switch (sortField2) {
-    case "lastCalcDate":
-      return (ite == null ? void 0 : ite.iteDate) ?? 0;
-    case "displayName":
-      return ((_a2 = pInfos.info) == null ? void 0 : _a2.name) ?? "";
-    case "teamname":
-      return ((_b = pInfos.team) == null ? void 0 : _b.name) ?? "";
-    case "rank":
-      return (ite == null ? void 0 : ite.rank) ?? Number.POSITIVE_INFINITY;
-    case "raceTime":
-      return (iteDash == null ? void 0 : iteDash.raceTime) ?? Number.POSITIVE_INFINITY;
-    case "distanceToUs":
-      return (iteDash == null ? void 0 : iteDash.DTU) ?? Number.POSITIVE_INFINITY;
-    case "dtf":
-      return (iteDash == null ? void 0 : iteDash.dtf) ?? Number.POSITIVE_INFINITY;
-    case "twd":
-      return (ite == null ? void 0 : ite.twd) ?? (iteDash == null ? void 0 : iteDash.twd) ?? 0;
-    case "tws":
-      return (ite == null ? void 0 : ite.tws) ?? 0;
-    case "twa":
-      return Math.abs((ite == null ? void 0 : ite.twa) ?? 0);
-    case "heading":
-      return (ite == null ? void 0 : ite.hdg) ?? 0;
-    case "speed":
-      return (ite == null ? void 0 : ite.speed) ?? 0;
-    case "vmg":
-      return (iteDash == null ? void 0 : iteDash.vmg) ?? 0;
-    case "sail":
-      return (ite == null ? void 0 : ite.sail) ?? 0;
-    case "xfactor":
-      return (iteDash == null ? void 0 : iteDash.xfactor) ?? 0;
-    case "xoption_foils":
-      return (iteDash == null ? void 0 : iteDash.realFoilFactor) ?? 0;
-    case "startDate":
-      return (ite == null ? void 0 : ite.startDate) ?? 0;
-    case "eRT":
-      return (iteDash == null ? void 0 : iteDash.eRT) ?? Number.POSITIVE_INFINITY;
-    case "avgSpeed":
-      return (iteDash == null ? void 0 : iteDash.avgSpeed) ?? 0;
-    case "xoption_options":
-      return isOptionsActivated(pInfos.options) ? Object.keys(pInfos.options).length : 0;
-    case "state":
-      const order = {
-        racing: 1,
-        waiting: 2,
-        staying: 3,
-        arrived: 4
-      };
-      return order[ite == null ? void 0 : ite.state] ?? 999;
-    default:
-      return 0;
-  }
-}
-function compareFleetPlayers(pA, pB, sortField2, sortAsc) {
-  const A = getFleetSortValue(pA, sortField2);
-  const B = getFleetSortValue(pB, sortField2);
-  const aNull = A === null || A === void 0;
-  const bNull = B === null || B === void 0;
-  if (aNull && !bNull)
-    return 1;
-  if (!aNull && bNull)
-    return -1;
-  if (aNull && bNull)
-    return 0;
-  let cmp;
-  if (typeof A === "string" || typeof B === "string") {
-    cmp = String(A).localeCompare(String(B));
-  } else {
-    cmp = A < B ? -1 : A > B ? 1 : 0;
-  }
-  return sortAsc ? cmp : -cmp;
-}
 function buildRaceFleetHtml() {
   const raceInfo = getRaceInfo$1();
   const raceItes = getLegPlayerInfos();
@@ -500,13 +370,13 @@ function buildRaceFleetHtml() {
   if (raceItes && raceItes.ites && raceItes.ites.length > 0) {
     raceItes.ite = raceItes.ites[0];
   }
-  const sortField2 = getSortField();
+  const sortField = getSortField();
   const sortAsc = getSortOrder();
-  let raceFleetTableHeader = "<tr>" + genth("th_rt", "RT", "Call Router", void 0) + genth("th_lu", "Date" + dateUTCSmall(), void 0, sortField2 == "lastCalcDate", sortAsc) + genth("th_name", "Skipper", void 0, sortField2 == "displayName", sortAsc) + genth("th_teamname", "Team", void 0, sortField2 == "teamname", sortAsc) + genth("th_rank", "Rank", void 0, sortField2 == "rank", sortAsc) + (raceInfo.raceType !== "record" ? genth("th_racetime", "RaceTime", "Current Race Time", sortField2 == "raceTime", sortAsc) : "") + genth("th_dtu", "DTU", "Distance to Us", sortField2 == "distanceToUs", sortAsc) + genth("th_dtf", "DTF", "Distance to Finish", sortField2 == "dtf", sortAsc) + genth("th_twd", "TWD", "True Wind Direction", sortField2 == "twd", sortAsc) + genth("th_tws", "TWS", "True Wind Speed", sortField2 == "tws", sortAsc) + genth("th_twa", "TWA", "True Wind Angle", sortField2 == "twa", sortAsc) + genth("th_hdg", "HDG", "Heading", sortField2 == "heading", sortAsc) + genth("th_speed", "Speed", "Boat Speed", sortField2 == "speed", sortAsc) + genth("th_vmg", "VMG", "Velocity Made Good", sortField2 == "vmg", sortAsc) + genth("th_sail", "Sail", "Sail Used", sortField2 == "sail", sortAsc) + genth("th_factor", "Factor", "Speed factor over no-options boat", sortField2 == "xfactor", sortAsc) + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", sortField2 == "xoption_foils", sortAsc);
+  let raceFleetTableHeader = "<tr>" + genth("th_rt", "RT", "Call Router", void 0) + genth("th_lu", "Date" + dateUTCSmall(), void 0, sortField == "lastCalcDate", sortAsc) + genth("th_name", "Skipper", void 0, sortField == "displayName", sortAsc) + genth("th_teamname", "Team", void 0, sortField == "teamname", sortAsc) + genth("th_rank", "Rank", void 0, sortField == "rank", sortAsc) + (raceInfo.raceType !== "record" ? genth("th_racetime", "RaceTime", "Current Race Time", sortField == "raceTime", sortAsc) : "") + genth("th_dtu", "DTU", "Distance to Us", sortField == "distanceToUs", sortAsc) + genth("th_dtf", "DTF", "Distance to Finish", sortField == "dtf", sortAsc) + genth("th_twd", "TWD", "True Wind Direction", sortField == "twd", sortAsc) + genth("th_tws", "TWS", "True Wind Speed", sortField == "tws", sortAsc) + genth("th_twa", "TWA", "True Wind Angle", sortField == "twa", sortAsc) + genth("th_hdg", "HDG", "Heading", sortField == "heading", sortAsc) + genth("th_speed", "Speed", "Boat Speed", sortField == "speed", sortAsc) + genth("th_vmg", "VMG", "Velocity Made Good", sortField == "vmg", sortAsc) + genth("th_sail", "Sail", "Sail Used", sortField == "sail", sortAsc) + genth("th_factor", "Factor", "Speed factor over no-options boat", sortField == "xfactor", sortAsc) + genth("th_foils", "Foils", "Boat assumed to have Foils. Unknown if no foiling conditions", sortField == "xoption_foils", sortAsc);
   if (raceInfo.raceType === "record") {
-    raceFleetTableHeader += genth("th_sd", "Race Time", "Current Race Time", sortField2 == "startDate", sortAsc) + genth("th_eRT", "ERT", "Estimated Total Race Time", sortField2 == "eRT", sortAsc) + genth("th_avgS", "avgS", "Average Speed", sortField2 == "avgSpeed", sortAsc);
+    raceFleetTableHeader += genth("th_sd", "Race Time", "Current Race Time", sortField == "startDate", sortAsc) + genth("th_eRT", "ERT", "Estimated Total Race Time", sortField == "eRT", sortAsc) + genth("th_avgS", "avgS", "Average Speed", sortField == "avgSpeed", sortAsc);
   }
-  raceFleetTableHeader += genth("th_psn", "Position", void 0) + genth("th_options", "Options", "Options according to Usercard", sortField2 == "xoption_options", sortAsc) + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", sortField2 == "state", sortAsc) + genth("th_remove", "", "Remove selected boats from the fleet list", void 0) + "</tr>";
+  raceFleetTableHeader += genth("th_psn", "Position", void 0) + genth("th_options", "Options", "Options according to Usercard", sortField == "xoption_options", sortAsc) + genth("th_state", "State", "Waiting or Staying, Racing, Arrived, Aground or Bad TWA", sortField == "state", sortAsc) + genth("th_remove", "", "Remove selected boats from the fleet list", void 0) + "</tr>";
   const rows = Object.entries(raceItesFleet).map(([userId, entry]) => {
     const pInfos = userId == connectedPlayerId ? raceItes : entry;
     return { userId, pInfos };
@@ -518,7 +388,7 @@ function buildRaceFleetHtml() {
       return -1;
     if (!isAme && isBme)
       return 1;
-    return compareFleetPlayers(a.pInfos, b.pInfos, sortField2, sortAsc);
+    return compareFleetPlayers(a.pInfos, b.pInfos, sortField, sortAsc);
   });
   let raceFleetLines = "";
   for (const { userId, pInfos } of rows) {
@@ -32754,7 +32624,7 @@ function spikesSpeedHtml() {
     }
     if (lineNumber != 0) {
       for (let i = 0; i < 3 - lineNumber; i++) {
-        tabSpikes += "<td></td>";
+        tabSpikes += '<td colspan="3"></td>';
       }
       tabSpikes += "</tr>";
     }
@@ -34034,7 +33904,7 @@ function onSkipperSelectedChange(type) {
   upDateCheckbox("opt_winch_" + type, false);
   upDateCheckbox("opt_FP_" + type, false);
   const playerIteOpt = (_a2 = raceItesFleet[playerId]) == null ? void 0 : _a2.options;
-  if (isOptionsActivated$1(playerIteOpt.options)) {
+  if (isOptionsActivated(playerIteOpt.options)) {
     const pOptions = playerIteOpt.options;
     if (pOptions.options.reach)
       upDateCheckbox("opt_c0_" + type, true);
@@ -34271,12 +34141,12 @@ function uiBindingInit() {
       selector: "#nmea_output",
       onChange: (checked) => {
         const userPrefs = getUserPrefs();
-        userPrefs.nmea.enable = checked;
+        userPrefs.nmea.requested = checked;
         saveUserPrefs(userPrefs);
       },
       onInit: (checked, el) => {
         const userPrefs = getUserPrefs();
-        el.checked = userPrefs.nmea.enable;
+        el.checked = userPrefs.nmea.requested;
       }
     },
     {
@@ -35111,6 +34981,13 @@ function doDbListener() {
         await updateLegPlayersTracks();
         tabSwitch();
       }
+    }
+  });
+  const userPrefsListener = createKeyChangeListener("internal", "NMEAstate");
+  userPrefsListener.start({
+    referenceValue: { prefs: null },
+    onChange: async ({ oldValue, newValue }) => {
+      await updateNmeaIndicator(newValue.state);
     }
   });
 }

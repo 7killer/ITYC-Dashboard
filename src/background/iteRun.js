@@ -1,6 +1,6 @@
 
 
-import {processDBOperations,getData,openDatabase,saveData,getLatestEntriesPerUser,getLatestAndPreviousByTriplet} from '../common/dbOpes.js';
+import {getData,saveData,getLatestEntriesPerUser,getLatestAndPreviousByTriplet} from '../common/dbOpes.js';
 import { gcDistance, 
     courseAngle, 
     angle, 
