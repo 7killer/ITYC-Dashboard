@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
       input: {
           app: "/dashboard.html",
           worker: 'src/background/worker.js',
-          offscreen: 'src/offscreen/offscreen.html'
+          offscreen: '/offscreen.html'
         // Points d'entrée multiples avec chemins absolus
 
       },

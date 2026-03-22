@@ -12,7 +12,7 @@ export const userPrefsDefault =
 /**/    },
 /**/    nmea :
 /**/    {
-/**/        enable : false,
+/**/        requested : false,
 /**/        port : 8081, /*801 8082 8083 8084*/
 /**/    },
 /**/    theme : "dark", /*dark light */
@@ -115,10 +115,23 @@ export async function loadUserPrefs()
                             .catch(error => {console.error("getuserPrefs error :", error);});
     if (dbUserPrefs?.prefs == null)
     {
-        userPrefs = userPrefsDefault;
-        await saveUserPrefs(userPrefsDefault);
+        userPrefs = structuredClone(userPrefsDefault);
+        await saveUserPrefs(userPrefs);
     } else
         userPrefs = dbUserPrefs.prefs;
+
+    if(!userPrefs.nmea)
+    {
+        userPrefs.nmea = structuredClone(userPrefsDefault.nmea);
+    }
+
+    if(typeof userPrefs.nmea.requested !== 'boolean')
+    {
+        userPrefs.nmea.requested = false;
+    }
+
+    let shouldSave = false;
+
     if(!userPrefs.filters)
     {
         userPrefs.filters = {
@@ -132,7 +145,18 @@ export async function loadUserPrefs()
             inRace : false,
             selected :true
         };
-        
+        shouldSave = true;
+    }
+
+    if (
+        dbUserPrefs?.prefs == null ||
+        dbUserPrefs?.prefs?.nmea?.requested !== userPrefs.nmea.requested ||
+        dbUserPrefs?.prefs?.nmea?.port !== userPrefs.nmea.port
+    ) {
+        shouldSave = true;
+    }
+
+    if (shouldSave) {
         await saveUserPrefs(userPrefs);
     }
         

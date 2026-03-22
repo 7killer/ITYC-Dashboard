@@ -1,5 +1,11 @@
 import * as msgInjest from './data/msgIngestDef.js';
-import { ensureOffscreen } from './ensureOffscreen.js';
+import {
+    ensureOffscreen,
+    sendToOffscreen,
+    startNmeaOffscreen,
+    stopNmeaOffscreen,
+    updateNmeaOffscreenSnapshot,
+} from './ensureOffscreen.js';
 import { computeOwnIte, computeFleetIte } from './iteRun.js';
 import { createKeyChangeListener, getData, saveData } from '../common/dbOpes.js';
 import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
@@ -15,7 +21,15 @@ import {
 import { 
     getTeamListITYC,getRaceListITYC,getPlayerListITYC,getRaceOptionsListITYC,
     sendLegDataITYC,sendInfoOptITYC
- } from './itycInterface.js'; 
+} from './itycInterface.js'; 
+
+import {
+    setNmeaActiveRace,
+    setNmeaPlayerInfos,
+    setNmeaFleetInfos,
+    buildNmeaSnapshotFromDb,
+    setNmeaState
+} from './nmeaWorkers.js'
 
 const version = '1.0';
 let debuggeeTab;
@@ -44,6 +58,10 @@ chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
         pending.get(msg.id).reject(new Error(msg.error || 'Offscreen/Worker error'));
         pending.delete(msg.id);
     }
+
+    if (msg.type === 'nmea/state') {
+        setNmeaState(msg.state);
+    }
 });
 
 export async function runHeavyJob(descriptor) {
@@ -54,14 +72,28 @@ export async function runHeavyJob(descriptor) {
         pending.set(id, { resolve, reject })
     );
 
-    await chrome.runtime.sendMessage({
-        target: 'offscreen',
-        type: 'job:start',
+    await sendToOffscreen('job:start', {
         id,
         descriptor,
     });
 
     return resP;
+}
+
+async function pushNmeaSnapshot() {
+    const snapshot = await buildNmeaSnapshotFromDb();
+    await updateNmeaOffscreenSnapshot(snapshot);
+    return snapshot;
+}
+
+async function syncNmeaLifecycleFromPrefs() {
+    const snapshot = await buildNmeaSnapshotFromDb();
+
+    if (snapshot.requested) {
+        await startNmeaOffscreen(snapshot);
+    } else {
+        await stopNmeaOffscreen(snapshot);
+    }
 }
 
 /* =========================================================
@@ -218,8 +250,9 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
         await getTeamListITYC({ forceRefresh: true });
         await getPlayerListITYC({ forceRefresh: true });
         await getRaceListITYC({ forceRefresh: true });
+        await syncNmeaLifecycleFromPrefs();
     } catch (e) {
-        console.error('[teams] [players] [raceList] [synchroWind] initial sync onInstalled failed', e);
+        console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed', e);
     }  
 });
 
@@ -230,8 +263,9 @@ chrome.runtime.onStartup.addListener(() => {
             await getTeamListITYC(); 
             await getPlayerListITYC();
             await getRaceListITYC();
+            await syncNmeaLifecycleFromPrefs();
         } catch (e) {
-            console.error('[teams] [players] [raceList] [synchroWind] initial sync onStartup failed', e);
+            console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed', e);
         }
     })();
 });
@@ -358,6 +392,12 @@ legPlayersInfosListener.start({
             currentRace.legNum,
             currentId.loggedUser
         );
+        await setNmeaPlayerInfos(
+            currentRace.raceId,
+            currentRace.legNum,
+            currentId.loggedUser
+        );
+        await pushNmeaSnapshot();
     },
 });
 
@@ -372,6 +412,8 @@ legFleetInfosListener.start({
         if (!currentRace) return;
         await manageDashState('raceOpened');
         await computeFleetIte(currentRace.raceId, currentRace.legNum);
+        await setNmeaFleetInfos(currentRace.raceId, currentRace.legNum);
+        await pushNmeaSnapshot();
     },
 });
 
@@ -410,7 +452,20 @@ connectedRaceListener.start({
             newValue.legNum,
             currentId.loggedUser
         );
+        await setNmeaActiveRace(newValue.raceId,newValue.legNum);
         await getRaceOptionsListITYC(newValue.raceId,newValue.legNum);
+        await pushNmeaSnapshot();
+    },
+});
+
+const userPrefsListener = createKeyChangeListener(
+    'internal',
+    'userPrefs'
+);
+userPrefsListener.start({
+    referenceValue: { prefs: null },
+    onChange: async ({ oldValue, newValue }) => {
+        await syncNmeaLifecycleFromPrefs();
     },
 });
 

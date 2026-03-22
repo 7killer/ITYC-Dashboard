@@ -80,7 +80,8 @@ export async function openDatabase() {
                   });
                   store.add({
                       id: "NMEAstate",
-                      state: 'off'
+                      state: 'off',
+                      activated : false
                   });
               }
               if (!db.objectStoreNames.contains('players')) {

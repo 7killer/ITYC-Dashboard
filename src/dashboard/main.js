@@ -24,7 +24,7 @@ import {uiBindingInit} from'./app/binding.js'
 import {tabSwitch} from'./app/tab.js'
 import {initCachedTilesList} from './ui/map/map-coasts.js'
 import {raceGraphOnLoad} from'./ui/raceGraph.js'
-
+import {updateNmeaIndicator} from './ui/common.js'
 
 let initDone = null;
 let upDateDisplay =false;
@@ -260,6 +260,14 @@ function doDbListener()
         }
     },
     });
+    const userPrefsListener = createKeyChangeListener('internal','NMEAstate');
+    userPrefsListener.start({
+        referenceValue: { prefs: null },
+        onChange: async ({ oldValue, newValue }) => {
+            await updateNmeaIndicator(newValue.state);
+        },
+    });
+
 }
 
 /* */

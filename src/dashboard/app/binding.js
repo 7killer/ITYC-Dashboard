@@ -110,8 +110,8 @@ export function uiBindingInit() {
     },
     {
       selector: '#nmea_output',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.nmea.enable = checked;saveUserPrefs(userPrefs);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.nmea.enable }
+      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.nmea.requested = checked;saveUserPrefs(userPrefs);},
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.nmea.requested }
     },
     {
       selector: '#sel_nmeaport',

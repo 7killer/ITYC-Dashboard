@@ -30,7 +30,7 @@ export function getBG(timestamp, previousTimeStamp) {
 }
 
 function pad0 (val, length=2, base=10) {
-    var result = val.toString(base)
+    let result = val.toString(base)
     while (result.length < length) result = '0' + result;
     return result;
 }
@@ -530,4 +530,24 @@ export async function onUserChangeRace(value)
                                     legNum : legNum,
         });
     }
+}
+
+export async function updateNmeaIndicator(state)
+{
+    switch(state)
+    {
+        case 'ok':
+            document.getElementById("ledNmeaStatus").style.color = "LimeGreen";
+            break;
+        case 'warn':
+            document.getElementById("ledNmeaStatus").style.color = "Orange";
+            break;
+        case 'error':
+            document.getElementById("ledNmeaStatus").style.color = "Red";
+            break;
+        default:
+        case 'off':
+            document.getElementById("ledNmeaStatus").style.color = "LightGrey";
+            break;
+    }     
 }
