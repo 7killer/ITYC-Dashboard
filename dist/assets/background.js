@@ -1,4 +1,4 @@
-import { V as getDefaultExportFromCjs, aH as processDBOperations, W as getData, aI as cfg, aJ as getAllData, e as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, aO as bestVMG, aP as manoeuveringPenalities, aQ as computeEnergyLoose, aR as computeEnergyRecovery, aS as foilingFactor, s as sailNames, t as getxFactorStyle, aT as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aU as deleteData, z as isDisplayEnabled, aG as createKeyChangeListener } from "./utils-95a370d9.js";
+import { V as getDefaultExportFromCjs, aH as processDBOperations, W as getData, aI as cfg, aJ as getAllData, e as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, aO as bestVMG, aP as manoeuveringPenalities, aQ as computeEnergyLoose, aR as computeEnergyRecovery, aS as foilingFactor, s as sailNames, t as getxFactorStyle, aT as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aU as deleteData, z as isDisplayEnabled, aG as createKeyChangeListener } from "./utils-3905c3f1.js";
 import { a as gcDistance, c as courseAngle, f as angle, t as toRad, h as toDeg, r as roundTo, j as calculateCOGLoxo, g as guessOptionBits, e as isOptionsActivated, i as isBitSet } from "./utils-068774e3.js";
 import { c as crc32 } from "./nmeaUtils-8a8ec4be.js";
 function Cache(maxSize) {
@@ -3982,13 +3982,13 @@ const SEND_FLEET_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VEYXRhLnBocA==");
 const SEND_RANK_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhbmsucGhw");
 let teamListInFlightPromise = null;
 let playerListInFlightPromise = null;
-let raceListInFlightPromise = null;
+let raceListInFlightPromise$1 = null;
 const raceOptionsInFlight = /* @__PURE__ */ new Map();
 const sendLegInFlight = /* @__PURE__ */ new Map();
 const MIN_ITYC_INTERVAL_MS = 5 * 60 * 1e3;
 let lastTeamListFetchTs = 0;
 let lastPlayerListFetchTs = 0;
-let lastRaceListFetchTs = 0;
+let lastRaceListFetchTs$1 = 0;
 const lastRaceOptionsFetchTs = /* @__PURE__ */ new Map();
 async function getTeamListITYC(opts = {}) {
   const { forceRefresh = false } = opts;
@@ -4149,15 +4149,15 @@ async function getPlayerListITYC(opts = {}) {
 async function getRaceListITYC(opts = {}) {
   const { forceRefresh = false } = opts;
   const now = Date.now();
-  if (!forceRefresh && now - lastRaceListFetchTs < MIN_ITYC_INTERVAL_MS) {
+  if (!forceRefresh && now - lastRaceListFetchTs$1 < MIN_ITYC_INTERVAL_MS) {
     console.log("[getRaceListITYC] skipped (throttled, < 5min)");
     return null;
   }
-  if (raceListInFlightPromise && !forceRefresh) {
-    return raceListInFlightPromise;
+  if (raceListInFlightPromise$1 && !forceRefresh) {
+    return raceListInFlightPromise$1;
   }
-  lastRaceListFetchTs = now;
-  raceListInFlightPromise = (async () => {
+  lastRaceListFetchTs$1 = now;
+  raceListInFlightPromise$1 = (async () => {
     try {
       const response = await fetch(RACE_LIST_URL, { method: "GET" });
       if (!response.ok) {
@@ -4187,8 +4187,6 @@ async function getRaceListITYC(opts = {}) {
           return;
         const raceId = Number.isNaN(Number(raceIdRaw)) ? raceIdRaw : Number(raceIdRaw);
         const legNum = Number.isNaN(Number(legNumRaw)) ? legNumRaw : Number(legNumRaw);
-        if (raceId == 825)
-          console.log("fuck");
         const legName = race.legName ?? null;
         const raceName = race.name ?? null;
         const raceType = race.type ?? null;
@@ -4253,10 +4251,10 @@ async function getRaceListITYC(opts = {}) {
       console.error("[getRaceListITYC] Unexpected error:", err);
       return null;
     } finally {
-      raceListInFlightPromise = null;
+      raceListInFlightPromise$1 = null;
     }
   })();
-  return raceListInFlightPromise;
+  return raceListInFlightPromise$1;
 }
 function decodeOptionString(optRaw) {
   if (!optRaw || optRaw === "?")
@@ -5483,6 +5481,88 @@ async function syncLatestWindpacksWindowed() {
   }
   return { model, run, runId, count: windowForecasts.length, downloaded, allComplete };
 }
+const MIN_ZEZO_INTERVAL_MS = 15 * 60 * 1e3;
+const RACE_LIST_ZEZO_URL = "http://zezo.org/races2.json";
+let lastRaceListFetchTs = 0;
+let raceListInFlightPromise = null;
+async function getRaceListZezo(opts = {}) {
+  const { forceRefresh = false } = opts;
+  const now = Date.now();
+  if (!forceRefresh && now - lastRaceListFetchTs < MIN_ZEZO_INTERVAL_MS) {
+    console.log("[getRaceListZEZO] skipped (throttled, < 15min)");
+    return null;
+  }
+  if (raceListInFlightPromise && !forceRefresh) {
+    return raceListInFlightPromise;
+  }
+  lastRaceListFetchTs = now;
+  raceListInFlightPromise = (async () => {
+    try {
+      const response = await fetch(RACE_LIST_ZEZO_URL, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getRaceListZEZO] HTTP error:", response.status, response.statusText);
+        return null;
+      }
+      let zezoRaceList;
+      try {
+        zezoRaceList = await response.json();
+      } catch (err) {
+        console.error("[getRaceListZEZO] JSON parse error:", err);
+        return null;
+      }
+      if (!zezoRaceList.races || !Array.isArray(zezoRaceList.races) || zezoRaceList.races.length === 0) {
+        console.warn("[getRaceListZEZO] Empty or invalid race list");
+        return null;
+      }
+      const now2 = Date.now();
+      const legList = [];
+      zezoRaceList.races.forEach((race) => {
+        if (!race || !race.id)
+          return;
+        const [raceIdRaw, legNumRaw] = String(race.id).split(".");
+        if (!raceIdRaw || !legNumRaw)
+          return;
+        const raceUrl = race.url && race.url != "" ? race.url : null;
+        if (!raceUrl)
+          return;
+        legList.push({
+          id: `${raceIdRaw}-${legNumRaw}`,
+          raceId: Number(raceIdRaw),
+          legNum: Number(legNumRaw),
+          zezoUrl: raceUrl
+        });
+      });
+      if (legList.length === 0) {
+        console.warn("[getRaceListZEZO] No valid legs after mapping");
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "legListUpdate",
+              ts: now2
+            }
+          ],
+          legList
+        }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getRaceListZEZO] DB operation error:", err);
+      }
+      return legList;
+    } catch (err) {
+      console.error("[getRaceListZEZO] Unexpected error:", err);
+      return null;
+    } finally {
+      raceListInFlightPromise = null;
+    }
+  })();
+  return raceListInFlightPromise;
+}
 const NmeaState = {
   proxyPort: "8081",
   raceId: null,
@@ -5761,6 +5841,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     await getTeamListITYC({ forceRefresh: true });
     await getPlayerListITYC({ forceRefresh: true });
     await getRaceListITYC({ forceRefresh: true });
+    await getRaceListZezo({ forceRefresh: true });
     await syncNmeaLifecycleFromPrefs();
   } catch (e) {
     console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed", e);
@@ -5773,6 +5854,7 @@ chrome.runtime.onStartup.addListener(() => {
       await getTeamListITYC();
       await getPlayerListITYC();
       await getRaceListITYC();
+      await getRaceListZezo();
       await syncNmeaLifecycleFromPrefs();
     } catch (e) {
       console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed", e);

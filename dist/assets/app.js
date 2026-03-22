@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 var _a;
 import "./modulepreload-polyfill-7faf532e.js";
-import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, f as formatHM, c as formatTimeNotif, d as raceTableLines, i as infoSail, e as getUserPrefs, h as getOpenedRaceId, j as getLegPlayerInfos, k as getOpenedRaceHistory, l as getLegPlayerInfosHistory, m as getParamStamina, n as genthRacelog, o as dateUTCSmall, D as DateUTC, s as sailNames$1, p as formatPosition, q as formatSeconds, t as getxFactorStyle, u as gentdRacelog, v as getBG, w as getLegPlayersOrder, x as genth, y as compareFleetPlayers, z as isDisplayEnabled, A as getLegSelectedPlayersState, B as category, C as categoryStyleDark, E as categoryStyle, F as sailColors, G as gentd, H as formatTime, I as formatDHMS, J as formatShortDate, K as setLegSelectedPlayers, L as FLEET_SORT_KEY_BY_TH_ID, M as getLegFleetInfos, N as getConnectedPlayerId, O as getSortField, P as getSortOrder, Q as setSortOrder, R as setSortField, S as getRankingCategory, T as creditsMaxAwardedByPriceLevel, U as commonjsGlobal, V as getDefaultExportFromCjs, W as getData, X as saveUserPrefs, Y as getLegPlayersTracksFleet, Z as formatTimestampToReadableDate, _ as getLegPlayersTrackLeader, $ as getLegPlayersTracksGhost, a0 as getPlayersList, a1 as getSpeeds, a2 as getPolar, a3 as isSailisInOptions, a4 as display_selbox, a5 as changeState, a6 as onUserChangeRace, a7 as switchTheme, a8 as loadUserPrefs, a9 as initMemo, aa as setConnectedPlayerId, ab as updatePlayersList, ac as updateTeamsList, ad as updateConnectedPlayerInfos, ae as updateLegPlayerInfos, af as updateLegPlayersOrder, ag as getLegListUpdate, ah as setLegListUpdate, ai as updateLegList, aj as updatePolar, ak as getPlayersUpdate, al as setPlayersUpdate, am as updateLegFleetInfos, an as getTeamsUpdate, ao as setTeamsUpdate, ap as getPolarsUpdate, aq as setPolarsUpdate, ar as getLegPlayersInfosUpdate, as as setLegPlayersInfosUpdate, at as getLegFleetInfosUpdate, au as setLegFleetInfosUpdate, av as getLegPlayersOptionsUpdate, aw as setLegPlayersOptionsUpdate, ax as updateLegPlayersOptions, ay as getLegPlayersOrderUpdate, az as setLegPlayersOrderUpdate, aA as setOpenedRaceId, aB as updateOpenedRaceId, aC as updateLegPlayersTracks, aD as getLegPlayersTracksUpdate, aE as setLegPlayersTracksUpdate, aF as updateNmeaIndicator, aG as createKeyChangeListener } from "./utils-95a370d9.js";
+import { g as getConnectedPlayerInfos, a as getRaceInfo$1, b as getLegList, r as raceTableHeaders, f as formatHM, c as formatTimeNotif, d as raceTableLines, i as infoSail, e as getUserPrefs, h as getOpenedRaceId, j as getLegPlayerInfos, k as getOpenedRaceHistory, l as getLegPlayerInfosHistory, m as getParamStamina, n as genthRacelog, o as dateUTCSmall, D as DateUTC, s as sailNames$1, p as formatPosition, q as formatSeconds, t as getxFactorStyle, u as gentdRacelog, v as getBG, w as getLegPlayersOrder, x as genth, y as compareFleetPlayers, z as isDisplayEnabled, A as getLegSelectedPlayersState, B as category, C as categoryStyleDark, E as categoryStyle, F as sailColors, G as gentd, H as formatTime, I as formatDHMS, J as formatShortDate, K as setLegSelectedPlayers, L as FLEET_SORT_KEY_BY_TH_ID, M as getLegFleetInfos, N as getConnectedPlayerId, O as getSortField, P as getSortOrder, Q as setSortOrder, R as setSortField, S as getRankingCategory, T as creditsMaxAwardedByPriceLevel, U as commonjsGlobal, V as getDefaultExportFromCjs, W as getData, X as saveUserPrefs, Y as getLegPlayersTracksFleet, Z as formatTimestampToReadableDate, _ as getLegPlayersTrackLeader, $ as getLegPlayersTracksGhost, a0 as getPlayersList, a1 as getSpeeds, a2 as getPolar, a3 as isSailisInOptions, a4 as display_selbox, a5 as changeState, a6 as onUserChangeRace, a7 as switchTheme, a8 as loadUserPrefs, a9 as initMemo, aa as setConnectedPlayerId, ab as updatePlayersList, ac as updateTeamsList, ad as updateConnectedPlayerInfos, ae as updateLegPlayerInfos, af as updateLegPlayersOrder, ag as getLegListUpdate, ah as setLegListUpdate, ai as updateLegList, aj as updatePolar, ak as getPlayersUpdate, al as setPlayersUpdate, am as updateLegFleetInfos, an as getTeamsUpdate, ao as setTeamsUpdate, ap as getPolarsUpdate, aq as setPolarsUpdate, ar as getLegPlayersInfosUpdate, as as setLegPlayersInfosUpdate, at as getLegFleetInfosUpdate, au as setLegFleetInfosUpdate, av as getLegPlayersOptionsUpdate, aw as setLegPlayersOptionsUpdate, ax as updateLegPlayersOptions, ay as getLegPlayersOrderUpdate, az as setLegPlayersOrderUpdate, aA as setOpenedRaceId, aB as updateOpenedRaceId, aC as updateLegPlayersTracks, aD as getLegPlayersTracksUpdate, aE as setLegPlayersTracksUpdate, aF as updateNmeaIndicator, aG as createKeyChangeListener } from "./utils-3905c3f1.js";
 import { r as roundTo$1, i as isBitSet, g as guessOptionBits, t as toRad, a as gcDistance, c as courseAngle, b as cleanSpecial, d as convertDMS2Dec, e as isOptionsActivated } from "./utils-068774e3.js";
 const style = "";
 function setText(id, value) {
@@ -33533,7 +33533,7 @@ function getLongitude(left, scale) {
 }
 function zezoCall(rid, playerIte2, color2, raceUrl, timeoutMs = 1e4) {
   const baseURL = "http://zezo.org";
-  const url = baseURL + "/" + raceUrl + "/chart.pl?lat=" + playerIte2.pos.lat + "&lon=" + playerIte2.pos.lon + (playerIte2.iteDate ? "&ts=" + playerIte2.iteDate / 1e3 : "") + "&o=" + playerIte2.options + "&twa=" + playerIte2.twa + "&userid=" + playerIte2.userId + "&auto=no";
+  const url = baseURL + "/" + raceUrl + "/chart.pl?lat=" + playerIte2.ite.pos.lat + "&lon=" + playerIte2.ite.pos.lon + (playerIte2.ite.iteDate ? "&ts=" + playerIte2.ite.iteDate / 1e3 : "") + "&o=" + playerIte2.options + "&twa=" + playerIte2.ite.twa + "&userid=" + playerIte2.info.id + "&auto=no";
   const btn = document.getElementById("bt_rt_addLmap");
   const setBusy = (busy) => {
     if (!btn)
@@ -33836,7 +33836,7 @@ async function onAddRouteLmap() {
     default:
       return;
     case "rt_Zezo":
-      if (!raceInfo.url) {
+      if (!raceInfo.zezoUrl) {
         alert("Unknown race - no routing available");
         return;
       }
@@ -33848,7 +33848,7 @@ async function onAddRouteLmap() {
       }
       const playerIte2 = raceItesFleet[playerId];
       playerIte2.options = buildPlayerOption("Lmap");
-      const raceUrl = raceInfo.url + (raceInfo.betaflag ? "b" : "");
+      const raceUrl = raceInfo.zezoUrl + (raceInfo.betaflag ? "b" : "");
       document.getElementById("bt_rt_addLmap").innerText = "Loading";
       document.getElementById("bt_rt_addLmap").disabled = true;
       zezoCall(rid, playerIte2, document.getElementById("route_colorLmap").value, raceUrl);

@@ -23,6 +23,8 @@ import {
     sendLegDataITYC,sendInfoOptITYC
 } from './itycInterface.js'; 
 
+import {getRaceListZezo} from '../common/callExternal.js'
+
 import {
     setNmeaActiveRace,
     setNmeaPlayerInfos,
@@ -250,6 +252,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
         await getTeamListITYC({ forceRefresh: true });
         await getPlayerListITYC({ forceRefresh: true });
         await getRaceListITYC({ forceRefresh: true });
+        await getRaceListZezo({ forceRefresh: true });
         await syncNmeaLifecycleFromPrefs();
     } catch (e) {
         console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed', e);
@@ -263,6 +266,7 @@ chrome.runtime.onStartup.addListener(() => {
             await getTeamListITYC(); 
             await getPlayerListITYC();
             await getRaceListITYC();
+            await getRaceListZezo();
             await syncNmeaLifecycleFromPrefs();
         } catch (e) {
             console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed', e);

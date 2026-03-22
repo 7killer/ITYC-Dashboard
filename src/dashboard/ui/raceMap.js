@@ -272,7 +272,7 @@ export async function onAddRouteLmap() {
         default :
             return;
         case "rt_Zezo":
-            if (!raceInfo.url) {
+            if (!raceInfo.zezoUrl) {
             alert("Unknown race - no routing available");
             return;
             }
@@ -284,7 +284,7 @@ export async function onAddRouteLmap() {
             }
             const playerIte = raceItesFleet[playerId];
             playerIte.options = buildPlayerOption("Lmap");    
-            const raceUrl = raceInfo.url + (raceInfo.betaflag ? "b" : "");
+            const raceUrl = raceInfo.zezoUrl + (raceInfo.betaflag ? "b" : "");
 
             document.getElementById("bt_rt_addLmap").innerText = "Loading";
             document.getElementById("bt_rt_addLmap").disabled = true;

@@ -44,16 +44,16 @@ export function zezoCall(rid, playerIte, color, raceUrl, timeoutMs = 10_000) {
     raceUrl +
     "/chart.pl" +
     "?lat=" +
-    playerIte.pos.lat +
+    playerIte.ite.pos.lat +
     "&lon=" +
-    playerIte.pos.lon +
-    (playerIte.iteDate ? "&ts=" + playerIte.iteDate / 1000 : "") +
+    playerIte.ite.pos.lon +
+    (playerIte.ite.iteDate ? "&ts=" + playerIte.ite.iteDate / 1000 : "") +
     "&o=" +
     playerIte.options +
     "&twa=" +
-    playerIte.twa +
+    playerIte.ite.twa +
     "&userid=" +
-    playerIte.userId +
+    playerIte.info.id +
     "&auto=no";
 
   const btn = document.getElementById("bt_rt_addLmap");
