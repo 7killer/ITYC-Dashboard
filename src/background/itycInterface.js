@@ -275,8 +275,6 @@ export async function getRaceListITYC(opts = {}) {
 
                 const raceId = Number.isNaN(Number(raceIdRaw)) ? raceIdRaw : Number(raceIdRaw);
                 const legNum = Number.isNaN(Number(legNumRaw)) ? legNumRaw : Number(legNumRaw);
-                if(raceId == 825)
-                  console.log("fuck");
                 const legName  = race.legName  ?? null;
                 const raceName = race.name     ?? null;
                 const raceType = race.type     ?? null;

@@ -1,5 +1,5 @@
 {
-    "debugDB": true,
+    "debugDB": false,
     "debugDBErr": true,
     "debugDBIte": true,
     "debugDBIteErr": true,

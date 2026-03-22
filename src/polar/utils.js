@@ -57,12 +57,12 @@ export function getSpeeds(boatPolars, options, tws, twa) {
 }
 
 function allSailsSpeeds(boatPolars, options, tws, twa,highP=false) {
-    var globalFactor= boatPolars.globalSpeedRatio;
-    var foilFactor	= foilingFactor(options, tws, twa, boatPolars.foil);
-    var hullFactor = options.hull ? boatPolars.hull.speedRatio : 1.0;
-    var twsLookup	= fractionStep(tws, boatPolars.tws);
-    var twaLookup	= fractionStep(twa, boatPolars.twa);
-    var speeds		= sailsSpeeds(twsLookup, twaLookup, boatPolars.sail);
+    const globalFactor= boatPolars.globalSpeedRatio;
+    const foilFactor	= foilingFactor(options, tws, twa, boatPolars.foil);
+    const hullFactor = options.hull ? boatPolars.hull.speedRatio : 1.0;
+    const twsLookup	= fractionStep(tws, boatPolars.tws);
+    const twaLookup	= fractionStep(twa, boatPolars.twa);
+    const speeds		= sailsSpeeds(twsLookup, twaLookup, boatPolars.sail);
 
     Object.keys(speeds).forEach(function (key) {
         const speed = speeds[key] * foilFactor * hullFactor * globalFactor;
@@ -363,7 +363,8 @@ export function bestVMG(tws, polars, options, sailId, currTwa) {
             sail.speed[aStep.index - 1][sStep.index],
             sail.speed[aStep.index][sStep.index]
         );
-        const speed = rspeed * f * hRatio;
+        const globalRatio = polars.globalSpeedRatio;
+        const speed = rspeed * f * hRatio * globalRatio;
         const vmg = speed * Math.cos(aTWA * DEG2RAD);
 
         // Meilleurs VMG up/down
