@@ -25,6 +25,7 @@ import {tabSwitch} from'./app/tab.js'
 import {initCachedTilesList} from './ui/map/map-coasts.js'
 import {raceGraphOnLoad} from'./ui/raceGraph.js'
 import {updateNmeaIndicator} from './ui/common.js'
+import {openAutoRouter} from '../common/callExternal.js'
 
 let initDone = null;
 let upDateDisplay =false;
@@ -232,17 +233,18 @@ function doDbListener()
 
             if (!sameRace && initDone) {
             // 🔄 Mise à jour des infos de course
-            setOpenedRaceId(newValue?.raceId, newValue?.legNum);
-            await updateOpenedRaceId();
-            await updatePolar();
-            await updateLegPlayersOptions();
-            await updateLegFleetInfos();
-            await updateLegPlayerInfos();
-            await updateLegPlayersOrder();
-            await updateLegPlayersTracks();
-            onRaceOpen();
-            buildRaceStatusHtml();
-            tabSwitch();
+                setOpenedRaceId(newValue?.raceId, newValue?.legNum);
+                await updateOpenedRaceId();
+                await updatePolar();
+                await updateLegPlayersOptions();
+                await updateLegFleetInfos();
+                await updateLegPlayerInfos();
+                await updateLegPlayersOrder();
+                await updateLegPlayersTracks();
+                onRaceOpen();
+                buildRaceStatusHtml();
+                tabSwitch();
+                openAutoRouter();
             }
         },
     });

@@ -120,6 +120,31 @@ export async function getRaceListZezo(opts = {}) {
   return raceListInFlightPromise;
 }
 
+export function openAutoRouter() {
+
+    const connectedPlayerId = getConnectedPlayerId();
+    const raceInfo = getRaceInfo();
+    const raceItes = getLegPlayerInfos();
+    const userPrefs = getUserPrefs();
+    if(!raceInfo || raceInfo?.length == 0 
+    || !raceItes || !raceItes.ites || !raceItes.ites.length
+    || !connectedPlayerId)
+        return;
+
+    if(userPrefs.router.sel == "zezo")
+    {
+        if (!raceInfo.zezoUrl) openZezoRouter(raceInfo.zezoUrl,raceItes.ites[0], raceItes.options, userPrefs.global.reuseTab,false);
+    }
+    else if(rtType == "vrzen")
+    {
+        openVrZenRouter(raceInfo.raceId, raceItes.ites[0],userPrefs.global.reuseTab);
+    }  
+    else
+    {
+        if (raceInfo.zezoUrl) openZezoRouter(raceInfo.zezoUrl,raceItes.ites[0], raceItes.options, userPrefs.global.reuseTab,false);
+        openVrZenRouter(raceInfo.raceId, raceItes.ites[0],userPrefs.global.reuseTab);        
+    }      
+}
 export function openRouterSiteFront(userId,auto = false,rtType="zezo")
 {
     const connectedPlayerId = getConnectedPlayerId();
