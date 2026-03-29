@@ -12,13 +12,16 @@ const SEND_LEG_DATA_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VJbmZvLnBocA==
 const SEND_INFO_OPT_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbk9wdC5waHA=");
 const SEND_FLEET_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VEYXRhLnBocA==");
 const SEND_RANK_URL  = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhbmsucGhw");
-
+const POLAR_HASH_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFBvbGFyc0hhc2gucGhw");
+const SEND_POLAR_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblBvbGFyLnBocA==");
 
 let teamListInFlightPromise = null;
 let playerListInFlightPromise = null;
 let raceListInFlightPromise = null;
 const raceOptionsInFlight = new Map();
 const sendLegInFlight = new Map();
+let polarHashInFlightPromise = null;
+const sendPolarInFlight = new Map();
 
 const MIN_ITYC_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -27,6 +30,7 @@ let lastPlayerListFetchTs = 0;
 let lastRaceListFetchTs   = 0;
 // par raceId_legNum pour les options
 const lastRaceOptionsFetchTs = new Map();
+let lastPolarHashFetchTs   = 0;
 /**
  * Récupère / met à jour TeamList depuis ITYC.
  * - Mutile l'objet global TeamList comme avant
@@ -246,6 +250,7 @@ export async function getRaceListITYC(opts = {}) {
 
             if (!response.ok) {
                 console.warn("[getRaceListITYC] HTTP error:", response.status, response.statusText);
+                lastRaceListFetchTs -= MIN_ITYC_INTERVAL_MS;
                 return null;
             }
 
@@ -353,6 +358,179 @@ export async function getRaceListITYC(opts = {}) {
 
   return raceListInFlightPromise;
 }
+
+export async function getPolarHashITYC(opts = {}) {
+    const { forceRefresh = false } = opts;
+
+    const now = Date.now();
+    if (!forceRefresh && now - lastPolarHashFetchTs < MIN_ITYC_INTERVAL_MS*30) {
+        console.log("[getPolarHashITYC] skipped (throttled, < 5min)");
+        return null;
+    }
+
+    if (polarHashInFlightPromise && !forceRefresh) {
+        return polarHashInFlightPromise;
+    }
+
+    lastPolarHashFetchTs = now;
+
+    polarHashInFlightPromise = (async () => {
+        try {
+            const response = await fetch(POLAR_HASH_URL, { method: "GET" });
+
+            if (!response.ok) {
+                console.warn("[getPolarHashITYC] HTTP error:", response.status, response.statusText);
+                lastPolarHashFetchTs -= MIN_ITYC_INTERVAL_MS*30;
+                return null;
+            }
+
+            let polarHashList;
+            try {
+                polarHashList = await response.json();
+            } catch (err) {
+                console.error("[getPolarHashITYC] JSON parse error:", err);
+                return null;
+            }
+
+            if (!Array.isArray(polarHashList) || polarHashList.length === 0) {
+                console.warn("[getPolarHashITYC] Empty or invalid polar hash list");
+                return null;
+            }
+
+            const hashList = [];
+
+            polarHashList.forEach((polarHash) => {
+                if (!polarHash || !polarHash.polar_id || polarHash.hash != "") return;
+
+                hashList.push({
+                    polar_id,
+                    hash
+                });
+            });
+
+            if (hashList.length === 0) {
+                console.warn("[getPolarHashITYC] No valid polar hash after mapping");
+                return null;
+            }
+
+            const dbOpe = [
+                {
+                type: "putOrUpdate",
+                internal: [
+                    {
+                    id: "polarHashList",
+                    ts: Date.now(),
+                    hashList
+                    },
+                ]},
+            ];
+
+            try {
+                await processDBOperations(dbOpe);
+            } catch (err) {
+                console.error("[getPolarHashITYC] DB operation error:", err);
+            }
+
+            return legList;
+        } catch (err) {
+            console.error("[getPolarHashITYC] Unexpected error:", err);
+            return null;
+        } finally {
+            polarHashInFlightPromise = null;
+        }
+    })();
+
+  return polarHashInFlightPromise;
+}
+function serialize (obj) {
+    if (Array.isArray(obj)) {
+      return JSON.stringify(obj.map(i => serialize(i)))
+    } else if (typeof obj === 'object' && obj !== null) {
+      return Object.keys(obj)
+        .sort()
+        .map(k => `${k}:${serialize(obj[k])}`)
+        .join('|')
+    }
+  
+    return obj
+}
+const cyrb53 = (str, seed = 0) => {
+    let h1 = 0xdeadbeef ^ seed,
+        h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+
+export async function itycPolarSync(message)
+{
+    const polar = message?.scriptData?.extendsData?.boatPolar
+    if(!polar || polar._id) return;
+    
+    const polString = serialize(polar);
+    const polarHash = cyrb53(polString,polar._id)
+
+    const [id,ts,hashList] = await getData('internal', 'polarHashList');
+    let ret = true;
+    hashList.forEach(function (pol) {
+        if(pol.polar_id == polar._id) 
+        {
+            if(pol.hash == polarHash) {
+                ret = false;
+            }
+        }
+    });
+    if(!ret) return; /*already upTodate*/
+
+    if (sendPolarInFlight.has(polar._id)) {
+        return sendPolarInFlight.get(polar._id);
+    }
+
+    const promise = (async () => {
+        try {
+            const webdata =  JSON.stringify(polar._id)+'|/|'
+                            + JSON.stringify(polarHash)+'|/|'
+                            + JSON.stringify(polString);
+
+            const payload = JSON.stringify(webdata);
+
+            const response = await fetch(SEND_POLAR_URL, {
+                method: "POST",
+                headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                },
+                body: payload,
+            });
+
+            if (!response.ok) {
+                console.warn(
+                "[sendPolarDataITYC] HTTP error:",
+                response.status,
+                response.statusText
+                );
+                return false;
+            }
+            return true;
+        } catch (err) {
+            console.error("[sendPolarDataITYC] Unexpected error:", err);
+        return false;
+        } finally {
+            sendPolarInFlight.delete(polar._id);
+        }
+    })();
+    sendPolarInFlight.set(polar._id, promise);
+    return promise;
+
+}
+
 
 function decodeOptionString(optRaw) {
     if (!optRaw || optRaw === "?") return "";
@@ -597,14 +775,6 @@ export async function sendLegDataITYC(message, opts = {}) {
                 );
                 return false;
             }
-
-            // Si le serveur renvoie du JSON
-            try {
-                await response.json();
-            } catch {
-                // Si ce n'est pas du JSON, ce n'est pas bloquant
-            }
-
             return true;
         } catch (err) {
             console.error("[sendLegDataITYC] Unexpected error:", err);

@@ -1,4 +1,4 @@
-import { V as getDefaultExportFromCjs, aH as processDBOperations, W as getData, aI as cfg, aJ as getAllData, e as getUserPrefs, aK as getLatestAndPreviousByTriplet, aL as getLatestEntriesPerUser, aM as saveData, aN as theoreticalSpeed, aO as bestVMG, aP as manoeuveringPenalities, aQ as computeEnergyLoose, aR as computeEnergyRecovery, aS as foilingFactor, s as sailNames, t as getxFactorStyle, aT as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aU as deleteData, z as isDisplayEnabled, aG as createKeyChangeListener } from "./utils-3905c3f1.js";
+import { V as getDefaultExportFromCjs, aK as processDBOperations, W as getData, aL as cfg, aM as getAllData, e as getUserPrefs, aN as getLatestAndPreviousByTriplet, aO as getLatestEntriesPerUser, aP as saveData, aQ as theoreticalSpeed, aR as bestVMG, aS as manoeuveringPenalities, aT as computeEnergyLoose, aU as computeEnergyRecovery, aV as foilingFactor, s as sailNames, t as getxFactorStyle, aW as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aX as deleteData, z as isDisplayEnabled, aY as getRaceListZezo, aZ as openRouterSiteBack, a_ as openPolarSiteBack, aJ as createKeyChangeListener } from "./callExternal-01921b83.js";
 import { a as gcDistance, c as courseAngle, f as angle, t as toRad, h as toDeg, r as roundTo, j as calculateCOGLoxo, g as guessOptionBits, e as isOptionsActivated, i as isBitSet } from "./utils-068774e3.js";
 import { c as crc32 } from "./nmeaUtils-8a8ec4be.js";
 function Cache(maxSize) {
@@ -3587,7 +3587,7 @@ function ingestRaceList(legListData) {
       abortEarly: false
     });
     const races = ((_a = validData.scriptData) == null ? void 0 : _a.res) || [];
-    const legList = [];
+    const legList2 = [];
     const polars = [];
     let validCount = 0;
     let errorCount = 0;
@@ -3595,7 +3595,7 @@ function ingestRaceList(legListData) {
       try {
         const validated = raceSchema.validateSync(r, { stripUnknown: true });
         const idInfo = validated._id || {};
-        legList.push({
+        legList2.push({
           id: `${validated.raceId}-${validated.legNum}`,
           raceId: validated.raceId,
           legNum: validated.legNum,
@@ -3638,11 +3638,11 @@ function ingestRaceList(legListData) {
         errorCount++;
       }
     }
-    if (legList.length > 1) {
+    if (legList2.length > 1) {
       const dbOpe = [
         {
           type: "putOrUpdate",
-          legList,
+          legList: legList2,
           polars,
           internal: [
             {
@@ -3980,16 +3980,21 @@ const SEND_LEG_DATA_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VJbmZvLnBocA==
 const SEND_INFO_OPT_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2Rpbk9wdC5waHA=");
 const SEND_FLEET_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhY2VEYXRhLnBocA==");
 const SEND_RANK_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblJhbmsucGhw");
+const POLAR_HASH_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFBvbGFyc0hhc2gucGhw");
+const SEND_POLAR_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2RpblBvbGFyLnBocA==");
 let teamListInFlightPromise = null;
 let playerListInFlightPromise = null;
-let raceListInFlightPromise$1 = null;
+let raceListInFlightPromise = null;
 const raceOptionsInFlight = /* @__PURE__ */ new Map();
 const sendLegInFlight = /* @__PURE__ */ new Map();
+let polarHashInFlightPromise = null;
+const sendPolarInFlight = /* @__PURE__ */ new Map();
 const MIN_ITYC_INTERVAL_MS = 5 * 60 * 1e3;
 let lastTeamListFetchTs = 0;
 let lastPlayerListFetchTs = 0;
-let lastRaceListFetchTs$1 = 0;
+let lastRaceListFetchTs = 0;
 const lastRaceOptionsFetchTs = /* @__PURE__ */ new Map();
+let lastPolarHashFetchTs = 0;
 async function getTeamListITYC(opts = {}) {
   const { forceRefresh = false } = opts;
   const now = Date.now();
@@ -4149,19 +4154,20 @@ async function getPlayerListITYC(opts = {}) {
 async function getRaceListITYC(opts = {}) {
   const { forceRefresh = false } = opts;
   const now = Date.now();
-  if (!forceRefresh && now - lastRaceListFetchTs$1 < MIN_ITYC_INTERVAL_MS) {
+  if (!forceRefresh && now - lastRaceListFetchTs < MIN_ITYC_INTERVAL_MS) {
     console.log("[getRaceListITYC] skipped (throttled, < 5min)");
     return null;
   }
-  if (raceListInFlightPromise$1 && !forceRefresh) {
-    return raceListInFlightPromise$1;
+  if (raceListInFlightPromise && !forceRefresh) {
+    return raceListInFlightPromise;
   }
-  lastRaceListFetchTs$1 = now;
-  raceListInFlightPromise$1 = (async () => {
+  lastRaceListFetchTs = now;
+  raceListInFlightPromise = (async () => {
     try {
       const response = await fetch(RACE_LIST_URL, { method: "GET" });
       if (!response.ok) {
         console.warn("[getRaceListITYC] HTTP error:", response.status, response.statusText);
+        lastRaceListFetchTs -= MIN_ITYC_INTERVAL_MS;
         return null;
       }
       let itycRaceList;
@@ -4176,7 +4182,7 @@ async function getRaceListITYC(opts = {}) {
         return null;
       }
       const now2 = Date.now();
-      const legList = [];
+      const legList2 = [];
       itycRaceList.forEach((race) => {
         var _a, _b;
         if (!race || !race.rid)
@@ -4195,7 +4201,7 @@ async function getRaceListITYC(opts = {}) {
         const end = (raceInfo == null ? void 0 : raceInfo.end) ?? null;
         const close = race.start ?? null;
         const open = race.end ?? null;
-        const polar_id = ((_a = raceInfo == null ? void 0 : raceInfo.boat) == null ? void 0 : _a.polar_id) ?? null;
+        const polar_id2 = ((_a = raceInfo == null ? void 0 : raceInfo.boat) == null ? void 0 : _a.polar_id) ?? null;
         const fineWinds = (raceInfo == null ? void 0 : raceInfo.gfsWinds) ?? null;
         const boatName = ((_b = raceInfo == null ? void 0 : raceInfo.boat) == null ? void 0 : _b.name) ?? null;
         const priceLevel = (raceInfo == null ? void 0 : raceInfo.priceLevel) ?? null;
@@ -4204,7 +4210,7 @@ async function getRaceListITYC(opts = {}) {
         const ice_limits = (raceInfo == null ? void 0 : raceInfo.ice_limits) ?? [];
         const course = (raceInfo == null ? void 0 : raceInfo.course) ?? [];
         const restrictedZones = (raceInfo == null ? void 0 : raceInfo.restrictedZones) ?? [];
-        legList.push({
+        legList2.push({
           id: `${raceId}-${legNum}`,
           raceId,
           legNum,
@@ -4213,7 +4219,7 @@ async function getRaceListITYC(opts = {}) {
           raceType,
           start,
           end,
-          polar_id,
+          polar_id: polar_id2,
           fineWinds,
           boatName,
           priceLevel,
@@ -4225,7 +4231,7 @@ async function getRaceListITYC(opts = {}) {
           restrictedZones
         });
       });
-      if (legList.length === 0) {
+      if (legList2.length === 0) {
         console.warn("[getRaceListITYC] No valid legs after mapping");
         return null;
       }
@@ -4238,7 +4244,7 @@ async function getRaceListITYC(opts = {}) {
               ts: now2
             }
           ],
-          legList
+          legList: legList2
         }
       ];
       try {
@@ -4246,15 +4252,156 @@ async function getRaceListITYC(opts = {}) {
       } catch (err) {
         console.error("[getRaceListITYC] DB operation error:", err);
       }
-      return legList;
+      return legList2;
     } catch (err) {
       console.error("[getRaceListITYC] Unexpected error:", err);
       return null;
     } finally {
-      raceListInFlightPromise$1 = null;
+      raceListInFlightPromise = null;
     }
   })();
-  return raceListInFlightPromise$1;
+  return raceListInFlightPromise;
+}
+async function getPolarHashITYC(opts = {}) {
+  const { forceRefresh = false } = opts;
+  const now = Date.now();
+  if (!forceRefresh && now - lastPolarHashFetchTs < MIN_ITYC_INTERVAL_MS * 30) {
+    console.log("[getPolarHashITYC] skipped (throttled, < 5min)");
+    return null;
+  }
+  if (polarHashInFlightPromise && !forceRefresh) {
+    return polarHashInFlightPromise;
+  }
+  lastPolarHashFetchTs = now;
+  polarHashInFlightPromise = (async () => {
+    try {
+      const response = await fetch(POLAR_HASH_URL, { method: "GET" });
+      if (!response.ok) {
+        console.warn("[getPolarHashITYC] HTTP error:", response.status, response.statusText);
+        lastPolarHashFetchTs -= MIN_ITYC_INTERVAL_MS * 30;
+        return null;
+      }
+      let polarHashList;
+      try {
+        polarHashList = await response.json();
+      } catch (err) {
+        console.error("[getPolarHashITYC] JSON parse error:", err);
+        return null;
+      }
+      if (!Array.isArray(polarHashList) || polarHashList.length === 0) {
+        console.warn("[getPolarHashITYC] Empty or invalid polar hash list");
+        return null;
+      }
+      const hashList = [];
+      polarHashList.forEach((polarHash) => {
+        if (!polarHash || !polarHash.polar_id || polarHash.hash != "")
+          return;
+        hashList.push({
+          polar_id,
+          hash
+        });
+      });
+      if (hashList.length === 0) {
+        console.warn("[getPolarHashITYC] No valid polar hash after mapping");
+        return null;
+      }
+      const dbOpe = [
+        {
+          type: "putOrUpdate",
+          internal: [
+            {
+              id: "polarHashList",
+              ts: Date.now(),
+              hashList
+            }
+          ]
+        }
+      ];
+      try {
+        await processDBOperations(dbOpe);
+      } catch (err) {
+        console.error("[getPolarHashITYC] DB operation error:", err);
+      }
+      return legList;
+    } catch (err) {
+      console.error("[getPolarHashITYC] Unexpected error:", err);
+      return null;
+    } finally {
+      polarHashInFlightPromise = null;
+    }
+  })();
+  return polarHashInFlightPromise;
+}
+function serialize(obj) {
+  if (Array.isArray(obj)) {
+    return JSON.stringify(obj.map((i) => serialize(i)));
+  } else if (typeof obj === "object" && obj !== null) {
+    return Object.keys(obj).sort().map((k) => `${k}:${serialize(obj[k])}`).join("|");
+  }
+  return obj;
+}
+const cyrb53 = (str, seed = 0) => {
+  let h1 = 3735928559 ^ seed, h2 = 1103547991 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507) ^ Math.imul(h2 ^ h2 >>> 13, 3266489909);
+  h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507) ^ Math.imul(h1 ^ h1 >>> 13, 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+async function itycPolarSync(message) {
+  var _a, _b;
+  const polar = (_b = (_a = message == null ? void 0 : message.scriptData) == null ? void 0 : _a.extendsData) == null ? void 0 : _b.boatPolar;
+  if (!polar || polar._id)
+    return;
+  const polString = serialize(polar);
+  const polarHash = cyrb53(polString, polar._id);
+  const [id, ts, hashList] = await getData("internal", "polarHashList");
+  let ret = true;
+  hashList.forEach(function(pol) {
+    if (pol.polar_id == polar._id) {
+      if (pol.hash == polarHash) {
+        ret = false;
+      }
+    }
+  });
+  if (!ret)
+    return;
+  if (sendPolarInFlight.has(polar._id)) {
+    return sendPolarInFlight.get(polar._id);
+  }
+  const promise = (async () => {
+    try {
+      const webdata = JSON.stringify(polar._id) + "|/|" + JSON.stringify(polarHash) + "|/|" + JSON.stringify(polString);
+      const payload = JSON.stringify(webdata);
+      const response = await fetch(SEND_POLAR_URL, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: payload
+      });
+      if (!response.ok) {
+        console.warn(
+          "[sendPolarDataITYC] HTTP error:",
+          response.status,
+          response.statusText
+        );
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("[sendPolarDataITYC] Unexpected error:", err);
+      return false;
+    } finally {
+      sendPolarInFlight.delete(polar._id);
+    }
+  })();
+  sendPolarInFlight.set(polar._id, promise);
+  return promise;
 }
 function decodeOptionString(optRaw) {
   if (!optRaw || optRaw === "?")
@@ -4463,10 +4610,6 @@ async function sendLegDataITYC(message, opts = {}) {
           response.statusText
         );
         return false;
-      }
-      try {
-        await response.json();
-      } catch {
       }
       return true;
     } catch (err) {
@@ -5183,13 +5326,13 @@ async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
     gybePenaTxt += "<div> - </div>";
   gybePenaTxt += "</td>";
   const timeLine = "<div>" + formatTimeNotif(raceIte.iteDate) + '</div><div id="dashIntegTime" class="textMini"></div>';
-  const rid = legInfos.id + "-" + legInfos.legNum;
+  const rid = legInfos.raceId + "-" + legInfos.legNum;
   raceIte.twd = raceIte.twd ?? ((_e = raceIte.metaDash) == null ? void 0 : _e.twd) ?? 0;
   retVal = '<tr id="rs:' + rid + '">';
   retVal += '<td class="tdc"><div>';
   retVal += '<span id="vrz:' + rid + '">&#x262F;</span>';
   retVal += "</div><div>";
-  retVal += "&nbsp;";
+  retVal += legInfos.zezoUrl ? '<span class="zezoIcon" id="rt:' + rid + '">&#x2388;</span>' : "&nbsp;";
   retVal += "</div></td>";
   retVal += '<td class="tdc"><div>';
   retVal += '<span id="pl:' + rid + '">&#x26F5;</span>';
@@ -5481,88 +5624,6 @@ async function syncLatestWindpacksWindowed() {
   }
   return { model, run, runId, count: windowForecasts.length, downloaded, allComplete };
 }
-const MIN_ZEZO_INTERVAL_MS = 15 * 60 * 1e3;
-const RACE_LIST_ZEZO_URL = "http://zezo.org/races2.json";
-let lastRaceListFetchTs = 0;
-let raceListInFlightPromise = null;
-async function getRaceListZezo(opts = {}) {
-  const { forceRefresh = false } = opts;
-  const now = Date.now();
-  if (!forceRefresh && now - lastRaceListFetchTs < MIN_ZEZO_INTERVAL_MS) {
-    console.log("[getRaceListZEZO] skipped (throttled, < 15min)");
-    return null;
-  }
-  if (raceListInFlightPromise && !forceRefresh) {
-    return raceListInFlightPromise;
-  }
-  lastRaceListFetchTs = now;
-  raceListInFlightPromise = (async () => {
-    try {
-      const response = await fetch(RACE_LIST_ZEZO_URL, { method: "GET" });
-      if (!response.ok) {
-        console.warn("[getRaceListZEZO] HTTP error:", response.status, response.statusText);
-        return null;
-      }
-      let zezoRaceList;
-      try {
-        zezoRaceList = await response.json();
-      } catch (err) {
-        console.error("[getRaceListZEZO] JSON parse error:", err);
-        return null;
-      }
-      if (!zezoRaceList.races || !Array.isArray(zezoRaceList.races) || zezoRaceList.races.length === 0) {
-        console.warn("[getRaceListZEZO] Empty or invalid race list");
-        return null;
-      }
-      const now2 = Date.now();
-      const legList = [];
-      zezoRaceList.races.forEach((race) => {
-        if (!race || !race.id)
-          return;
-        const [raceIdRaw, legNumRaw] = String(race.id).split(".");
-        if (!raceIdRaw || !legNumRaw)
-          return;
-        const raceUrl = race.url && race.url != "" ? race.url : null;
-        if (!raceUrl)
-          return;
-        legList.push({
-          id: `${raceIdRaw}-${legNumRaw}`,
-          raceId: Number(raceIdRaw),
-          legNum: Number(legNumRaw),
-          zezoUrl: raceUrl
-        });
-      });
-      if (legList.length === 0) {
-        console.warn("[getRaceListZEZO] No valid legs after mapping");
-        return null;
-      }
-      const dbOpe = [
-        {
-          type: "putOrUpdate",
-          internal: [
-            {
-              id: "legListUpdate",
-              ts: now2
-            }
-          ],
-          legList
-        }
-      ];
-      try {
-        await processDBOperations(dbOpe);
-      } catch (err) {
-        console.error("[getRaceListZEZO] DB operation error:", err);
-      }
-      return legList;
-    } catch (err) {
-      console.error("[getRaceListZEZO] Unexpected error:", err);
-      return null;
-    } finally {
-      raceListInFlightPromise = null;
-    }
-  })();
-  return raceListInFlightPromise;
-}
 const NmeaState = {
   proxyPort: "8081",
   raceId: null,
@@ -5842,6 +5903,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     await getPlayerListITYC({ forceRefresh: true });
     await getRaceListITYC({ forceRefresh: true });
     await getRaceListZezo({ forceRefresh: true });
+    await getPolarHashITYC({ forceRefresh: true });
     await syncNmeaLifecycleFromPrefs();
   } catch (e) {
     console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed", e);
@@ -5855,6 +5917,7 @@ chrome.runtime.onStartup.addListener(() => {
       await getPlayerListITYC();
       await getRaceListITYC();
       await getRaceListZezo();
+      await getPolarHashITYC();
       await syncNmeaLifecycleFromPrefs();
     } catch (e) {
       console.error("[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed", e);
@@ -5876,6 +5939,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         await getTeamListITYC();
         await getPlayerListITYC();
         await getRaceListITYC();
+        await getPolarHashITYC();
       } catch (e) {
         console.error("[teams] [players] [raceList] periodic sync failed", e);
       }
@@ -5907,6 +5971,7 @@ chrome.runtime.onMessageExternal.addListener(
           await ingestGameSetting(body);
         } else if (eventKey === "Race_SelectorData") {
           await ingestPolars(body);
+          await itycPolarSync(body);
         } else if (eventKey === "Game_AddBoatAction") {
           await ingestBoatAction(body);
         } else if (eventKey === "Game_GetGhostTrack") {
@@ -5923,6 +5988,14 @@ chrome.runtime.onMessageExternal.addListener(
           await ingestFleetData(postData, body);
         }
       }
+    } else if (msg.type == "openZezo") {
+      await openRouterSiteBack("zezo");
+    } else if (msg.type == "openVrzen") {
+      await openRouterSiteBack("vrzen");
+    } else if (msg.type == "openItyc") {
+      await openPolarSiteBack("ITYC");
+    } else if (msg.type == "openToxxct") {
+      await openPolarSiteBack("POLAR");
     }
     void chrome.runtime.getPlatformInfo();
     const embeddedToolbar = getbuildEmbeddedToolbarContent();
