@@ -1,5 +1,5 @@
 
-import {getData,saveData} from './dbOpes.js';
+import {createKeyChangeListener, getData, saveData} from './dbOpes.js';
 
 
 
@@ -106,65 +106,95 @@ export const userPrefsDefault =
 
 
 let userPrefs = userPrefsDefault;
+let userPrefsListener = null;
+let userPrefsListenerStarted = false;
+let userPrefsInitPromise = null;
+
+function normalizeUserPrefs(rawPrefs)
+{
+    const prefs = structuredClone(rawPrefs ?? userPrefsDefault);
+    let shouldSave = false;
+
+    if(!prefs.nmea)
+    {
+        prefs.nmea = structuredClone(userPrefsDefault.nmea);
+        shouldSave = true;
+    }
+
+    if(typeof prefs.nmea.requested !== 'boolean')
+    {
+        prefs.nmea.requested = false;
+        shouldSave = true;
+    }
+
+    if(prefs.nmea.port == null)
+    {
+        prefs.nmea.port = userPrefsDefault.nmea.port;
+        shouldSave = true;
+    }
+
+    if(!prefs.filters)
+    {
+        prefs.filters = structuredClone(userPrefsDefault.filters);
+        shouldSave = true;
+    }
+
+    return { prefs, shouldSave };
+}
+
+async function applyUserPrefs(rawPrefs, { persist = false } = {})
+{
+    const { prefs, shouldSave } = normalizeUserPrefs(rawPrefs);
+    userPrefs = prefs;
+
+    if (persist || shouldSave) {
+        await saveData('internal', { id: "userPrefs", prefs }, null, { updateIfExists: true });
+    }
+}
+
+function ensureUserPrefsListener()
+{
+    if (userPrefsListenerStarted) return;
+
+    userPrefsListener = createKeyChangeListener('internal', 'userPrefs');
+    userPrefsListener.start({
+        referenceValue: { prefs: userPrefs },
+        onChange: async ({ newValue }) => {
+            if (newValue?.prefs == null) {
+                await applyUserPrefs(userPrefsDefault, { persist: true });
+                return;
+            }
+
+            await applyUserPrefs(newValue.prefs);
+        },
+    });
+    userPrefsListenerStarted = true;
+}
 
 
 
-export async function loadUserPrefs()
+async function initUserPrefs()
 {
     const dbUserPrefs = await getData("internal","userPrefs")
                             .catch(error => {console.error("getuserPrefs error :", error);});
-    if (dbUserPrefs?.prefs == null)
-    {
-        userPrefs = structuredClone(userPrefsDefault);
-        await saveUserPrefs(userPrefs);
-    } else
-        userPrefs = dbUserPrefs.prefs;
+    await applyUserPrefs(
+        dbUserPrefs?.prefs ?? userPrefsDefault,
+        { persist: dbUserPrefs?.prefs == null }
+    );
+    ensureUserPrefsListener();
+}
 
-    if(!userPrefs.nmea)
-    {
-        userPrefs.nmea = structuredClone(userPrefsDefault.nmea);
+export async function loadUserPrefs()
+{
+    if (!userPrefsInitPromise) {
+        userPrefsInitPromise = initUserPrefs();
     }
 
-    if(typeof userPrefs.nmea.requested !== 'boolean')
-    {
-        userPrefs.nmea.requested = false;
-    }
-
-    let shouldSave = false;
-
-    if(!userPrefs.filters)
-    {
-        userPrefs.filters = {
-            friends : true,
-            opponents : false,
-            certified : true,
-            team : true,
-            top : true,
-            real :false,
-            sponsors : true,
-            inRace : false,
-            selected :true
-        };
-        shouldSave = true;
-    }
-
-    if (
-        dbUserPrefs?.prefs == null ||
-        dbUserPrefs?.prefs?.nmea?.requested !== userPrefs.nmea.requested ||
-        dbUserPrefs?.prefs?.nmea?.port !== userPrefs.nmea.port
-    ) {
-        shouldSave = true;
-    }
-
-    if (shouldSave) {
-        await saveUserPrefs(userPrefs);
-    }
-        
+    return userPrefsInitPromise;
 }
 export async function saveUserPrefs(prefs)
 {
-    await saveData('internal', {id: "userPrefs",prefs:prefs},null,{ updateIfExists: true });
-    userPrefs = prefs;
+    await applyUserPrefs(prefs, { persist: true });
 
 }
 
@@ -172,3 +202,6 @@ export function getUserPrefs()
 {
     return userPrefs;
 }
+
+void loadUserPrefs();
+

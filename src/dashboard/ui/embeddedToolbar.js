@@ -53,7 +53,7 @@ export async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId
                     + embeddedToolbarLine
                     + '</tbody>'
                     + '</table>';
-    
+
     buildEmbeddedToolbarContent = {
         content:embeddedToolBarTable,
         newTab:userPrefs.global.reuseTab,
@@ -64,6 +64,9 @@ export async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId
 }
 export function getbuildEmbeddedToolbarContent()
 {
+    const userPrefs = getUserPrefs(); 
+    buildEmbeddedToolbarContent.theme = userPrefs.theme;
+    buildEmbeddedToolbarContent.gameSize = userPrefs.drawing.fullScreen?userPrefs.drawing.ratio:0;
     return buildEmbeddedToolbarContent;
 }
 

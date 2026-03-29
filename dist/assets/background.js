@@ -1,4 +1,4 @@
-import { V as getDefaultExportFromCjs, aK as processDBOperations, W as getData, aL as cfg, aM as getAllData, e as getUserPrefs, aN as getLatestAndPreviousByTriplet, aO as getLatestEntriesPerUser, aP as saveData, aQ as theoreticalSpeed, aR as bestVMG, aS as manoeuveringPenalities, aT as computeEnergyLoose, aU as computeEnergyRecovery, aV as foilingFactor, s as sailNames, t as getxFactorStyle, aW as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aX as deleteData, z as isDisplayEnabled, aY as getRaceListZezo, aZ as openRouterSiteBack, a_ as openPolarSiteBack, aJ as createKeyChangeListener } from "./callExternal-01921b83.js";
+import { V as getDefaultExportFromCjs, aL as processDBOperations, W as getData, aM as cfg, aN as getAllData, m as getUserPrefs, aO as getLatestAndPreviousByTriplet, aP as getLatestEntriesPerUser, aQ as saveData, aR as theoreticalSpeed, aS as bestVMG, aT as manoeuveringPenalities, aU as computeEnergyLoose, aV as computeEnergyRecovery, aW as foilingFactor, s as sailNames, t as getxFactorStyle, aX as twaBackGround, f as formatHM, v as getBG, q as formatSeconds, c as formatTimeNotif, i as infoSail, p as formatPosition, aY as deleteData, z as isDisplayEnabled, ab as loadUserPrefs, aZ as getRaceListZezo, a_ as openRouterSiteBack, a$ as openPolarSiteBack, aK as createKeyChangeListener } from "./callExternal-1fc3102a.js";
 import { a as gcDistance, c as courseAngle, f as angle, t as toRad, h as toDeg, r as roundTo, j as calculateCOGLoxo, g as guessOptionBits, e as isOptionsActivated, i as isBitSet } from "./utils-068774e3.js";
 import { c as crc32 } from "./nmeaUtils-8a8ec4be.js";
 function Cache(maxSize) {
@@ -4294,7 +4294,7 @@ async function getPolarHashITYC(opts = {}) {
       }
       const hashList = [];
       polarHashList.forEach((polarHash) => {
-        if (!polarHash || !polarHash.polar_id || polarHash.hash != "")
+        if (!polarHash || !polarHash.polar_id || polarHash.hash == "")
           return;
         hashList.push({
           polar_id,
@@ -5038,6 +5038,8 @@ async function computeFleetIte(raceId, legNum) {
     timeout: 4e3,
     storeName: "legFleetInfos"
   });
+  if (meta.timedOut || !items)
+    return;
   initMessageITYC("fleet", `${raceId}.${legNum}`, legInfos.legName, currentUserId.loggedUser, legInfos.raceType);
   for (const [userId, entry] of Object.entries(items)) {
     const playerOptionRace = await getData("legPlayersOptions", [raceId, legNum, userId]) ?? { options: [], guessOptions: 0 };
@@ -5181,6 +5183,9 @@ async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId) {
   };
 }
 function getbuildEmbeddedToolbarContent() {
+  const userPrefs = getUserPrefs();
+  buildEmbeddedToolbarContent.theme = userPrefs.theme;
+  buildEmbeddedToolbarContent.gameSize = userPrefs.drawing.fullScreen ? userPrefs.drawing.ratio : 0;
   return buildEmbeddedToolbarContent;
 }
 async function buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId) {
@@ -5683,6 +5688,8 @@ async function setNmeaFleetInfos(raceId, legNum) {
     timeout: 4e3,
     storeName: "legFleetInfos"
   });
+  if (meta.timedOut || !items || items.length == 0)
+    return;
   for (const [userId, entry] of Object.entries(items)) {
     if (isDisplayEnabled(entry, userId, NmeaState.currentUserId) && NmeaState.currentUserId != userId) {
       const pDbcInfos = await getData("players", userId) ?? null;
@@ -5751,6 +5758,7 @@ let debuggeeTab;
 let dashboardTab;
 const pending = /* @__PURE__ */ new Map();
 saveData("internal", { id: "state", state: "dashInstalled" });
+void loadUserPrefs();
 chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
   if ((msg == null ? void 0 : msg.target) !== "bg")
     return;

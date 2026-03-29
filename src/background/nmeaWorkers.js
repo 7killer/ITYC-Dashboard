@@ -74,7 +74,7 @@ export async function setNmeaFleetInfos(raceId, legNum)
         timeout: 4000,
         storeName: 'legFleetInfos'
     });
-
+    if(meta.timedOut || !items || items.length == 0) return;
     for (const [userId, entry] of Object.entries(items)) {
 
         if(isDisplayEnabled(entry, userId,NmeaState.currentUserId) && NmeaState.currentUserId != userId)

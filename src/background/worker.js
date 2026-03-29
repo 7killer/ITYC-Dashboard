@@ -8,6 +8,7 @@ import {
 } from './ensureOffscreen.js';
 import { computeOwnIte, computeFleetIte } from './iteRun.js';
 import { createKeyChangeListener, getData, saveData } from '../common/dbOpes.js';
+import { loadUserPrefs } from '../common/userPrefs.js';
 import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
 import { manageDashState } from './dashState.js';
 import {
@@ -43,6 +44,7 @@ const pending = new Map();
 
 // marquer l’état interne
 saveData('internal', { id: 'state', state: 'dashInstalled' });
+void loadUserPrefs();
 
 /* =========================================================
 *  Offscreen / Heavy jobs handling

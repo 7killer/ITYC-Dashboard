@@ -400,11 +400,11 @@ export async function getPolarHashITYC(opts = {}) {
             const hashList = [];
 
             polarHashList.forEach((polarHash) => {
-                if (!polarHash || !polarHash.polar_id || polarHash.hash != "") return;
+                if (!polarHash || !polarHash.polar_id || polarHash.hash == "") return;
 
                 hashList.push({
-                    polar_id,
-                    hash
+                    polar_id : polarHash.polar_id,
+                    hash: polarHash.hash
                 });
             });
 

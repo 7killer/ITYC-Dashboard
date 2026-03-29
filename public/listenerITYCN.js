@@ -127,7 +127,16 @@ function sendMaxSize(iframe)
 {
   let winHeight = window.innerHeight;
   let winWidth = window.innerWidth;
-        
+
+  const vroaDiv = document.getElementById('vroa-iframe');
+          
+  if(vroaDiv && vroaDiv.style.display != 'none') {
+    let vroaWidth = Number(document.defaultView.getComputedStyle(vroaDiv).width.replace('px', ''));
+    if(currentIframeWidth!=0) {
+      winWidth -= vroaWidth -20;
+   }
+  }
+
   /* remove padding-left and right */
   winWidth  -= 80;
   winHeight  -= 20;
@@ -162,7 +171,23 @@ function manageFullScreen2() {
   } else
   {
     try {
+      const vroaDiv = document.getElementById('vroa-iframe');   
+      if(vroaDiv)
+      {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+              if(targetIframe) {
+                sendMaxSize(targetIframe);
+              }
+            }
+          });
+        });
+        const config = { attributes: true, attributeFilter: ['style'] };
+        observer.observe(vroaDiv, config);
+      }
 
+      const targetIframe = foundVRIframe();
       if(dashState == "notInstall")
       {
         const targetIframe = foundVRIframe();
@@ -200,10 +225,29 @@ function manageFullScreen2() {
         let ourDiv = document.getElementById('dashIntegRow');
         if(ourDiv) ourDiv.remove();        
       }
-	  const targetElement = document.querySelector('[data-colibri-id="1752-c203"]');     
+	    const targetElement = document.querySelector('[data-colibri-id="1752-c203"]');     
       if (targetElement) {
         targetElement.style.setProperty('text-align', 'center'); 
       }
+      if (targetIframe) {
+        const colibriDiv = targetIframe.closest('[data-colibri-id]');
+        if (colibriDiv) {
+          if(vroaDiv && vroaDiv.style.display != 'none') 
+          {
+            colibriDiv.style.setProperty('text-align', 'left', 'important'); 
+            colibriDiv.style.setProperty('padding-left', '25px', 'important'); 
+            colibriDiv.style.setProperty('padding-top', '10px', 'important');
+          }
+          else
+          {
+            colibriDiv.style.setProperty('text-align', 'center');
+            colibriDiv.style.setProperty('padding-left', '0px', 'important');  
+            colibriDiv.style.setProperty('padding-top', ' 0px', 'important');
+        
+          }
+        }  
+      }
+
 
       if(gameSize != 0) {
         let div = document.querySelector(  '#page-top > div.page-header.style-1098.style-local-1342-h1.position-relative.h-footer-parallax-header-class > div');
@@ -213,18 +257,18 @@ function manageFullScreen2() {
         if(div) {
           div.style.setProperty('padding-top', '10px', 'important');
         }
-
-          div = document.querySelector('div[data-colibri-id="1342-h1"]');
-          if(div) div.style.setProperty('display', 'none', 'important');
-          
-          div = document.querySelector('div[data-colibri-id="1342-h2"]');
-          if(div) div.style.removeProperty('position');
-
-          let elements = document.querySelectorAll('.h-section-boxed-container');
-          elements.forEach(el => {
-            originalSize = document.defaultView.getComputedStyle(el).getPropertyValue('max-width');
-            el.style.setProperty('max-width', '100%', 'important');
-          });
+/*
+        div = document.querySelector('div[data-colibri-id="1342-h1"]');
+        if(div) div.style.setProperty('display', 'none', 'important');
+        
+        div = document.querySelector('div[data-colibri-id="1342-h2"]');
+        if(div) div.style.removeProperty('position');
+*/
+        let elements = document.querySelectorAll('.h-section-boxed-container');
+        elements.forEach(el => {
+          originalSize = document.defaultView.getComputedStyle(el).getPropertyValue('max-width');
+          el.style.setProperty('max-width', '100%', 'important');
+        });
       } else
       {
         let div = document.querySelector('#page-top > div.page-header.style-1098.style-local-1342-h1.position-relative.h-footer-parallax-header-class > div');
@@ -234,21 +278,22 @@ function manageFullScreen2() {
         if(div) {
           div.style.setProperty('padding-top', '120px', 'important');
         }
-
+/*
           div = document.querySelector('div[data-colibri-id="1342-h2"]');
           if(div) div.style.removeProperty('position');
-
-          div = document.querySelectorAll('.h-section-boxed-container');
-          div.forEach(el => {
-            el.style.setProperty('max-width', originalSize);
-          });
-
+*/
+        div = document.querySelectorAll('.h-section-boxed-container');
+        div.forEach(el => {
+          el.style.setProperty('max-width', originalSize);
+        });
+/*
           div = document.querySelector('div[data-colibri-id="1342-h1"]');
           if(div)
           {
             div.style.removeProperty('display');
           }
-          fullScreenState =  false;
+*/
+        fullScreenState =  false;
       }
       reduceLangFlag();
     }  catch(error) {console.log(error);}

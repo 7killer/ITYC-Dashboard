@@ -302,6 +302,7 @@ export async function computeFleetIte(raceId, legNum) {
       storeName: 'legFleetInfos'
     });
     
+    if(meta.timedOut || !items) return;
     initMessageITYC("fleet",`${raceId}.${legNum}`,legInfos.legName,currentUserId.loggedUser,legInfos.raceType);
 
     for (const [userId, entry] of Object.entries(items)) {
