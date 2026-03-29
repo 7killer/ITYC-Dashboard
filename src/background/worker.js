@@ -20,10 +20,10 @@ import {
 
 import { 
     getTeamListITYC,getRaceListITYC,getPlayerListITYC,getRaceOptionsListITYC,
-    sendLegDataITYC,sendInfoOptITYC
+    sendLegDataITYC,sendInfoOptITYC,getPolarHashITYC,itycPolarSync
 } from './itycInterface.js'; 
 
-import {getRaceListZezo} from '../common/callExternal.js'
+import {getRaceListZezo,openRouterSiteBack,openPolarSiteBack} from '../common/callExternal.js'
 
 import {
     setNmeaActiveRace,
@@ -253,6 +253,8 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
         await getPlayerListITYC({ forceRefresh: true });
         await getRaceListITYC({ forceRefresh: true });
         await getRaceListZezo({ forceRefresh: true });
+        await getPolarHashITYC({ forceRefresh: true });
+        
         await syncNmeaLifecycleFromPrefs();
     } catch (e) {
         console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onInstalled failed', e);
@@ -267,6 +269,7 @@ chrome.runtime.onStartup.addListener(() => {
             await getPlayerListITYC();
             await getRaceListITYC();
             await getRaceListZezo();
+            await getPolarHashITYC();
             await syncNmeaLifecycleFromPrefs();
         } catch (e) {
             console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed', e);
@@ -286,9 +289,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     } else if (alarm.name === 'ityc-infos-update') {
         (async () => {
             try {
-              await getTeamListITYC();
-              await getPlayerListITYC();
-              await getRaceListITYC();
+                await getTeamListITYC();
+                await getPlayerListITYC();
+                await getRaceListITYC();
+                await getPolarHashITYC();
             } catch (e) {
                 console.error('[teams] [players] [raceList] periodic sync failed', e);
             }
@@ -330,6 +334,7 @@ chrome.runtime.onMessageExternal.addListener(
                     await msgInjest.ingestGameSetting(body);
                 } else if (eventKey === 'Race_SelectorData') {
                     await msgInjest.ingestPolars(body);
+                    await itycPolarSync(body);
                 } else if (eventKey === 'Game_AddBoatAction') {
                     await msgInjest.ingestBoatAction(body);
                 } else if (eventKey === 'Game_GetGhostTrack') {
@@ -346,6 +351,14 @@ chrome.runtime.onMessageExternal.addListener(
                     await msgInjest.ingestFleetData(postData, body);
                 }
             }
+        } else if(msg.type=="openZezo") {
+            await openRouterSiteBack("zezo");  
+        } else if(msg.type=="openVrzen") {
+            await openRouterSiteBack("vrzen"); 
+        } else if(msg.type=="openItyc") {
+            await openPolarSiteBack("ITYC"); 
+        } else if(msg.type=="openToxxct") {
+            await openPolarSiteBack("POLAR");
         }
         void chrome.runtime.getPlatformInfo();
 

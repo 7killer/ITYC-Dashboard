@@ -242,8 +242,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     
     const timeLine = '<div>'+formatTimeNotif(raceIte.iteDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
 
-    const rid = legInfos.id+"-"+legInfos.legNum;
-    const zezoUrl = null; 
+    const rid = legInfos.raceId+"-"+legInfos.legNum;
     
     raceIte.twd = raceIte.twd ?? raceIte.metaDash?.twd ?? 0;
 
@@ -251,7 +250,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     retVal += '<td class="tdc"><div>';
     retVal += '<span id="vrz:' + rid + '">&#x262F;</span>';
     retVal += '</div><div>';
-    retVal += (zezoUrl ? ('<span class="zezoIcon" id="rt:' + rid + '">&#x2388;</span>') : '&nbsp;');
+    retVal += (legInfos.zezoUrl ? ('<span class="zezoIcon" id="rt:' + rid + '">&#x2388;</span>') : '&nbsp;');
     retVal += '</div></td>';
     retVal += '<td class="tdc"><div>';
     retVal += '<span id="pl:' + rid + '">&#x26F5;</span>';

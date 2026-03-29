@@ -100,254 +100,254 @@ export function uiBindingInit() {
     },*/
     {
       selector: '#auto_router',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.router.auto = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.router.auto = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.router.auto }
     },
     {
       selector: '#sel_router',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.router.sel = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.router.sel = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.router.sel}
     },
     {
       selector: '#nmea_output',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.nmea.requested = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.nmea.requested = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.nmea.requested }
     },
     {
       selector: '#sel_nmeaport',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.nmea.port = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.nmea.port = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.nmea.port}
     },
     {
       selector: '#color_theme',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.theme = checked?"dark":"light";saveUserPrefs(userPrefs);switchTheme(userPrefs.theme);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.theme = checked?"dark":"light";await saveUserPrefs(userPrefs);switchTheme(userPrefs.theme);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.theme=="dark" }
     },
     {
       selector: '#reuse_tab',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.global.reuseTab = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.reuseTab = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.reuseTab }
     },
     {
       selector: '#local_time',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.global.localTime = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.localTime = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.localTime }
     },
     {
       selector: '#uiFilterMode',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.global.alternateFilter = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.alternateFilter = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.alternateFilter }
     },
     {
       selector: '#vrzenPositionFormat',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.global.separatorPos = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.separatorPos = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.separatorPos }
     },
     {
       selector: '#ITYC_record',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.global.ITYCSend = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.ITYCSend = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.ITYCSend }
     },
     {
       selector: '#sel_polarSite',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.global.polarSite = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.global.polarSite = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.global.polarSite}
     },
     {
       selector: '#fullScreen_Size',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.drawing.ratio = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.drawing.ratio = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.drawing.ratio}
     },
     {
       selector: '#fullScreen_Game',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.drawing.fullScreen = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.drawing.fullScreen = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.drawing.fullScreen }
     },
     {
       selector: '#showBVMGSpeed',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceData.VMGSpeed = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceData.VMGSpeed = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceData.VMGSpeed }
     },
     {
       selector: '#with_LastCommand',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceData.lastCmd = checked;saveUserPrefs(userPrefs);},//todo add racestatus redraw
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceData.lastCmd = checked;await saveUserPrefs(userPrefs);},//todo add racestatus redraw
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceData.lastCmd }
     },
     {
       selector: '#hideCommandsLines',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.hideLastCmd = checked;saveUserPrefs(userPrefs);},//todo add racelog redraw
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.hideLastCmd = checked;await saveUserPrefs(userPrefs);},//todo add racelog redraw
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.hideLastCmd }
     },
     {
       selector: '#racelog_rank',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.rank = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.rank = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.rank }
     },
     {
       selector: '#racelog_dtl',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.DTL = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.DTL = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.DTL }
     },
     {
       selector: '#racelog_dtf',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.DTF = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.DTF = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.DTF }
     },
     {
       selector: '#racelog_reportedSpeed',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.vR = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.vR = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.vR }
     },
     {
       selector: '#racelog_calcSpeed',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.vC = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.vC = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.vC }
     },
     {
       selector: '#racelog_foils',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.foil = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.foil = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.foil }
     },
 
     {
       selector: '#racelog_factor',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.factor = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.factor = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.factor }
     },
 
     {
       selector: '#racelog_stamina',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.stamina = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.stamina = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.stamina }
     },
     {
       selector: '#racelog_deltaDistance',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.deltaD = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.deltaD = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.deltaD }
     },
     {
       selector: '#racelog_deltaTime',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.deltaT = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.deltaT = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.deltaT }
     },
     {
       selector: '#racelog_position',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.position = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.raceLog.column.position = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.raceLog.column.position }
     },
     {
       selector: '#abbreviatedOption',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.shortOption = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.shortOption = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.shortOption }
     },
     {
       selector: '#auto_clean',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.cleaning = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.cleaning = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.cleaning }
     },  
     {
       selector: '#auto_cleanInterval',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.cleaningInterval = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.map.cleaningInterval = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.cleaningInterval}
     },
     {
       selector: '#sailRankRaceId',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.map.sailRankId = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.map.sailRankId = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.sailRankId}
     },
     {
       selector: '#fleet_team',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.team = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.team = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.team }
     },  
     {
       selector: '#fleet_rank',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.rank = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.rank = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.rank }
     },  
     {
       selector: '#fleet_racetime',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.raceTime = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.raceTime = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.raceTime }
     },  
     {
       selector: '#fleet_dtu',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.DTU = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.DTU = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.DTU }
     },  
     {
       selector: '#fleet_dtf',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.DTF = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.DTF = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.DTF }
     },  
     {
       selector: '#fleet_twd',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWD = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWD = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.TWD }
     },  
     {
       selector: '#fleet_tws',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWS = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWS = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.TWS }
     },  
     {
       selector: '#fleet_twa',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWA = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.TWA = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.TWA }
     },  
     {
       selector: '#fleet_hdg',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.HDG = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.HDG = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.HDG }
     },  
     {
       selector: '#fleet_speed',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.speed = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.speed = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.speed }
     },  
     {
       selector: '#fleet_vmg',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.VMG = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.VMG = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.VMG }
     },
     {
       selector: '#fleet_sail',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.sail = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.sail = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.sail }
     },  
     {
       selector: '#fleet_factor',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.factor = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.factor = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.factor }
     },  
     {
       selector: '#fleet_foils',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.foil = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.foil = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.foil }
     },  
     {
       selector: '#fleet_position',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.position = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.position = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.position }
     },  
     {
       selector: '#fleet_options',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.option = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.option = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.option }
     },  
     {
       selector: '#fleet_state',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.state = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.state = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.state }
     },  
     {
       selector: '#fleet_remove',
-      onChange: (checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.select = checked;saveUserPrefs(userPrefs);},
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.select = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.select }
     },   
     {
       selector: '#sel_Seperator',
-      onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.separator = value;saveUserPrefs(userPrefs);},
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.separator = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.separator}
     },
     {

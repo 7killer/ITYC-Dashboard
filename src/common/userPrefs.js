@@ -23,7 +23,7 @@ export const userPrefsDefault =
         alternateFilter : true,
         reuseTab : true,
         localTime : true,
-        polarSite : "INC", /* toxxct inc lsv */
+        polarSite : "LSV", /* toxxct inc lsv */
         ITYCSend : true 
     },
     drawing : 

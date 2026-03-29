@@ -16,8 +16,8 @@ import { getFleetRequestDataSchema, getFleetResponseSchema } from './ingesterMod
 import { polarSchema} from './ingesterModels/polar.js';
 import { ghostTrackRequestDataSchema, ghostTrackResponseSchema } from './ingesterModels/getGhostTrack.js';
 
-import cfg from '@/config.json';
 
+import cfg from '@/config.json';
 
 export function ingestPolars(msgBody)
 {

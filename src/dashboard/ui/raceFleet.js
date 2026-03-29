@@ -219,9 +219,10 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
     const {optionsTxt,optionsTitle,optionsStyle,foilsType} = drawOptions(playerFleetInfos.options);
 
     let routerIcon = '&nbsp;';
-    if(userPrefs.router.sel = "zezo")
-        if(raceInfo.zezoUrl) routerIcon = '<span id="rt:' + userId + '">&#x2388;</span>';
-    else routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
+    if(userPrefs.router.sel == "zezo" && raceInfo.zezoUrl)
+        routerIcon = '<span id="rt:' + userId + '">&#x2388;</span>';
+    else if(userPrefs.router.sel == "vrzen") 
+        routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
     
     const nameClass = (userId == connectedPlayerId)?'highlightMe':"";
     const categoryIdx = category.indexOf(playerIte.type);
