@@ -83,6 +83,25 @@ export function formatTime(ts, format = 0) {
             minute: "numeric",
             hour12: false
         };
+    } else if (format == 2) {
+        tsOptions = {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: false,
+            timeZoneName: "short"
+        };
+    } else if (format == 3) {
+        tsOptions = {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: false,
+            timeZoneName: "short"
+        };  
     }
     const d = (ts) ? (new Date(ts)) : (new Date());
     if (!userPrefs.global.localTime) {
@@ -91,21 +110,28 @@ export function formatTime(ts, format = 0) {
     return new Intl.DateTimeFormat("lookup", tsOptions).format(d);
 }
 
-export function formatDHMS(seconds) {
-    if (seconds === undefined || isNaN(seconds) || seconds < 0) {
+export function formatDHMS(ts,full=false) {
+    if (ts === undefined || isNaN(ts) || ts < 0) {
         return "-";
     }
 
-    seconds = Math.floor(seconds / 1000);
+    const fullSeconds = Math.floor(ts / 1000);
 
-    var days = Math.floor(seconds / 86400);
-    var hours = Math.floor(seconds / 3600) % 24;
-    var minutes = Math.floor(seconds / 60) % 60;
+    const days = Math.floor(fullSeconds / 86400);
+    const hours = Math.floor(fullSeconds / 3600) % 24;
+    const minutes = Math.floor(fullSeconds / 60) % 60;
+    const seconds = fullSeconds % 60;
     let retVal = "";
-    if(days!=0) retVal = pad0(days) + "d " + pad0(hours) + "h " + pad0(minutes) + "m";
-    else if(hours!=0) retVal = pad0(hours) + "h " + pad0(minutes) + "m";
-    else retVal = pad0(minutes) + "m"; 
-
+    if(!full)
+    {
+        if(days!=0) retVal = pad0(days) + "d " + pad0(hours) + "h " + pad0(minutes) + "m";
+        else if(hours!=0) retVal = pad0(hours) + "h " + pad0(minutes) + "m";
+        else retVal = pad0(minutes) + "m"; 
+    } else
+    {
+        retVal = pad0(days) + "d " + pad0(hours) + "h " + pad0(minutes) + "m " +  pad0(seconds) + "s";
+    }
+    
     return retVal;
 }
 
@@ -159,7 +185,18 @@ export function twaBackGround(currTwa,bestTwa)
     }
 export function gentdRacelog(className, name, style, title, value) {
     const userPrefs = getUserPrefs(); 
-    const checked = userPrefs?.racelog?.column[name];
+    const raceLogColumnMap = {
+        dateTime: "time",
+        dtl: "DTL",
+        dtf: "DTF",
+        reportedSpeed: "vR",
+        calcSpeed: "vC",
+        foils: "foil",
+        deltaDistance: "deltaD",
+        deltaTime: "deltaT"
+    };
+    const columnKey = raceLogColumnMap[name] ?? name;
+    const checked = userPrefs?.raceLog?.column[columnKey];
     if (!style || style === null) style = '';
     if (checked == undefined || checked ) {
         return '<td class="' + className + '" ' 
@@ -172,7 +209,18 @@ export function gentdRacelog(className, name, style, title, value) {
 }
 export function genthRacelog(id, name, content, title) {
     const userPrefs = getUserPrefs(); 
-    const checked = userPrefs?.racelog?.column[name];
+    const raceLogColumnMap = {
+        dateTime: "time",
+        dtl: "DTL",
+        dtf: "DTF",
+        reportedSpeed: "vR",
+        calcSpeed: "vC",
+        foils: "foil",
+        deltaDistance: "deltaD",
+        deltaTime: "deltaT"
+    };
+    const columnKey = raceLogColumnMap[name] ?? name;
+    const checked = userPrefs?.raceLog?.column[columnKey];
     if (checked == undefined || checked ) {
         return '<th id="' + id + '"'
             + (title ? (' title="' + title + '"') : "")
@@ -184,12 +232,32 @@ export function genthRacelog(id, name, content, title) {
 
 export function genth(id, content, title, sortfield, sortmark) {
     const userPrefs = getUserPrefs();
+    const fleetColumnMap = {
+        th_teamname: "team",
+        th_rank: "rank",
+        th_racetime: "raceTime",
+        th_dtu: "DTU",
+        th_dtf: "DTF",
+        th_twd: "TWD",
+        th_tws: "TWS",
+        th_twa: "TWA",
+        th_hdg: "HDG",
+        th_speed: "speed",
+        th_vmg: "VMG",
+        th_sail: "sail",
+        th_factor: "factor",
+        th_foils: "foil",
+        th_psn: "position",
+        th_options: "option",
+        th_state: "state",
+        th_remove: "select"
+    };
     let checkboxId = '';
     if (!content) {
-        const contentAlt = id.split("_")[1];
         checkboxId = id.split("_")[1].toLowerCase();
-    } else
-        checkboxId = id;
+    } else {
+        checkboxId = fleetColumnMap[id] ?? id;
+    }
     const checked = userPrefs?.fleet?.column[checkboxId];
     if (checked == undefined || checked ) {
         if (sortfield && sortmark != undefined) {
@@ -210,16 +278,31 @@ export function genth(id, content, title, sortfield, sortmark) {
 }
 export function gentd(name, style,title, value) {
     const userPrefs = getUserPrefs();
-    const checked = userPrefs?.fleet?.column[name];
+    const fleetColumnMap = {
+        Team: "team",
+        Rank: "rank",
+        RaceTime: "raceTime",
+        DTU: "DTU",
+        DTF: "DTF",
+        TWD: "TWD",
+        TWS: "TWS",
+        TWA: "TWA",
+        TWAIcon: "TWA",
+        HDG: "HDG",
+        Speed: "speed",
+        VMG: "VMG",
+        Sail: "sail",
+        SailIcon: "sail",
+        Factor: "factor",
+        Foils: "foil",
+        Position: "position",
+        Options: "option",
+        State: "state",
+        Remove: "select"
+    };
+    const columnKey = fleetColumnMap[name] ?? name;
+    const checked = userPrefs?.fleet?.column[columnKey];
     if (checked == undefined || checked ) {
-        if (name == "fleet_sailicon") {
-            var checkBoxSail = document.getElementById('fleet_sail');
-            if (!checkBoxSail.checked) return "";
-        }
-        else if (name == "fleet_twaicon") {
-            var checkBoxTWA = document.getElementById('fleet_twa');
-            if (!checkBoxTWA.checked) return "";
-        }
         return '<td class="' + name + '" ' 
                             + style 
                             + (title ? (' title="' + title + '"') : "")

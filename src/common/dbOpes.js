@@ -4,13 +4,13 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 8;
+const DB_VERSION = 9;
 const MIN_BULK_SIZE = 10;
 
 export async function openDatabase() {
     try {
         return await openDB(DB_NAME, DB_VERSION, {
-            upgrade(db) {
+            upgrade(db, _oldVersion, _newVersion, transaction) {
               if (!db.objectStoreNames.contains('internal')) {
                   const store = db.createObjectStore('internal', { keyPath: 'id' });
                   if(cfg.debugDB) console.log('Created "internal" object store');
@@ -105,19 +105,37 @@ export async function openDatabase() {
                   const store = db.createObjectStore('legFleetInfos', {
                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
                   if(cfg.debugDB) console.log('Created "legFleetInfos" object store');
+              } else {
+                  const store = transaction.objectStore('legFleetInfos');
+                  if (!store.indexNames.contains('byRaceLeg')) {
+                      store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
               }
               if (!db.objectStoreNames.contains('legPlayersInfos')) {
                   const store = db.createObjectStore('legPlayersInfos', {
                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
                   if(cfg.debugDB) console.log('Created "legPlayersInfos" object store');
+              } else {
+                  const store = transaction.objectStore('legPlayersInfos');
+                  if (!store.indexNames.contains('byRaceLeg')) {
+                      store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
               }
               if (!db.objectStoreNames.contains('legPlayersOrder')) {
                   const store = db.createObjectStore('legPlayersOrder', {
                         keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
+                  store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
                   if(cfg.debugDB) console.log('Created "legPlayersOrder" object store');
+              } else {
+                  const store = transaction.objectStore('legPlayersOrder');
+                  if (!store.indexNames.contains('byRaceLeg')) {
+                      store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
               }
               if (!db.objectStoreNames.contains('legPlayersOptions')) {
                   const store = db.createObjectStore('legPlayersOptions', {
@@ -125,14 +143,25 @@ export async function openDatabase() {
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
                   store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false }); 
                   if(cfg.debugDB) console.log('Created "legPlayersOptions" object store');
+              } else {
+                  const store = transaction.objectStore('legPlayersOptions');
+                  if (!store.indexNames.contains('byRaceLeg')) {
+                      store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
               }
               if (!db.objectStoreNames.contains('playersTracks')) {
                   const store = db.createObjectStore('playersTracks', {
                         keyPath: ['raceId', 'legNum', 'userId', 'type' ]  });
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
                   store.createIndex('byType', ['raceId', 'legNum', 'type'], { unique: false });
+                  store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
                   
                   if(cfg.debugDB) console.log('Created "playersTracks" object store');
+              } else {
+                  const store = transaction.objectStore('playersTracks');
+                  if (!store.indexNames.contains('byRaceLeg')) {
+                      store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
               }
               if (!db.objectStoreNames.contains('windpacks')) {
                 const store = db.createObjectStore('windpacks', {
@@ -289,6 +318,38 @@ export async function deleteData(storeName, key) {
     } catch (error) {
         if(cfg.debugDBErr) console.error(`Error deleting data from ${storeName}:`, error);
         throw error;
+    }
+}
+
+export async function deleteByRaceLeg(storeName, raceId, legNum) {
+    let db;
+    try {
+        db = await openDatabase();
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+
+        if (!store.indexNames.contains('byRaceLeg')) {
+            throw new Error(`deleteByRaceLeg: missing 'byRaceLeg' index on ${storeName}`);
+        }
+
+        const index = store.index('byRaceLeg');
+        const range = IDBKeyRange.only([raceId, legNum]);
+        let deletedCount = 0;
+
+        let cursor = await index.openKeyCursor(range);
+        while (cursor) {
+            await store.delete(cursor.primaryKey);
+            deletedCount++;
+            cursor = await cursor.continue();
+        }
+
+        await tx.done;
+        return deletedCount;
+    } catch (error) {
+        if(cfg.debugDBErr) console.error(`Error deleting race/leg data from ${storeName}:`, error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
     }
 }
 // Helper interne pour les écritures en bulk dans une transaction existante

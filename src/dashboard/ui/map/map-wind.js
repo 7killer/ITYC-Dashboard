@@ -4,7 +4,7 @@ import L from '@/dashboard/ui/map/leaflet-setup';
 import { getUserPrefs } from '../../../common/userPrefs.js';
 import { WindyDataProxy } from './wind/WindyDataProxy.js';
 import { getData } from '../../../common/dbOpes.js'; 
-
+import cfg from '@/config.json';
 // Palette Beaufort (on la réutilise pour leaflet-velocity)
 /*const colorScale = [
   'rgb(255, 255, 255)',
@@ -38,6 +38,15 @@ const colorScale = [
 ];
 let windUpdateInProgress = false;
 let windUpdateQueued = null;
+const WIND_PROXY_RETRY_SCHEDULE_MS = [
+  ...Array(20).fill(2000),
+  ...Array(10).fill(20000),
+  ...Array(10).fill(60000),
+  600000,
+];
+let windProxyRetryTimer = null;
+let windProxyRetryAttempts = 0;
+let windProxyRetryTargetUnix = null;
 
 // ─────────────────────────────────────────────
 // État local pour GRIB + timeline vent
@@ -97,7 +106,7 @@ function notifyWindTimeChange(epochSec) {
     try {
       cb(epochSec);
     } catch (err) {
-      console.error('[wind] erreur listener onWindTimeChange', err);
+      if (cfg.debugWind) console.error('[wind] erreur listener onWindTimeChange', err);
     }
   }
 }
@@ -106,12 +115,12 @@ function sendWindBg(message) {
   return new Promise((resolve) => {
     try {
       if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
-        console.warn('[wind] chrome.runtime indisponible, pas de background wind');
+        if (cfg.debugWind) console.warn('[wind] chrome.runtime indisponible, pas de background wind');
         resolve(null);
         return;
       }
     } catch {
-      console.warn('[wind] chrome.runtime non accessible (contexte non-extension ?)');
+      if (cfg.debugWind) console.warn('[wind] chrome.runtime non accessible (contexte non-extension ?)');
       resolve(null);
       return;
     }
@@ -119,7 +128,7 @@ function sendWindBg(message) {
     chrome.runtime.sendMessage(message, (resp) => {
       const err = chrome.runtime?.lastError;
       if (err) {
-        console.warn('[wind] sendMessage error', err);
+        if (cfg.debugWind) console.warn('[wind] sendMessage error', err);
         resolve(null);
       } else {
         resolve(resp);
@@ -188,7 +197,7 @@ async function loadRunInfoFromBg() {
   const prevInfo = (previous && previous.ok && previous.info) ? previous.info : null;
 
   if (!latestInfo && !prevInfo) {
-    console.warn('[wind] pas de runInfo depuis le background', latest?.error || previous?.error);
+    if (cfg.debugWind) console.warn('[wind] pas de runInfo depuis le background', latest?.error || previous?.error);
     return null;
   }
 
@@ -464,6 +473,50 @@ function clearAutoPlayTimer() {
   }
 }
 
+function resetWindProxyRetryState() {
+  if (windProxyRetryTimer) {
+    clearTimeout(windProxyRetryTimer);
+    windProxyRetryTimer = null;
+  }
+  windProxyRetryAttempts = 0;
+  windProxyRetryTargetUnix = null;
+}
+
+function scheduleWindProxyRetry(targetUnix) {
+  windProxyRetryTargetUnix = targetUnix ?? windProxyRetryTargetUnix ?? windUiState.currentUnix ?? Math.floor(Date.now() / 1000);
+
+  if (windProxyRetryTimer) return;
+
+  if (windProxyRetryAttempts >= WIND_PROXY_RETRY_SCHEDULE_MS.length) {
+    if (cfg.debugWind) {
+      console.warn('[wind] abandon retry windy_proxy après plusieurs tentatives');
+    }
+    return;
+  }
+
+  const retryDelay = WIND_PROXY_RETRY_SCHEDULE_MS[windProxyRetryAttempts];
+  windProxyRetryAttempts += 1;
+  windProxyRetryTimer = setTimeout(async () => {
+    windProxyRetryTimer = null;
+
+    try {
+      startWindWorker();
+
+      if (!mapState.windy_proxy) {
+        scheduleWindProxyRetry(windProxyRetryTargetUnix);
+        return;
+      }
+
+      const retryTarget = windProxyRetryTargetUnix ?? windUiState.currentUnix ?? Math.floor(Date.now() / 1000);
+      resetWindProxyRetryState();
+      await applyWindAtTime(retryTarget);
+    } catch (err) {
+      if (cfg.debugWind) console.warn('[wind] retry windy_proxy failed', err);
+      scheduleWindProxyRetry(windProxyRetryTargetUnix);
+    }
+  }, retryDelay);
+}
+
 export function stopAutoPlay() {
   clearAutoPlayTimer();
   windUiState.autoPlayState = 'stopped';
@@ -687,14 +740,11 @@ async function getOrLoadSnapshot(runId, fh) {
   // Lecture directe en IndexedDB
   const pack = await getData('windpacks', [model, runId, fh]);
   if (!pack || !pack.blob) {
-    console.warn('[wind] pack introuvable en DB', { model, runId, fh, pack });
+    if (cfg.debugWind) console.warn('[wind] pack introuvable en DB', { model, runId, fh, pack });
     return null;
   }
 
   const blob = pack.blob;
-
-  // Pour debug, si tu veux voir ce que c'est :
-  // console.log('[wind] blob type:', blob && blob.constructor && blob.constructor.name);
 
   const objectUrl = URL.createObjectURL(blob);
   const entry = {
@@ -719,7 +769,7 @@ async function ensureSnapshotAvailable(model, runId, fh) {
     fh,
   });
   if (!resp || !resp.ok) {
-    console.warn('[wind] ensureWindpack failed', resp && resp.error);
+    if (cfg.debugWind) console.warn('[wind] ensureWindpack failed', resp && resp.error);
     return false;
   }
   return true;
@@ -747,9 +797,11 @@ export async function applyWindAtTime(targetUnix) {
     if (!info) return;
 
     if (!mapState.windy_proxy) {
-      console.warn('[wind] windy_proxy non initialisé');
+      if (cfg.debugWind) console.warn('[wind] windy_proxy non initialisé');
+      scheduleWindProxyRetry(targetUnix);
       return;
     }
+    resetWindProxyRetryState();
     const mode = getWindTimeMode();
     const model =
       windUiState.runInfoLatest?.model ||
@@ -905,6 +957,10 @@ export function startWindWorker() {
     );
     mapState.windy_proxy = new WindyDataProxy(mapState.windyLayer, worker);
   }
+
+  if (mapState.windy_proxy) {
+    windProxyRetryAttempts = 0;
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -1002,7 +1058,7 @@ function startRunInfoPolling() {
         await applyWindAtTime(windUiState.currentUnix);
       }
     } catch (e) {
-      console.warn('[wind] poll runInfo error', e);
+      if (cfg.debugWind) console.warn('[wind] poll runInfo error', e);
     } finally {
       windUiState.pollInFlight = false;
     }

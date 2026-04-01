@@ -162,11 +162,11 @@ async function ensurePreviousRunFh09and12(model) {
       try {
         await ensureWindpackInDB(model, prevRun, c.f);
       } catch (e) {
-        console.warn('[wind] preload previous fh failed', c.fh, e);
+        if (cfg.debugWind) console.warn('[wind] preload previous fh failed', c.fh, e);
       }
     }
   } catch (e) {
-    console.warn('[wind] preload previous fh 9/12 skipped (manifest previous failed)', e);
+    if (cfg.debugWind) console.warn('[wind] preload previous fh 9/12 skipped (manifest previous failed)', e);
   }
 }
 
@@ -199,7 +199,7 @@ export async function syncLatestWindpacks() {
   try {
     await ensureWindpackInDB(model, run, best);
   } catch (e) {
-    console.error('[wind] erreur DL windpack best', best, e);
+    if (cfg.debugWind) console.error('[wind] erreur DL windpack best', best, e);
   }
   await ensurePreviousRunFh09and12(model);
   // tu peux décider ici si tu veux *tout* précharger ou juste le "best" :
@@ -310,7 +310,7 @@ export async function syncLatestWindpacksWindowed() {
       haveByFh.add(f.fh);
     } catch (err) {
       allComplete = false;
-      console.warn('[wind] erreur download FH', f.fh, err);
+      if (cfg.debugWind) console.warn('[wind] erreur download FH', f.fh, err);
     }
   }
 

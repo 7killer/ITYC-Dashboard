@@ -7,7 +7,7 @@ import {
     updateNmeaOffscreenSnapshot,
 } from './ensureOffscreen.js';
 import { computeOwnIte, computeFleetIte } from './iteRun.js';
-import { createKeyChangeListener, getData, saveData } from '../common/dbOpes.js';
+import { createKeyChangeListener, getAllData, getData, saveData, deleteByRaceLeg } from '../common/dbOpes.js';
 import { loadUserPrefs } from '../common/userPrefs.js';
 import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
 import { manageDashState } from './dashState.js';
@@ -33,12 +33,21 @@ import {
     buildNmeaSnapshotFromDb,
     setNmeaState
 } from './nmeaWorkers.js'
-
+import cfg from '@/config.json';
 const version = '1.0';
 let debuggeeTab;
 let dashboardTab;
 
 const pending = new Map();
+const CLOSED_RACE_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
+const PURGE_STORES = [
+    'legFleetInfos',
+    'legPlayersInfos',
+    'legPlayersOptions',
+    'legPlayersOrder',
+    'playersTracks',
+];
+let closedRacePurgePromise = null;
 
 
 
@@ -98,6 +107,71 @@ async function syncNmeaLifecycleFromPrefs() {
     } else {
         await stopNmeaOffscreen(snapshot);
     }
+}
+
+function normalizeEpochMs(value) {
+    const timestamp = Number(value);
+    if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
+    return timestamp < 1e12 ? timestamp * 1000 : timestamp;
+}
+
+function getClosedRaceLegs(legList, now = Date.now()) {
+    if (!Array.isArray(legList) || legList.length === 0) return [];
+
+    const cutoff = now - CLOSED_RACE_RETENTION_MS;
+    const seen = new Set();
+
+    return legList.filter((leg) => {
+        const endDate = normalizeEpochMs(leg?.end?.date);
+        if (!endDate || endDate > cutoff) return false;
+
+        const raceId = Number(leg?.raceId);
+        const legNum = Number(leg?.legNum);
+        if (!Number.isFinite(raceId) || !Number.isFinite(legNum)) return false;
+
+        const key = `${raceId}-${legNum}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
+async function purgeClosedRaceData() {
+    if (closedRacePurgePromise) return closedRacePurgePromise;
+
+    closedRacePurgePromise = (async () => {
+        try {
+            const legList = await getAllData('legList');
+            const closedRaceLegs = getClosedRaceLegs(legList);
+
+            if (closedRaceLegs.length === 0) return;
+
+            let deletedCount = 0;
+
+            for (const leg of closedRaceLegs) {
+                for (const storeName of PURGE_STORES) {
+                    deletedCount += await deleteByRaceLeg(storeName, leg.raceId, leg.legNum);
+                }
+            }
+
+            if (deletedCount > 0) {
+                const ts = Date.now();
+                await saveData('internal', { id: 'legFleetInfosUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legFleetInfosDashUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legPlayersInfosUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legPlayersInfosDashUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legPlayersOptionsUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legPlayersOrderUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'playersTracksUpdate', ts }, null, { updateIfExists: true });
+            }
+        } catch (error) {
+            console.error('[bg] closed race purge failed', error);
+        } finally {
+            closedRacePurgePromise = null;
+        }
+    })();
+
+    return closedRacePurgePromise;
 }
 
 /* =========================================================
@@ -485,6 +559,17 @@ userPrefsListener.start({
     referenceValue: { prefs: null },
     onChange: async ({ oldValue, newValue }) => {
         await syncNmeaLifecycleFromPrefs();
+    },
+});
+
+const legListListener = createKeyChangeListener(
+    'internal',
+    'legListUpdate'
+);
+legListListener.start({
+    referenceValue: { ts: 0 },
+    onChange: async () => {
+        await purgeClosedRaceData();
     },
 });
 

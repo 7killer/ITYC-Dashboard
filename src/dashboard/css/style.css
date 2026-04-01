@@ -630,10 +630,17 @@ fieldset {
 #headSpacer {
     display: flex;
     padding-bottom: 0.7em;
+    position: relative;
 }
 
 #headSpacer>div>.tabs {
     margin-top: 1em;
+}
+
+#doradoUrl { 
+    float: left;
+    margin-left:1em;
+    cursor: pointer;
 }
 
 #userConfig {
@@ -1922,6 +1929,82 @@ light
     height : 100%;
     gap: 10px;
 
+}
+
+#analysisModeSwitch {
+    position: absolute;
+    top: 0.45em;
+    right: 0.75em;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.25em 0.55em;
+    border-radius: 999px;
+    border: 1px solid var(--border_color);
+    background-color: var(--bg_body_color);
+    color: var(--td_color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    visibility: hidden;
+}
+
+#analysisModeSwitch .analysisModeLabel {
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+#analysisModeSwitch .switch {
+    position: relative;
+    display: inline-flex;
+    width: 38px;
+    height: 20px;
+    align-items: center;
+}
+
+#analysisModeSwitch .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+#analysisModeSwitch .switchSlider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #5c677d, #2d3648);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    transition: background-color 0.2s ease, background 0.2s ease;
+}
+
+#analysisModeSwitch .switchSlider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffffff, #dbe4f0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+
+#analysisModeSwitch .switch input:checked + .switchSlider {
+    background: linear-gradient(135deg, #00a86b, #0c7a57);
+}
+
+#analysisModeSwitch .switch input:checked + .switchSlider::before {
+    transform: translateX(18px);
+}
+
+#analysisModeSwitch .switch input:focus-visible + .switchSlider {
+    outline: 2px solid #7cc8ff;
+    outline-offset: 2px;
 }
 
 
