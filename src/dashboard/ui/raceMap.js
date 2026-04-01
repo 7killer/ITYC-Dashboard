@@ -16,7 +16,7 @@ import {
 
 import { mapState } from './map/map-race.js';
 import {importExternalRouter,importGPXRoute,importExtraPattern} from '../app/route_importer.js'
-import {zezoCall} from '../../common/zezoscript.js'
+import {zezoCall,vrZenCall} from '../../common/zezoscript.js'
 
 let popupStateLmap =false;
 var actualZezoColor = "#AA0000";
@@ -115,9 +115,34 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("sel_rt_skipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").style.display = "none";
             document.getElementById("route_colorLmap").value = actualZezoColor;
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
             document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
             document.getElementById("rt_popupLmap").style.height = "9.5em";
+            break;
+        case "rt_VRZen":
+            document.getElementById("sel_rt_skipperLmap").style.display = "block";
+            document.getElementById("rt_nameSkipperLmap").style.display = "none";
+            document.getElementById("route_colorLmap").value = actualVRZenColor;
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
+            document.getElementById("rt_popupLmap").style.height = "185px";
+
+            const select = document.getElementById("sel_routeArrivalLmap");
+            for (let i = select.options.length-1; i >= 0; i--) {
+                select.options[i] = null;
+            }
+            
+            const raceInfo = getRaceInfo();
+            if(!raceInfo || !raceInfo.vrZen) break;
+            const vrZenEtape = raceInfo.vrZen.vrZenEtape;
+            for (let i = 0; i < vrZenEtape.length; i++) {
+                const option = document.createElement("option");
+                option.text = raceInfo.vrZen.vrZenEtape[i].nomEtape;
+                option.value = i;
+                select.appendChild(option);
+            }
             break;
         case "rt_Avalon":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
@@ -125,6 +150,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value = actualAvalon06Color;
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
@@ -135,6 +161,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualVRZenColor;
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
@@ -145,11 +172,20 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value =  actualgpxColor;
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
-      
+        case "rt_dorado":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_popupLmap").style.height = "6em";
+            break;      
     }
 }
 
@@ -267,31 +303,56 @@ export async function onAddRouteLmap() {
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
     let routeName = "";
    
+    if(routeType == "rt_Zezo" || routeType == "rt_VRZen") {
+        const raceItesFleet    = getLegFleetInfos();
+        const playerId = document.getElementById("sel_rt_skipperLmap").value;
+        if(!raceItesFleet ||!raceItesFleet[playerId]) {
+            alert("Unknown player - no routing available");
+            return;
+        }
+        const playerIte = raceItesFleet[playerId];
+        playerIte.options = buildPlayerOption("Lmap");  
+    }
+
     switch(routeType)
     {
         default :
             return;
         case "rt_Zezo":
             if (!raceInfo.zezoUrl) {
-            alert("Unknown race - no routing available");
-            return;
-            }
-            const raceItesFleet    = getLegFleetInfos();
-            const playerId = document.getElementById("sel_rt_skipperLmap").value;
-            if(!raceItesFleet ||!raceItesFleet[playerId]) {
-                alert("Unknown player - no routing available");
+                alert("Unknown race - no routing available");
                 return;
-            }
-            const playerIte = raceItesFleet[playerId];
-            playerIte.options = buildPlayerOption("Lmap");    
-            const raceUrl = raceInfo.zezoUrl + (raceInfo.betaflag ? "b" : "");
-
-            document.getElementById("bt_rt_addLmap").innerText = "Loading";
-            document.getElementById("bt_rt_addLmap").disabled = true;
+            } 
+            const raceCallUrl = raceInfo.zezoUrl + (raceInfo.betaflag ? "b" : "");
             
-            zezoCall(rid,playerIte,document.getElementById("route_colorLmap").value,raceUrl);  
+            zezoCall(
+                rid,
+                playerIte,
+                document.getElementById("route_colorLmap").value,
+                raceCallUrl);  
             actualZezoColor = '#'+Math.floor(Math.random()*16777216).toString(16).padStart(6, '0');
             document.getElementById("route_colorLmap").value = actualZezoColor;  
+            //update map is done in zezo call as its async
+            break;
+        case "rt_VRZen":
+            if (!raceInfo.vrZen) {
+                alert("Unknown race - no routing available");
+                return;
+            }
+            const idStep = document.getElementById("sel_routeArrivalLmap").value;
+   
+            vrZenCall(
+                rid, 
+                playerIte, 
+                document.getElementById("route_colorLmap").value,
+                raceInfo.vrZen.vrZenName, 
+                race.vrZenEtape[idStep].latitudeEtape,
+                race.vrZenEtape[idStep].longitudeEtape,
+                document.getElementById("sel_routeTypeModeLmap").value,
+                document.getElementById("sel_routeDayLmap").value);
+        
+            actualVRZenColor = '#'+Math.floor(Math.random()*16777216).toString(16).padStart(6, '0');
+            document.getElementById("route_colorLmap").value = actualVRZenColor;
             //update map is done in zezo call as its async
             break;
 

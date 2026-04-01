@@ -1,5 +1,5 @@
 
-import {processDBOperations,getData,getLatestAndPreviousByTriplet} from './dbOpes.js';
+import {processDBOperations,getData,getAllData,getLatestAndPreviousByTriplet} from './dbOpes.js';
 import { roundTo } from './utils.js';
 import {getConnectedPlayerId,
         getRaceInfo,
@@ -12,7 +12,7 @@ import {sailNames} from "../dashboard/ui/constant.js"
 
 const MIN_ZEZO_INTERVAL_MS = 15 * 60 * 1000; // 5 minutes
 
-const ZEZO_BASE_URL = "http://zezo.org/";
+export const ZEZO_BASE_URL = "http://zezo.org/";
 const RACE_LIST_ZEZO_URL=ZEZO_BASE_URL + "races2.json";
 
 const VRZEN_BASE_URL =  "https://routage.vrzen.org";
@@ -29,6 +29,8 @@ const DORADO_BASE_URL = "https://vr.ityc.fr/dorado.php?id=";
 
 let lastRaceListFetchTs   = 0;
 let raceListInFlightPromise = null;
+let lastVRZenRaceListFetchTs = 0;
+let vrZenRaceListInFlightPromise = null;
 
 export async function getRaceListZezo(opts = {}) {
     const { forceRefresh = false } = opts;
@@ -120,6 +122,118 @@ export async function getRaceListZezo(opts = {}) {
     })();
 
   return raceListInFlightPromise;
+}
+
+export async function getRaceListVrZen(opts = {}) {
+    const { forceRefresh = false } = opts;
+
+    const now = Date.now();
+    if (!forceRefresh && now - lastVRZenRaceListFetchTs < MIN_ZEZO_INTERVAL_MS) {
+        console.log("[getRaceListVRZEN] skipped (throttled, < 15min)");
+        return null;
+    }
+
+    if (vrZenRaceListInFlightPromise && !forceRefresh) {
+        return vrZenRaceListInFlightPromise;
+    }
+
+    lastVRZenRaceListFetchTs = now;
+
+    vrZenRaceListInFlightPromise = (async () => {
+        try {
+            const response = await fetch(`${VRZEN_BASE_URL}/Course`, { method: "GET" });
+
+            if (!response.ok) {
+                console.warn("[getRaceListVRZEN] HTTP error:", response.status, response.statusText);
+                return null;
+            }
+
+            let vrZenRaceList;
+            try {
+                vrZenRaceList = await response.json();
+            } catch (err) {
+                console.error("[getRaceListVRZEN] JSON parse error:", err);
+                return null;
+            }
+
+            if (!Array.isArray(vrZenRaceList) || vrZenRaceList.length === 0) {
+                console.warn("[getRaceListVRZEN] Empty or invalid race list");
+                return null;
+            }
+
+            const legList = await getAllData('legList').catch((error) => {
+                console.error("[getRaceListVRZEN] legList read error:", error);
+                return [];
+            });
+
+            if (!Array.isArray(legList) || legList.length === 0) {
+                console.warn("[getRaceListVRZEN] No legList available to enrich");
+                return null;
+            }
+
+            const dbLegList = [];
+
+            vrZenRaceList.forEach((race) => {
+                if (!race?.idCourseVR) return;
+
+                const sortedEtapes = Array.isArray(race.etapeCourse)
+                    ? [...race.etapeCourse].sort((stepA, stepB) => {
+                        if ((stepA?.ordre ?? 0) < (stepB?.ordre ?? 0)) return -1;
+                        if ((stepA?.ordre ?? 0) > (stepB?.ordre ?? 0)) return 1;
+                        return 0;
+                    })
+                    : [];
+
+                legList
+                    .filter((leg) => Number(leg?.raceId) === Number(race.idCourseVR))
+                    .forEach((leg) => {
+                        dbLegList.push({
+                            raceId: leg.raceId,
+                            legNum: leg.legNum,
+                            vrZen: {
+                                vrZenName: race.nomCourse ?? null,
+                                vrZenLatEnd: race.latitudeArrivee ?? null,
+                                vrZenLonEnd: race.longitudeArrivee ?? null,
+                                vrZenEtape: sortedEtapes
+                            }
+                        });
+                    });
+            });
+
+            if (dbLegList.length === 0) {
+                console.warn("[getRaceListVRZEN] No matching legs found after mapping");
+                return null;
+            }
+
+            const dbOpe = [
+                {
+                    type: "putOrUpdate",
+                    internal: [
+                        {
+                            id: "legListUpdate",
+                            ts: now,
+                        },
+                    ],
+                    legList: dbLegList,
+                },
+            ];
+
+            try {
+                await processDBOperations(dbOpe);
+            } catch (err) {
+                console.error("[getRaceListVRZEN] DB operation error:", err);
+            }
+
+            return dbLegList;
+        } catch (err) {
+            console.error("[getRaceListVRZEN] Unexpected error:", err);
+            return null;
+        } finally {
+            vrZenRaceListInFlightPromise = null;
+        }
+    })();
+
+    return vrZenRaceListInFlightPromise;
 }
 
 export function openAutoRouter() {
@@ -271,7 +385,7 @@ export async function openRouterSiteBack(rtType="zezo",auto = false)
     }
 }
 
-function computeZezoOptions(pOptions)
+export function computeZezoOptions(pOptions)
 {
     let optVal = 0;
     if(pOptions)

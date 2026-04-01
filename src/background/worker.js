@@ -24,7 +24,7 @@ import {
     sendLegDataITYC,sendInfoOptITYC,getPolarHashITYC,itycPolarSync
 } from './itycInterface.js'; 
 
-import {getRaceListZezo,openRouterSiteBack,openPolarSiteBack} from '../common/callExternal.js'
+import {getRaceListZezo,getRaceListVrZen,openRouterSiteBack,openPolarSiteBack} from '../common/callExternal.js'
 
 import {
     setNmeaActiveRace,
@@ -328,8 +328,9 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
         await getTeamListITYC({ forceRefresh: true });
         await getPlayerListITYC({ forceRefresh: true });
         await getRaceListITYC({ forceRefresh: true });
-        await getRaceListZezo({ forceRefresh: true });
         await getPolarHashITYC({ forceRefresh: true });
+        await getRaceListZezo({ forceRefresh: true });
+        await getRaceListVrZen({ forceRefresh: true });
         
         await syncNmeaLifecycleFromPrefs();
     } catch (e) {
@@ -344,8 +345,9 @@ chrome.runtime.onStartup.addListener(() => {
             await getTeamListITYC(); 
             await getPlayerListITYC();
             await getRaceListITYC();
-            await getRaceListZezo();
             await getPolarHashITYC();
+            await getRaceListZezo();
+            await getRaceListVrZen();
             await syncNmeaLifecycleFromPrefs();
         } catch (e) {
             console.error('[teams] [players] [raceList] [synchroWind] [nmea] initial sync onStartup failed', e);

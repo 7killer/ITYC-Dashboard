@@ -264,6 +264,45 @@
                         </td>
                         <td class="noBorderElt" style="width: 19%;background-color: transparent;"></td>
                     </tr>
+                    <tr id="rt_extraFormatLmap" style="display: none;">
+                        <td class="noBorderElt" style="background-color: transparent;">Format</td>    
+                        <td class="noBorderElt" style="background-color: transparent;" colspan="2">                       
+                            <select id="sel_routeArrivalLmap" name="routeFormat">
+                            </select>
+                        </td>
+                        <td class="noBorderElt" style="background-color: transparent;">                            
+                            <select id="sel_routeTypeModeLmap" name="routeType">
+                                <option value="10C">10 min Cap</option>
+                                <option value="10T">10 min TWA</option>
+                                <option value="30C">30 min Cap</option>
+                                <option value="30T">30 min TWA</option>
+                                <option value="60C">60 min Cap</option>
+                                <option value="60T">60 min TWA</option>
+                            </select>
+                        </td>
+                        <td class="noBorderElt" style="background-color: transparent;">      
+                            <select id="sel_routeDayLmap" name="routeDay">
+                                <option value="-6">6 Heures</option>
+                                <option value="-12">12 Heures</option>
+                                <option value="1">1 Jour</option>
+                                <option value="2">2 Jours</option>
+                                <option value="3">3 Jours</option>
+                                <option value="4">4 Jours</option>
+                                <option value="5">5 Jours</option>
+                                <option value="6">6 Jours</option>
+                                <option value="7">7 Jours</option>
+                                <option value="8">8 Jours</option>
+                                <option value="9">9 Jours</option>
+                                <option value="10">10 Jours</option>
+                                <option value="11">11 Jours</option>
+                                <option value="12">12 Jours</option>
+                                <option value="13">13 Jours</option>
+                                <option value="14">14 Jours</option>
+                                <option value="15">15 Jours</option>
+                                <option selected value="16">16 Jours</option>
+                            </select>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <button id="bt_rt_addLmap">Import</button>
