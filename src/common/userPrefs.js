@@ -24,7 +24,8 @@ export const userPrefsDefault =
         reuseTab : true,
         localTime : true,
         polarSite : "LSV", /* toxxct inc lsv */
-        ITYCSend : true 
+        ITYCSend : true ,
+        analysisMode : "expert"
     },
     drawing : 
     {
@@ -35,6 +36,15 @@ export const userPrefsDefault =
     {
         lastCmd : false,
         VMGSpeed : false
+    },
+    analysis : {
+        polarViewers : {
+            fullSail : true,
+            foil : true,
+            summit : true,
+            hole : true,
+            spikeSensitivity : 0.002
+        }
     },
     raceLog :
     {
@@ -115,9 +125,27 @@ function normalizeUserPrefs(rawPrefs)
     const prefs = structuredClone(rawPrefs ?? userPrefsDefault);
     let shouldSave = false;
 
+    if(!prefs.global)
+    {
+        prefs.global = structuredClone(userPrefsDefault.global);
+        shouldSave = true;
+    }
+
     if(!prefs.nmea)
     {
         prefs.nmea = structuredClone(userPrefsDefault.nmea);
+        shouldSave = true;
+    }
+
+    if(!prefs.analysis)
+    {
+        prefs.analysis = structuredClone(userPrefsDefault.analysis);
+        shouldSave = true;
+    }
+
+    if(!prefs.analysis.polarViewers)
+    {
+        prefs.analysis.polarViewers = structuredClone(userPrefsDefault.analysis.polarViewers);
         shouldSave = true;
     }
 
@@ -138,7 +166,21 @@ function normalizeUserPrefs(rawPrefs)
         prefs.filters = structuredClone(userPrefsDefault.filters);
         shouldSave = true;
     }
+    if(prefs.global.analysisMode == null)
+    {
+        prefs.global.analysisMode = userPrefsDefault.global.analysisMode;
+        shouldSave = true;
+    }
 
+    for (const [key, defaultValue] of Object.entries(userPrefsDefault.analysis.polarViewers))
+    {
+        if(prefs.analysis.polarViewers[key] == null)
+        {
+            prefs.analysis.polarViewers[key] = defaultValue;
+            shouldSave = true;
+        }
+    }
+    
     return { prefs, shouldSave };
 }
 
