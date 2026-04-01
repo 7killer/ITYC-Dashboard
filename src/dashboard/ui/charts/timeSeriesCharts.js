@@ -112,6 +112,8 @@ export const itycSyncPlugin = {
 const itycZoomSync = (() => {
   /** @type {Map<string, Set<any>>} */
   const groups = new Map();
+  /** @type {Map<string, {min:number,max:number}>} */
+  const ranges = new Map();
 
   function add(chart, groupId) {
     if (!groupId) return;
@@ -121,9 +123,41 @@ const itycZoomSync = (() => {
   function remove(chart) {
     for (const set of groups.values()) set.delete(chart);
   }
+  function setRange(groupId, min, max) {
+    if (!groupId || !Number.isFinite(min) || !Number.isFinite(max)) return;
+    ranges.set(groupId, { min, max });
+  }
+  function getRange(groupId) {
+    if (!groupId) return null;
+    return ranges.get(groupId) ?? null;
+  }
+  function clearRange(groupId) {
+    if (!groupId) return;
+    ranges.delete(groupId);
+  }
+  function clearAppliedRange(source, groupId) {
+    const set = groups.get(groupId);
+    clearRange(groupId);
+    if (!set) return;
+
+    for (const ch of set) {
+      if (ch.$_itycApplyingZoomSync) continue;
+      if (ch !== source) ch.$_itycApplyingZoomSync = true;
+
+      if (ch.options?.scales?.x) {
+        delete ch.options.scales.x.min;
+        delete ch.options.scales.x.max;
+      }
+      ch.update("none");
+
+      if (ch !== source) ch.$_itycApplyingZoomSync = false;
+    }
+  }
   function applyRange(source, groupId, min, max) {
     const set = groups.get(groupId);
     if (!set) return;
+
+    setRange(groupId, min, max);
 
     for (const ch of set) {
       if (ch === source) continue;
@@ -143,6 +177,8 @@ const itycZoomSync = (() => {
     const set = groups.get(groupId);
     if (!set) return;
 
+    clearRange(groupId);
+
     for (const ch of set) {
       if (ch === source) continue;
       if (ch.$_itycApplyingZoomSync) continue;
@@ -159,13 +195,23 @@ const itycZoomSync = (() => {
     }
   }
 
-  return { add, remove, applyRange, reset };
+  return { add, remove, applyRange, reset, setRange, getRange, clearRange, clearAppliedRange };
 })();
 
 export const itycZoomSyncPlugin = {
   id: "itycZoomSyncPlugin",
   afterInit(chart, _args, opts) {
-    itycZoomSync.add(chart, opts?.groupId);
+    const groupId = opts?.groupId;
+    chart.$_itycZoomGroupId = groupId;
+    itycZoomSync.add(chart, groupId);
+
+    const range = itycZoomSync.getRange(groupId);
+    if (!range) return;
+
+    chart.options.scales ||= {};
+    chart.options.scales.x ||= {};
+    chart.options.scales.x.min = range.min;
+    chart.options.scales.x.max = range.max;
   },
   beforeDestroy(chart) {
     itycZoomSync.remove(chart);
@@ -181,7 +227,7 @@ export function makeZoomOptions(groupId = "linked") {
         if (chart.$_itycApplyingZoomSync) return;
         const x = chart.scales?.x;
         if (!x) return;
-        itycZoomSync.applyRange(chart, groupId, x.min, x.max);
+        persistCustomRange(chart, groupId, x.min, x.max);
       },
     },
     zoom: {
@@ -192,7 +238,7 @@ export function makeZoomOptions(groupId = "linked") {
         if (chart.$_itycApplyingZoomSync) return;
         const x = chart.scales?.x;
         if (!x) return;
-        itycZoomSync.applyRange(chart, groupId, x.min, x.max);
+        persistCustomRange(chart, groupId, x.min, x.max);
       },
     },
   };
@@ -226,21 +272,54 @@ function applyDynamicLinearTicks(chart, axisKey = "x") {
   chart.options.scales[axisKey].ticks.stepSize = getDynamicLinearStepSize(min, max);
 }
 
+function getDatasetXBounds(chart) {
+  const points = chart?.data?.datasets?.[0]?.data;
+  if (!Array.isArray(points) || points.length === 0) return null;
+
+  let min = Infinity;
+  let max = -Infinity;
+  for (const point of points) {
+    const x = Number(point?.x);
+    if (!Number.isFinite(x)) continue;
+    if (x < min) min = x;
+    if (x > max) max = x;
+  }
+
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+  return { min, max };
+}
+
+function isCustomRange(chart, min, max) {
+  const bounds = getDatasetXBounds(chart);
+  if (!bounds) return false;
+
+  const epsilon = Math.max(1e-6, Math.abs(bounds.max - bounds.min) * 1e-6);
+  return Math.abs(min - bounds.min) > epsilon || Math.abs(max - bounds.max) > epsilon;
+}
+
+function persistCustomRange(chart, groupId, min, max) {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return;
+
+  if (isCustomRange(chart, min, max)) {
+    itycZoomSync.setRange(groupId, min, max);
+    itycZoomSync.applyRange(chart, groupId, min, max);
+    return;
+  }
+
+  itycZoomSync.clearAppliedRange(chart, groupId);
+}
+
 /* =========================================================
  * Preserve current X range (zoom/pan window)
  * ======================================================= */
 function getXRange(chart) {
-  const x = chart?.scales?.x;
-  if (!x) return null;
-
   const optMin = chart?.options?.scales?.x?.min;
   const optMax = chart?.options?.scales?.x?.max;
+  if (typeof optMin === "number" && typeof optMax === "number") {
+    return { min: optMin, max: optMax };
+  }
 
-  const min = typeof x.min === "number" ? x.min : optMin;
-  const max = typeof x.max === "number" ? x.max : optMax;
-
-  if (typeof min !== "number" || typeof max !== "number") return null;
-  return { min, max };
+  return itycZoomSync.getRange(chart?.$_itycZoomGroupId);
 }
 function applyXRange(chart, range) {
   if (!chart || !range) return;
@@ -318,6 +397,7 @@ export function createTimeSeriesChart(Chart, {
 }) {
   const gridColor = getGridColor(Chart, theme);
   const points = ts.map((t, i) => ({ x: t, y: series[i] }));
+  const storedRange = itycZoomSync.getRange(groupId);
 
   const ds = {
     label: title,
@@ -379,6 +459,8 @@ export function createTimeSeriesChart(Chart, {
       scales: {
         x: {
           type: "linear",
+          min: storedRange?.min,
+          max: storedRange?.max,
           grid: { color: gridColor },
           ticks: { callback(v) { return buildDate(v); } },
         },
@@ -437,6 +519,7 @@ export function createLinkedLineChart(Chart, {
   const gridColor = getGridColor(Chart, theme);
   const zoomOptions = makeZoomOptions(groupId);
   const points = xValues.map((x, i) => ({ x, y: yValues[i] }));
+  const storedRange = itycZoomSync.getRange(groupId);
 
   const ds = {
     label: title,
@@ -497,8 +580,8 @@ export function createLinkedLineChart(Chart, {
       scales: {
         x: {
           type: "linear",
-          min: xMin,
-          max: xMax,
+          min: storedRange?.min ?? xMin,
+          max: storedRange?.max ?? xMax,
           grid: { color: gridColor },
           ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, callback: xTickLabel },
         },
