@@ -9,6 +9,9 @@ import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
 } from '../ui/raceMap.js'
 import {onCoastColorChange} from "../ui/map/map-coasts.js"
 import {resetAllGraphsZoom} from "../ui/raceGraph.js"
+import {applyRaceAnalysisMode, buildRaceAnalyseAdvance} from "../ui/raceAnalysis.js"
+import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV, exportGraphData, exportStamina, exportOwnBoatTrack} from "./exportTool.js"
+import {getDoradoUrl} from "../../common/callExternal.js"
 
 
 /**
@@ -92,6 +95,10 @@ export function uiBindingInit() {
       selector: '#bt_resetZoom',
       onChange: (value) => {resetAllGraphsZoom()},
     },
+    {
+      selector: '#doradoUrl',
+      onChange: () => {getDoradoUrl()}
+    },
     
 /*    {
       selector: '#sel_lang',
@@ -147,6 +154,88 @@ export function uiBindingInit() {
       selector: '#ITYC_record',
       onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.ITYCSend = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.ITYCSend }
+    },
+    {
+      selector: '#analysis_mode_expert',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.global.analysisMode = checked ? "expert" : "normal";
+        await saveUserPrefs(userPrefs);
+        if (checked) buildRaceAnalyseAdvance();
+        else applyRaceAnalysisMode();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.global.analysisMode !== "normal";
+      }
+    },
+    {
+      selector: '#sel_polar_full_sail',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.analysis.polarViewers.fullSail = checked;
+        await saveUserPrefs(userPrefs);
+        buildRaceAnalyseAdvance();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.analysis.polarViewers.fullSail;
+      }
+    },
+    {
+      selector: '#sel_polar_foil',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.analysis.polarViewers.foil = checked;
+        await saveUserPrefs(userPrefs);
+        buildRaceAnalyseAdvance();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.analysis.polarViewers.foil;
+      }
+    },
+    {
+      selector: '#sel_polar_summit',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.analysis.polarViewers.summit = checked;
+        await saveUserPrefs(userPrefs);
+        buildRaceAnalyseAdvance();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.analysis.polarViewers.summit;
+      }
+    },
+    {
+      selector: '#sel_polar_hole',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.analysis.polarViewers.hole = checked;
+        await saveUserPrefs(userPrefs);
+        buildRaceAnalyseAdvance();
+      },
+      onInit: (checked, el) => {
+        const userPrefs = getUserPrefs();
+        el.checked = userPrefs.analysis.polarViewers.hole;
+      }
+    },
+    {
+      selector: '#polar_spike_sensitivity',
+      onChange: async(value, ev, el) => {
+        const userPrefs = getUserPrefs();
+        const parsed = parseFloat(el.value);
+        const safeValue = Number.isFinite(parsed) ? parsed : 0.002;
+        el.value = safeValue;
+        userPrefs.analysis.polarViewers.spikeSensitivity = safeValue;
+        await saveUserPrefs(userPrefs);
+        buildRaceAnalyseAdvance();
+      },
+      onInit: (value, el) => {
+        const userPrefs = getUserPrefs();
+        el.value = userPrefs.analysis.polarViewers.spikeSensitivity;
+      }
     },
     {
       selector: '#sel_polarSite',
@@ -252,8 +341,36 @@ export function uiBindingInit() {
     },
     {
       selector: '#sailRankRaceId',
-      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.map.sailRankId = value;await saveUserPrefs(userPrefs);},
-      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.map.sailRankId}
+      onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.sailRankId = value;await saveUserPrefs(userPrefs);},
+      onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.sailRankId}
+    },
+    {
+      selector: '#sel_ExportFleet',
+      onChange: async(checked, ev, el) => {
+        await onFleetInCpyClipBoard();
+        el.checked = true;
+      },
+      onInit: (checked, el) => { el.checked = true; }
+    },
+    {
+      selector: '#bt_exportPolar',
+      onChange: async() => { await exportPolar(); }
+    },
+    {
+      selector: '#bt_exportFleet',
+      onChange: async() => { generateFleetCSV(); }
+    },
+    {
+      selector: '#bt_exportGraphData',
+      onChange: async() => { exportGraphData(); }
+    },
+    {
+      selector: '#bt_exportStamina',
+      onChange: async() => { exportStamina(); }
+    },
+    {
+      selector: '#bt_exportOwnBoatTrack',
+      onChange: async() => { exportOwnBoatTrack(); }
     },
     {
       selector: '#fleet_team',

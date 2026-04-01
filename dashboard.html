@@ -156,8 +156,19 @@
                         <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
                         <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRank - CSV in clipboard">SailRanks</label>
                     </li>
+                    <li class="tab">
+                        <img  id="doradoUrl" src="./img/doradoSmall.png">
+                    </li>
                 </ul>
             </fieldset>
+            <div id="analysisModeSwitch">
+                <span class="analysisModeLabel">N</span>
+                <label class="switch" for="analysis_mode_expert" aria-label="Basculer entre mode normal et mode expert">
+                    <input type="checkbox" id="analysis_mode_expert" checked>
+                    <span class="switchSlider"></span>
+                </label>
+                <span class="analysisModeLabel">E</span>
+            </div>
                 
             <div align="inline" style="position:relative;"></div>
         </div>
@@ -203,9 +214,12 @@
                         <td class="noBorderElt rt_left_col">
                             <select id="sel_routeTypeLmap" name="routeType">
                                 <option value="rt_Zezo">Zezo</option>
+                                <option value="rt_VRZenM">VR Zen A</option>
                                 <option value="rt_Avalon">Avalon</option>
                                 <option value="rt_VRZen">VR Zen</option>
+                                <option value="rt_dorado">Dorado</option>
                                 <option value="rt_gpx">GPX</option>
+                                <option value="rt_Pattern">Pattern</option>
                             </select>
                         </td>
                         <td class="select-editable noBorderElt" colspan="3">
