@@ -18,12 +18,14 @@ const RACE_LIST_ZEZO_URL=ZEZO_BASE_URL + "races2.json";
 const VRZEN_BASE_URL =  "https://routage.vrzen.org";
 
 const ITYC_POLAR_URL = "https://ityc.fr/autoSail.html";
+const ITYC_IFRAME_URL = "https://ityc.fr/polarDash.html";
 
 const INC_POLAR_URL = "http://inc.bureauvallee.free.fr/polaires/?";
 const LSV_POLAR_URL = "https://vro.civis.net/polars/?";
 
 const WINDY_POLAR_URL = "https://www.windy.com";
 
+const DORADO_BASE_URL = "https://vr.ityc.fr/dorado.php?id=";
 
 let lastRaceListFetchTs   = 0;
 let raceListInFlightPromise = null;
@@ -305,8 +307,9 @@ function openZezoRouter(raceUrl, pIte,options, reuseTab = false, auto= false)
 function openVrZenRouter(raceId, pIte, reuseTab = false)
 {
     const refUrl = VRZEN_BASE_URL + "/Course/"+raceId;
-    const stamina = pIte.metaDash?.realStamina? (pIte.metaDash?.realStamina>100?100:pIte.metaDash.realStamina):null;
- 
+    let stamina = pIte.metaDash?.realStamina? pIte.metaDash.realStamina : pIte.stamina;
+    if(stamina > 100) stamina = 100;
+    
     // https://routage.vrzen.org/Course/CourseParDefaut/atitudeParDefaut/LongitudeParDefaut/CapParDefaut/VoileParDefaut/EnergieParDefaut  
     const callUrl = refUrl
         + "/" + roundTo(pIte.pos.lat,6).replace(".",",")
@@ -384,35 +387,33 @@ export async function openPolarSiteBack(polarType = "ITYC")
 
 function openITYCPolar(boatLabel, pIte,options, reuseTab = false)
 {
-    const pOptions = options.options;
-    let optSail = "[";
-    let optPerf = "[";
-    if(pOptions.light || pOptions.reach || pOptions.heavy)
-        optSail = "[";
-    if(pOptions.reach) optSail += "R,";
-    if(pOptions.light) optSail += "L,";
-    if(pOptions.heavy) optSail += "H,";
+    const { callUrl, refUrl } = buildITYCPolarUrls(boatLabel, pIte, options);
 
-    if(pOptions.foil || pOptions.winch || pOptions.hull
-        || pOptions.comfortLoungePug || pOptions.magicFurler || pOptions.vrtexJacket
-    )
-        optPerf = "[";
-    if(pOptions.winch) optPerf += "W,";
-    if(pOptions.foil) optPerf += "F,";
-    if(pOptions.hull) optPerf += "h,";
-    if(pOptions.comfortLoungePug) optPerf += "C,";
-    if(pOptions.magicFurler) optPerf += "M,";
-    if(pOptions.vrtexJacket) optPerf += "J,";
-    if(optSail.length !=0) 
-    {
-        optSail = optSail.substring(0,optSail.length-1);
-        optSail += "]";
-    }
-    if(optPerf.length !=0) 
-    {
-        optPerf = optPerf.substring(0,optPerf.length-1);
-        optPerf += "]";
-    }
+    openTab(callUrl, refUrl,reuseTab);
+}
+
+function buildITYCPolarUrls(boatLabel, pIte, options = {iframe:false})
+{
+    const userPrefs = getUserPrefs();
+    const pOptions = options.options ?? {};
+    let stamina = pIte.metaDash?.realStamina? pIte.metaDash.realStamina : pIte.stamina;
+    if(stamina > 100) stamina = 100;
+    
+    const sailOptions = [];
+    const perfOptions = [];
+    if(pOptions.reach) sailOptions.push("R");
+    if(pOptions.light) sailOptions.push("L");
+    if(pOptions.heavy) sailOptions.push("H");
+
+    if(pOptions.winch) perfOptions.push("W");
+    if(pOptions.foil) perfOptions.push("F");
+    if(pOptions.hull) perfOptions.push("h");
+    if(pOptions.comfortLoungePug) perfOptions.push("C");
+    if(pOptions.magicFurler) perfOptions.push("M");
+    if(pOptions.vrtexJacket) perfOptions.push("J");
+
+    const optSail = sailOptions.length ? `[${sailOptions.join(",")}]` : "";
+    const optPerf = perfOptions.length ? `[${perfOptions.join(",")}]` : "";
 
     let optionsTxt ="";
     if(optSail.length !=0 && optPerf.length !=0)
@@ -422,15 +423,30 @@ function openITYCPolar(boatLabel, pIte,options, reuseTab = false)
     else if(optSail.length ==0 && optPerf.length !=0)
         optionsTxt = optPerf ;
 
-    const refUrl = ITYC_POLAR_URL + "?b="+ boatLabel.replace(" ","_");
+    const refUrl = (options.iframe?ITYC_IFRAME_URL:ITYC_POLAR_URL) + "?b="+ boatLabel.replaceAll(" ","_");
 
     const callUrl = refUrl 
         +"&s="+sailNames[pIte.sail % 10]
         + "&o="+optionsTxt
         + "&ts="+pIte.tws
-        + "&ta="+pIte.twa;
+        + "&ta="+pIte.twa
+        + "&th="+userPrefs.theme
+        + (options.iframe?("&bs="+pIte.speed):"")
+        + (options.iframe?("&se="+stamina):"");
+    return { callUrl, refUrl };
+}
 
-    openTab(callUrl, refUrl,reuseTab);
+export function getITYCPolarUrl()
+{
+    const raceInfo = getRaceInfo();
+    const raceItes = getLegPlayerInfos();
+
+    if(!raceInfo?.boatName
+    || !raceItes?.ites?.length) {
+        return "";
+    }
+    raceItes.options.iframe = true;
+    return buildITYCPolarUrls(raceInfo.boatName, raceItes.ites[0], raceItes.options).callUrl;
 }
 
 function openExternalPolar(raceId, legNum, pIte, options,polarSite, reuseTab = false)
@@ -474,6 +490,21 @@ export function openWindySiteFront()
   
     openTab(callUrl, WINDY_POLAR_URL,userPrefs.global.reuseTab);
 }
+
+export function getDoradoUrl()
+{
+    const raceInfo = getRaceInfo();
+    const connectedPlayerId = getConnectedPlayerId();
+    if(!raceInfo || !connectedPlayerId) return;
+
+    const doradoUrl = DORADO_BASE_URL
+        + connectedPlayerId;
+        + "&rid="
+        + raceInfo.raceId + '_' + raceInfo.legNum;
+
+    navigator.clipboard.writeText(doradoUrl);
+}
+
 
 function openTab(url, baseUrl,reuseTab)
 {
