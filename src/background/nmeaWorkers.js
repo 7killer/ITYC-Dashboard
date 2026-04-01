@@ -53,7 +53,7 @@ export async function setNmeaPlayerInfos(raceId,legNum,userId)
         hdg :       latest.hdg,
         tws :       latest.tws,
         twa :       latest.twa,
-        realStamina : latest.metaDash?.realStamina,
+        realStamina : (latest.metaDash?.realStamina?latest.metaDash?.realStamina:latest.stamina),
         sail :      latest.sail,
     };
 }

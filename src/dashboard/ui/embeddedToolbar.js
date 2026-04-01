@@ -166,7 +166,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
 
     let staminaStyle = "";
     let staminaTxt = "-";
-    const stamina = raceIte.metaDash.realStamina;
+    const stamina = (raceIte.metaDash?.realStamina)?raceIte.metaDash.realStamina:raceIte.stamina;
     const setting = await getData("internal","paramStamina") ;
     const paramStamina = setting?.paramStamina;
     const manoeuver = raceIte.metaDash.manoeuver;

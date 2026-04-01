@@ -59,7 +59,7 @@ export function getSpeeds(boatPolars, options, tws, twa) {
 function allSailsSpeeds(boatPolars, options, tws, twa,highP=false) {
     const globalFactor= boatPolars.globalSpeedRatio;
     const foilFactor	= foilingFactor(options, tws, twa, boatPolars.foil);
-    const hullFactor = options.hull ? boatPolars.hull.speedRatio : 1.0;
+    const hullFactor = options?.hull ? boatPolars.hull.speedRatio : 1.0;
     const twsLookup	= fractionStep(tws, boatPolars.tws);
     const twaLookup	= fractionStep(twa, boatPolars.twa);
     const speeds		= sailsSpeeds(twsLookup, twaLookup, boatPolars.sail);
