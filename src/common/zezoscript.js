@@ -239,7 +239,7 @@ export function vrZenCall(rid, playerIte, color, vrZenName, endLat,endLon,mode,d
           routeData.tws = ptvrZen.vitesseVent + "nds";
           routeData.twa = ptvrZen.twa + "°";
           routeData.twd = ptvrZen.directionVent + "°";
-          routeData.sail = sailNames[ptvrZen.typeVoile%10];
+          routeData.sail = ptvrZen.typeVoile;
           routeData.speed = ptvrZen.vitesse;
           addNewPoints(rid, routeNameClean, routeData);
         }

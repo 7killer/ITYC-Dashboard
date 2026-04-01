@@ -118,16 +118,18 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
             document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "9.5em";
             break;
         case "rt_VRZen":
             document.getElementById("sel_rt_skipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").style.display = "none";
             document.getElementById("route_colorLmap").value = actualVRZenColor;
-            document.getElementById("rt_extraFormatLmap").style.display = "none";
+            document.getElementById("rt_extraFormatLmap").style.display = "flex";
             document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
             document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
-            document.getElementById("rt_popupLmap").style.height = "185px";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "flex";
+            document.getElementById("rt_popupLmap").style.height = "13.5em";
 
             const select = document.getElementById("sel_routeArrivalLmap");
             for (let i = select.options.length-1; i >= 0; i--) {
@@ -153,6 +155,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
         case "rt_VRZenM":
@@ -164,6 +167,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
         case "rt_gpx":
@@ -175,6 +179,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
         case "rt_dorado":
@@ -183,6 +188,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormatLmap").style.display = "none";
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat4Lmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;      
