@@ -37,6 +37,7 @@ export function tabSwitch(tabId = null)
     activeTab = tabId;
 
     display_selbox("hidden");
+    document.getElementById("analysisModeSwitch").style.visibility = "hidden";
 
     for (const [key, value] of Object.entries(tabList)) {
         if(value == "raceMap" || value == "raceAnalyse" )
@@ -68,9 +69,8 @@ export function tabSwitch(tabId = null)
             upDateGraph();
             break;
         case "raceAnalyse":
+            document.getElementById("analysisModeSwitch").style.visibility = "visible";
             buildRaceAnalyseAdvance();
-            document.getElementById("ityc_frame").style.display = "none";
-//            document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;    
             break;
         case "notif":
             

@@ -1,4 +1,5 @@
 import { getUserPrefs } from '../../common/userPrefs.js';
+import { getITYCPolarUrl } from '../../common/callExternal.js';
 
 import { isSailisInOptions } from  '../../polar/utils.js';
 import { computePolarState } from '../../polar/polarEngine.js'; 
@@ -74,6 +75,35 @@ let mouseTWA = 40;
 let polarRafId = null;
 let polarRafWithScale = false;
 
+function showExpertAnalysis(displayValue = 'block') {
+  document.querySelectorAll('.expertAnalysis').forEach((el) => {
+    el.style.display = displayValue;
+  });
+}
+
+export function isExpertAnalysisMode() {
+  return document.getElementById('analysis_mode_expert')?.checked ?? true;
+}
+
+export function applyRaceAnalysisMode() {
+  const iframe = document.getElementById('ityc_frame');
+  if (!iframe) return;
+
+  if (isExpertAnalysisMode()) {
+    iframe.style.display = 'none';
+    showExpertAnalysis();
+    return;
+  }
+
+  showExpertAnalysis('none');
+
+  const itycUrl = getITYCPolarUrl();
+  if (itycUrl && iframe.src !== itycUrl) {
+    iframe.src = itycUrl;
+  }
+  iframe.style.display = 'block';
+}
+
 function schedulePolarRedraw(polar, drawTheme, withScale = false) {
     polarRafWithScale = polarRafWithScale || withScale;
     if (polarRafId !== null) return;
@@ -85,16 +115,7 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
     });
 }
 function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
-  const cog = ite.metaDash?.cog === undefined ? undefined:ite.cog;
-      console.groupCollapsed(`[refreshPolarChart] receive param`);
-    console.log("→ raceId :",   rid);
-    console.log("→ options :", options);
-    console.log("→ polar :", polar);
-    console.log("→ twa :", twa);
-    console.log("→ tws :", tws);
-    console.log("→ twd :", twd);
-    console.log("→ ite :", ite);
-    console.groupEnd();
+  const cog = ite.metaDash?.cog === undefined ? undefined:ite.metaDash?.cog;
   getDataArray(rid, options, polar,twa, tws, twd, cog );
   
   divPolarTws.value = roundTo(tws, 2);
@@ -113,15 +134,22 @@ function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
 }
 
 export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
+  if (!isExpertAnalysisMode()) {
+    applyRaceAnalysisMode();
+    return;
+  }
+
   const userPrefs = getUserPrefs();
   const connectedRace = getOpenedRaceId();
   const raceItes = getLegPlayerInfos();
   const polar = getPolar();
-    if (!polar || polar.length == 0) {
-    document.querySelectorAll('.expertAnalysis').forEach(el => el.style.display = 'none');
+
+  if (!polar || polar.length == 0) {
+    showExpertAnalysis('none');
     return;
   }
-  document.querySelectorAll('.expertAnalysis').forEach(el => el.style.display = 'block');
+
+  applyRaceAnalysisMode();
       
   const rid = `${connectedRace.raceId}-${connectedRace.legNum}`;
 
@@ -149,7 +177,10 @@ export function buildRaceAnalyseAdvance(twsI = null, twdI = null, twaI = null) {
 function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
     // Lis une seule fois la sensibilité spikes (DOM) et délègue au moteur
     const spikeInput = document.getElementById("polar_spike_sensitivity");
-    const spikeSensitivity = spikeInput ? parseFloat(spikeInput.value) || 0.002 : 0.002;
+    const prefsSpikeSensitivity = getUserPrefs()?.analysis?.polarViewers?.spikeSensitivity;
+    const spikeSensitivity = spikeInput
+        ? parseFloat(spikeInput.value) || prefsSpikeSensitivity || 0.002
+        : prefsSpikeSensitivity || 0.002;
     const state = computePolarState(
         twa,
         tws,
@@ -1014,6 +1045,11 @@ function initialize() {
   divPolarDensity = document.getElementById('polarDensity');
   inputSpikeSensitivity = document.getElementById('polar_spike_sensitivity');
   selRace = document.getElementById('sel_race');
+  const polarViewersPrefs = getUserPrefs()?.analysis?.polarViewers;
+
+  if (inputSpikeSensitivity && polarViewersPrefs?.spikeSensitivity != null) {
+    inputSpikeSensitivity.value = polarViewersPrefs.spikeSensitivity;
+  }
 
   divPolarGraph.width = divPolarGraph.offsetWidth;
   divPolarGraph.height = divPolarGraph.offsetHeight;
