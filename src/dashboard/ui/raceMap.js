@@ -129,7 +129,7 @@ export function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
-        case "rt_VRZen":
+        case "rt_VRZenM":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
@@ -161,7 +161,7 @@ async function loadExternalFile(rid,type) {
         tf = '.csv';
         routeType = "Avalon ";
         routeFormat = 0;
-    } else if(type == "rt_VRZen") {
+    } else if(type == "rt_VRZenM") {
         tf = '.csv';
         routeType = "VR Zen ";
         routeFormat = 1;
@@ -194,7 +194,7 @@ async function loadExternalFile(rid,type) {
     [fileHandle] = await window.showOpenFilePicker(pickerOpts);
     const fileH = await fileHandle.getFile();
     const fileData = await fileH.text();
-    if(type == "rt_Avalon" || type == "rt_VRZen" || type == "rt_dorado") {
+    if(type == "rt_Avalon" || type == "rt_VRZenM" || type == "rt_dorado") {
         return importExternalRouter(
             rid,
             fileData,
@@ -298,12 +298,18 @@ export async function onAddRouteLmap() {
         case "rt_Avalon" :
             routeName = await loadExternalFile(rid,"rt_Avalon");
             break;
-        case "rt_VRZen" :
-            routeName = await loadExternalFile(rid,"rt_VRZen");
+        case "rt_VRZenM" :
+            routeName = await loadExternalFile(rid,"rt_VRZenM");
             break; 
         case "rt_gpx" :
             routeName = await loadExternalFile(rid,"rt_gpx");   
-            break;          
+            break;
+        case "rt_Pattern": 
+            routeName = await loadExternalFile(race,"rt_Pattern",userName,routeColor);   
+            break; 
+        case "rt_dorado" :
+            routeName = await loadExternalFile(race,"rt_dorado",userName,routeColor);
+            break;        
     }
     if(routeName != "") {
         updateRouteListHTML();

@@ -1,11 +1,136 @@
 
-
 import {getUserPrefs} from '../../../common/userPrefs.js'
 import { mapState,updateBounds } from './map-race.js';
 import {buildPt2, darkenColor,buildMarkerTitle,buildCircle,
-    buildTrace,buildPath,createProjectionPoint
+    buildTrace,buildPath,createProjectionPoint, buildBoatIcon
 } from './map-utils.js'
 import {getRaceInfo} from '../../app/memoData.js'
+import { onWindTimeChange, windUiState } from './map-wind.js';
+
+let windRouteListenerBound = false;
+
+function getCurrentRaceRoutes()
+{
+    const raceInfo = getRaceInfo();
+    if(!raceInfo) return null;
+
+    const rid = raceInfo.raceId+"-"+raceInfo.legNum;
+    return mapState?.route?.[rid] ?? null;
+}
+
+function interpolateRoutePosition(projectionData, targetTs)
+{
+    if(!Array.isArray(projectionData) || projectionData.length === 0 || !targetTs) return null;
+
+    const first = projectionData[0];
+    const last = projectionData[projectionData.length - 1];
+
+    if(targetTs <= first.timeStamp)
+    {
+        return {
+            lat: first.lat,
+            lon: first.lon,
+            heading: first.heading ?? 0,
+            timeStamp: first.timeStamp
+        };
+    }
+
+    if(targetTs >= last.timeStamp)
+    {
+        return {
+            lat: last.lat,
+            lon: last.lon,
+            heading: last.heading ?? 0,
+            timeStamp: last.timeStamp
+        };
+    }
+
+    for (let i = 1; i < projectionData.length; i++) {
+        const prev = projectionData[i - 1];
+        const next = projectionData[i];
+
+        if (targetTs > next.timeStamp) continue;
+
+        const span = next.timeStamp - prev.timeStamp;
+        const ratio = span <= 0 ? 0 : (targetTs - prev.timeStamp) / span;
+        const heading = Math.atan2(next.lon - prev.lon, next.lat - prev.lat) * 180 / Math.PI;
+
+        return {
+            lat: prev.lat + ((next.lat - prev.lat) * ratio),
+            lon: prev.lon + ((next.lon - prev.lon) * ratio),
+            heading,
+            timeStamp: targetTs
+        };
+    }
+
+    return null;
+}
+
+function buildRouteBoatTitle(lmapRoute, boatPos)
+{
+    return (lmapRoute.displayedName || 'Route')
+        + '<br>Time: ' + new Date(boatPos.timeStamp).toLocaleString()
+        + '<br>Lat/Lon: ' + boatPos.lat.toFixed(4) + ' / ' + boatPos.lon.toFixed(4);
+}
+
+function updateRouteBoatMarker(lmapRoute, epochSec)
+{
+    if(!mapState?.map || !lmapRoute?.projectionData?.length) return;
+
+    const map = mapState.map;
+    const targetTs = Number(epochSec) * 1000;
+    const boatPos = interpolateRoutePosition(lmapRoute.projectionData, targetTs);
+
+    if(!boatPos)
+    {
+        if(lmapRoute.boatLayer) map.removeLayer(lmapRoute.boatLayer);
+        return;
+    }
+
+    if(!lmapRoute.boatLayer) lmapRoute.boatLayer = L.layerGroup();
+    lmapRoute.boatLayer.clearLayers();
+
+    const title = buildRouteBoatTitle(lmapRoute, boatPos);
+    const icon = buildBoatIcon(lmapRoute.color || '#ffffff', '#000000', 0.8);
+    const marker = L.marker([boatPos.lat, boatPos.lon], {
+        icon,
+        rotationAngle: boatPos.heading ?? 0,
+        zIndexOffset: 150
+    });
+    marker.bindPopup(title);
+    marker.on('mouseover', function(e){
+        e.target.bindPopup(title).openPopup();
+    });
+    marker.on('mouseout', function(e){
+        e.target.closePopup();
+    });
+    marker.addTo(lmapRoute.boatLayer);
+
+    if(lmapRoute.displayed) {
+        lmapRoute.boatLayer.addTo(map);
+    }
+}
+
+function updateAllRouteBoatMarkers(epochSec = windUiState.currentUnix)
+{
+    const routes = getCurrentRaceRoutes();
+    if(!routes || !epochSec) return;
+
+    Object.values(routes).forEach((lmapRoute) => {
+        updateRouteBoatMarker(lmapRoute, epochSec);
+    });
+}
+
+function ensureWindRouteListener()
+{
+    if (windRouteListenerBound) return;
+
+    onWindTimeChange((epochSec) => {
+        updateAllRouteBoatMarkers(epochSec);
+    });
+    windRouteListenerBound = true;
+}
+
 export function importRoute(route,name) {
     
     const raceInfo = getRaceInfo();
@@ -22,6 +147,7 @@ export function importRoute(route,name) {
     const lmapRoute = mapState.route[rid][name];
     if(!lmapRoute.traceLayer) lmapRoute.traceLayer = L.layerGroup();
     if(!lmapRoute.markersLayer) lmapRoute.markersLayer = L.layerGroup();
+    if(!lmapRoute.boatLayer) lmapRoute.boatLayer = L.layerGroup();
 
     lmapRoute.color = route.color;
     lmapRoute.displayedName = route.displayedName;
@@ -48,8 +174,10 @@ export function importRoute(route,name) {
     lmapRoute.traceLayer.addTo(map); 
     
     if(displayMarkers) lmapRoute.markersLayer.addTo(map);
-    if(!mapState.userZoom) updateBounds();
+    ensureWindRouteListener();
     lmapRoute.displayed = true;
+    updateRouteBoatMarker(lmapRoute, windUiState.currentUnix ?? Math.floor(Date.now() / 1000));
+    if(!mapState.userZoom) updateBounds();
 }
 
 export function hideRoute(name) {
@@ -65,6 +193,7 @@ export function hideRoute(name) {
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer); /*delete lmapRoute.traceLayer;*/}
     if(lmapRoute.markersLayer) { map.removeLayer(lmapRoute.markersLayer); /*delete lmapRoute.markersLayer;*/}
     if(lmapRoute.projectionLayer) { map.removeLayer(lmapRoute.projectionLayer); /*delete lmapRoute.projectionLayer;*/}
+    if(lmapRoute.boatLayer) { map.removeLayer(lmapRoute.boatLayer); }
         
     lmapRoute.displayed = false;
 
@@ -85,8 +214,8 @@ export function showRoute(name) {
     if(lmapRoute.traceLayer) lmapRoute.traceLayer.addTo(map);
     
     if(lmapRoute.markersLayer && displayMarkers) lmapRoute.markersLayer.addTo(map);
-    
     lmapRoute.displayed = true;
+    updateRouteBoatMarker(lmapRoute, windUiState.currentUnix ?? Math.floor(Date.now() / 1000));
 }
 
 export function deleteRoute(name) {
@@ -101,6 +230,7 @@ export function deleteRoute(name) {
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer);}
     if(lmapRoute.markersLayer) { map.removeLayer(lmapRoute.markersLayer); }
     if(lmapRoute.projectionLayer) { map.removeLayer(lmapRoute.projectionLayer); }
+    if(lmapRoute.boatLayer) { map.removeLayer(lmapRoute.boatLayer); }
 
     delete mapState.route[rid][name];
 
@@ -176,12 +306,3 @@ export function hideShowTracks() {
         } 
     }
 }
-/*
-// quelque part dans ton module de routage
-import { onWindTimeChange } from './map-wind.js';
-
-onWindTimeChange((epochSec) => {
-  // epochSec en secondes
-  const tsMs = epochSec * 1000;
-  // update position sur tes polylines de routage, etc.
-});*/
