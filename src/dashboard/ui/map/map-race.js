@@ -884,6 +884,7 @@ export async function initializeMap()
             if(lMapRoute.displayed)
             {
                 if(lMapRoute.traceLayer) lMapRoute.traceLayer.addTo(map);
+                if(lMapRoute.boatLayer) lMapRoute.boatLayer.addTo(map);
                 if(lMapRoute.markersLayer && document.getElementById('sel_showMarkersLmap').checked) lMapRoute.markersLayer.addTo(map);
             }
         });

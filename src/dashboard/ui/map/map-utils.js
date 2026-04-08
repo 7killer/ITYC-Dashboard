@@ -7,6 +7,8 @@ import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAt
 
 import {onCoastColorChange} from "./map-coasts.js"
 
+import {onSailsMarkersChange} from "./map-routes.js"
+
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
     shadowUrl: '../img/RRIconShadowNok.png',
@@ -673,7 +675,14 @@ export     function addMapControl(map)
         redrawMapCheckPoints();
 
     },  
-
+    
+    getShowSailsMarkers: () => getUserPrefs().map?.showSailsMarkers || false,
+    setShowSailsMarkers: async (state) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.showSailsMarkers = state;
+        await saveUserPrefs(userPrefs);
+        onSailsMarkersChange(state);
+    },  
     });
 
     map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
@@ -995,7 +1004,9 @@ export function addSettingsMenuControl(map, {
   getProjectionLenght,
   setProjectionLenght,
   getShowHiddenBouys,
-  setShowHiddenBouys
+  setShowHiddenBouys,
+  getShowSailsMarkers,
+  setShowSailsMarkers
 
 } = {}) {
   const SettingsControl = L.Control.extend({
@@ -1061,6 +1072,12 @@ export function addSettingsMenuControl(map, {
           <label class="ityc-settings-label">Afficher bouées cachées</label>
           <input class="ityc-settings-checkbox" data-role="show-hidden-bouys" type="checkbox">
         </div>
+        <div class="ityc-settings-divider"></div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Afficher marques de voiles</label>
+          <input class="ityc-settings-checkbox" data-role="show-sails-markers" type="checkbox">
+        </div>
+
 
       `;
 
@@ -1077,6 +1094,7 @@ export function addSettingsMenuControl(map, {
       const inpProjection = panel.querySelector('[data-role="projection-color"]');
       const inpProjectionLenght = panel.querySelector('[data-role="projection-lenght"]');
       const inpPShowHiddenbouys = panel.querySelector('[data-role="show-hidden-bouys"]');
+      const inpPShowSailsMarkers = panel.querySelector('[data-role="show-sails-markers"]');
         
 
       const mode0 = getWindMode ? getWindMode() : 'default';
@@ -1098,6 +1116,8 @@ export function addSettingsMenuControl(map, {
       const pHiddenBouys = getShowHiddenBouys ? getShowHiddenBouys() : false;
       inpPShowHiddenbouys.checked = pHiddenBouys;
 
+      const pSailsMarkers = getShowSailsMarkers ? getShowSailsMarkers() : false;
+      inpPShowSailsMarkers.checked = pSailsMarkers;
 
       const refreshCustomVisibility = () => {
         const mode = selMode.value;
@@ -1139,6 +1159,10 @@ export function addSettingsMenuControl(map, {
         const sHiddenBouys = inpPShowHiddenbouys.checked;
         if (setShowHiddenBouys) setShowHiddenBouys(sHiddenBouys);
       });
+      inpPShowSailsMarkers.addEventListener('change', () => {
+        const sSailsMarkers = inpPShowSailsMarkers.checked;
+        if (setShowSailsMarkers) setShowSailsMarkers(sSailsMarkers);
+      });
       // hover open/close (survol)
       const open = () => root.classList.add('open');
       const close = () => root.classList.remove('open');
@@ -1159,4 +1183,125 @@ export function addSettingsMenuControl(map, {
   const ctrl = new SettingsControl();
   ctrl.addTo(map);
   return ctrl;
+}
+
+
+export const sailUnknownIcon = L.icon({
+    iconUrl: '../img/sail_unknow.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailJIBIcon = L.icon({
+    iconUrl: '../img/sail_jib.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailSPIIcon = L.icon({
+    iconUrl: '../img/sail_spi.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailSSIcon = L.icon({
+    iconUrl: '../img/sail_ss.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailLJIcon = L.icon({
+    iconUrl: '../img/sail_lj.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailC0Icon = L.icon({
+    iconUrl: '../img/sail_c0.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export const sailHGIcon = L.icon({
+    iconUrl: '../img/sail_hg.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+export const sailLGIcon = L.icon({
+    iconUrl: '../img/sail_lg.png',
+    iconSize:     [21, 19],
+    iconAnchor:   [11, 19],
+//    popupAnchor:  [0, -42]
+});
+
+export function getSailIcons(sail)
+{
+    let sailMarkerIcon = sailUnknownIcon;
+
+    let cleanSailName = sail.replace("/[^\w\s]/gi", '').toLowerCase();
+    cleanSailName=cleanSailName.replace('"','').replace('"','');
+
+    switch(cleanSailName)
+    {
+        case "jib":
+        case "jib-foils":
+            sailMarkerIcon = sailJIBIcon;
+            break;
+        case "spi":
+        case "spi-foils":
+            sailMarkerIcon = sailSPIIcon;
+            break;
+        case "stay":
+        case "stay sail":
+        case "ss":
+        case "trinquette":
+        case "staysail-foils":
+        case "staysail":
+            sailMarkerIcon = sailSSIcon;
+            break;
+        case "genois leger":
+        case "lj":
+        case "light jib":
+        case "light_jib":
+        case "light_jib-foils":
+        case "lightjib":
+        case "lightjib-foils":
+            sailMarkerIcon = sailLJIcon;
+            break;
+        case "c0":
+        case "code0":
+        case "code 0":
+        case "code_0":
+        case "code_0-foils":
+        case "code0":
+        case "code0-foils":
+            sailMarkerIcon = sailC0Icon;
+            break;
+        case "hg":
+        case "heavy gennaker":
+        case "spi lourd":
+        case "heavy_gnk":
+        case "heavy_gnk-foils":
+        case "heavygnk":
+        case "heavygnk-foils":
+            sailMarkerIcon = sailHGIcon;
+            break;
+        case "spi leger":
+        case "lg":
+        case "light gennaker":
+        case "light_gnk":
+        case "light_gnk-foils":
+        case "lightgnk":
+        case "lightgnk-foils":
+            sailMarkerIcon = sailLGIcon;
+            break;
+    }
+    return sailMarkerIcon;
 }

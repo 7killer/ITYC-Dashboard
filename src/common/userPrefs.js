@@ -67,6 +67,7 @@ export const userPrefsDefault =
         projectionLineLenght : 20,
         invisibleBuoy : false,
         showMarkers : false,
+        showSailsMarkers : false,
         showTracks : false,
         borderColor :"#0000FF",
         projectionColor :"#B56AFB",

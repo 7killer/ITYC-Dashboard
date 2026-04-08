@@ -308,7 +308,7 @@ export async function onAddRouteLmap() {
     if(!raceInfo) return;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
     let routeName = "";
-   
+    let playerIte = null;
     if(routeType == "rt_Zezo" || routeType == "rt_VRZen") {
         const raceItesFleet    = getLegFleetInfos();
         const playerId = document.getElementById("sel_rt_skipperLmap").value;
@@ -316,7 +316,7 @@ export async function onAddRouteLmap() {
             alert("Unknown player - no routing available");
             return;
         }
-        const playerIte = raceItesFleet[playerId];
+        playerIte = raceItesFleet[playerId];
         playerIte.options = buildPlayerOption("Lmap");  
     }
 
@@ -352,8 +352,8 @@ export async function onAddRouteLmap() {
                 playerIte, 
                 document.getElementById("route_colorLmap").value,
                 raceInfo.vrZen.vrZenName, 
-                race.vrZenEtape[idStep].latitudeEtape,
-                race.vrZenEtape[idStep].longitudeEtape,
+                raceInfo.vrZen.vrZenEtape[idStep].latitudeEtape,
+                raceInfo.vrZen.vrZenEtape[idStep].longitudeEtape,
                 document.getElementById("sel_routeTypeModeLmap").value,
                 document.getElementById("sel_routeDayLmap").value);
         
@@ -372,11 +372,11 @@ export async function onAddRouteLmap() {
             routeName = await loadExternalFile(rid,"rt_gpx");   
             break;
         case "rt_Pattern": 
-            routeName = await loadExternalFile(race,"rt_Pattern",userName,routeColor);   
+            routeName = await loadExternalFile(rid,"rt_Pattern");   
             break; 
         case "rt_dorado" :
-            routeName = await loadExternalFile(race,"rt_dorado",userName,routeColor);
-            break;        
+            routeName = await loadExternalFile(rid,"rt_dorado");
+            break; 
     }
     if(routeName != "") {
         updateRouteListHTML();

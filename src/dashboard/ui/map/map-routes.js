@@ -1,8 +1,8 @@
 
 import {getUserPrefs} from '../../../common/userPrefs.js'
 import { mapState,updateBounds } from './map-race.js';
-import {buildPt2, darkenColor,buildMarkerTitle,buildCircle,
-    buildTrace,buildPath,createProjectionPoint, buildBoatIcon
+import {buildPt2, darkenColor,buildMarkerTitle,buildCircle,buildMarker,
+    buildTrace,buildPath,createProjectionPoint, buildBoatIcon,getSailIcons
 } from './map-utils.js'
 import {getRaceInfo} from '../../app/memoData.js'
 import { onWindTimeChange, windUiState } from './map-wind.js';
@@ -138,6 +138,7 @@ export function importRoute(route,name) {
     
     const userPrefs = getUserPrefs();
     const displayMarkers = userPrefs.map.showMarkers;
+    const displaySailsMarkers = userPrefs.map.showSailsMarkers;
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
 
@@ -148,6 +149,7 @@ export function importRoute(route,name) {
     if(!lmapRoute.traceLayer) lmapRoute.traceLayer = L.layerGroup();
     if(!lmapRoute.markersLayer) lmapRoute.markersLayer = L.layerGroup();
     if(!lmapRoute.boatLayer) lmapRoute.boatLayer = L.layerGroup();
+    if(!lmapRoute.sailsLayer) lmapRoute.sailsLayer = L.layerGroup();
 
     lmapRoute.color = route.color;
     lmapRoute.displayedName = route.displayedName;
@@ -167,6 +169,15 @@ export function importRoute(route,name) {
                 circleColor = darkenColor(lmapRoute.color, 110);
             }
             currentSail = route.points[i].sail;
+
+            buildMarker(
+                buildPt2(route.points[i].lat, route.points[i].lon),
+                lmapRoute.sailsLayer, 
+                getSailIcons(route.points[i].sail),  
+                route.points[i].sail, 
+                1, 1,0);
+            
+            
         }
         buildCircle(pos, lmapRoute.markersLayer, circleColor, 2, 1, buildMarkerTitle(route.points[i]));
     }
@@ -174,6 +185,7 @@ export function importRoute(route,name) {
     lmapRoute.traceLayer.addTo(map); 
     
     if(displayMarkers) lmapRoute.markersLayer.addTo(map);
+    if(displaySailsMarkers) lmapRoute.sailsLayer.addTo(map);
     ensureWindRouteListener();
     lmapRoute.displayed = true;
     updateRouteBoatMarker(lmapRoute, windUiState.currentUnix ?? Math.floor(Date.now() / 1000));
@@ -192,9 +204,9 @@ export function hideRoute(name) {
     
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer); /*delete lmapRoute.traceLayer;*/}
     if(lmapRoute.markersLayer) { map.removeLayer(lmapRoute.markersLayer); /*delete lmapRoute.markersLayer;*/}
-    if(lmapRoute.projectionLayer) { map.removeLayer(lmapRoute.projectionLayer); /*delete lmapRoute.projectionLayer;*/}
     if(lmapRoute.boatLayer) { map.removeLayer(lmapRoute.boatLayer); }
-        
+    if(lmapRoute.sailsLayer) { map.removeLayer(lmapRoute.sailsLayer); }
+
     lmapRoute.displayed = false;
 
 }
@@ -210,10 +222,12 @@ export function showRoute(name) {
 
     const userPrefs = getUserPrefs();
     const displayMarkers = userPrefs.map.showMarkers;
+    const displaySailsMarkers = userPrefs.map.showSailsMarkers;
 
-    if(lmapRoute.traceLayer) lmapRoute.traceLayer.addTo(map);
-    
+    if(lmapRoute.traceLayer) lmapRoute.traceLayer.addTo(map);    
     if(lmapRoute.markersLayer && displayMarkers) lmapRoute.markersLayer.addTo(map);
+    if(lmapRoute.sailsLayer && displaySailsMarkers) lmapRoute.sailsLayer.addTo(map);
+
     lmapRoute.displayed = true;
     updateRouteBoatMarker(lmapRoute, windUiState.currentUnix ?? Math.floor(Date.now() / 1000));
 }
@@ -229,8 +243,8 @@ export function deleteRoute(name) {
 
     if(lmapRoute.traceLayer) { map.removeLayer(lmapRoute.traceLayer);}
     if(lmapRoute.markersLayer) { map.removeLayer(lmapRoute.markersLayer); }
-    if(lmapRoute.projectionLayer) { map.removeLayer(lmapRoute.projectionLayer); }
     if(lmapRoute.boatLayer) { map.removeLayer(lmapRoute.boatLayer); }
+    if(lmapRoute.sailsLayer) { map.removeLayer(lmapRoute.sailsLayer); }
 
     delete mapState.route[rid][name];
 
@@ -285,6 +299,27 @@ export function onMarkersChange() {
             mapState.fleetLayerMarkers.addTo(map);
         else
         map.removeLayer(mapState.fleetLayerMarkers);
+    }
+}
+
+export function onSailsMarkersChange(displaySailsMarkers) {
+    const raceInfo = getRaceInfo();
+    if(!mapState|| !mapState.map ||!raceInfo) return;
+    const map = mapState.map;
+    const rid = raceInfo.raceId+"-"+raceInfo.legNum;
+
+    if(mapState.route[rid])
+    {
+        Object.keys(mapState.route[rid]).forEach(function (name) {
+
+            if(mapState.route[rid][name].sailsLayer )
+            {
+                if(displaySailsMarkers && mapState.route[rid][name].displayed == true)  
+                    mapState.route[rid][name].sailsLayer.addTo(map);
+                else
+                    map.removeLayer(mapState.route[rid][name].sailsLayer);
+            }
+        });
     }
 }
 
