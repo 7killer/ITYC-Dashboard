@@ -629,8 +629,15 @@ fieldset {
 }
 #headSpacer {
     display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
     padding-bottom: 0.7em;
     position: relative;
+}
+
+#headSpacer > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 #headSpacer>div>.tabs {
@@ -1930,6 +1937,17 @@ light
     gap: 10px;
 
 }
+#graphButtonContainer {
+    position: absolute;
+    top: 0.45em;
+    right: 0.75em;
+    z-index: 5;
+    display: flex;
+    display: "none";
+}
+#graphButtonContainer .flex-container {
+    padding: 0em;
+}
 
 #analysisModeSwitch {
     position: absolute;
@@ -1945,7 +1963,7 @@ light
     background-color: var(--bg_body_color);
     color: var(--td_color);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    visibility: hidden;
+    display: "none";
 }
 
 #analysisModeSwitch .analysisModeLabel {
@@ -2012,9 +2030,7 @@ light
     color: var(--td_color);
     margin-left: 1em;
 }
-#polarDivName {
-    display: flex;
-}
+
 #polar_nameHeader {
     padding-left: 20%;
 }
@@ -2050,10 +2066,21 @@ light
 
 
 #polarDivName {
-    width : 100%;
+    display: none;
+    width : auto;
     height : 3%;
     padding-top: 0.5em;
     grid-column: 1 / -1;
+    margin-left: auto;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    position: absolute;
+    top :0.5em; 
+    right: 20em;
+}
+#polar_date {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 #polarDivTwsCtrl {
     width : 100%;

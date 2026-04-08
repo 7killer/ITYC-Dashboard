@@ -169,8 +169,17 @@
                 </label>
                 <span class="analysisModeLabel">E</span>
             </div>
-                
-            <div align="inline" style="position:relative;"></div>
+            <div class="noBorderElt" id="graphButtonContainer">
+                <div class="flex-container flex-container-last">
+                    <div class="flex-item btGraph"><button class="btGraph" id="bt_resetZoom">Reset zoom</button></div>
+                    <div class="flex-item btGraph"><button class="btGraph" id="bt_exportGraphData">Export data</button></div>
+                </div>
+            </div>
+            <div id="polarDivName" >
+                <div  id="polar_nameHeader"><b>Polar: </b></div>
+                <div  id="polar_name" >-</div>
+                <div  id="polar_date" >-</div>
+            </div>
         </div>
     </div>
 
@@ -328,7 +337,7 @@
     </div>
     <div id="tab-content5" class="content hidden">
         <table class="noBorderElt">
-            <thead>
+ <!--          <thead>
                 <tr>
                     <td class="noBorderElt">
                         <div class="flex-container flex-container-last">
@@ -338,7 +347,7 @@
                     </td>
                     <td class="noBorderElt"></td>
                 </tr>
-            </thead>
+            </thead>-->
             <tbody>
                 <tr>
                     <td class="td-graph">
@@ -381,11 +390,11 @@
     </div>
     <div id="tab-content9" class="content hidden">
         <div id="polarLeft" class="expertAnalysis" width="70%" height="20%">
-            <div id="polarDivName" >
+<!--            <div id="polarDivName" >
                 <div  id="polar_nameHeader"><b>Polar: </b></div>
                 <div  id="polar_name" >-</div>
                 <div  id="polar_date" >-</div>
-            </div>
+            </div>-->
             <div id="polarTWSDiv" >
                 
                 <div class=" " id="polarChartTitle">

@@ -6,6 +6,14 @@ import {sailNames,sailColors} from "./constant.js"
 import {getRaceInfo} from '../app/memoData.js'
 
 import {saveData} from '../../common/dbOpes.js';
+
+export function uiFilterMode(alternate)
+{
+    if(alternate)
+        document.getElementById('fleetFilterList').className = 'tab3';
+    else
+        document.getElementById('fleetFilterList').className = 'tab2';
+}
 export function switchTheme(theme)
 {
 
@@ -457,7 +465,7 @@ export function infoSail(ite,short,extended = true) {
         sailInfo = sailInfo + " (Man)";
     }
     
-    const sailNameBG = (userPrefs.theme =='dark')?(ite.badSail ? "darkred" : "darkgreen"):(ite.badSail ? "lightred" : "lightgreen");
+    let sailNameBG = (userPrefs.theme =='dark')?(ite.badSail ? "darkred" : "darkgreen"):(ite.badSail ? "lightred" : "lightgreen");
 
     if(ite.metaDash?.deltaReceiveCompute > 900000)   sailNameBG = 'red' ;
 
@@ -555,8 +563,17 @@ export function changeState(lbl_tochange) {
 }
 
 export function display_selbox(state) {
-    document.getElementById("sel_skippers").style.visibility = state;
-    document.getElementById("sel_export").style.visibility = state;
+//    document.getElementById("sel_skippers").style.visibility = state;
+//    document.getElementById("sel_export").style.visibility = state;
+    if(state == "visible")
+    {
+        document.getElementById("sel_skippers").style.display = "block";
+        document.getElementById("sel_export").style.display = "block";
+    } else
+    {
+        document.getElementById("sel_skippers").style.display = "none";
+        document.getElementById("sel_export").style.display = "none";
+    }   
 }
 
 
@@ -634,3 +651,4 @@ export async function updateNmeaIndicator(state)
             break;
     }     
 }
+
