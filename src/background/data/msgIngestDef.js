@@ -646,6 +646,41 @@ export async function ingestFleetData(request, response) {
       ...(p.team ? { team: p.team } : {})
     }));
 
+    const legPlayersInfos = res.res.filter(p => p.userId == req.user_id)
+        .map(p => ({
+            id: req.race_id+"_"+req.leg_num+"_"+p.userId+"_"+p.lastCalcDate,
+          userId: p.userId,
+          iteDate: p.lastCalcDate,
+          raceId: req.race_id,
+          legNum: req.leg_num,
+          hdg: p.heading,
+          speed: p.speed,
+          pos: p.pos,
+          twa: p.twa,
+          twd: p.twd,
+          tws: p.tws,
+          ...(p.rank?{rank : p.rank}: {}),
+          ...(p.sail?{sail : p.sail}: {}),
+          state: p.state,
+          ...(p.stamina?{stamina : p.stamina}: {})
+    }));
+
+/*          isRegulated: bs.isRegulated ?? null,
+          startDate: bs.startDate,
+          tsEndOfAutoSail: bs.tsEndOfAutoSail ?? null,
+          tsEndOfSailChange: bs.tsEndOfSailChange ?? null,
+          tsEndOfGybe: bs.tsEndOfGybe ?? null,
+          tsEndOfTack: bs.tsEndOfTack ?? null,
+          twaAuto: bs.twaAuto ?? null,
+          aground: bs.aground,
+          badSail: bs.badSail ?? null,
+          waypoints: bs.waypoints ?? null,
+          nextWpIdx: bs.nextWpIdx ?? null,
+          lastWpIdx: bs.lastWpIdx ?? null,
+          stats: bs.stats,
+          choice : true,
+          branding : bs.branding*/
+    
     const players = res.res.map(p => ({
       id : p.userId,
       name : p.displayName,
@@ -660,23 +695,25 @@ export async function ingestFleetData(request, response) {
       type: 'fleet',
       track :  p.track
     }));
+/*
+            {
+              id: "legPlayersInfosUpdate",
+              ts: Date.now(),
+            },
 
+*/
     const dbOpe = [
       {
         type: "putOrUpdate",
         legFleetInfos,
-        players,
         ...(playersTracks.length ? { playersTracks } : {}),
+        players,
+        ...(legPlayersInfos.length ? { legPlayersInfos } : {}),
         internal: [
-          {
-            id: "legFleetInfosUpdate",
-            ts: Date.now(),
-          },
-          {
-            id: "playersUpdate",
-            ts: Date.now(),
-          },
-          ...((playersTracks?.length) ? [{ id: "playersTracksUpdate", ts:  Date.now() }] : []),
+          ...((legPlayersInfos?.length) ? [{ id: "legPlayersInfosUpdate", ts:  Date.now() }] : []),
+          { id: "legFleetInfosUpdate", ts: Date.now()},
+          { id: "playersUpdate", ts: Date.now()},
+          ...((playersTracks?.length) ? [{ id: "playersTracksUpdate", ts:  Date.now() }] : [])
         ]
       }
     ];
