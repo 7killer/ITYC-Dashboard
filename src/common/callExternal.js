@@ -430,7 +430,7 @@ function openVrZenRouter(raceId, pIte, reuseTab = false)
         + "/" + roundTo(pIte.pos.lon,6).replace(".",",")
         + "/" + roundTo(pIte.hdg,0)
         + "/" + pIte.sail % 10
-        + (stamina!=null?("/" + stamina):"");
+        + (stamina!=null?("/" + roundTo(stamina,0)):"");
     
     openTab(callUrl, refUrl,reuseTab);
 }

@@ -1,7 +1,7 @@
 
 import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 
-import {switchTheme,onUserChangeRace} from "../ui/common.js"
+import {switchTheme,onUserChangeRace,uiFilterMode} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
 import {hideShowTracks,onMarkersChange} from "../ui/map/map-routes.js"
 import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
@@ -128,7 +128,7 @@ export function uiBindingInit() {
     {
       selector: '#color_theme',
       onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.theme = checked?"dark":"light";await saveUserPrefs(userPrefs);switchTheme(userPrefs.theme);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.theme=="dark" }
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.theme=="dark"; switchTheme(userPrefs.theme);}
     },
     {
       selector: '#reuse_tab',
@@ -142,8 +142,8 @@ export function uiBindingInit() {
     },
     {
       selector: '#uiFilterMode',
-      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.alternateFilter = checked;await saveUserPrefs(userPrefs);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.alternateFilter }
+      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.alternateFilter = checked;await saveUserPrefs(userPrefs);uiFilterMode(userPrefs.global.alternateFilter);},
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.alternateFilter ;uiFilterMode(userPrefs.global.alternateFilter);}
     },
     {
       selector: '#vrzenPositionFormat',

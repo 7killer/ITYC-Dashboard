@@ -285,13 +285,7 @@ export async function computeFleetIte(raceId, legNum) {
     if(!legInfos) return;
     const polar = await getData('polars', legInfos.polar_id);
     if(!polar) return;
-    const currentUserId = await getData('internal', 'lastLoggedUser');
-    if(!currentUserId) return;
-    const { latest, previous, meta1 } = await getLatestAndPreviousByTriplet(raceId, legNum, currentUserId.loggedUser , {storeName: 'legPlayersInfos'});
     
-    const currentPlayerIte = latest;
-    if(!currentPlayerIte) return;
-
     const now = Date.now();
     const fifteenMinutesAgo = now - 15 * 60 * 1000;
   
@@ -301,8 +295,16 @@ export async function computeFleetIte(raceId, legNum) {
       timeout: 4000,
       storeName: 'legFleetInfos'
     });
-    
     if(meta.timedOut || !items) return;
+
+    const currentUserId = await getData('internal', 'lastLoggedUser',);
+    if(!currentUserId) return;
+    const pDCInfo = await getLatestAndPreviousByTriplet(raceId, legNum, currentUserId.loggedUser ,{limit:24*10*60,since:Date.now() - 10*24*60 * 60 * 1000, storeName: 'legPlayersInfos'});
+    
+    if(pDCInfo.meta.timedOut || (!pDCInfo.latest && !pDCInfo.previous) ) return;
+
+    const currentPlayerIte = pDCInfo.latest?pDCInfo.latest:pDCInfo.previous;
+
     initMessageITYC("fleet",`${raceId}.${legNum}`,legInfos.legName,currentUserId.loggedUser,legInfos.raceType);
 
     for (const [userId, entry] of Object.entries(items)) {
@@ -414,7 +416,7 @@ export async function computeOwnIte(raceId, legNum, userId)
             }
     }
     const maxStamina = 100 + metaDash.coffeeBoost;
-    let realStamina = latest.stamina + metaDash.coffeeBoost + metaDash.chocoBoost;
+    let realStamina = latest.stamina +  metaDash.chocoBoost;
 
     metaDash.realStamina = realStamina>maxStamina?maxStamina:realStamina;
 

@@ -55,7 +55,7 @@ export function zezoCall(rid, playerIte, color, raceUrl, timeoutMs = 10_000) {
     playerIte.ite.pos.lon +
     (playerIte.ite.iteDate ? "&ts=" + playerIte.ite.iteDate / 1000 : "") +
     "&o=" +
-    playerIte.options +
+    computeZezoOptions(playerIte.options) +
     "&twa=" +
     playerIte.ite.twa +
     "&userid=" +

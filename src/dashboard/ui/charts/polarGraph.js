@@ -32,7 +32,7 @@ function buildSpikeLines(spikes, baseXValues) {
 
   const out = [];
   for (const s of spikes ?? []) {
-    if (s?.type === "summit" && !summit) continue;
+    if (s?.type === "sum" && !summit) continue;
     if (s?.type === "hole" && !hole) continue;
 
     const idx = Math.round((Number(s.idx) - base0) * 10); // assumes 0.1 step => *10

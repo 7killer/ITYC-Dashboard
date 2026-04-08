@@ -431,7 +431,7 @@ export async function getPolarHashITYC(opts = {}) {
                 console.error("[getPolarHashITYC] DB operation error:", err);
             }
 
-            return legList;
+            return hashList;
         } catch (err) {
             console.error("[getPolarHashITYC] Unexpected error:", err);
             return null;
