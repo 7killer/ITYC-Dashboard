@@ -382,8 +382,8 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 *  VR external messages (proxy HTTP)
 * ======================================================= */
 
-chrome.runtime.onMessageExternal.addListener(
-    async function (request, sender, sendResponse) {
+chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
+    (async () => {
         const msg = request;
         let rstTimer = false;
 
@@ -426,7 +426,8 @@ chrome.runtime.onMessageExternal.addListener(
                     await sendLegDataITYC(body);
                     await sendInfoOptITYC(body);
                 } else if (event === 'getfleet') {
-                    await msgInjest.ingestFleetData(postData, body);
+                    const ret = await msgInjest.ingestFleetData(postData, body);
+                    rstTimer = ret.rstTimer;
                 }
             }
         } else if(msg.type=="openZezo") {
@@ -440,11 +441,16 @@ chrome.runtime.onMessageExternal.addListener(
         }
         void chrome.runtime.getPlatformInfo();
 
-        const embeddedToolbar = getbuildEmbeddedToolbarContent();
-        embeddedToolbar.rstTimer = rstTimer;
-        sendResponse({ ...embeddedToolbar, type: 'update' });
-    }
-);
+        const embeddedToolbar = getbuildEmbeddedToolbarContent(rstTimer);
+        sendResponse({ ...embeddedToolbar, type: 'update'});
+
+    })().catch((error) => {
+ //       console.error('[bg] onMessageExternal failed', error);
+ //       sendResponse({ type: 'update', rstTimer: false });
+    });
+
+    return true;
+});
 
 /* =========================================================
 *  Listeners sur IndexedDB (internal)

@@ -603,7 +603,9 @@ export function ingestRaceList(legListData) {
 
 
 export async function ingestFleetData(request, response) {
-  try {
+  let rstTimer = false;
+  try 
+  {
     const req = getFleetRequestDataSchema.validateSync(request, {
       stripUnknown: true
     });
@@ -640,7 +642,6 @@ export async function ingestFleetData(request, response) {
       sail: p.sail ?? null,
       rank: p.rank ?? null,
       state : p.state,
-      type:p.type,
       ...(p.isFollowed ? { isFollowed: p.isFollowed } : {}),
       ...(p.followed ? { followed: p.followed } : {}),
       ...(p.team ? { team: p.team } : {})
@@ -665,6 +666,7 @@ export async function ingestFleetData(request, response) {
           ...(p.stamina?{stamina : p.stamina}: {})
     }));
 
+    if(legPlayersInfos!= []) rstTimer = true;
 /*          isRegulated: bs.isRegulated ?? null,
           startDate: bs.startDate,
           tsEndOfAutoSail: bs.tsEndOfAutoSail ?? null,
@@ -723,7 +725,9 @@ export async function ingestFleetData(request, response) {
 
   } catch (err) {
     if(cfg.debugIngesterErr) console.error("❌ Fleet ingest failed:", err.errors);
+    return {rstTimer: false}
   }
+  return {rstTimer: rstTimer} ;
 }
 
 

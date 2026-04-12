@@ -832,12 +832,16 @@ export async function getLatestEntriesPerUser(
         const lower = [r, l, u, Math.max(0, Number(since) || 0)];
         const upper = [r, l, u, Math.min(Number.MAX_SAFE_INTEGER, Number(until) || Number.MAX_SAFE_INTEGER)];
         const range = IDBKeyRange.bound(lower, upper);
-  
-        let sCursor = await store.openCursor(range, 'prev');
-        if (sCursor) {
-          // le premier en 'prev' dans la fenêtre = dernière entrée dans [since, until]
-          mapByUser[u] = sCursor.value;
+        try {
+            let sCursor = await store.openCursor(range, 'prev');
+            if (sCursor) {
+            // le premier en 'prev' dans la fenêtre = dernière entrée dans [since, until]
+            mapByUser[u] = sCursor.value;
+            }
+        } catch (err) {
+            if(cfg?.debugDBIteErr) console.error(`[getLatestEntriesPerUser] Error fetching latest entry for user ${u}:`, err);
         }
+        
   
         if (maxUsers && Object.keys(mapByUser).length >= maxUsers) {
           reason = 'max-users-reached';

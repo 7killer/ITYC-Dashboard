@@ -8,6 +8,8 @@
     "debugIteRun":true,
     "debugIteRunErr":true,
     "debugFilter1":false,
-    "debugWind":true
+    "debugWind":true,
+    "debugITYC":false
+
 
   }

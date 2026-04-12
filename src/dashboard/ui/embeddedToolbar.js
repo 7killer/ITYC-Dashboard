@@ -8,7 +8,7 @@ import {getData,getLatestAndPreviousByTriplet} from '../../common/dbOpes.js';
 
 import {getUserPrefs} from '../../common/userPrefs.js'
 
-let buildEmbeddedToolbarContent  = {content:"",newTab:true,rid:null,theme:"dark",rstTimer:false,gameSize:100};
+let buildEmbeddedToolbarContent  = {content:"",newTab:true,rid:null};
 
 export async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId)
 {
@@ -57,16 +57,14 @@ export async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId
     buildEmbeddedToolbarContent = {
         content:embeddedToolBarTable,
         newTab:userPrefs.global.reuseTab,
-        rid:rid,
-        theme:userPrefs.theme,
-        rstTimer:false,
-        gameSize:userPrefs.drawing.fullScreen?userPrefs.drawing.ratio:0 };
+        rid:rid };
 }
-export function getbuildEmbeddedToolbarContent()
+export function getbuildEmbeddedToolbarContent(rstTimer)
 {
     const userPrefs = getUserPrefs(); 
     buildEmbeddedToolbarContent.theme = userPrefs.theme;
     buildEmbeddedToolbarContent.gameSize = userPrefs.drawing.fullScreen?userPrefs.drawing.ratio:0;
+    buildEmbeddedToolbarContent.rstTimer =rstTimer;
     return buildEmbeddedToolbarContent;
 }
 

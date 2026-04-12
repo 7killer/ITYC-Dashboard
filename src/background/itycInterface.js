@@ -2,6 +2,7 @@
 import {processDBOperations,getData, getAllData} from '../common/dbOpes.js';
 
  import { getUserPrefs  } from '../common/userPrefs.js';
+ import cfg from '@/config.json';
 
 // URL décodée une seule fois
 const TEAM_LIST_URL = atob("aHR0cHM6Ly92ci5pdHljLmZyL2dldFRlYW1MaXN0LnBocA==");
@@ -46,7 +47,7 @@ export async function getTeamListITYC(opts = {}) {
 
     const now = Date.now();
     if (!forceRefresh && now - lastTeamListFetchTs < MIN_ITYC_INTERVAL_MS) {
-        console.log("[getTeamListITYC] skipped (throttled, < 5min)");
+        if(cfg.debugITYC) console.log("[getTeamListITYC] skipped (throttled, < 5min)");
         return null;
     }
 
@@ -61,7 +62,7 @@ export async function getTeamListITYC(opts = {}) {
         const response = await fetch(TEAM_LIST_URL, { method: "GET" });
 
         if (!response.ok) {
-            console.warn("[getTeamListITYC] HTTP error:", response.status, response.statusText);
+            if(cfg.debugITYC) console.warn("[getTeamListITYC] HTTP error:", response.status, response.statusText);
             return null;
         }
 
@@ -69,12 +70,12 @@ export async function getTeamListITYC(opts = {}) {
         try {
             itycTeamList = await response.json();
         } catch (err) {
-            console.error("[getTeamListITYC] JSON parse error:", err);
+            if(cfg.debugITYC) console.error("[getTeamListITYC] JSON parse error:", err);
             return null;
         }
 
         if (!Array.isArray(itycTeamList) || itycTeamList.length === 0) {
-            console.warn("[getTeamListITYC] Empty or invalid team list");
+            if(cfg.debugITYC) console.warn("[getTeamListITYC] Empty or invalid team list");
             return null;
         }
 
@@ -91,7 +92,7 @@ export async function getTeamListITYC(opts = {}) {
         });
 
         if (teamList.length === 0) {
-            console.warn("[getTeamListITYC] No valid teams after filtering");
+            if(cfg.debugITYC) console.warn("[getTeamListITYC] No valid teams after filtering");
             return null;
         }
 
@@ -111,12 +112,12 @@ export async function getTeamListITYC(opts = {}) {
         try {
             await processDBOperations(dbOpe);
         } catch (err) {
-            console.error("[getTeamListITYC] DB operation error:", err);
+            if(cfg.debugITYC) console.error("[getTeamListITYC] DB operation error:", err);
         }
 
         return teamList;
         } catch (err) {
-            console.error("[getTeamListITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[getTeamListITYC] Unexpected error:", err);
             return null;
         } finally {
             teamListInFlightPromise = null;
@@ -131,7 +132,7 @@ export async function getPlayerListITYC(opts = {}) {
 
   const now = Date.now();
   if (!forceRefresh && now - lastPlayerListFetchTs < MIN_ITYC_INTERVAL_MS) {
-    console.log("[getPlayerListITYC] skipped (throttled, < 5min)");
+    if(cfg.debugITYC) console.log("[getPlayerListITYC] skipped (throttled, < 5min)");
     return null;
   }
 
@@ -146,7 +147,7 @@ export async function getPlayerListITYC(opts = {}) {
       const response = await fetch(PLAYER_LIST_URL, { method: "GET" });
 
       if (!response.ok) {
-        console.warn("[getPlayerListITYC] HTTP error:", response.status, response.statusText);
+        if(cfg.debugITYC) console.warn("[getPlayerListITYC] HTTP error:", response.status, response.statusText);
         return null;
       }
 
@@ -154,19 +155,19 @@ export async function getPlayerListITYC(opts = {}) {
       try {
         itycPlayerList = await response.json();
       } catch (err) {
-        console.error("[getPlayerListITYC] JSON parse error:", err);
+        if(cfg.debugITYC) console.error("[getPlayerListITYC] JSON parse error:", err);
         return null;
       }
 
       if (!Array.isArray(itycPlayerList) || itycPlayerList.length === 0) {
-        console.warn("[getPlayerListITYC] Empty or invalid player list");
+        if(cfg.debugITYC) console.warn("[getPlayerListITYC] Empty or invalid player list");
         return null;
       }
 
       const now = Date.now();
       const players = [];
       const playersDatas = await getAllData("players").catch(error => {
-        console.error("getplayerList error :", error);
+        if(cfg.debugITYC) console.error("getplayerList error :", error);
       });
 
       const playersIndex = new Map(playersDatas.map(p => [p.id, p]));
@@ -194,7 +195,7 @@ export async function getPlayerListITYC(opts = {}) {
       });
 
       if (players.length === 0) {
-        console.warn("[getPlayerListITYC] No valid players after filtering");
+        if(cfg.debugITYC) console.warn("[getPlayerListITYC] No valid players after filtering");
         return null;
       }
 
@@ -214,12 +215,12 @@ export async function getPlayerListITYC(opts = {}) {
       try {
         await processDBOperations(dbOpe);
       } catch (err) {
-        console.error("[getPlayerListITYC] DB operation error:", err);
+        if(cfg.debugITYC) console.error("[getPlayerListITYC] DB operation error:", err);
       }
 
       return players;
     } catch (err) {
-      console.error("[getPlayerListITYC] Unexpected error:", err);
+      if(cfg.debugITYC) console.error("[getPlayerListITYC] Unexpected error:", err);
       return null;
     } finally {
       playerListInFlightPromise = null;
@@ -234,7 +235,7 @@ export async function getRaceListITYC(opts = {}) {
 
     const now = Date.now();
     if (!forceRefresh && now - lastRaceListFetchTs < MIN_ITYC_INTERVAL_MS) {
-        console.log("[getRaceListITYC] skipped (throttled, < 5min)");
+        if(cfg.debugITYC) console.log("[getRaceListITYC] skipped (throttled, < 5min)");
         return null;
     }
 
@@ -249,7 +250,7 @@ export async function getRaceListITYC(opts = {}) {
             const response = await fetch(RACE_LIST_URL, { method: "GET" });
 
             if (!response.ok) {
-                console.warn("[getRaceListITYC] HTTP error:", response.status, response.statusText);
+                if(cfg.debugITYC) console.warn("[getRaceListITYC] HTTP error:", response.status, response.statusText);
                 lastRaceListFetchTs -= MIN_ITYC_INTERVAL_MS;
                 return null;
             }
@@ -258,12 +259,12 @@ export async function getRaceListITYC(opts = {}) {
             try {
                 itycRaceList = await response.json();
             } catch (err) {
-                console.error("[getRaceListITYC] JSON parse error:", err);
+                if(cfg.debugITYC) console.error("[getRaceListITYC] JSON parse error:", err);
                 return null;
             }
 
             if (!Array.isArray(itycRaceList) || itycRaceList.length === 0) {
-                console.warn("[getRaceListITYC] Empty or invalid race list");
+                if(cfg.debugITYC) console.warn("[getRaceListITYC] Empty or invalid race list");
                 return null;
             }
 
@@ -324,7 +325,7 @@ export async function getRaceListITYC(opts = {}) {
             });
 
             if (legList.length === 0) {
-                console.warn("[getRaceListITYC] No valid legs after mapping");
+                if(cfg.debugITYC) console.warn("[getRaceListITYC] No valid legs after mapping");
                 return null;
             }
 
@@ -344,12 +345,12 @@ export async function getRaceListITYC(opts = {}) {
             try {
                 await processDBOperations(dbOpe);
             } catch (err) {
-                console.error("[getRaceListITYC] DB operation error:", err);
+                if(cfg.debugITYC) console.error("[getRaceListITYC] DB operation error:", err);
             }
 
             return legList;
         } catch (err) {
-            console.error("[getRaceListITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[getRaceListITYC] Unexpected error:", err);
             return null;
         } finally {
             raceListInFlightPromise = null;
@@ -364,7 +365,7 @@ export async function getPolarHashITYC(opts = {}) {
 
     const now = Date.now();
     if (!forceRefresh && now - lastPolarHashFetchTs < MIN_ITYC_INTERVAL_MS*30) {
-        console.log("[getPolarHashITYC] skipped (throttled, < 5min)");
+        if(cfg.debugITYC) console.log("[getPolarHashITYC] skipped (throttled, < 5min)");
         return null;
     }
 
@@ -379,7 +380,7 @@ export async function getPolarHashITYC(opts = {}) {
             const response = await fetch(POLAR_HASH_URL, { method: "GET" });
 
             if (!response.ok) {
-                console.warn("[getPolarHashITYC] HTTP error:", response.status, response.statusText);
+                if(cfg.debugITYC) console.warn("[getPolarHashITYC] HTTP error:", response.status, response.statusText);
                 lastPolarHashFetchTs -= MIN_ITYC_INTERVAL_MS*30;
                 return null;
             }
@@ -388,12 +389,12 @@ export async function getPolarHashITYC(opts = {}) {
             try {
                 polarHashList = await response.json();
             } catch (err) {
-                console.error("[getPolarHashITYC] JSON parse error:", err);
+                if(cfg.debugITYC) console.error("[getPolarHashITYC] JSON parse error:", err);
                 return null;
             }
 
             if (!Array.isArray(polarHashList) || polarHashList.length === 0) {
-                console.warn("[getPolarHashITYC] Empty or invalid polar hash list");
+                if(cfg.debugITYC) console.warn("[getPolarHashITYC] Empty or invalid polar hash list");
                 return null;
             }
 
@@ -409,7 +410,7 @@ export async function getPolarHashITYC(opts = {}) {
             });
 
             if (hashList.length === 0) {
-                console.warn("[getPolarHashITYC] No valid polar hash after mapping");
+                if(cfg.debugITYC) console.warn("[getPolarHashITYC] No valid polar hash after mapping");
                 return null;
             }
 
@@ -428,12 +429,12 @@ export async function getPolarHashITYC(opts = {}) {
             try {
                 await processDBOperations(dbOpe);
             } catch (err) {
-                console.error("[getPolarHashITYC] DB operation error:", err);
+                if(cfg.debugITYC) console.error("[getPolarHashITYC] DB operation error:", err);
             }
 
             return hashList;
         } catch (err) {
-            console.error("[getPolarHashITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[getPolarHashITYC] Unexpected error:", err);
             return null;
         } finally {
             polarHashInFlightPromise = null;
@@ -511,7 +512,7 @@ export async function itycPolarSync(message)
             });
 
             if (!response.ok) {
-                console.warn(
+                if(cfg.debugITYC) console.warn(
                 "[sendPolarDataITYC] HTTP error:",
                 response.status,
                 response.statusText
@@ -520,7 +521,7 @@ export async function itycPolarSync(message)
             }
             return true;
         } catch (err) {
-            console.error("[sendPolarDataITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[sendPolarDataITYC] Unexpected error:", err);
         return false;
         } finally {
             sendPolarInFlight.delete(polar._id);
@@ -583,7 +584,7 @@ export async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
     const now = Date.now();
     const lastTs = lastRaceOptionsFetchTs.get(key) || 0;
     if (!forceRefresh && now - lastTs < MIN_ITYC_INTERVAL_MS) {
-        console.log("[getRaceOptionsListITYC] skipped (throttled, < 5min) for", rid);
+        if(cfg.debugITYC) console.log("[getRaceOptionsListITYC] skipped (throttled, < 5min) for", rid);
         return null;
     }
 
@@ -599,7 +600,7 @@ export async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
             const response = await fetch(url, { method: "GET" });
 
             if (!response.ok) {
-                console.warn("[getRaceOptionsListITYC] HTTP error:", response.status, response.statusText);
+                if(cfg.debugITYC) console.warn("[getRaceOptionsListITYC] HTTP error:", response.status, response.statusText);
                 return null;
             }
 
@@ -607,12 +608,12 @@ export async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
             try {
                 itycRaceOptList = await response.json();
             } catch (err) {
-                console.error("[getRaceOptionsListITYC] JSON parse error:", err);
+                if(cfg.debugITYC) console.error("[getRaceOptionsListITYC] JSON parse error:", err);
                 return null;
             }
 
             if (!Array.isArray(itycRaceOptList) || itycRaceOptList.length === 0) {
-                console.warn("[getRaceOptionsListITYC] Empty or invalid options list for", rid);
+                if(cfg.debugITYC) console.warn("[getRaceOptionsListITYC] Empty or invalid options list for", rid);
                 return null;
             }
     
@@ -676,7 +677,7 @@ export async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
                 }
             }
             if (legPlayersOptions.length === 0) {
-                console.warn("[getRaceOptionsListITYC] No valid merged options for", rid);
+                if(cfg.debugITYC) console.warn("[getRaceOptionsListITYC] No valid merged options for", rid);
                 return null;
             }
 
@@ -696,10 +697,10 @@ export async function getRaceOptionsListITYC(raceId, legNum, opts = {}) {
             try {
                 await processDBOperations(dbOpe);
             } catch (err) {
-                console.error("[getRaceOptionsListITYC] DB operation error:", err);
+                if(cfg.debugITYC) console.error("[getRaceOptionsListITYC] DB operation error:", err);
             }
         } catch (err) {
-            console.error("[getRaceOptionsListITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[getRaceOptionsListITYC] Unexpected error:", err);
             return null;
         } finally {
             raceOptionsInFlight.delete(key);
@@ -744,7 +745,7 @@ export async function sendLegDataITYC(message, opts = {}) {
 
 
     if (!legItycData?.rid) {
-        console.warn("[sendLegDataITYC] missing rid");
+        if(cfg.debugITYC) console.warn("[sendLegDataITYC] missing rid");
         return false;
     }
 
@@ -768,7 +769,7 @@ export async function sendLegDataITYC(message, opts = {}) {
             });
 
             if (!response.ok) {
-                console.warn(
+                if(cfg.debugITYC) console.warn(
                 "[sendLegDataITYC] HTTP error:",
                 response.status,
                 response.statusText
@@ -777,7 +778,7 @@ export async function sendLegDataITYC(message, opts = {}) {
             }
             return true;
         } catch (err) {
-            console.error("[sendLegDataITYC] Unexpected error:", err);
+            if(cfg.debugITYC) console.error("[sendLegDataITYC] Unexpected error:", err);
         return false;
         } finally {
             sendLegInFlight.delete(key);
@@ -826,7 +827,7 @@ export function sendInfoITYC(type, withRandom = true) {
 
 function sendInfoCore(type) {
     if (!mesData[type]) {
-        console.warn("[sendInfo] no mesData for type:", type);
+        if(cfg.debugITYC) console.warn("[sendInfo] no mesData for type:", type);
         return;
     }
 
@@ -851,7 +852,7 @@ function sendInfoCore(type) {
     } else if (type === "rank") {
         url = SEND_RANK_URL;
     } else {
-        console.warn("[sendInfo] unknown type:", type);
+        if(cfg.debugITYC) console.warn("[sendInfo] unknown type:", type);
         return;
     }
 
@@ -865,11 +866,11 @@ function sendInfoCore(type) {
     })
     .then((response) => {
         if (!response.ok) {
-        console.warn("[sendInfo] HTTP error:", response.status);
+        if(cfg.debugITYC) console.warn("[sendInfo] HTTP error:", response.status);
         }
     })
     .catch((err) => {
-//        console.error("[sendInfo] network error:", err);
+        if(cfg.debugITYC) console.error("[sendInfo] network error:", err);
     });
 }
 
@@ -961,7 +962,7 @@ export async function sendInfoOptITYC(message)
 
         return response.ok;
     } catch (err) {
- //       console.error("[sendInfoOptITYC] Unexpected error:", err);
+        if(cfg.debugITYC) console.error("[sendInfoOptITYC] Unexpected error:", err);
         return false;
     }
 }

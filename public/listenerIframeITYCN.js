@@ -333,6 +333,10 @@ function fillDashContainer(content)
         ourDiv = createContainer();
     }
     ourDiv.innerHTML = content;
+    if(document.getElementById("dashIntegTime")) {
+          if (chrono.secondsPass > 65) document.getElementById("dashIntegTime").innerHTML = '<span style="color:red">+ '+ chrono.secondsPass + 's</span>';
+          else document.getElementById("dashIntegTime").innerHTML = '+ '+ chrono.secondsPass + 's';
+        }
     ret = true;
   }
   return ret;
