@@ -95,7 +95,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
 
     
 
-    const { latest, previous, meta } = await getLatestAndPreviousByTriplet(raceId, legNum, connectedPlayerId , {storeName: 'legPlayersInfos'});
+    const { latest, previous, meta } = await getLatestAndPreviousByTriplet(raceId, legNum, connectedPlayerId ,{limit:24*10*60,since:Date.now() - 10*24*60 * 60 * 1000, storeName: 'legPlayersInfos'});
     if(meta.timedOut || !latest) return;
     const raceIte = latest;
     const legInfos = await getData('legList', [raceId, legNum]); 

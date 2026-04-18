@@ -697,13 +697,7 @@ export async function ingestFleetData(request, response) {
       type: 'fleet',
       track :  p.track
     }));
-/*
-            {
-              id: "legPlayersInfosUpdate",
-              ts: Date.now(),
-            },
 
-*/
     const dbOpe = [
       {
         type: "putOrUpdate",

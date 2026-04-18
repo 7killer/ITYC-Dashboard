@@ -30,9 +30,7 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
 {
 
     if(!latest || !currentPlayerLatest || !polar) return null;
-    
     const metaDash = latest.metaDash?latest.metaDash:[];
-//    let metaDash = latest.metaDash;
  
     const playerPos = latest.pos;
     const currentPlayerPos = currentPlayerLatest.pos;
@@ -258,10 +256,8 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
 
     if(latest.userId == currentPlayerLatest.userId) {
         await saveData('legPlayersInfos', latest,null,{ updateIfExists: true });
-        await saveData('legFleetInfos', latest,null,{ updateIfExists: true });
     }
-    else
-        await saveData('legFleetInfos', latest,null,{ updateIfExists: true });
+    await saveData('legFleetInfos', latest,null,{ updateIfExists: true });
     
     if(playerOption.guessOptions != playerGuessOptionPrev)
     {
@@ -359,6 +355,15 @@ export async function computeOwnIte(raceId, legNum, userId)
             metaDash.deltaD_T = metaDash.deltaD / metaDash.speedC * metaDash.speedT.speed;
         }
         metaDash.previousItedate = previous.iteDate;
+        
+        //fill info with previous ( only fleet infos messqge receive no boatinfo)
+        if(!latest.rank && previous.rank) latest.rank = previous.rank;
+        if(!latest.stamina && previous.stamina) latest.stamina = previous.stamina;
+        if(!latest.tsEndOfAutoSail && previous?.tsEndOfAutoSail > latest.iteDate) latest.tsEndOfAutoSail = previous.tsEndOfAutoSail;
+        if(!latest.tsEndOfGybe && previous?.tsEndOfGybe > latest.iteDate) latest.tsEndOfGybe = previous.tsEndOfGybe;
+        if(!latest.tsEndOfTack && previous?.tsEndOfTack > latest.iteDate) latest.tsEndOfTack = previous.tsEndOfTack;
+        if(!latest.tsEndOfSailChange && previous?.tsEndOfSailChange > latest.iteDate) latest.tsEndOfSailChange = previous.tsEndOfSailChange;
+    
     }
 
     metaDash.bVmg = bestVMG(latest.tws, polar, playerOption.options, latest.sail % 10, latest.twa)
