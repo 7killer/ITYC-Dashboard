@@ -131,6 +131,8 @@ export async function updateLegList() {
   try {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const toOldClamp = new Date();
+    toOldClamp.setDate(toOldClamp.getDate() - 8);
 
     const legList = await getAllData('legList');
 
@@ -143,9 +145,10 @@ export async function updateLegList() {
 
     // Exclure les courses finies depuis > 1 semaine
     const filtered = legList.filter(leg => {
-      const endDate = leg?.end?.date ? new Date(leg.end.date) : null;
+      const endDate = leg?.end?.date ? new Date(leg.end.date) : toOldClamp;
+      const isFinishedStatus = leg?.status === 'finished' || leg?.status == null || leg?.status === '';
       const isFinishedOld =
-        leg?.status === 'finished' &&
+        isFinishedStatus &&
         endDate instanceof Date &&
         !Number.isNaN(endDate.valueOf()) &&
         endDate < oneWeekAgo;
