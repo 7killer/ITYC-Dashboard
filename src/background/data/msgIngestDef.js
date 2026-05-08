@@ -19,47 +19,46 @@ import { ghostTrackRequestDataSchema, ghostTrackResponseSchema } from './ingeste
 
 import cfg from '@/config.json';
 
-export function ingestPolars(msgBody)
+export async function ingestPolars(msgBody)
 {
-  const polarsData = msgBody?.scriptData?.extendsData?.boatPolar;
+  try {
+    const polarsData = msgBody?.scriptData?.extendsData?.boatPolar;
 
-  if(!polarsData) return;
-  polarSchema.validate(polarsData,{stripUnknow:true})
-  .then(polar => {
-      const dbOpe = [
-          {
-              type : "putOrUpdate",
-              polars : [
-                  {
-                    id : polar._id,
-                    label: polar.label,
-                    globalSpeedRatio: polar.globalSpeedRatio,
-                    iceSpeedRatio: polar.iceSpeedRatio,
-                    autoSailChangeTolerance: polar.autoSailChangeTolerance,
-                    badSailTolerance: polar.badSailTolerance,
-                    maxSpeed: polar.maxSpeed,
-                    foil: polar.foil,
-                    hull: polar.hull,
-                    winch: polar.winch,
-                    tws: polar.tws,
-                    twa: polar.twa,
-                    sail: polar.sail,
-                    _updatedAt: polar._updatedAt
-                  }
-              ],
-              internal : [
+    if(!polarsData) return;
+    const polar = await polarSchema.validate(polarsData,{stripUnknow:true});
+    const dbOpe = [
+        {
+            type : "putOrUpdate",
+            polars : [
                 {
-                  id : "polarsUpdate",
-                  ts : Date.now()
+                  id : polar._id,
+                  label: polar.label,
+                  globalSpeedRatio: polar.globalSpeedRatio,
+                  iceSpeedRatio: polar.iceSpeedRatio,
+                  autoSailChangeTolerance: polar.autoSailChangeTolerance,
+                  badSailTolerance: polar.badSailTolerance,
+                  maxSpeed: polar.maxSpeed,
+                  foil: polar.foil,
+                  hull: polar.hull,
+                  winch: polar.winch,
+                  tws: polar.tws,
+                  twa: polar.twa,
+                  sail: polar.sail,
+                  _updatedAt: polar._updatedAt
                 }
-              ]
-          }
-      ];
-      processDBOperations(dbOpe);
-    })
-    .catch(error => {
-        if(cfg.debugIngesterErr) console.error('Account Validation Error :', error);
-    });
+            ],
+            internal : [
+              {
+                id : "polarsUpdate",
+                ts : Date.now()
+              }
+            ]
+        }
+    ];
+    await processDBOperations(dbOpe);
+  } catch(error) {
+      if(cfg.debugIngesterErr) console.error('Account Validation Error :', error);
+  }
 }
 
 export async function ingestBoatInfos(boatData)
@@ -355,7 +354,7 @@ export async function ingestBoatInfos(boatData)
         ]
         });        
     }
-    processDBOperations(ope);
+    await processDBOperations(ope);
     return {rstTimer: rstTimer,
             raceId : raceId,
             legNum : legNum,
@@ -370,66 +369,65 @@ export async function ingestBoatInfos(boatData)
 };;
   }
 }
-export function ingestAccountDetails(account)
+export async function ingestAccountDetails(account)
 {
-    accountDetailsDataModel.validate(account,{stripUnknow:true})
-    .then(validAccount => {
-        const dbOpe = [
-            {
-                type : "putOrUpdate",
-                internal: [
+    try {
+      const validAccount = await accountDetailsDataModel.validate(account,{stripUnknow:true});
+      const dbOpe = [
+          {
+              type : "putOrUpdate",
+              internal: [
+                {
+                  id : 'state',
+                  state : "playerConnected"
+                },
+                {
+                  id: "playersUpdate",
+                  ts: Date.now(),
+                },
+                {
+                    id : 'lastLoggedUser',
+                    loggedUser : validAccount.userId 
+                },
+                ...(validAccount.scriptData.team?.id
+                  ? [{
+                      id: "teamsUpdate",
+                      ts: Date.now(),
+                    }]
+                  : [])
+              ],
+              players : [
                   {
-                    id : 'state',
-                    state : "playerConnected"
-                  },
-                  {
-                    id: "playersUpdate",
-                    ts: Date.now(),
-                  },
-                  {
-                      id : 'lastLoggedUser',
-                      loggedUser : validAccount.userId 
-                  },
-                  ...(validAccount.scriptData.team?.id
-                    ? [{
-                        id: "teamsUpdate",
-                        ts: Date.now(),
-                      }]
-                    : [])
-                ],
-                players : [
-                    {
-                        id : validAccount.userId,
-                        name : validAccount.displayName,
-                        teamId : validAccount.scriptData.team?.id?? null,
-                        timestamp: Date.now(),
-                        isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
-                        credits : validAccount.currency1
-                    }      
-                ],
-                ...(validAccount.scriptData.team?.id && {
-                    teams: [
-                        {
-                            id: validAccount.scriptData.team.id, 
-                            name: validAccount.scriptData.team.name
-                        }
-                    ]
-                })
-            }
-        ];
-        processDBOperations(dbOpe);
-        return true;
-    })
-    .catch(error => {
+                      id : validAccount.userId,
+                      name : validAccount.displayName,
+                      teamId : validAccount.scriptData.team?.id?? null,
+                      timestamp: Date.now(),
+                      isVip : validAccount.scriptData.isVIP && validAccount.scriptData.userSettings?.noAds,
+                      credits : validAccount.currency1
+                  }      
+              ],
+              ...(validAccount.scriptData.team?.id && {
+                  teams: [
+                      {
+                          id: validAccount.scriptData.team.id, 
+                          name: validAccount.scriptData.team.name
+                      }
+                  ]
+              })
+          }
+      ];
+      await processDBOperations(dbOpe);
+      return true;
+    } catch(error) {
         if(cfg.debugIngesterErr) console.error('Account Validation Error :', error);
         return false;
-    });
+    }
 }
 
-export function ingestEndLegPrep(endLegPrep)
+export async function ingestEndLegPrep(endLegPrep)
 {
-    endLegPrepDataModel.validate(endLegPrep, { stripUnknown: true,  abortEarly: false  })
-    .then(validData => {
+  try {
+    const validData = await endLegPrepDataModel.validate(endLegPrep, { stripUnknown: true,  abortEarly: false  });
     const l = validData.scriptData.leg;
 
     const dbOpe = [
@@ -504,14 +502,13 @@ export function ingestEndLegPrep(endLegPrep)
       }
     ];
 
-    processDBOperations(dbOpe);
-    })
-    .catch(err => {
+    await processDBOperations(dbOpe);
+  } catch(err) {
     if(cfg.debugIngesterErr) console.error("Validation failed:", err.errors);
-    });
+  }
 }
 
-export function ingestRaceList(legListData) {
+export async function ingestRaceList(legListData) {
   try {
     const validData = legListDataModel.validateSync(legListData, {
       stripUnknown: true,
@@ -593,7 +590,7 @@ export function ingestRaceList(legListData) {
           ]
         },
       ];
-      processDBOperations(dbOpe);
+      await processDBOperations(dbOpe);
     }
 
     if(cfg.debugIngester) console.log(`✅ ${validCount} race(s) ingérées, ❌ ${errorCount} erreur(s).`);
@@ -715,7 +712,7 @@ export async function ingestFleetData(request, response) {
       }
     ];
 
-    processDBOperations(dbOpe);
+    await processDBOperations(dbOpe);
     if(cfg.debugIngester) console.log(`✅ Ingested ${legFleetInfos.length} fleet players for race ${req.race_id}, leg ${req.leg_num}`);
 
   } catch (err) {
@@ -726,9 +723,9 @@ export async function ingestFleetData(request, response) {
 }
 
 
-export function ingestGameSetting(gameSetting) {
-  gameSettingsSchema.validate(gameSetting, { stripUnknown: true })
-  .then(validGameSetting => {
+export async function ingestGameSetting(gameSetting) {
+  try {
+    const validGameSetting = await gameSettingsSchema.validate(gameSetting, { stripUnknown: true });
     const stamina = validGameSetting.scriptData?.settings?.stamina;
     const dbOpe = [
       {
@@ -748,19 +745,18 @@ export function ingestGameSetting(gameSetting) {
       },
     ];
 
-    processDBOperations(dbOpe);
+    await processDBOperations(dbOpe);
     return true;
-  })
-  .catch(error => {
+  } catch(error) {
       if(cfg.debugIngesterErr) console.error('Account Validation Error :', error);
       return false;
-  });
+  }
 }
 
-export function ingestBoatAction(boatActionTxt)
+export async function ingestBoatAction(boatActionTxt)
 {
-  boatActionResponseData.validate(boatActionTxt, { stripUnknown: true })
-  .then(ValidboatActionTxt => {
+  try {
+  const ValidboatActionTxt = await boatActionResponseData.validate(boatActionTxt, { stripUnknown: true });
   const { boatActions } = ValidboatActionTxt.scriptData;
   const raceId = boatActions[0]._id.race_id;
   const legNum = boatActions[0]._id.leg_num;
@@ -860,13 +856,12 @@ export function ingestBoatAction(boatActionTxt)
         }),
 
     }];
-    processDBOperations(dbOpe);   
+    await processDBOperations(dbOpe);   
      return true;
-  })
-  .catch(error => {
+  } catch(error) {
       if(cfg.debugIngesterErr) console.error('boatAction Validation Error :', error);
       return false;
-  });
+  }
 
 }
 
@@ -876,8 +871,8 @@ export async function ingestGhostTrack(request, response) {
     stripUnknown: true
   });
 
-  ghostTrackResponseSchema.validate(response, { stripUnknown: true })
-  .then(validGhostTracks => {
+  try {
+  const validGhostTracks = await ghostTrackResponseSchema.validate(response, { stripUnknown: true });
     
     const raceId = req?.race_id;
     const legNum = req?.leg_num;
@@ -934,12 +929,11 @@ export async function ingestGhostTrack(request, response) {
     ];
 
 
-    processDBOperations(dbOpe);
+    await processDBOperations(dbOpe);
     return true;
-  })
-  .catch(error => {
+  } catch(error) {
       if(cfg.debugIngesterErr) console.error('ghostTrack validation Error :', error);
       return false;
-  });
+  }
 
 }

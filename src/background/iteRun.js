@@ -25,12 +25,33 @@ import {
     initMessageITYC,addInfoFleetITYC,sendInfoITYC
  } from './itycInterface.js'; 
 
+function asMetaDash(metaDash) {
+    return metaDash && typeof metaDash === 'object' ? metaDash : {};
+}
+
+async function mergeExistingMetaDash(storeName, ite) {
+    const existing = await getData(storeName, [
+        ite.raceId,
+        ite.legNum,
+        ite.userId,
+        ite.iteDate
+    ]);
+
+    return {
+        ...ite,
+        metaDash: {
+            ...asMetaDash(existing?.metaDash),
+            ...asMetaDash(ite.metaDash)
+        }
+    };
+}
+
 
 async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayerLatest , polar)
 {
 
     if(!latest || !currentPlayerLatest || !polar) return null;
-    const metaDash = latest.metaDash?latest.metaDash:[];
+    const metaDash = asMetaDash(latest.metaDash);
  
     const playerPos = latest.pos;
     const currentPlayerPos = currentPlayerLatest.pos;
@@ -232,7 +253,7 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
         } else if(metaDash.twd > 360)
             metaDash.twd -=360; 
     } else {
-        metaDash.twd = 0;
+        metaDash.twd = latest.twd?latest.twd:0;
     }
     
     // Ajout - Calcul VMG
@@ -255,9 +276,13 @@ async function computeFleetPlayerIte(legInfos, latest,playerOption,currentPlayer
     latest.metaDash = metaDash;
 
     if(latest.userId == currentPlayerLatest.userId) {
-        await saveData('legPlayersInfos', latest,null,{ updateIfExists: true });
+        const playerIte = await mergeExistingMetaDash('legPlayersInfos', latest);
+        latest.metaDash = playerIte.metaDash;
+        await saveData('legPlayersInfos', playerIte,null,{ updateIfExists: true });
     }
-    await saveData('legFleetInfos', latest,null,{ updateIfExists: true });
+    const fleetIte = await mergeExistingMetaDash('legFleetInfos', latest);
+    latest.metaDash = fleetIte.metaDash;
+    await saveData('legFleetInfos', fleetIte,null,{ updateIfExists: true });
     
     if(playerOption.guessOptions != playerGuessOptionPrev)
     {
@@ -329,7 +354,7 @@ export async function computeOwnIte(raceId, legNum, userId)
     
     const paramStamina = (await getData('internal', 'paramStamina'))?.paramStamina ?? null;
 
-    const metaDash = latest.metaDash?latest.metaDash:[];
+    const metaDash = asMetaDash(latest.metaDash);
     metaDash.speedT = theoreticalSpeed(polar,playerOption.options,latest?.tws,latest?.twa); 
 
     if(previous)

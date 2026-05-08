@@ -82,14 +82,19 @@ export function buildRaceFleetHtml() {
         + genth("th_remove", "", "Remove selected boats from the fleet list", undefined)
         + '</tr>';
 
-    const rows = Object.entries(raceItesFleet).map(([userId, entry]) => {
-        const pInfos = (userId == connectedPlayerId) ? raceItes : entry;
-        return { userId, pInfos };
-    });
+    const connectedPlayerKey = String(connectedPlayerId);
+    if (!Object.hasOwn(raceItesFleet, connectedPlayerKey)) {
+        raceItesFleet[connectedPlayerKey] = raceItes;
+    }
+
+    const rows = Object.entries(raceItesFleet).map(([userId, entry]) => ({
+        userId,
+        pInfos: userId === connectedPlayerKey ? raceItes : entry
+    }));
 
     rows.sort((a, b) => {
-        const isAme = a.userId === connectedPlayerId;
-        const isBme = b.userId === connectedPlayerId;
+        const isAme = a.userId === connectedPlayerKey;
+        const isBme = b.userId === connectedPlayerKey;
 
         if (isAme && !isBme) return -1;
         if (!isAme && isBme) return  1;
@@ -98,7 +103,7 @@ export function buildRaceFleetHtml() {
     });
 
     let raceFleetLines = "";
-    for (const { userId, pInfos } of rows) {
+    for (const { pInfos } of rows) {
         raceFleetLines += buildRaceFleetLine(pInfos, raceInfo, connectedPlayerId);
     }
 
