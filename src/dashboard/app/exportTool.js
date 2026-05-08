@@ -315,6 +315,29 @@ export function exportGraphData(playerInfos = getLegPlayerInfos(), csvSep = null
   saveFile(exportFileName('graphData', 'csv'), new Blob([content], { type: 'text/csv;charset=utf-8' }));
 }
 
+export function exportRestrictedZones(race = getRaceInfo()) {
+  const restrictedZones = race?.restrictedZones ?? race?.legdata?.restrictedZones;
+  if (!restrictedZones?.length) return;
+
+  const features = restrictedZones.map((zone) => {
+    const coordinates = zone.vertices.map((vertex) => [Number(roundTo(vertex.lon, 5)), Number(roundTo(vertex.lat, 5))]);
+    coordinates.push(coordinates[0]);
+
+    return {
+      type: 'Feature',
+      properties: { name: zone.name },
+      bbox: zone.bbox ? [zone.bbox[1], zone.bbox[0], zone.bbox[3], zone.bbox[2]] : undefined,
+      geometry: {
+        type: 'Polygon',
+        coordinates: [coordinates]
+      }
+    };
+  });
+
+  const jsonPretty = JSON.stringify({ type: 'FeatureCollection', features }, null, 2);
+  saveFile(exportFileName('restrictedZones' + (race?.legName ? `_${race.legName}` : ''), 'json', race), new Blob([jsonPretty], { type: 'application/json' }));
+}
+
 export function exportStamina(paramStamina = getParamStamina()) {
   if (!paramStamina || !paramStamina.consumption) return;
   saveFile('stamina.json', new Blob([JSON.stringify(paramStamina, null, 2)], { type: 'application/json' }));

@@ -365,6 +365,10 @@ export function uiBindingInit() {
       onChange: async() => { exportGraphData(); }
     },
     {
+      selector: '#bt_exportRestrictedZones',
+      onChange: async() => { exportRestrictedZones(); }
+    },
+    {
       selector: '#bt_exportStamina',
       onChange: async() => { exportStamina(); }
     },

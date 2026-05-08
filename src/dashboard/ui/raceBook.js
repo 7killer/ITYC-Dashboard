@@ -249,6 +249,9 @@ export function buildRaceBookHtml() {
     const stages   = viewStages(raceInfo,playerIte);
     const ice      = viewIceLimits(raceInfo,playerIte);
     const rz       = viewRestrictedZones(raceInfo,playerIte);
+
+    if(rz) document.getElementById("raceLogBtDiv").style.display = "block";
+
     // grille principale : identité + crédits côte à côte quand large
     const gridTop = h('div', {class:'rb-grid'}, identity, credits);
 

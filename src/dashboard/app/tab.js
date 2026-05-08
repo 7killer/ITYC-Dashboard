@@ -37,10 +37,9 @@ export function tabSwitch(tabId = null)
     activeTab = tabId;
 
     display_selbox("hidden");
-//    document.getElementById("analysisModeSwitch").style.visibility = "hidden";
-//    document.getElementById("graphButtonContainer").style.visibility = "hidden";
     document.getElementById("analysisModeSwitch").style.display = "none";
-    document.getElementById("graphButtonContainer").style.display = "none";
+    document.getElementById("graphBtDiv").style.display = "none";
+    document.getElementById("raceLogBtDiv").style.display = "none";
     document.getElementById("polarDivName").style.display = "none";
 
     
@@ -72,8 +71,8 @@ export function tabSwitch(tabId = null)
             buildRaceBookHtml();            
             break;
         case "raceGraph":
-           document.getElementById("graphButtonContainer").style.visibility = "visible";
-            document.getElementById("graphButtonContainer").style.display = "block";
+            document.getElementById("graphBtDiv").style.visibility = "visible";
+            document.getElementById("graphBtDiv").style.display = "block";
             upDateGraph();
             break;
         case "raceAnalyse":
