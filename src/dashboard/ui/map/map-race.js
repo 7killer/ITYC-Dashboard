@@ -114,7 +114,7 @@ function updateMapCheckpoints(raceInfo,playerIte) {
 
             const position_s = buildPt2(cp.start.lat, cp.start.lon);
             const position_e = buildPt2(cp.end.lat, cp.end.lon);
-            const passed = (playerIte?.ite?.gateGroupCounters && playerIte.ite.gateGroupCounters[cp.group - 1]) ? true : false;
+            const passed = (playerIte?.gateGroupCounters && playerIte.gateGroupCounters[cp.group - 1]) ? true : false;
 
             let op = 1.0;
             if(passed) op = 0.6;

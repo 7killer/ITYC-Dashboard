@@ -163,11 +163,11 @@ function buildRaceLogLine(raceIte)
     if(stamina)
     {
         if (stamina < paramStamina?.tiredness[0]) 
-            staminaStyle = 'style="color:red"';
+            staminaStyle = 'style="color:red";';
         else if (stamina < paramStamina?.tiredness[1]) 
-            staminaStyle = 'style="color:orange"';
+            staminaStyle = 'style="color:orange";';
         else 
-            staminaStyle = 'style="color:green"';   
+            staminaStyle = 'style="color:green";';   
 
         staminaTxt = roundTo(stamina , 2) + "%";
         staminaTxt += iteDash.manoeuver.staminaFactor?(" (x" + roundTo(iteDash.manoeuver.staminaFactor , 2)+")"):"" ;

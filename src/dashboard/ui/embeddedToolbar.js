@@ -127,7 +127,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
     let speedTxtBg = "";
     if(raceIte.aground || raceIte.metaDash.manoeuvering)
     {
-        speedTxtBg = 'style="background-color:' + userPrefs.theme =='dark'?"darkred":"LightRed" + ';';
+        speedTxtBg = 'style="background-color:' + (userPrefs.theme =='dark'?"darkred":"LightRed") + '";';
     }
 
     const xfactorStyle = getxFactorStyle(raceIte);
@@ -144,7 +144,7 @@ async function buildEmbeddedToolbarLine(raceId ,legNum,connectedPlayerId)
 
     let lastCalcStyle = ""
     if(raceIte.metaDash.deltaReceiveCompute > 900000) {
-        lastCalcStyle = 'style="background-color: red;'
+        lastCalcStyle = 'style="background-color: red;';
         lastCalcStyle += (userPrefs.theme =='dark')?' color:black;"':'"';
     }
 

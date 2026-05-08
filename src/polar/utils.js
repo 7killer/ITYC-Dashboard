@@ -353,45 +353,45 @@ export function bestVMG(tws, polars, options, sailId, currTwa) {
         let bestSpdSailAtThisTWA = null;
 
         for (const sail of polars.sail) {
-        if (!inOpts(sail.id)) continue;
+            if (!inOpts(sail.id)) continue;
 
-        const f = foilingFactor(options, tws, polars.twa[aStep.index], polars.foil);
-        const rspeed = bilinear(
-            aStep.fraction, sStep.fraction,
-            sail.speed[aStep.index - 1][sStep.index - 1],
-            sail.speed[aStep.index][sStep.index - 1],
-            sail.speed[aStep.index - 1][sStep.index],
-            sail.speed[aStep.index][sStep.index]
-        );
-        const globalRatio = polars.globalSpeedRatio;
-        const speed = rspeed * f * hRatio * globalRatio;
-        const vmg = speed * Math.cos(aTWA * DEG2RAD);
+            const f = foilingFactor(options, tws, polars.twa[aStep.index], polars.foil);
+            const rspeed = bilinear(
+                aStep.fraction, sStep.fraction,
+                sail.speed[aStep.index - 1][sStep.index - 1],
+                sail.speed[aStep.index][sStep.index - 1],
+                sail.speed[aStep.index - 1][sStep.index],
+                sail.speed[aStep.index][sStep.index]
+            );
+            const globalRatio = polars.globalSpeedRatio;
+            const speed = rspeed * f * hRatio * globalRatio;
+            const vmg = speed * Math.cos(aTWA * DEG2RAD);
 
-        // Meilleurs VMG up/down
-        if (vmg > best.vmgUp) {
-            best.vmgUp = vmg;
-            best.twaUp = aTWA;
-            best.sailUp = sail.id;
-        } else if (vmg < best.vmgDown) {
-            best.vmgDown = vmg;
-            best.twaDown = aTWA;
-            best.sailDown = sail.id;
-        }
+            // Meilleurs VMG up/down
+            if (vmg > best.vmgUp) {
+                best.vmgUp = vmg;
+                best.twaUp = aTWA;
+                best.sailUp = sail.id;
+            } else if (vmg < best.vmgDown) {
+                best.vmgDown = vmg;
+                best.twaDown = aTWA;
+                best.sailDown = sail.id;
+            }
 
-        // Meilleure BS absolue (tous TWA)
-        if (speed > best.bspeed) {
-            best.bspeed = speed;
-            best.btwa = aTWA;
-            best.sailBSpeed = sail.id;
-        }
+            // Meilleure BS absolue (tous TWA)
+            if (speed > best.bspeed) {
+                best.bspeed = speed;
+                best.btwa = aTWA;
+                best.sailBSpeed = sail.id;
+            }
 
-        // Meilleure vitesse à ce TWA
-        if (speed > bestSpdAtThisTWA) {
-            bestSpdAtThisTWA = speed;
-            bestSpdSailAtThisTWA = sail.id;
-        }
+            // Meilleure vitesse à ce TWA
+            if (speed > bestSpdAtThisTWA) {
+                bestSpdAtThisTWA = speed;
+                bestSpdSailAtThisTWA = sail.id;
+            }
 
-        if (sail.id === sailId) actualSailSpd = speed;
+            if (sail.id === sailId) actualSailSpd = speed;
         }
 
         // Vérifie si la voile actuelle reste la meilleure à ce TWA
@@ -399,7 +399,7 @@ export function bestVMG(tws, polars, options, sailId, currTwa) {
         (actualSailSpd >= bestSpdAtThisTWA && bestSpdSailAtThisTWA === sailId) ||
         (actualSailSpd * (1 + tol) > bestSpdAtThisTWA && bestSpdSailAtThisTWA !== sailId)
         ) {
-        twaDetect.push(aTWA);
+            twaDetect.push(aTWA);
         }
     }
 
