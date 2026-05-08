@@ -61,7 +61,7 @@ export function updateRaceListDisplay() {
       const opt = document.createElement("option");
       const raceKey = leg.raceId + '-' + leg.legNum; 
       opt.value = raceKey;
-      opt.textContent = `${leg.name} (${raceKey})`;
+      opt.textContent = `${leg.legName} (${raceKey})`;
       opt.dataset.dynamic = "true";
       sel.appendChild(opt);
     });

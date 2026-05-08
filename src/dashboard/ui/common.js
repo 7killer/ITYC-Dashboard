@@ -327,7 +327,7 @@ export function getxFactorStyle(raceIte)
     const darkTheme = userPrefs.theme=="dark";
     let xfactorStyle= 'style="color:' + ((iteDash.xplained) ? (darkTheme?"#a5A5A5" :"black") : "red") + ';"'
     if(!raceIte.speed  )
-        xfactorStyle = 'style="color:' + darkTheme?"#a5A5A5" :"black" + ';"';
+        xfactorStyle = 'style="color:' + (darkTheme?"#a5A5A5" :"black") + ';"';
     
     if(iteDash.sailCoverage != 0 && iteDash.xplained) {
         if(iteDash.sailCoverage > 1.2 || (iteDash.sailCoverage<0 && Math.abs(iteDash.sailCoverage)<98))

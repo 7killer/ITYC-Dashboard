@@ -28,7 +28,6 @@ let legSelectedPlayers = [];
 let legPlayersTracksUpdate = 0;
 let legPlayersTracks = [];
 
-
 export async function initMemo()
 {
     const currentId = await getData('internal', 'lastLoggedUser');
@@ -169,12 +168,7 @@ export async function updateLegList() {
 
     for (const leg of filtered) {
       const fullRaceId = `${leg.raceId}-${leg.legNum}`;
-      map[fullRaceId] = {
-        raceId: leg.raceId,
-        legNum: leg.legNum,
-        name: leg.legName,
-      };
-
+      map[fullRaceId] = structuredClone(leg); 
       if (
         openedRaceId?.raceId != null &&
         openedRaceId?.legNum != null &&
@@ -579,6 +573,12 @@ export function getOpenedRaceId()
 
 export async function updateOpenedRaceId()
 {
+    
+    legPlayersTracks = [];
+    legPlayersOptions = [];
+    legFleetInfos = [];
+    raceInfo = [];
+    legPlayersOrder = [];
     await updateLegList();
     openedRaceId.polar_id = raceInfo.polar_id;
     await updatePolar();
