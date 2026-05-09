@@ -93,21 +93,8 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
 {
     if(!raceInfo) return "";
     const userPrefs = getUserPrefs(); 
-
-
-    /* todo handle boat action
-    if (r.lastCommand != undefined) {
-        // ToDo: error handling; multiple commands; expiring?
-        var lcTime = formatTime(r.lastCommand.request.ts);
-        lastCommand = printLastCommand(r.lastCommand.request.actions);
-        lastCommand = "T:" + lcTime + " Actions:" + lastCommand;
-        if (r.lastCommand.rc != "ok") {
-            lastCommandBG = (drawTheme =='background-color:dark; ')?"background-color:darkred; ":"LightRed";
-        }
-    }
-    */
-
     let info = "-";
+
     if (raceInfo.raceType === "leg") {
         info = '<span>' + raceInfo.legName + '</span>';
     } else if (raceInfo.raceType === "record") {
@@ -154,7 +141,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
         const bspeedTitle = best?(roundTo(best.bspeed, 3) + ' <span class="textMini">kts</span><br>' + best.btwa + '<span class="textMini">°</span>'):'-';
 
         let lastCalcStyle = ""
-        if(raceIte.metaDash?.deltaReceiveCompute > 900000) {
+        if(raceIte.metaDash?.deltaReceiveCompute > 900000 && raceIte.state != "arrived") {
             lastCalcStyle = 'style="background-color: red;'
             lastCalcStyle += (userPrefs.theme =='dark')?' color:black;"':'"';
         }
