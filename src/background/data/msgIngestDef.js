@@ -102,8 +102,8 @@ export async function ingestBoatInfos(boatData)
             end: l.end,
             close: l.close,
             open: l.open,
-            polar_id: l.boat?.polar_id,
-            boatName: l.boat?.name,
+            ...(l.boat?.polar_id?{polar_id: l.boat.polar_id}: {}),
+            ...(l.boat?.name?{boatName: l.boat.name}: {}),
             pilotBoatCredits: l.pilotBoatCredits,
             priceLevel: l.priceLevel,
             freeCredits: l.freeCredits,
@@ -113,7 +113,7 @@ export async function ingestBoatInfos(boatData)
             ice_limits: l.ice_limits,
             fineWinds: l.fineWinds,
             course: l.course,
-          ...(l.restrictedZones ? { restrictedZones: l.restrictedZones} : {})
+          ...(l.restrictedZones?.length ? { restrictedZones: l.restrictedZones } : {})
           },
         ],
         ...((l.boat?.stats?.weight && l.boat?.polar_id) && {
@@ -450,8 +450,8 @@ export async function ingestEndLegPrep(endLegPrep)
               end: l.end,
               close: l.close,
               open: l.open,
-              polar_id: l.boat?.polar_id,
-              boatName: l.boat?.name,
+              ...(l.boat?.polar_id?{polar_id: l.boat?.polar_id}: {}),
+              ...(l.boat?.name?{boatName: l.boat?.name}: {}),
               pilotBoatCredits: l.pilotBoatCredits,
               priceLevel: l.priceLevel,
               freeCredits: l.freeCredits,
@@ -461,7 +461,7 @@ export async function ingestEndLegPrep(endLegPrep)
               ice_limits: l.ice_limits,
               fineWinds: l.fineWinds,
               course: l.course,
-              ...( l.restrictedZones ? { restrictedZones:  l.restrictedZones} : {})
+              ...(l.restrictedZones?.length ? { restrictedZones: l.restrictedZones } : {})
             },
             {
               id: 'update',
@@ -547,8 +547,8 @@ export async function ingestRaceList(legListData) {
           arrived: validated.arrived,
           raceType: validated.raceType,
           limitedAccess: validated.limitedAccess,
-          polar_id: validated.boat?.polar_id,
-          boatName: validated.boat?.name,
+          ...(validated.boat?.polar_id?{polar_id: validated.boat?.polar_id}: {}),
+          ...(validated.boat?.name?{boatName: validated.boat?.name}: {}),
           start: validated.start,
           end: validated.end
         });

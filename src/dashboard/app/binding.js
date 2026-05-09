@@ -10,7 +10,8 @@ import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
 import {onCoastColorChange} from "../ui/map/map-coasts.js"
 import {resetAllGraphsZoom} from "../ui/raceGraph.js"
 import {applyRaceAnalysisMode, buildRaceAnalyseAdvance} from "../ui/raceAnalysis.js"
-import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV, exportGraphData, exportStamina, exportOwnBoatTrack} from "./exportTool.js"
+import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV,
+   exportGraphData, exportStamina, exportOwnBoatTrack, exportRestrictedZones} from "./exportTool.js"
 import {getDoradoUrl} from "../../common/callExternal.js"
 
 

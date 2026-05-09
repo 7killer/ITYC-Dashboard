@@ -189,8 +189,8 @@ function doDbListener()
             {   //updated infos
                 setLegPlayersOptionsUpdate(newValue.ts);
                 await updateLegPlayersOptions();
+                await updateLegPlayerInfos();
                 tabSwitch();
-    //            await updateLegPlayerInfos();
     //            await updateLegPlayersOrder();
     //            await updateLegFleetInfos();
                 //update display Fleet

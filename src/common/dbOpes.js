@@ -1047,6 +1047,7 @@ function withTimeout(promise, ms, onTimeout) {
     userId,
     opts = {}
   ) {
+    opts.since = opts.since ?? (Date.now() - 24 * 60 * 10 * 60 * 1000);
     const { items, meta } = await getEntriesForTriplet(raceId, legNum, userId, { ...opts, limit: 2 });
     const latest = items?.[0] ?? null;
     const previous = items?.[1] ?? null;

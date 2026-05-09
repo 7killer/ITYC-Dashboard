@@ -284,11 +284,10 @@ export async function getRaceListITYC(opts = {}) {
                 const legName  = race.legName  ?? null;
                 const raceName = race.name     ?? null;
                 const raceType = race.type     ?? null;
-                const vsrLevel = race.vsrRank ?? race.vsrLevel ?? 0;
+                const vsrLevel = race.vsr ?? null;
+
                 const start    = raceInfo?.start ?? null;
                 const end      = raceInfo?.end   ?? null;
-                const close    = race.start ?? null;
-                const open     = race.end   ?? null;
                 const polar_id = raceInfo?.boat?.polar_id ?? null;
 
                 const fineWinds = raceInfo?.gfsWinds ?? null;
@@ -298,29 +297,26 @@ export async function getRaceListITYC(opts = {}) {
                 const checkpoints = raceInfo?.checkpoints ?? [];
                 const ice_limits = raceInfo?.ice_limits ?? [];
                 const course = raceInfo?.course ?? [];
-                const restrictedZones = raceInfo?.restrictedZones ?? []
-
-
 
                 legList.push({
                 id: `${raceId}-${legNum}`,
                 raceId,
                 legNum,
-                legName,
-                raceName,
-                raceType,
-                start,
-                end,
-                polar_id,
-                fineWinds,
-                boatName,
-                priceLevel,
-                vsrLevel,
-                optionPrices,
-                checkpoints,
-                ice_limits,
-                course,
-                restrictedZones
+                ...legName?{legName}: {},
+                ...raceName?{raceName}: {},
+                ...raceType?{raceType}: {},
+                ...start?{start}: {},
+                ...end?{end}: {},
+                ...polar_id?{polar_id}: {},
+                ...fineWinds?{fineWinds}: {},
+                ...boatName?{boatName}: {},
+                ...priceLevel?{priceLevel}: {},
+                ...vsrLevel?{vsrLevel}: {},
+                ...optionPrices?{optionPrices}: {},
+                ...(checkpoints?.length ? { checkpoints } : {}),
+                ...(ice_limits?.length ? { ice_limits } : {}),
+                ...(course?.length ? { course } : {}),
+                ...(raceInfo?.restrictedZones?.length ? { restrictedZones: raceInfo.restrictedZones } : {})
                 });
             });
 

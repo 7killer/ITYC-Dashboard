@@ -319,10 +319,63 @@ td.tdc {
 }
 
 .lastCommandOrder {
-    background-color:#111215;
+/*    background-color:#111215;*/
     color: var(--th_color);
 }
 
+.commandLineHeader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    font-size: 0.92rem;
+}
+
+.commandLineSub {
+    color: var(--th_color);
+    font-weight: 400;
+}
+
+.command-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
+    gap: 0.25rem 0.3rem;
+    align-items: center;
+}
+
+.command-grid-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.18rem 0.4rem;
+    border-radius: 0.35rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+    font-size: 0.86rem;
+}
+/*
+.command-order {
+    background: rgba(79, 135, 255, 0.16);
+    border-color: rgba(79, 135, 255, 0.24);
+}
+
+.command-sail {
+    background: rgba(94, 201, 119, 0.16);
+    border-color: rgba(94, 201, 119, 0.22);
+}
+
+.command-prog {
+    background: rgba(252, 190, 80, 0.16);
+    border-color: rgba(252, 190, 80, 0.25);
+}
+
+.command-wp {
+    background: rgba(106, 143, 255, 0.16);
+    border-color: rgba(106, 143, 255, 0.24);
+}
+*/
 #th_remove {
     width: 25px;
     padding: 0px;
@@ -1627,6 +1680,13 @@ light
     padding: 8px 10px;
     border-bottom: 1px solid var(--border_color);
 }
+.table-modern tbody th {
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    text-align: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border_color);
+}
 .table-modern tbody td {
     padding: 8px 10px;
     border-bottom: 1px dashed var(--border_color);
@@ -1645,6 +1705,13 @@ light
 .table-wrap {
     overflow: auto;
     max-width: 100%;
+}
+.rb-rz-list {
+    display: grid;
+    gap: 12px;
+}
+.rb-rz-table {
+    width: 100%;
 }
 
 .kv {
