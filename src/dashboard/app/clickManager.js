@@ -1,5 +1,6 @@
 import {tabSwitch} from "./tab.js"
 import {changeState} from '../ui/common.js'
+import {deleteNotif} from '../ui/raceNotif.js'
 import {openRouterSiteFront,openPolarSiteFront,openWindySiteFront} from '../../common/callExternal.js'
 export function clickManager(ev)
 {
@@ -73,14 +74,13 @@ export function clickManager(ev)
         changeState(ev_lbl);
         tabSwitch();
     }
-    else if(call_rt) openRouterSiteFront(rmatch, false,"zezo");
+    else if(call_rt)    openRouterSiteFront(rmatch, false,"zezo");
     else if(call_vrzen) openRouterSiteFront(rmatch, false,"vrzen");
-    else if (call_pl) openPolarSiteFront("POLAR");
+    else if (call_pl)   openPolarSiteFront("POLAR");
     else if (call_ityc) openPolarSiteFront("ITYC");
-    else if (call_wi) openWindySiteFront();
-
-/*    else if(delNotif)
-        nf.deleteNotif(rmatch);
+    else if (call_wi)   openWindySiteFront();
+    else if(delNotif)   deleteNotif(rmatch);
+/*  
     else if (call_cp) callCompass(selRace.value,currentUserId);
 */    
 

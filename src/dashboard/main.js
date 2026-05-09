@@ -26,6 +26,7 @@ import {initCachedTilesList} from './ui/map/map-coasts.js'
 import {raceGraphOnLoad} from'./ui/raceGraph.js'
 import {updateNmeaIndicator} from './ui/common.js'
 import {openAutoRouter} from '../common/callExternal.js'
+import {updateRaceListNotif, sheduleNotif} from'./ui/raceNotif.js'
 
 let initDone = null;
 let upDateDisplay =false;
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     onPlayerConnect();
     doDbListener();
     updateRaceListDisplay(); 
+    updateRaceListNotif();
     uiBindingInit();
     raceGraphOnLoad();
     buildRaceStatusHtml();
@@ -55,6 +57,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Pour l’arrêter plus tard :
     setTimeout(() => repeater.stop(), 20000); // stop après 20s
+
+    const repeater2 = startRepeating(() => {
+        sheduleNotif();
+    }, 5000);
+
+    
 });
 
 function initializeDom()
@@ -92,6 +100,7 @@ function doDbListener()
                 await updateLegList();
                 await updatePolar();
                 updateRaceListDisplay(); 
+                updateRaceListNotif();
                 //update display map, fleet racestatus,, race book 
                 buildRaceStatusHtml();
                 tabSwitch();

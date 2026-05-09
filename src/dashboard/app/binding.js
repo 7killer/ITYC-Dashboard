@@ -13,6 +13,7 @@ import {applyRaceAnalysisMode, buildRaceAnalyseAdvance} from "../ui/raceAnalysis
 import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV,
    exportGraphData, exportStamina, exportOwnBoatTrack, exportRestrictedZones} from "./exportTool.js"
 import {getDoradoUrl} from "../../common/callExternal.js"
+import {adaptUnitNotif,createNotif,createTimeNotif} from "../ui/raceNotif.js"
 
 
 /**
@@ -518,7 +519,19 @@ export function uiBindingInit() {
     {
       selector: '#sel_rt_skipperLmap',
       onChange: (value) => {onSkipperSelectedChange('Lmap');}
-    }
+    },
+    {
+      selector: '#bt_notif',
+      onChange: async () => {createNotif();}
+    },
+    {
+      selector: '#bt_notif2',
+      onChange: async () => {createTimeNotif();}
+    },
+    {
+      selector: '#bt_rt_addLmap',
+      onChange: async () => {sel_type1Notif();}
+    },
 
 
   ]);

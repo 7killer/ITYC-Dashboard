@@ -8,6 +8,9 @@ import {buildRaceBookHtml} from '../ui/raceBook.js'
 import {initializeMap} from '../ui/map/map-race.js'
 import {upDateGraph} from'../ui/raceGraph.js'
 import {buildRaceAnalyseAdvance} from '../ui/raceAnalysis.js'
+import {showNotifList} from'../ui/raceNotif.js'
+
+
 
 export const tabList = Object.freeze({
     1 : "raceLog",
@@ -82,7 +85,7 @@ export function tabSwitch(tabId = null)
             buildRaceAnalyseAdvance();
             break;
         case "notif":
-            
+            showNotifList();
             break;
     }
 /*

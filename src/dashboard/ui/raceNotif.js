@@ -1,11 +1,18 @@
 
 
-import { roundTo, cleanSpecial } from '../../common/utils.js';
+import { roundTo } from '../../common/utils.js';
+import { formatTimeNotif } from './common.js';
 
-var divNotif,  lbRaceNotif, lbType1Notif, lbType2Notif, lbValNotif, lbMinNotif,  TextNotif,chRepNotif,chRepNotif2,lbnotifUnit;
-var lang = "fr";
+import {getUserPrefs} from '../../common/userPrefs.js'
+
+import {getRaceInfo,
+getLegList,
+getOpenedRaceHistory,
+getLegPlayerInfos
+} from '../app/memoData.js'
+
 var permission = false;
-var notifications = [];     // Notifications
+const notifications = [];     // Notifications
 
 Notification.requestPermission(function (status) {
     if (Notification.permission !== status) {
@@ -17,40 +24,64 @@ Notification.requestPermission(function (status) {
 });
 
 
-
-
-function initialize(language) {
-        
-    lbRaceNotif = document.getElementById("sel_raceNotif");
-    lbType1Notif = document.getElementById("sel_type1Notif");
-    lbType2Notif = document.getElementById("sel_type2Notif");
-    lbValNotif = document.getElementById("sel_valNotif");
-    lbMinNotif = document.getElementById("sel_minuteNotif");
-    divNotif = document.getElementById("notif");
-    chRepNotif = document.getElementById("notif_repeat");
-    chRepNotif2 = document.getElementById("notif_repeat2");
-    lbnotifUnit = document.getElementById("notifUnit");
-
-    lang = language;
-
-    document.getElementById("bt_notif").addEventListener("click", create);
-    document.getElementById("bt_notif2").addEventListener("click", createTime);
-    document.getElementById("sel_type1Notif").addEventListener("change", adaptUnit);
-
-}
-
-function addRace(rid,rName)
+export function updateRaceListNotif()
 {
-    const optionNotif = document.createElement("option");
-    optionNotif.text = rName;
-    optionNotif.id = rid;
-    lbRaceNotif.appendChild(optionNotif);
+    const raceInfo = getRaceInfo();
+    const openedRaceIdHistory = getOpenedRaceHistory();
+    const raceList = getLegList();
+
+    const sel = document.getElementById("sel_raceNotif");
+    
+    // Supprime les options dynamiques existantes
+    [...sel.options].forEach(opt => {
+        if (opt.dataset.dynamic === "true") sel.removeChild(opt);
+    });
+    
+    const opt = document.createElement("option");
+    opt.dataset.dynamic = "true";
+    
+    if(raceInfo?.raceId == null || raceInfo?.legNum == null) 
+    {
+        opt.textContent = "Aucune course disponible";
+        opt.disabled = true;
+        opt.selected = true;
+        opt.value = 0;
+        sel.appendChild(opt);
+        sel.value = 0;
+        return;
+    }
+
+    opt.disabled = false;
+    
+    const raceKey = raceInfo.raceId + '-' + raceInfo.legNum; 
+    opt.textContent = `${raceInfo.legName} (${raceKey})`;
+    opt.selected = true;
+    opt.value = raceKey;
+    sel.appendChild(opt);
+    sel.value = raceKey
+    
+    opt.selected = false;
+
+    for (const legInfo of Object.entries(openedRaceIdHistory)) {
+        const legId = legInfo[1];
+        if(raceInfo.raceId != legId.raceId || raceInfo.legNum != legId.legNum)
+        {
+            const key = `${legId.raceId}-${legId.legNum}`;
+            const legInfo = raceList[key];
+            
+            const raceKey = raceInfo.raceId + '-' + raceInfo.legNum; 
+            opt.textContent = `${legInfo.legName} (${raceKey})`;
+            opt.value = raceKey;
+            sel.appendChild(opt);
+        }
+    }
 }
- function adaptUnit()
+
+export function adaptUnitNotif()
  {
     let text ="";
     let padL = "3em";
-    switch(lbType1Notif.value) {
+    switch(document.getElementById("sel_type1Notif").value) {
         case "1" : // TWA
         case "2" : // HDG
         case "4" : // TWD
@@ -71,176 +102,52 @@ function addRace(rid,rName)
             text = "%";
             padL = "4em"
             break;
-
-
         default :
             break;
     }
-    lbnotifUnit.innerHTML = text;
+    document.getElementById("notifUnit").innerHTML = text;
     document.getElementById("bt_notif2").style.paddingRight = padL;
- }
+}
 
 
-function createTime(){
-
-    //rappel temps
-    if (lbMinNotif.value) {    
-        if(lang ==  "fr") {
-            var nText = "Rappel vers " + Util.formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (heure locale).";
-        } else
-        {
-            var nText = "Recall at " + Util.formatTimeNotif(Date.now() + lbMinNotif.value * 60000) + " (local time).";
-        }
+export function createTimeNotif(){
+    const userPrefs = getUserPrefs();
+    const timeVal = document.getElementById("sel_minuteNotif").value;
+    if(timeVal)
+    {
         notifications.push({
-                        type: "recall",
-                        repActive : chRepNotif2.checked,
-                        time: Date.now() + lbMinNotif.value * 60000,
-                        repet: 0,
-                        text: nText
-                       }); 
-    } else {
-        if(lang ==  "fr") {
+            type: "recall",
+            repActive : document.getElementById("notif_repeat2").checked,
+            time: Date.now() + timeVal * 60000,
+            repet: 0,
+        });
+        
+        document.getElementById("sel_minuteNotif").value = "";
+        showNotifList();
+    } else
+    {
+        if(userPrefs.lang ==  "fr") {
             alert ("Enregistrement impossible, entrez un délai !");
         } else
         {
             alert ("Record impossible, enter a delay !"); 
         }
-        return;
     }
-    lbMinNotif.value = "";
-    showList();
-
 }
 
-function create(){
 
-    if (lbRaceNotif.value != "---") {
-        if (lbType1Notif.value != "---" && lbType2Notif.value != "---" && lbValNotif.value) {
-            if(lang ==  "fr") {
-                var nText = "<b>" + lbRaceNotif.value + " :</b> notification si ";
-                switch(lbType1Notif.value) {
-                    case "1" : // TWA
-                        nText += "TWA";
-                        break;
-                    case "2" : // HDG
-                        nText += "cap";    
-                        break;
-                    case "3" : // TWS
-                        nText += "TWS";
-    
-                        break;
-                    case "4" : // TWD
-                        nText += "TWD";
-                        break;
-                    case "5" : // STAMINA
-                        nText += "stamina";
-                        break;
-                    case "6" : // overSpeed
-                        nText += "overSpeed";
-                        break;
-                    case "7" : // boat vmg
-                        nText += "boat vmg";
-                        break;
-                    case "8" : // best vmg
-                        nText += "TWA bvmg";
-                        break;
-                    default :
-                        break;
-                }
-                nText += " est ";
-                switch(lbType2Notif.value ) {
-                    case "inf" : // inferior
-                        nText += "inférieur(e) à ";
-                        break;
-                    case "infegal" : // HDG
-                        nText += "inférieur(e) ou égale à ";
-                        break;
-                    case "egal" : // equal
-                        nText += "égal à ";
-                        break;
-                    case "supegal" : // superior or equal
-                        nText += "supérieur(e) ou égale à ";
-                        break;
-                    case "sup" : // superior
-                        nText += " supérieur(e) à ";
-                        break;
-                    default :
-                        break;
-                }
-                nText += lbValNotif.value + ".";
-            } else {
-                var nText = "<b>" + lbRaceNotif.value + " :</b> notification if ";
-                switch(lbType1Notif.value) {
-                    case "1" : // TWA
-                        nText += "TWA";
-                        break;
-                    case "2" : // HDG
-                        nText += "heading";   
-                        break;
-                    case "3" : // TWS
-                        nText += "TWS";
-                        break;
-                    case "4" : // TWD
-                        nText += "TWD";
-                        break;
-                    case "5" : // STAMINA
-                        nText += "stamina";
-                        break;
-                    case "6" : // overSpeed
-                        nText += "overSpeed";
-                        break;
-                    case "7" : // boat vmg
-                        nText += "Boat vmg";
-                        break;
-                    case "8" : // TWA best vmg
-                        nText += "TWA bvmg";
-                        break;
-                    default :
-                        break;
-                }
-                nText += " is ";
-                switch(lbType2Notif.value ) {
-                    case "inf" : // inferior
-                        nText += "inferior to ";
-                        break;
-                    case "infegal" : // HDG
-                        nText += "inferior or equal to ";
-                        break;
-                    case "egal" : // equal
-                        nText += "equal to ";
-                        break;
-                    case "supegal" : // superior or equal
-                        nText += " superior or equal to ";
-                        break;
-                    case "sup" : // superior
-                        nText += "superior to ";
-                        break;
-                    default :
-                        break;
-                }
-                nText += lbValNotif.value + ".";
-            }
-                
-            notifications.push({race: lbRaceNotif.value,
-                                type : lbType1Notif.value,
-                                val : Util.roundTo(lbValNotif.value,2),
-                                repActive : chRepNotif.checked,
-                                ope : lbType2Notif.value,
-                                repet: 0,
-                                text: nText
-                                });
+export function createNotif(){
 
-        } else
-        {
-            if(lang ==  "fr") {
-                alert ("Enregistrement impossible, vérifiez les données !");
-            } else {
-                alert ("Record impossible, verify datas !");    
-            }
-            return;
-        }
-    } else {
-        if(lang ==  "fr") {
+    const raceNotif = document.getElementById("sel_raceNotif").value;
+    const type1Notif = document.getElementById("sel_type1Notif").value;
+    const type2Notif = document.getElementById("sel_type2Notif").value;
+    const valNotif = document.getElementById("sel_valNotif").value;
+
+    const userPrefs = getUserPrefs();
+
+    if(raceNotif == 0 || raceNotif == "---")
+    {
+        if(userPrefs.lang ==  "fr") {
             alert ("Enregistrement impossible, sélectionnez une course!");
         } else
         {
@@ -249,187 +156,196 @@ function create(){
         return;
     }
 
+    if(type1Notif == "---" || type2Notif == "---" || !valNotif)
+    {
+        if(userPrefs.lang ==  "fr") {
+            alert ("Enregistrement impossible, vérifiez les données !");
+        } else {
+            alert ("Record impossible, verify datas !");    
+        }
+        return;
+    }
 
-    lbRaceNotif.value = "---";
-    lbType1Notif.value = "---";
-    lbType2Notif.value = "---";
-    lbValNotif.value = "";
-    lbMinNotif.value = "";
-    showList();
-        
+    notifications.push({race: raceNotif,
+        type : type1Notif,
+        val : Util.roundTo(valNotif,2),
+        repActive : document.getElementById("sel_minuteNotif").checked,
+        ope : type2Notif,
+        repet: 0,
+    });
+
+    document.getElementById("sel_raceNotif").value = "---";
+    document.getElementById("sel_type1Notif").value = "---";
+    document.getElementById("sel_type2Notif").value = "---";
+    document.getElementById("sel_valNotif").value = "";
+    showNotifList();
+
 }
 
-function deleteNotif(id){
+export function deleteNotif(id){
     let idx_notif = id.split('_')[2];
     if(notifications[idx_notif])delete notifications[idx_notif];
-    showList();
+    showNotifList();
 }
 
-function showList() {
-    divNotif.innerHTML = "";
-    for (var i = 0; i < notifications.length; i++) {
+export function showNotifList() {
+    const userPrefs = getUserPrefs();
+    const isFr = userPrefs.lang ==  "fr"; 
+    const closeImg = userPrefs.theme=="dark"?"./img/closedark.png":"./img/close.png";
+    let notifTxt = "";
+    for (let i = 0; i < notifications.length; i++) {
+        
         if(!notifications[i]) continue;
-        let endClose = '<img id="notif_delete_'+i+'"';
-        if(document.getElementById("color_theme").checked)
-            endClose += ' class="popupCloseBt" src="./img/closedark.png" >';
-        else
-            endClose += ' class="popupCloseBt" src="./img/close.png" >';
-        if(notifications[i].repet < 3) {divNotif.innerHTML += '<p class="notifBorderBottom">'+notifications[i].text + endClose+'</p>' ;}   
-              
-    }        
+        
+        notifTxt +='<p class="notifBorderBottom">';
+        if(notifications[i].type=="recall") {
+            if(isFr) {
+                notifTxt += "Rappel vers " + formatTimeNotif(notifications[i].time) + " (heure locale).";
+            } else
+            {
+                notifTxt += "Recall at " + formatTimeNotif(notifications[i].time) + " (local time).";
+            }
+        } else
+        {
+            
+            const raceList = getLegList();
+            const legInfo = raceList[notifications[i].race];
+            
+
+            notifTxt += "<b>" + legInfo.legName + " :</b> ";
+            notifTxt += isFr?"notification si ":"notification if "
+
+            switch(notifications[i].type) {
+                case "1" : notifTxt += "TWA"; break;
+                case "2" : notifTxt += "HDG"; break;
+                case "3" : notifTxt += "TWS"; break;
+                case "4" : notifTxt += "TWD"; break;
+                case "5" : notifTxt += "stamina"; break;
+                case "6" : notifTxt += "overSpeed"; break;
+                case "7" : notifTxt += "boat vmg"; break;
+                case "8" : notifTxt += "TWA bvmg"; break;
+                default : break;
+            }
+            notifTxt += isFr?" est ":" is ";
+
+
+            switch(notifications[i].ope) {
+                case "inf" : notifTxt += isFr?"inférieur(e) à ":"inferior to ";break;
+                case "infegal" : notifTxt += isFr?"inférieur(e) ou égale à ":"inferior or equal to ";break;
+                case "egal" : notifTxt += isFr?"égal à ":"equal to ";break;
+                case "supegal" : notifTxt += isFr?"supérieur(e) ou égale à ":" superior or equal to ";break;
+                case "sup" : notifTxt += isFr?" supérieur(e) à ":"superior to ";break;
+                default : break;
+            }
+            notifTxt += notifications[i].val;
+
+            switch(notifications[i].type) {
+                case "1" : notifTxt +=  "°"; break;
+                case "2" : notifTxt +=  "°"; break;
+                case "3" : notifTxt +=  isFr?"nds":"knds"; break;
+                case "4" : notifTxt +=  "°"; break;
+                case "5" : notifTxt +=  "%"; break;
+                case "6" : notifTxt +=  "%"; break;
+                case "7" : notifTxt +=  isFr?"nds":"knds"; break;
+                case "8" : notifTxt +=  "°"; break;
+                default : break;
+            }
+            notifTxt += ".";
+        }
+        notifTxt += '<img id="notif_delete_'+i+'" class="popupCloseBt" src='+closeImg+' ></p>';
+    }
+
+    document.getElementById("notif").innerHTML = notifTxt;
 }
-/*
-r.name
-r.curr.aground
-r.curr.displayName
-r.curr.badSail
-r.curr.distanceToEnd
-r.curr.twa
-r.curr.heading
-r.curr.tws
-r.curr.twd
-r.curr.stamina
-r.curr.bestVmg.twaDown
-r.curr.bestVmg.twaUp
-uinfo.xplained
-uinfo.xoption_sailOverlayer
-uinfo.vmg
-    
 
-
-
-*/
-function sheduleNotif() {
+export function sheduleNotif() {
     
     const userPrefs = getUserPrefs(); 
-    const connectedRace = getOpenedRaceId();
+    const isFr = userPrefs.lang ==  "fr"; 
     const raceInfo = getRaceInfo();
     const raceItes = getLegPlayerInfos();
 
     const currIte = raceItes?.ites?.[0]?? null;
     const playerName = raceItes?.name;
+    
+    const titreNotif = raceInfo.legName;
 
-    var TitreNotif = raceInfo.legName;
-    var icon = 2;
-
+    let textNotif = "";
 
     // Notification Echouement
     if (currIte?.aground == true) {
-        
-        if(lang ==  "fr") {
-            TextNotif =  playerName + " : vous êtes échoué !";
-        } else
-        {
-            TextNotif =  playerName + " : you are aground !";    
-        }
-        doNotif(TitreNotif, TextNotif, icon);
+        textNotif = playerName + isFr?" : vous êtes échoué !":" : you are aground !";
+        doNotif(titreNotif, textNotif, 2);
     }
     // Notification Mauvaise voile
     if (currIte?.badSail == true && currIte?.metaDash.dtf > 1) {
-        if(lang ==  "fr") {
-            TextNotif = playerName + " : vous naviguez sous mauvaise voile !";
-        } else {
-            TextNotif = playerName + " : you use bad sail !";    
-        }
-        doNotif(TitreNotif, TextNotif, icon);
+        textNotif = playerName + isFr?" : vous naviguez sous mauvaise voile !":" : you use bad sail !";
+        doNotif(titreNotif, textNotif, 2);
     }
+
     for (let i = 0; i < notifications.length; i++) {
-        let icon = 1;
         if(!notifications[i]) continue;
 
         if(notifications[i].type=="recall") {
             if ((Date.now() > notifications[i].time - 300000 && Date.now() < notifications[i].time + 600000) 
             && (notifications[i].repet == 0 || (notifications[i].repActive && notifications[i].repet < 3 ))) {
                 notifications[i].repet++;
-                let icon = 3;
-                if(lang ==  "fr") { 
-                    TextNotif =  playerName + " : rappel programmé à " + Util.formatTimeNotif(notifications[i].time) + " !";
-                } else
-                {
-                    TextNotif =  playerName + " : recall programmed at " + Util.formatTimeNotif(notifications[i].time) + " !";
-                }
-                doNotif(TitreNotif, TextNotif, icon, i);    
+                textNotif = playerName + " : ";
+                textNotif += isFr?"rappel programmé à ":"recall programmed at ";
+                textNotif += formatTimeNotif(notifications[i].time) + " !";
+                doNotif(titreNotif, textNotif, 3, i);    
             }
         } else if(notifications[i].race == raceInfo.legName)
         {
-           let textType = "";
+           let textType = " : ";
            let textOpe = "";
+           let textUnit = "";
            let val = 0;
             switch(notifications[i].type) {
                 case "1" : // TWA
-                    if(lang ==  "fr")  textType =  " : votre TWA";
-                    else textType =  " : your TWA";
+                    textType +=  isFr?"votre TWA":"your TWA";
                     val = roundTo(Math.abs(currIte?.twa), 1);
                     break;
                 case "2" : // HDG
-                    if(lang ==  "fr")  textType =  " : votre cap";
-                    else textType =  " : your heading";
+                    textType +=  isFr?"votre cap":"your heading";
                     val = roundTo(Math.abs(currIte?.heading), 1);
                     break;
                 case "3" : // TWS
-                    if(lang ==  "fr")  textType =  " : votre TWS";
-                    else textType =  " : your TWS";
+                    textType +=  isFr?"votre TWS":"your TWS";
                     val = roundTo(Math.abs(currIte?.tws), 1);
-
                     break;
                 case "4" : // TWD
-                    if(lang ==  "fr")  textType =  " : votre TWD";
-                    else textType =  " : your TWD";
+                    textType +=  isFr?"votre TWD":"your TWD";
                     val = roundTo(Math.abs(currIte?.metaDash.twd), 1);
-
                     break;
                 case "5" : // STAMINA
-                    if(lang ==  "fr")  textType =  " : votre stamina";
-                    else textType =  " : your stamina";
+                    textType +=  isFr?"votre stamina":"your stamina";
                     val = roundTo(Math.abs((currIte?.metaDash?.realStamina ? currIte?.metaDash?.realStamina : currIte?.stamina)), 1);
                     break;
                 case "6" : // overspeed
+                    textType +=  isFr?"votre coefficient de survitesse":"your overspeed coefficient";
                     val = 0;
                     if(currIte?.metaDash?.xplained) {
-                        roundTo(Number(uinfo.xoption_sailOverlayer.replace('%','')), 1)
-
-                    }
-                    
-        xfactorTxt = roundTo(iteDash.xfactor, 4);
-        if(iteDash.sailCoverage != 0 && iteDash.xplained) {
-            xfactorTxt += " " + iteDash.sailCoverage +"%";
-        }
-        foilTxt = iteDash.realFoilFactor==null?"-":(roundTo(iteDash.realFoilFactor,0) + "%");
-
-                    if(lang ==  "fr")  textType =  " : votre coefficient de survitesse";
-                    else textType =  " : your overspeed coefficient";
-                    var fleet = raceFleetMap.get(r.id);
-                    val = 0;
-                    if(fleet && fleet.uinfo[currentUserId])
-                    {
-                        var uinfo = fleet.uinfo[currentUserId];
-                        if(uinfo.xplained) val = Util.roundTo(Number(uinfo.xoption_sailOverlayer.replace('%','')), 1);
+                        val += roundTo(iteDash.sailCoverage)
                     }
                     break;
                 case "7" : // VMG
-                    if(lang ==  "fr")  textType =  " : votre VMG";
-                    else textType =  " : your VMG";
-                    var fleet = raceFleetMap.get(r.id);
+                    textType +=  isFr?"votre VMG":"your VMG";
                     val = 0;
-                    if(fleet && fleet.uinfo[currentUserId])
-                    {
-                        var uinfo = fleet.uinfo[currentUserId];
-                        if(uinfo.xplained) val = Util.roundTo(Number(uinfo.vmg), 1);
-                    }
+                    if(currIte?.metaDash?.vmg)
+                        val = roundTo(currIte.metaDash.vmg, 1)
                     break;
                 
                 case "8" : // BEST VMG
-                    if(lang ==  "fr")  textType =  " : TWA Best VMG";
-                    else textType =  " : TWA Best VMG";
-                    
+                    textType +=  isFr?"TWA Best VMG":"TWA Best VMG";
                     val = 0;
-                    if(r.curr && r.curr.bestVmg)
+                    if(currIte?.metaDash?.bVmg)
                     {
                         if(notifications[i].val > 90) {
-                            val = Util.roundTo(Math.abs(r.curr.bestVmg.twaDown), 1);
+                            val = roundTo(Math.abs(currIte.metaDash.bVmg.twaDown), 1);
                         } else
                         {
-                            val = Util.roundTo(Math.abs(r.curr.bestVmg.twaUp), 1);
+                            val = roundTo(Math.abs(currIte.metaDash.bVmg.twaUp), 1);
                         }
                     }
                     break;
@@ -440,62 +356,66 @@ function sheduleNotif() {
             switch(notifications[i].ope) {
                 case "inf" : // inferior
                     if(val < notifications[i].val) drawNotif = true;
-                    if(lang ==  "fr")  textOpe =  " est inférieur(e) à ";
-                    else textOpe =  " is inferior to ";
+                    textOpe =isFr? " est inférieur(e) à ":" is inferior to ";
                     break;
                 case "infegal" : // HDG
                     if(val <= notifications[i].val) drawNotif = true;
-                    if(lang ==  "fr")  textOpe =  " est inférieur(e) ou égale à ";
-                    else textOpe =  " is inferior or equal to ";
+                    textOpe =isFr? "  est inférieur(e) ou égale à ":" is inferior or equal to ";
+                    if(lang ==  "fr")  textOpe =  "";
+                    else textOpe =  "";
                     break;
                 case "egal" : // equal
                     if(val == notifications[i].val) drawNotif = true;
-                    if(lang ==  "fr")  textOpe =  " est égal à ";
-                    else textOpe =  " is equal to ";
+                    textOpe =isFr? " est égal à ":" is equal to ";
                     break;
-                case "supegal" : // superior or equal
-                if(val >= notifications[i].val) drawNotif = true;
-                    if(lang ==  "fr")  textOpe =  " est supérieur(e) ou égale à ";
-                    else textOpe =  " is superior or equal to ";
+                case "supegal" : // super est inférieur(e) ou égale à ior or equal
+                    if(val >= notifications[i].val) drawNotif = true;
+                    textOpe =isFr? " est supérieur(e) ou égale à ":" is superior or equal to ";
                     break;
                 case "sup" : // superior
                     if(val > notifications[i].val) drawNotif = true;
-                    if(lang ==  "fr")  textOpe =  " est supérieur(e) à ";
-                    else textOpe =  " is superior to ";
+                    textOpe =isFr? " est supérieur(e) à ":" is superior to ";
+                    if(lang ==  "fr")  textOpe =  "";
+                    else textOpe =  "";
                     break;
                 default :
                     break;
             }
+            
+            switch(notifications[i].type) {
+                case "1" : textUnit =  "°"; break;
+                case "2" : textUnit =  "°"; break;
+                case "3" : textUnit =  isFr?"nds":"knds"; break;
+                case "4" : textUnit =  "°"; break;
+                case "5" : textUnit =  "%"; break;
+                case "6" : textUnit =  "%"; break;
+                case "7" : textUnit =  isFr?"nds":"knds"; break;
+                case "8" : textUnit =  "°"; break;
+                default : break;
+            }
 
             if(drawNotif && (notifications[i].repet == 0 || (notifications[i].repActive && notifications[i].repet < 3 ))) {
                 notifications[i].repet++;
-                TextNotif =  playerName + textType + textOpe + notifications[i].val + "!";
-                doNotif(TitreNotif, TextNotif, icon, i);    
+                textNotif  =  playerName + textType + textOpe + notifications[i].val + textUnit + "!";
+                doNotif(titreNotif, textNotif , 1, i);    
             }
         }
     }
 }
 
 function doNotif(TitreNotif, TextNotif, icon, i) {
-    var options = {
+    const options = {
         "lang": "FR",
         "icon": "./img/"+icon + ".png",
-//        "image": "./img/bandeau.jpg",
         "body": TextNotif
     };
+
     var notif = new Notification(TitreNotif, options);
     notif.onclick = function(x) {
         if (i && notifications[i]) delete notifications[i];
-
-        //notifications[i].repet = 4;
-        //console.log(formatTimeNotif(Date.now()) + " Repet : " + i + " / " + notifications[i].repet);
+        showNotifList();
         window.focus();
         this.close();
     };
 } 
 
-
-export {
-    create,initialize,addRace,
-    showList,manage,deleteNotif
-};
