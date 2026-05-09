@@ -89,31 +89,40 @@ export function buildRaceLogHtml() {
 
 function buildRaceLogLineCmd(raceLogLine) {
     if(!raceLogLine.action) return"";
+    const commandWhen = raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.iteDate);
+    const actionType = raceLogLine.action.type;
+    let actionTxt = 'Order';
+    if(actionType === "sail") actionTxt = 'Sail';
+    else if(actionType === "prog") actionTxt = 'Prog';
+    else if(actionType === "wp") actionTxt = 'Waypoints';
     return '<tr class="commandLine hovred">'
-    + '<td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td>'
-    + '<td colspan="19"><b>Command @ ' + (raceLogLine.serverTs ? DateUTC(raceLogLine.serverTs, 2) : DateUTC(raceLogLine.iteDate))
-    + '</b> • <b>Actions</b> → ' + printLastCommand(raceLogLine.action) + '</td>'
-    + '</tr>';
+        + '<td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td>'
+        + '<td colspan="19">'
+        + '<div class="commandLineHeader"><b>Command ' + commandWhen + '</b> <span class="commandLineSub">' + actionTxt + '</span></div>'
+        + '<div class="command-grid">' + printLastCommand(raceLogLine.action) + '</div>'
+        + '</td>'
+        + '</tr>';
 }
 function printLastCommand(order) {
-    let lastCommand = "";
-    const action = order.action
+    const action = order.action;
+    const items = [];
+
     if (order.type == "order") {
-        lastCommand += "<span class='lastCommandOrder'>" + (action.autoTwa ? " TWA" : " HDG") + " " + roundTo(action.deg, 0) + "°</span> • ";
+        items.push('<span class="command-grid-item command-order"><span class="lastCommandOrder">' + (action.autoTwa ? "TWA" : "HDG") + ' ' + roundTo(action.deg, 0) + '°</span></span>');
     } else if (order.type == "sail") {
-        lastCommand += " Sail <span class='lastCommandOrder'>" + sailNames[action.sailId] + "</span>";
-    } else if (order.type == "prog") {
-        action.map(function (progCmd) {
+        items.push('<span class="command-grid-item command-sail">Sail <span class="lastCommandOrder">' + sailNames[action.sailId] + '</span></span>');
+    } else if (order.type == "prog" && Array.isArray(action)) {
+        action.forEach(function (progCmd) {
             const progTime = DateUTC(progCmd.timestamp, 1);
-            lastCommand += "<span class='lastCommandOrder'>" + (progCmd.autoTwa ? " TWA" : " HDG") + " " + roundTo(progCmd.deg, 0) + "°</span> @ " + progTime + " • ";
+            items.push('<span class="command-grid-item command-prog"><span class="lastCommandOrder">' +  progTime + ' - ' + (progCmd.autoTwa ? "TWA" : "HDG") + ' ' + roundTo(progCmd.deg, 0) + '°</span></span>');
         });
-    } else if (order.type == "wp") {
-        action.map(function (waypoint) {
-            lastCommand += " WP <span class='lastCommandOrder'>" + formatPosition(waypoint.lat, waypoint.lon) + "</span> • ";
+    } else if (order.type == "wp" && Array.isArray(action)) {
+        action.forEach(function (waypoint) {
+            items.push('<span class="command-grid-item command-wp">WP <span class="lastCommandOrder">' + formatPosition(waypoint.lat, waypoint.lon) + '</span></span>');
         });
     }
-    lastCommand = lastCommand.replace(/ \•([^•]*)$/, "");
-    return lastCommand;
+
+    return items.join('');
 }
 function buildRaceLogLine(raceIte)
 {
@@ -127,74 +136,84 @@ function buildRaceLogLine(raceIte)
     const iteDash= raceIte.metaDash;
     const userPrefs = getUserPrefs();
     const darkTheme = userPrefs.theme=="dark";
-    if(!raceIte.tws || !iteDash ) return"";
-
-    let speedCStyle = "";
-    let speedTStyle = "";
-    let deltaDist = "";
-
-    if("deltaD" in iteDash
-        && "speedC" in iteDash
-        && "deltaD_T" in iteDash) {
-        deltaDist = roundTo(iteDash.deltaD, 3);
-        if (isDifferingSpeed(raceIte.speed,iteDash.speedC)) {
-            speedCStyle = 'style="background-color: yellow;';
-            speedCStyle += darkTheme?' color:black;"':'"';
-
-        } else if (iteDash.speedT && isDifferingSpeed(raceIte.speed)) {
-            // Speed differs but not due to penalty - assume "Bad Sail" and display theoretical delta
-            speedTStyle = 'style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"';
-            deltaDist = deltaDist + " (" + roundTo(iteDash.deltaD_T, 3) + ")";
-        }
-    }
-    if (iteDash.manoeuvering) {
-        speedCStyle = 'style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"';
-    }
+    if(!raceIte.tws ) return"";
 
     const sailChange = formatSeconds(raceIte.tsEndOfSailChange - raceIte.iteDate);
     const gybing = formatSeconds(raceIte.tsEndOfGybe - raceIte.iteDate);
     const tacking = formatSeconds(raceIte.tsEndOfTack - raceIte.iteDate);
 
+    let speedCStyle = "";
+    let speedTStyle = "";
+    let deltaDist = "";
+
     let staminaStyle = "";
     let staminaTxt = "-";
 
-    const stamina = iteDash.realStamina;
-    const paramStamina = getParamStamina();
-    if(stamina)
-    {
-        if (stamina < paramStamina?.tiredness[0]) 
-            staminaStyle = 'style="color:red";';
-        else if (stamina < paramStamina?.tiredness[1]) 
-            staminaStyle = 'style="color:orange";';
-        else 
-            staminaStyle = 'style="color:green";';   
-
-        staminaTxt = roundTo(stamina , 2) + "%";
-        staminaTxt += iteDash.manoeuver.staminaFactor?(" (x" + roundTo(iteDash.manoeuver.staminaFactor , 2)+")"):"" ;
-    }
-
     const xfactorStyle = getxFactorStyle(raceIte);
+    let xfactorTxt = "-";
+    let foilTxt = "-";
 
-    let xfactorTxt = roundTo(iteDash.xfactor, 4);
-    if(iteDash.sailCoverage != 0 && iteDash.xplained) {
-        xfactorTxt += " " + iteDash.sailCoverage +"%";
+    const stamina = iteDash?.realStamina;
+    const paramStamina = getParamStamina();
+
+    if(iteDash) {
+
+        if("deltaD" in iteDash
+            && "speedC" in iteDash
+            && "deltaD_T" in iteDash) {
+            deltaDist = roundTo(iteDash.deltaD, 3);
+            if (isDifferingSpeed(raceIte.speed,iteDash.speedC)) {
+                speedCStyle = 'style="background-color: yellow;';
+                speedCStyle += darkTheme?' color:black;"':'"';
+
+            } else if (iteDash.speedT && isDifferingSpeed(raceIte.speed)) {
+                // Speed differs but not due to penalty - assume "Bad Sail" and display theoretical delta
+                speedTStyle = 'style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"';
+                deltaDist = deltaDist + " (" + roundTo(iteDash.deltaD_T, 3) + ")";
+            }
+        }
+        if (iteDash?.manoeuvering) {
+            speedCStyle = 'style="background-color: ' + (darkTheme?"darkred":"LightRed") + ';"';
+        }
+
+        if(stamina)
+        {
+            if (stamina < paramStamina?.tiredness[0]) 
+                staminaStyle = 'style="color:red";';
+            else if (stamina < paramStamina?.tiredness[1]) 
+                staminaStyle = 'style="color:orange";';
+            else 
+                staminaStyle = 'style="color:green";';   
+
+            staminaTxt = roundTo(stamina , 2) + "%";
+            staminaTxt += iteDash.manoeuver.staminaFactor?(" (x" + roundTo(iteDash.manoeuver.staminaFactor , 2)+")"):"" ;
+        }
+
+        xfactorTxt = roundTo(iteDash.xfactor, 4);
+        if(iteDash.sailCoverage != 0 && iteDash.xplained) {
+            xfactorTxt += " " + iteDash.sailCoverage +"%";
+        }
+        foilTxt = iteDash.realFoilFactor==null?"-":(roundTo(iteDash.realFoilFactor,0) + "%");
     }
-    const foilTxt = iteDash.realFoilFactor==null?"-":(roundTo(iteDash.realFoilFactor,0) + "%");
+
+    const speedCText = iteDash?.speedC?roundTo(iteDash.speedC, 3):"-";
+    const deltaTText = iteDash?.deltaT?roundTo(iteDash.deltaT, 0):"-";
+
     return '<tr class="hovred">'
         + gentdRacelog("time", "time", null, "Time", DateUTC(raceIte.iteDate, 1))
-        + raceTableLines(raceIte,iteDash.bVmg)
+        + raceTableLines(raceIte,iteDash?.bVmg)
         + infoSail(raceIte,false,false)
         + gentdRacelog("speed1", "reportedSpeed", null, "vR (kn)", roundTo(raceIte.speed, 3))
-        + gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (roundTo(iteDash.speedC, 3) + " (" + sailNames[(raceIte.sail % 10)] + ")"))
+        + gentdRacelog("speed2", "calcSpeed", speedCStyle, "vC (kn)", (speedCText + " (" + sailNames[(raceIte.sail % 10)] + ")"))
         + gentdRacelog("foils", "foils", null, "Foils",foilTxt)
         + gentdRacelog("xfactor", "factor", xfactorStyle, "Factor", xfactorTxt)
         + gentdRacelog("stamina", "stamina", staminaStyle, "Stamina", (stamina ? roundTo(stamina , 2) + "%": "-"))
         + gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist)
-        + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", roundTo(iteDash.deltaT, 0))
+        + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", deltaTText)
         + gentdRacelog("position", "position", null, "Position", formatPosition(raceIte.pos.lat, raceIte.pos.lon))
-        + '<td class="sailPenalties" ' + getBG(iteDash.tsEndOfSailChange,raceIte.metaDash.previousIteDate) + '>' + sailChange + '</td>'
-        + '<td class="gybe" ' + getBG(iteDash.tsEndOfGybe,iteDash.previousIteDate) + '>' + gybing + '</td>'
-        + '<td class="tack" ' + getBG(iteDash.tsEndOfTack,iteDash.previousIteDate) + '>' + tacking + '</td>'
+        + '<td class="sailPenalties" ' + getBG(iteDash?.tsEndOfSailChange,iteDash?.previousIteDate) + '>' + sailChange + '</td>'
+        + '<td class="gybe" ' + getBG(iteDash?.tsEndOfGybe,iteDash?.previousIteDate) + '>' + gybing + '</td>'
+        + '<td class="tack" ' + getBG(iteDash?.tsEndOfTack,iteDash?.previousIteDate) + '>' + tacking + '</td>'
         + '</tr>';
 
 

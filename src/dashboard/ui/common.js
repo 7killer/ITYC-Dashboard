@@ -325,6 +325,11 @@ export function getxFactorStyle(raceIte)
     const iteDash= raceIte.metaDash;
     const userPrefs = getUserPrefs();
     const darkTheme = userPrefs.theme=="dark";
+    if(!iteDash ) 
+    {
+        return 'style="color:' + (darkTheme?"#a5A5A5" :"black") + ';"';
+    }
+
     let xfactorStyle= 'style="color:' + ((iteDash.xplained) ? (darkTheme?"#a5A5A5" :"black") : "red") + ';"'
     if(!raceIte.speed  )
         xfactorStyle = 'style="color:' + (darkTheme?"#a5A5A5" :"black") + ';"';
@@ -440,10 +445,12 @@ export function raceTableLines(ite,bestTwa,bestDTF) {
     if(userPrefs.theme =='dark')
         hdgFG = isTWAMode ? "white" : "darkcyan"; 
     ite.twd = ite.twd ?? ite.metaDash?.twd ?? 0;
+
+    const DTFTxt = ite.state == "arrived" ? "Arrived" : roundTo(ite.distanceToEnd, 3);
     //TODO compute bestDTF saveit in raceList
     return gentdRacelog("rank", "rank", null, "Rank", (ite.rank ? ite.rank : "-"))
         + gentdRacelog("dtl", "dtl", null, "DTL", bestDTF?roundTo(ite.distanceToEnd - bestDTF, 3):'-')
-        + gentdRacelog("dtf", "dtf", null, "DTF", roundTo(ite.distanceToEnd, 3))
+        + gentdRacelog("dtf", "dtf", null, "DTF", DTFTxt)
         + '<td class="twd">' + roundTo(ite.twd, 3) + '</td>'
         + '<td class="tws">' + roundTo(ite.tws, 3) + '</td>'
         + '<td class="twa" style="color:' + twaFG + ";" + twaBG + twaBold  + '">' + roundTo(Math.abs(ite.twa), 3) + '</td>'
@@ -467,7 +474,7 @@ export function infoSail(ite,short,extended = true) {
     
     let sailNameBG = (userPrefs.theme =='dark')?(ite.badSail ? "darkred" : "darkgreen"):(ite.badSail ? "lightred" : "lightgreen");
 
-    if(ite.metaDash?.deltaReceiveCompute > 900000)   sailNameBG = 'red' ;
+    if(ite.metaDash?.deltaReceiveCompute > 900000 && ite.state != "arrived")   sailNameBG = 'red' ;
 
     let retVal = '<td class="asail" style="background-color:' + sailNameBG + ';">';
     if(extended && ite.metaDash) {
