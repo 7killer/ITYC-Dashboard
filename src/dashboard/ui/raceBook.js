@@ -74,14 +74,15 @@ function viewIdentity(raceInfo,playerOptions) {
     class: 'rb-identity-thumb',
     src:`https://static.virtualregatta.com/offshore/leg/${rid}.jpg`
   });
-  const badge = h('span', {class:'badge'}, 'Race');
+  const badge = h('span', {class:'badge'}, raceInfo.raceType == 'record'? 'Record':'Race');
   const grid = h('div', {class:'kv'},
     h('div', {class:'k'}, 'Race Name (Id)'), h('div', {class:'v'}, `${raceInfo.legName} (${rid})`),
     h('div', {class:'k'}, 'Boat Name'), h('div', {class:'v'}, raceInfo.boatName ?? '-'),
     h('div', {class:'k'}, 'Wind Model'), h('div', {class:'v'}, `GFS ${(raceInfo.fineWinds ? '0.25' : '1.0')}°`),
     h('div', {class:'k'}, 'VSR Level'), h('div', {class:'v'}, `VSR${raceInfo.vsrLevel}`),
     h('div', {class:'k'}, 'Price'), h('div', {class:'v'}, `Cat. ${raceInfo.priceLevel}`),
-    h('div', {class:'k'}, 'Category'), h('div', {class:'v'}, getRankingCategory(playerOptions?.options)),
+    h('div', {class:'k'}, 'Category'), h('div', {class:'v'}, getRankingCategory(playerOptions)),
+    h('div', {class:'k'}, 'Fleet status'), h('div', {class:'v'}, `Arrived ${raceInfo.arrived} / At sea ${raceInfo.boatsAtSea} / Total ${raceInfo.nbTotalSkippers}`),
   );
   const layout = h('div', {class:'rb-identity'},
     h('div', {class:'rb-identity-media'}, badge, img),
@@ -98,8 +99,9 @@ function viewCredits(raceInfo,playerIte) {
     'Gains'
   ];
 
-  const awarded = (playerIte?.rank > 0)
-    ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel-1] / (Math.pow(playerIte.rank, 0.4)))
+  const playerRank =playerIte?.ites[0]?.rank ?? playerIte?.ites[1]?.rank ?? playerIte?.ites[2]?.rank ?? null;
+  const awarded = (playerRank > 0)
+    ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel-1] / (Math.pow(playerRank, 0.4)))
     : '-';
   const takenTotal = totalOptionCredits(raceInfo,playerIte?.options?.options);
   
@@ -148,7 +150,7 @@ function viewStages(raceInfo, playerIte) {
     '🚩 Start',
     raceInfo.start?.name ?? '-',
     'Start',
-    formatPosition(raceInfo.start.lat, raceInfo.start.lon),!!
+    formatPosition(raceInfo.start.lat, raceInfo.start.lon),
     ' - ',
     frag('Date : ', h('span',{class:'pill pill--muted'}, DateUTC(raceInfo.start.date,1,userPrefs.global.localTime ?3:4)))
   ]);
@@ -158,8 +160,9 @@ function viewStages(raceInfo, playerIte) {
     for (const cp of raceInfo.checkpoints) {
       let cpName = (cp.display && cp.display !== 'none') ? cp.display : 'Invisible';
       cpName = cpName.charAt(0).toUpperCase() + cpName.slice(1);
-      if (cpName === 'Buoy') cpName = '🏳️ ' + cpName;
-
+      if (cpName === 'Buoy') cpName = '⛳ ' + cpName;
+      else if (cpName === 'Gate') cpName = '🏳️ ' + cpName;
+      else if (cpName === 'Invisible') cpName = '👻 ' + cpName;
       let passed = ' - ';
       if(playerIte?.ites 
         && playerIte?.ites[0]?.gateGroupCounters
@@ -218,16 +221,41 @@ function viewRestrictedZones(raceInfo) {
   const rz = raceInfo?.restrictedZones;
   if (!Array.isArray(rz) || rz.length === 0) return null;
 
-  // transforme en lignes: une ligne par coordonnée, nom répété par rowspan visuel (on s’affranchit du rowspan pour responsive)
-  const head = ['Nom','Position'];
-  const rows = [];
-  for (const z of rz) {
-    const name = z.name ?? '—';
-    for (const p of (z.vertices || [])) {
-      rows.push([name, formatPosition(p.lat, p.lon)]);
+  const tables = rz.map((z, zoneIndex) => {
+    const name = z?.name ?? `Zone ${zoneIndex + 1}`;
+    const vertices = Array.isArray(z?.vertices) ? z.vertices : [];
+
+    const maxPointsByRow = 4;
+    const coordCount = vertices.length ? maxPointsByRow : 1;
+    const rows = [];
+
+    if (vertices.length) {
+      for (let i = 0; i < vertices.length; i += maxPointsByRow) {
+        const chunk = vertices.slice(i, i + maxPointsByRow);
+        const missingCount = maxPointsByRow - chunk.length;
+        const emptyPositionCell = missingCount ? [h('td', {colspan: missingCount}, '')] : [];
+
+        rows.push(
+          h('tr', null, ...chunk.map((p, pointIndex) => h('td', null, (p?.lat != null && p?.lon != null) ? (`${i + pointIndex + 1} : ` + formatPosition(p.lat, p.lon)) : '-')), ...emptyPositionCell)
+        );
+      }
+    } else {
+      rows.push(
+        h('tr', null, h('td', null, 'Aucun point'))
+      );
     }
-  }
-  return card('Zones interdites', tableModern({head, rows}));
+
+    return h('div', {class: 'table-wrap rb-rz-table'},
+      h('table', {class: 'table-modern'},
+        h('tbody', null,
+          h('tr', null, h('th', {colspan: coordCount}, name)),
+          ...rows
+        )
+      )
+    );
+  });
+
+  return card('Zones interdites', h('div', {class: 'rb-rz-list'}, ...tables));
 }
 
 /***** rendu principal *****/
