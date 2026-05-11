@@ -1,13 +1,14 @@
-
 import { mapState } from '../map-race.js';
-import { requestAutoWindUpdate } from '../map-wind.js';
-
+import { setWindAutoRangeFromWorker } from '../map-wind.js';
+import cfg from '@/config.json';
 
 export class WindyDataProxy {
-
     constructor(wind_layer, workerOrUri) {
         this.wind_layer = wind_layer;
         this.curr_dtg = null;
+        this.lastAppliedKey = null;
+        this.pendingResolve = null;
+        this.pendingMeta = null;
 
         if (workerOrUri instanceof Worker) {
         this.worker = workerOrUri;
@@ -20,10 +21,14 @@ export class WindyDataProxy {
         this.worker.onmessage = function (e) {
             if (e.data.fetched_data) {
             if (e.data.dtg === self.curr_dtg) {
-                self.assignData(e.data.fetched_data, e.data.transform);
+                self.assignData(e.data.fetched_data, {
+                    key: e.data.dtg,
+                    autoMinKts: e.data.autoMinKts,
+                    autoMaxKts: e.data.autoMaxKts,
+                    workerTiming: e.data.timing,
+                });
             }
             } else if (e.data.transform_options) {
-            // ancien mode "transform", inutilisé avec leaflet-velocity
             if (
                 self.curr_dtg &&
                 e.data.transform_options &&
@@ -38,18 +43,13 @@ export class WindyDataProxy {
         }
     }
 
-    /**
-     * Convertit ce qui vient du worker (windpack snapshot) en payload leaflet-velocity.
-     */
     static toVelocityPayload(raw) {
         if (!raw) return null;
 
-        // Déjà au format leaflet-velocity ? -> on passe tel quel.
         if (Array.isArray(raw) && raw.length >= 2 && raw[0].header && raw[1].header) {
         return raw;
         }
 
-        // Format "windpack" => { header, data: [uArray, vArray] }
         if (raw.header && Array.isArray(raw.data) && raw.data.length >= 2) {
         const header = raw.header;
         const u = raw.data[0];
@@ -71,7 +71,6 @@ export class WindyDataProxy {
             refTimeUnix,
         } = header;
 
-        // leaflet-velocity attend un refTime en ISO
         const refUnix = refTimeUnix || validTimeUnix;
         const refTime =
             typeof refUnix === 'number'
@@ -91,91 +90,108 @@ export class WindyDataProxy {
 
         return [
             {
-            header: { ...baseHeader, parameterNumber: 2 }, // UGRD
+            header: { ...baseHeader, parameterNumber: 2 },
             data: u,
             },
             {
-            header: { ...baseHeader, parameterNumber: 3 }, // VGRD
+            header: { ...baseHeader, parameterNumber: 3 },
             data: v,
             },
         ];
         }
 
-        console.warn('toVelocityPayload: format de données inconnu', raw);
+        console.warn('toVelocityPayload: format de donnees inconnu', raw);
         return null;
     }
 
-    /**
-     * Réception des données du worker => push vers la couche leaflet-velocity.
-     * Le paramètre run_transform est ignoré (interpolation déjà faite dans le worker).
-     */
-    assignData(data /*, run_transform */) {
+    assignData(data, meta = {}) {
+        const t0 = performance.now();
         const payload = WindyDataProxy.toVelocityPayload(data);
+        const tPayload = performance.now();
 
         if (!this.wind_layer || typeof this.wind_layer.setData !== 'function') {
         console.warn('WindyDataProxy.assignData: wind_layer sans setData');
+        this._resolvePending({ applied: false, reason: 'missing-layer' });
         return this;
         }
+
         if (payload) {
-            // on profite du fait que map-wind utilise mapState
             try {
-            // import { mapState } from '...'; en haut du fichier si ce n’est pas déjà fait
             mapState.windSettings.lastData = payload;
-            requestAutoWindUpdate();
-            // proto de mode auto : on estime un max en nds sur l’ensemble du fichier
-            const u = payload[0].data;
-            const v = payload[1].data;
-            let maxKts = 0;
-            for (let i = 0; i < u.length; i++) {
-                const uu = u[i];
-                const vv = v[i];
-                if (uu == null || vv == null) continue;
-                const speedMs = Math.sqrt(uu * uu + vv * vv);
-                const speedKts = speedMs * 1.943844;
-                if (speedKts > maxKts) maxKts = speedKts;
+            if (meta.autoMaxKts) {
+                setWindAutoRangeFromWorker(meta.autoMaxKts, meta.autoMinKts);
             }
-            mapState.windSettings.autoMaxKts = Math.max(10, Math.round(maxKts));
             } catch (e) {
-            console.warn('Erreur calcul autoMaxKts', e);
+            console.warn('Erreur mise a jour autoMaxKts', e);
             }
         }
 
+        if (meta.key && meta.key === this.lastAppliedKey) {
+            this._logTiming(meta, {
+                payloadMs: tPayload - t0,
+                skipped: true,
+                reason: 'same-key',
+            });
+            this._resolvePending({ applied: false, reason: 'same-key' });
+            return this;
+        }
+
+        const tSetData0 = performance.now();
         this.wind_layer.setData(payload);
+        const tSetData1 = performance.now();
+        this.lastAppliedKey = meta.key || null;
+        const timing = {
+            payloadMs: tPayload - t0,
+            setDataSyncMs: tSetData1 - tSetData0,
+            totalAssignMs: tSetData1 - t0,
+            skipped: false,
+        };
+        this._logTiming(meta, timing);
+        this._resolvePending({ applied: true, timing });
         return this;
     }
+
     goto_dtg(dtg) {
-        this._to_dtg(dtg, false);
+        return this._to_dtg(dtg, false);
     }
 
     transform_dtg(dtg) {
-        // ancien mode "transform" (non utilisé avec interpolation par worker)
-        this._to_dtg(dtg, true);
+        return this._to_dtg(dtg, true);
     }
 
     _to_dtg(dtg, run_transform) {
-        const self = this;
-        self.curr_dtg = dtg;
+        this.curr_dtg = dtg;
+        const done = this._beginRequest(dtg, { mode: 'goto', startedAt: performance.now() });
+
         if (dtg) {
-        if (self.worker) {
-            self.worker.postMessage({
+        if (this.worker) {
+            this.worker.postMessage({
             data_uri: dtg,
             transform: run_transform,
+            debugWind2: !!cfg.debugWind2,
+            bounds: this._getCurrentBounds(),
             });
         } else {
-            WindyDataProxy.fetchData(dtg, function (data) {
-            self.assignData(data);
+            WindyDataProxy.fetchData(dtg, (data) => {
+            this.assignData(data, { key: dtg });
             });
         }
         } else {
-        self.assignData(null);
+        this.assignData(null, { key: 'empty' });
         }
+
+        return done;
     }
 
     interpolateBetween(urlPrev, urlNext, nowUnix) {
-        // Label "dtg" pour cette interpolation (n’importe quelle string identifie l’état courant)
         const dtgLabel = `interp_${nowUnix}`;
 
         this.curr_dtg = dtgLabel;
+        const done = this._beginRequest(dtgLabel, {
+            mode: 'interpolate',
+            nowUnix,
+            startedAt: performance.now(),
+        });
 
         if (this.worker) {
             this.worker.postMessage({
@@ -184,93 +200,87 @@ export class WindyDataProxy {
                 urlNext,
                 nowUnix,
                 dtg: dtgLabel,
+                debugWind2: !!cfg.debugWind2,
+                bounds: this._getCurrentBounds(),
             });
         } else {
-            // Fallback éventuel : on pourrait ici faire l’interpolation sur le main thread,
-            // mais vu que tu veux absolument le faire dans le worker, on peut juste logguer.
-            console.warn('WindyDataProxy.interpolateBetween: aucun worker, pas d’interpolation');
+            console.warn('WindyDataProxy.interpolateBetween: aucun worker, pas d interpolation');
+            this._resolvePending({ applied: false, reason: 'missing-worker' });
         }
-    }
-    
-    static strptime(date_str) {
-        var _reg = new RegExp("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})"),
-            _rs = date_str.match(_reg),
-            new_dt = new Date();
 
-        new_dt.setFullYear(_rs[1])
-        new_dt.setMonth(_rs[2])
-        new_dt.setDate(_rs[3])
-        new_dt.setHours(_rs[4])
-        new_dt.setMinutes(_rs[5])
-        new_dt.setSeconds(0)
-        new_dt.setMilliseconds(0)
-        return new_dt
+        return done;
     }
 
-    static interpolateData(from_data, to_data) {
-        // return { data:[], speed: int }
-        var from_time = 0, to_time = 2,
-            inter_datas = [], interp = 0,
-            into_hours = 3, to_dtg = to_data.header.refTime;
-
-        if (from_data.header.refTime && to_data.header.refTime) {
-            if (from_data.header.refTime == to_data.header.refTime) {
-                interp = 0
-            }
-            else {
-                // interpolate into {into_hours} hour
-                let t_from = WindyDataProxy.strptime(from_data.header.refTime),
-                    t_to = WindyDataProxy.strptime(to_data.header.refTime),
-                    to_time = parseInt((t_to - t_from)/(60*60*1000 * into_hours));
-                interp = Math.abs(to_time - from_time)
-            }
-        }
-        else {
-            interp = Math.abs(to_time - from_time)
-        }
-
-        if (interp > 1) {
-            let data_len = from_data.data[0].length
-
-            for (let i=from_time; i<to_time; i++) {
-                if (i == 0) {
-                    inter_datas.push({header: from_data.header, data: from_data.data})
-                    continue
+    _beginRequest(key, meta = {}) {
+        this._resolvePending({ applied: false, reason: 'superseded' });
+        this.pendingMeta = { key, ...meta };
+        return new Promise((resolve) => {
+            this.pendingResolve = resolve;
+            window.setTimeout(() => {
+                if (this.pendingResolve === resolve) {
+                    this.pendingResolve = null;
+                    this.pendingMeta = null;
+                    resolve({ applied: false, reason: 'timeout', key });
                 }
+            }, 10000);
+        });
+    }
 
-                let vdata = [], udata = [];
-                for (let j=0; j<data_len; j++) {
-                    let uf = from_data.data[0][j],
-                        vf = from_data.data[1][j],
-                        ut = to_data.data[0][j],
-                        vt = to_data.data[1][j],
-                        du = (ut - uf) / interp,
-                        dv = (vt - vf) / interp;
+    _resolvePending(result) {
+        if (!this.pendingResolve) return;
+        const resolve = this.pendingResolve;
+        this.pendingResolve = null;
+        const meta = this.pendingMeta;
+        this.pendingMeta = null;
+        resolve({ ...result, request: meta });
+    }
 
-                    udata.push(uf + (du * i))
-                    vdata.push(vf + (dv * i))
-                }
+    _logTiming(meta, timing) {
+        if (!cfg.debugWind2) return;
 
-                inter_datas.push({
-                    header: to_data.header,
-                    data: [udata, vdata]
-                })
-            }
+        const req = this.pendingMeta;
+        const now = performance.now();
+        const roundtripMs = req?.startedAt ? now - req.startedAt : null;
+        console.debug('[wind2][proxy]', {
+            key: meta.key,
+            mode: req?.mode,
+            roundtripMs: roundtripMs != null ? Number(roundtripMs.toFixed(1)) : null,
+            payloadMs: Number((timing.payloadMs || 0).toFixed(1)),
+            setDataSyncMs: Number((timing.setDataSyncMs || 0).toFixed(1)),
+            totalAssignMs: Number((timing.totalAssignMs || 0).toFixed(1)),
+            skipped: timing.skipped,
+            reason: timing.reason,
+            autoMinKts: meta.autoMinKts,
+            autoMaxKts: meta.autoMaxKts,
+            worker: meta.workerTiming,
+        });
+    }
+
+    _getCurrentBounds() {
+        const bounds = mapState.map?.getBounds?.();
+        if (!bounds || mapState.windSettings?.mode === 'custom') return null;
+        const payload = {
+            south: bounds.getSouth(),
+            north: bounds.getNorth(),
+            west: bounds.getWest(),
+            east: bounds.getEast(),
+        };
+        if (cfg.debugWind3) {
+            console.debug('[wind3][proxy] worker bounds', {
+                mode: mapState.windSettings?.mode,
+                bounds: payload,
+            });
         }
-        inter_datas.push({header: to_data.header, data: to_data.data})
-
-        return { data: inter_datas, speed: (into_hours / interp), to_dtg: to_dtg}
+        return payload;
     }
 
     static fetchData(uri, callback) {
-        fetch(uri, {method: 'get'})
+        fetch(uri, { method: 'get' })
             .then(response => {
                 if (response.ok) {
                     return Promise.resolve(response.json());
                 }
-                else {
-                    return Promise.reject(new Error('Failed to load'));
-                }
+                return Promise.reject(new Error('Failed to load'));
             })
             .then(data => {
                 callback(data);
@@ -278,20 +288,6 @@ export class WindyDataProxy {
             .catch(error => {
                 callback({});
                 console.log(`Error: ${error.message}`);
-            })
+            });
     }
 }
-
-/*
-onmessage = function(e) {
-    if (e.data.data_uri) {
-        var callback = function(data) {
-            postMessage({ fetched_data: data, transform: e.data.transform, dtg: e.data.data_uri })
-        }
-        WindyDataProxy.fetchData(e.data.data_uri, callback)
-    }
-    else if (e.data.from_data && e.data.to_data) {
-        let data_options = WindyDataProxy.interpolateData(e.data.from_data, e.data.to_data)
-        postMessage({ transform_options: data_options })
-    }
-}*/

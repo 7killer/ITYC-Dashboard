@@ -1,5 +1,5 @@
 
-import {getUserPrefs} from '../../../common/userPrefs.js'
+import {getUserPrefs,saveUserPrefs} from '../../../common/userPrefs.js'
 import {ensureLayerControlClickable,applyBoundsForCurrentMode, buildPolarCRS, createArcticWMS, computeComfortView} from './map-core.js'
 import {initButtonToCenterViewMap,enableCoordinateCopyingWithShortcut} from './map-shortcuts.js'
 import {buildPt2, buildMarker,
@@ -62,6 +62,7 @@ export const mapState = {
         mode: 'default',      // 'default' | 'custom' | 'auto'
         customMaxKts: 40,     // max en nds pour le mode custom (violet)
         visible: true,
+        autoMinKts: 0,
         lastData: null,       // on pourra y mettre la dernière data reçue si besoin
         autoMaxKts: 40,       // valeur déduite auto (à ajuster plus tard)
     }
@@ -700,10 +701,35 @@ export async function initializeMap()
     layerControl.addTo(map);
     ensureLayerControlClickable(layerControl);
 
-    async function onBaseLayerChange(e) {
-        await saveLocal("selectBaseMap", e.name);
+    function updateMapContainerClass(mapName) {
+        const mapContainer = document.getElementById(MAP_CONTAINER_ID);
+        if (!mapContainer) return;
+        // Remove all map type classes
+        mapContainer.classList.remove('ityc-map-carte', 'ityc-map-dark', 'ityc-map-satellite', 'ityc-map-arctic');
+        // Add the appropriate class based on map name
+        if (mapName === 'Dark') {
+            mapContainer.classList.add('ityc-map-dark');
+        } else if (mapName === 'Satellite') {
+            mapContainer.classList.add('ityc-map-satellite');
+        } else if (mapName === 'Arctic (EPSG:3413)') {
+            mapContainer.classList.add('ityc-map-arctic');
+        } else {
+            // Default to 'Carte'
+            mapContainer.classList.add('ityc-map-carte');
+        }
+    }
 
-        const isArctic = (e.layer === Arctic_WMS);
+    async function onBaseLayerChange(e) {
+          const userPrefs = getUserPrefs();
+          if (!userPrefs.map) userPrefs.map = {};
+          userPrefs.map.selectBaseMap = e.name;
+          await saveUserPrefs(userPrefs);
+        updateMapContainerClass(e.name);
+
+        const isArctic = e.name === 'Arctic (EPSG:3413)';
+        if (isArctic && !POLAR.crs) {
+            POLAR.crs = buildPolarCRS();
+        }
         const wasArctic = !!POLAR.enabled;
 
         if (hasProj4Leaflet() && (isArctic !== wasArctic)) {
@@ -760,6 +786,7 @@ export async function initializeMap()
 
             newMap.on('moveend zoomend', set_userCustomZoom);
             newMap.on('baselayerchange', onBaseLayerChange);
+            updateMapContainerClass(e.name);
             newMap.on('moveend zoomend', () => {
                 requestAutoWindUpdate();
             });
@@ -899,6 +926,7 @@ export async function initializeMap()
     applyBoundsForCurrentMode(map);
 
     map.on('baselayerchange', onBaseLayerChange);
+    updateMapContainerClass(userBaseMap);
     map.on('zoomend moveend',set_userCustomZoom);
     map.on('moveend zoomend', () => {
     requestAutoWindUpdate();

@@ -1,7 +1,10 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import proj4 from 'proj4';
+import 'proj4leaflet';
 
 globalThis.L = L;
+globalThis.proj4 = proj4;
 
 import 'leaflet.tilelayer.colorfilter';
 import 'leaflet.nauticscale/dist/leaflet.nauticscale.js';

@@ -3,7 +3,7 @@ import {formatPosition,formatShortDate,formatDHMS} from '../common.js';
 import {getUserPrefs,saveUserPrefs} from "../../../common/userPrefs.js"
 
 import { mapState,redrawMapCheckPoints,redrawProjectionLine } from './map-race.js';
-import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAtTime,windUiState,initWindTimeMode,setWindTimeMode} from './map-wind.js';
+import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAtTime,windUiState,initWindTimeMode,setWindTimeMode,initWindColorSettings,setWindColorMode,setWindCustomMaxKts,requestAutoWindUpdate} from './map-wind.js';
 
 import {onCoastColorChange} from "./map-coasts.js"
 
@@ -570,6 +570,7 @@ export     function addMapControl(map)
 {
     // Initialiser le timeMode du vent depuis les préférences utilisateur
     initWindTimeMode();
+    initWindColorSettings();
     
     map.addControl(new L.Control.ScaleNautic({
         metric: true,
@@ -633,14 +634,17 @@ export     function addMapControl(map)
 
     addSettingsMenuControl(map, {
     getWindMode: () => mapState.windSettings.mode || 'default',
-    setWindMode: (mode) => {
-        mapState.windSettings.mode = mode;
+    setWindMode: async (mode) => {
+        const savedMode = await setWindColorMode(mode);
         applyWindSettings();
+        if (savedMode === 'auto') {
+            requestAutoWindUpdate();
+        }
     },
 
-    getWindMaxKts: () => mapState.windMaxKts || 40,
-    setWindMaxKts: (kts) => {
-        mapState.windSettings.customMaxKts = kts;
+    getWindMaxKts: () => mapState.windSettings.customMaxKts || 40,
+    setWindMaxKts: async (kts) => {
+        await setWindCustomMaxKts(kts);
         if (mapState.windSettings.mode === 'custom') {
             applyWindSettings();
         }
@@ -775,10 +779,18 @@ const windPosControl = L.Control.extend({
     info.appendChild(rowWind);
     container.appendChild(pb);
     container.appendChild(info);
+    info.style.display = 'none';
+
+    const hoverInfo = document.createElement('div');
+    hoverInfo.className = 'ityc-wind-cursor-info';
+    hoverInfo.style.display = 'none';
+    map.getContainer().appendChild(hoverInfo);
+    map.getContainer().classList.add('ityc-wind-crosshair');
 
     this._map = map;
     this._rowCoords = rowCoords;
     this._rowWind = rowWind;
+    this._hoverInfo = hoverInfo;
 
     // === Mouse move handler ===
     const update = (e) => {
@@ -797,6 +809,7 @@ const windPosControl = L.Control.extend({
 
 
         const { lat, lng } = e.latlng;
+        const lines = [];
 
         rowCoords.innerHTML  =
             `Lat: ${formatLatDMS(lat)}   Lng: ${formatLngDMS(lng)}`;
@@ -813,7 +826,7 @@ const windPosControl = L.Control.extend({
             const v = field(point.x, point.y);
 
             if (v && v[2] !== null) {
-                const speedKt = (v[2] * 1.94384).toFixed(1); // m/s -> kt
+                const speedKt = (v[2] * 1.94384).toFixed(3); // m/s -> kt
                 let dirDeg = Math.round(
                     (Math.atan2(v[0], -v[1]) * 180) / Math.PI +180
                 );
@@ -821,6 +834,8 @@ const windPosControl = L.Control.extend({
                 rowWind.textContent =
                     `TWD: ${dirDeg}° (${degreesToCardinalDirection(dirDeg)})   TWS: ${speedKt} kt`;
                 rowWind.style.display = '';
+                lines.push(`${speedKt}kts`);
+                lines.push(`${dirDeg}&deg;`);
                 pb.style.display = '';
             } else {
                 rowWind.style.display = 'none';
@@ -830,10 +845,39 @@ const windPosControl = L.Control.extend({
             rowWind.style.display = 'none';
             pb.style.display = 'none';
         }
+
+        lines.push(formatLatDMS(lat));
+        lines.push(formatLngDMS(lng));
+
+        hoverInfo.innerHTML = lines.map((line) => `<div>${line}</div>`).join('');
+        hoverInfo.style.display = '';
+
+        const offset = 7;
+        const mapEl = map.getContainer();
+        const rect = mapEl.getBoundingClientRect();
+        const infoRect = hoverInfo.getBoundingClientRect();
+        let left = e.containerPoint.x + offset;
+        let top = e.containerPoint.y + offset;
+
+        if (left + infoRect.width > rect.width - 8) {
+            left = e.containerPoint.x - infoRect.width - offset;
+        }
+        if (top + infoRect.height > rect.height - 8) {
+            top = e.containerPoint.y - infoRect.height - offset;
+        }
+
+        hoverInfo.style.left = `${Math.max(8, left)}px`;
+        hoverInfo.style.top = `${Math.max(8, top)}px`;
+    };
+
+    const hide = () => {
+        hoverInfo.style.display = 'none';
     };
 
     this._updateFn = update;
+    this._hideFn = hide;
     map.on('mousemove', update);
+    map.on('mouseout', hide);
     L.DomEvent.disableClickPropagation(container);
     L.DomEvent.disableScrollPropagation(container);
     return container;
@@ -843,6 +887,13 @@ const windPosControl = L.Control.extend({
     if (this._updateFn) {
       map.off('mousemove', this._updateFn);
     }
+    if (this._hideFn) {
+      map.off('mouseout', this._hideFn);
+    }
+    if (this._hoverInfo?.parentNode) {
+      this._hoverInfo.parentNode.removeChild(this._hoverInfo);
+    }
+    map.getContainer().classList.remove('ityc-wind-crosshair');
   },
 });
 

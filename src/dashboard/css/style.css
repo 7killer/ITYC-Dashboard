@@ -1933,8 +1933,8 @@ light
    gap: 6px;
    justify-content: flex-start;
    align-items: center;
-   padding-right: 6px;
-   border-right: 1px solid rgba(255,255,255,0.12);
+   padding-right: 0;
+   border-right: 0;
 }
 
 .ityc-posplay-info {
@@ -1942,6 +1942,47 @@ light
   flex-direction: column;
   gap: 2px;
   line-height: 1.15;
+}
+
+.leaflet-container.ityc-wind-crosshair,
+.leaflet-container.ityc-wind-crosshair .leaflet-grab,
+.leaflet-container.ityc-wind-crosshair .leaflet-dragging,
+.leaflet-container.ityc-wind-crosshair .leaflet-interactive {
+  cursor: crosshair !important;
+}
+
+.ityc-wind-cursor-info {
+  position: absolute;
+  z-index: 1000;
+  min-width: 96px;
+  padding: 8px 10px;
+/*  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: rgba(34, 34, 34, 0.88);*/
+  color: var(--body_color);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: right;
+  pointer-events: none;
+ /* box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);*/
+}
+
+/* Color adjustments for different map types */
+.ityc-map-carte .ityc-wind-cursor-info {
+  color: #000000;
+}
+
+.ityc-map-dark .ityc-wind-cursor-info {
+  color: var(--body_color);
+}
+
+.ityc-map-satellite .ityc-wind-cursor-info {
+  color: var(--body_color);
+}
+
+.ityc-map-arctic .ityc-wind-cursor-info {
+  color: var(--body_color);
 }
 
 .ityc-pb-btn {

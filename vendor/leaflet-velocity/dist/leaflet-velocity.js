@@ -483,13 +483,16 @@ var Windy = function Windy(params) {
 
   var PARTICLE_LINE_WIDTH = params.lineWidth || 1; // line width of a drawn particle
 
-  var PARTICLE_MULTIPLIER = params.particleMultiplier || 1 / 300; // particle count scalar (completely arbitrary--this values looks nice)
+  var PARTICLE_MULTIPLIER = params.particleMultiplier || 1 / 450; // particle count scalar (completely arbitrary--this values looks nice)
 
   var PARTICLE_REDUCTION = Math.pow(window.devicePixelRatio, 1 / 3) || 1.6; // multiply particle count for mobiles by this amount
 
   var FRAME_RATE = params.frameRate || 15;
   var FRAME_TIME = 1000 / FRAME_RATE; // desired frames per second
 
+  var FIELD_STEP = params.fieldStep || 2;
+  var INTERPOLATE_TASK_TIME = params.interpolateTaskMs || 12;
+  var INTERPOLATE_DELAY = params.interpolateDelayMs || 0;
   var OPACITY = 0.97;
   var defaulColorScale = ["rgb(36,104, 180)", "rgb(60,157, 194)", "rgb(128,205,193 )", "rgb(151,218,168 )", "rgb(198,231,181)", "rgb(238,247,217)", "rgb(255,238,159)", "rgb(252,217,125)", "rgb(255,182,100)", "rgb(252,150,75)", "rgb(250,112,52)", "rgb(245,64,32)", "rgb(237,45,28)", "rgb(220,24,32)", "rgb(180,0,35)"];
   var colorScale = params.colorScale || defaulColorScale;
@@ -515,6 +518,9 @@ var Windy = function Windy(params) {
     if (options.hasOwnProperty("opacity")) OPACITY = +options.opacity;
     if (options.hasOwnProperty("frameRate")) FRAME_RATE = options.frameRate;
     FRAME_TIME = 1000 / FRAME_RATE;
+    if (options.hasOwnProperty("fieldStep")) FIELD_STEP = Math.max(1, Math.round(options.fieldStep || 2));
+    if (options.hasOwnProperty("interpolateTaskMs")) INTERPOLATE_TASK_TIME = Math.max(1, options.interpolateTaskMs || 12);
+    if (options.hasOwnProperty("interpolateDelayMs")) INTERPOLATE_DELAY = Math.max(0, options.interpolateDelayMs || 0);
   }; // interpolation for vectors like wind (u,v,m)
 
 
@@ -807,11 +813,12 @@ var Windy = function Windy(params) {
     var velocityScale = VELOCITY_SCALE * Math.pow(mapArea, 0.4);
     var columns = [];
     var x = bounds.x;
+    var step = Math.max(1, Math.round(FIELD_STEP || 2));
 
     function interpolateColumn(x) {
       var column = [];
 
-      for (var y = bounds.y; y <= bounds.yMax; y += 2) {
+      for (var y = bounds.y; y <= bounds.yMax; y += step) {
         var coord = invert(x, y);
 
         if (coord) {
@@ -823,13 +830,17 @@ var Windy = function Windy(params) {
 
             if (wind) {
               wind = distort(projection, λ, φ, x, y, velocityScale, wind);
-              column[y + 1] = column[y] = wind;
+              for (var yy = y; yy < y + step && yy <= bounds.yMax; yy++) {
+                column[yy] = wind;
+              }
             }
           }
         }
       }
 
-      columns[x + 1] = columns[x] = column;
+      for (var xx = x; xx < x + step && xx < bounds.width; xx++) {
+        columns[xx] = column;
+      }
     }
 
     (function batchInterpolate() {
@@ -837,11 +848,10 @@ var Windy = function Windy(params) {
 
       while (x < bounds.width) {
         interpolateColumn(x);
-        x += 2;
+        x += step;
 
-        if (Date.now() - start > 1000) {
-          //MAX_TASK_TIME) {
-          setTimeout(batchInterpolate, 25);
+        if (Date.now() - start > INTERPOLATE_TASK_TIME) {
+          setTimeout(batchInterpolate, INTERPOLATE_DELAY);
           return;
         }
       }

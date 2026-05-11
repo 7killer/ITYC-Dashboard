@@ -1,15 +1,18 @@
 {
     "debugDB": false,
     "debugDBErr": true,
-    "debugDBIte": true,
+    "debugDBIte": false,
     "debugDBIteErr": true,
-    "debugIngester":true,
+    "debugIngester":false,
     "debugIngesterErr":true,
-    "debugIteRun":true,
+    "debugIteRun":false,
     "debugIteRunErr":true,
     "debugFilter1":false,
-    "debugWind":true,
+    "debugWind":false,
+    "debugWind2":false,
+    "debugWind3":false,
     "debugITYC":false
 
 
   }
+

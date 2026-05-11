@@ -71,7 +71,10 @@ export const userPrefsDefault =
         showTracks : false,
         borderColor :"#0000FF",
         projectionColor :"#B56AFB",
-        selectBaseMap : "Dark"
+        selectBaseMap : "Dark",
+        windMode : "default",
+        windCustomMaxKts : 40,
+        windTimeMode : "gfs"
     },
     fleet : {
         shortOption : true,
@@ -167,9 +170,29 @@ function normalizeUserPrefs(rawPrefs)
         prefs.filters = structuredClone(userPrefsDefault.filters);
         shouldSave = true;
     }
+    if(!prefs.map)
+    {
+        prefs.map = structuredClone(userPrefsDefault.map);
+        shouldSave = true;
+    }
     if(prefs.global.analysisMode == null)
     {
         prefs.global.analysisMode = userPrefsDefault.global.analysisMode;
+        shouldSave = true;
+    }
+    if(!['default', 'custom', 'auto'].includes(prefs.map.windMode))
+    {
+        prefs.map.windMode = userPrefsDefault.map.windMode;
+        shouldSave = true;
+    }
+    if(!Number.isFinite(Number(prefs.map.windCustomMaxKts)))
+    {
+        prefs.map.windCustomMaxKts = userPrefsDefault.map.windCustomMaxKts;
+        shouldSave = true;
+    }
+    if(!['gfs', 'vr'].includes(prefs.map.windTimeMode))
+    {
+        prefs.map.windTimeMode = userPrefsDefault.map.windTimeMode;
         shouldSave = true;
     }
 

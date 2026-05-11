@@ -47,6 +47,25 @@ const WIND_PROXY_RETRY_SCHEDULE_MS = [
 let windProxyRetryTimer = null;
 let windProxyRetryAttempts = 0;
 let windProxyRetryTargetUnix = null;
+let windPerfSeq = 0;
+
+function wind2Now() {
+  return performance.now();
+}
+
+function wind2Ms(start) {
+  return Number((performance.now() - start).toFixed(1));
+}
+
+function wind2Log(label, data = {}) {
+  if (!cfg.debugWind2) return;
+  console.debug(`[wind2] ${label}`, data);
+}
+
+function wind3Log(label, data = {}) {
+  if (!cfg.debugWind3) return;
+  console.debug(`[wind3] ${label}`, data);
+}
 
 // ─────────────────────────────────────────────
 // État local pour GRIB + timeline vent
@@ -141,6 +160,16 @@ function getWindTimeMode() {
   return (m === 'vr') ? 'vr' : 'gfs';
 }
 
+function normalizeWindColorMode(mode) {
+  return ['default', 'custom', 'auto'].includes(mode) ? mode : 'default';
+}
+
+function normalizeWindCustomMaxKts(kts) {
+  const n = Number(kts);
+  if (!Number.isFinite(n)) return 40;
+  return Math.max(1, Math.min(200, Math.round(n)));
+}
+
 export async function setWindTimeMode(mode) {
   if (!mapState.windSettings) mapState.windSettings = {};
   const newMode = (mode === 'vr') ? 'vr' : 'gfs';
@@ -160,6 +189,44 @@ export function initWindTimeMode() {
   if (!mapState.windSettings) mapState.windSettings = {};
   mapState.windSettings.timeMode = savedMode;
   return savedMode;
+}
+
+export async function setWindColorMode(mode) {
+  if (!mapState.windSettings) mapState.windSettings = {};
+  const newMode = normalizeWindColorMode(mode);
+  mapState.windSettings.mode = newMode;
+
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.map) userPrefs.map = {};
+  userPrefs.map.windMode = newMode;
+  await saveUserPrefs(userPrefs);
+  return newMode;
+}
+
+export async function setWindCustomMaxKts(kts) {
+  if (!mapState.windSettings) mapState.windSettings = {};
+  const customMaxKts = normalizeWindCustomMaxKts(kts);
+  mapState.windSettings.customMaxKts = customMaxKts;
+
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.map) userPrefs.map = {};
+  userPrefs.map.windCustomMaxKts = customMaxKts;
+  await saveUserPrefs(userPrefs);
+  return customMaxKts;
+}
+
+export function initWindColorSettings() {
+  const userPrefs = getUserPrefs();
+  if (!mapState.windSettings) mapState.windSettings = {};
+
+  const mode = normalizeWindColorMode(userPrefs?.map?.windMode || mapState.windSettings.mode);
+  const customMaxKts = normalizeWindCustomMaxKts(
+    userPrefs?.map?.windCustomMaxKts ?? mapState.windSettings.customMaxKts
+  );
+
+  mapState.windSettings.mode = mode;
+  mapState.windSettings.customMaxKts = customMaxKts;
+  return { mode, customMaxKts };
 }
 
 function formatUtcDate(epochSec) {
@@ -536,14 +603,19 @@ function scheduleWindProxyRetry(targetUnix) {
 export function stopAutoPlay() {
   clearAutoPlayTimer();
   windUiState.autoPlayState = 'stopped';
+  setWindPlaybackTuning(false);
+  applyDeferredAutoMaxVelocity();
 }
 
 export function pauseAutoPlay() {
   clearAutoPlayTimer();
   windUiState.autoPlayState = 'paused';
+  setWindPlaybackTuning(false);
+  applyDeferredAutoMaxVelocity();
 }
 
 async function autoPlayStep() {
+  const tStep0 = wind2Now();
   if (windUiState.autoPlayState !== 'playing') return;
   const { startUnix, endUnix } = windUiState;
   if (!startUnix || !endUnix) {
@@ -574,6 +646,11 @@ async function autoPlayStep() {
   }
 
   await applyWindAtTime(next);
+  wind2Log('autoplay step', {
+    next,
+    iso: new Date(next * 1000).toISOString(),
+    stepMs: wind2Ms(tStep0),
+  });
 
   // toutes les 2s
   windUiState.autoPlayTimer = setTimeout(autoPlayStep, 1000);
@@ -582,6 +659,7 @@ async function autoPlayStep() {
 export function startAutoPlay() {
   if (windUiState.autoPlayState === 'playing') return;
   windUiState.autoPlayState = 'playing';
+  setWindPlaybackTuning(true);
   clearAutoPlayTimer();
   windUiState.autoPlayTimer = setTimeout(autoPlayStep, 0);
 }
@@ -744,9 +822,13 @@ function moveControlToBottomCenter(map, ctrl) {
 }
 
 async function getOrLoadSnapshot(runId, fh) {
+  const t0 = wind2Now();
   const key = `${runId}_${fh}`;
   const cached = windUiState.fhCache.get(key);
-  if (cached) return cached;
+  if (cached) {
+    wind2Log('snapshot cache hit', { key, ms: wind2Ms(t0) });
+    return cached;
+  }
 
   const model =
     windUiState.runInfoLatest?.model ||
@@ -757,6 +839,7 @@ async function getOrLoadSnapshot(runId, fh) {
   const pack = await getData('windpacks', [model, runId, fh]);
   if (!pack || !pack.blob) {
     if (cfg.debugWind) console.warn('[wind] pack introuvable en DB', { model, runId, fh, pack });
+    wind2Log('snapshot missing', { key, model, ms: wind2Ms(t0) });
     return null;
   }
 
@@ -772,10 +855,12 @@ async function getOrLoadSnapshot(runId, fh) {
   };
 
   windUiState.fhCache.set(key, entry);
+  wind2Log('snapshot db load', { key, model, blobSize: blob?.size || null, ms: wind2Ms(t0) });
   return entry;
 }
 
 async function ensureSnapshotAvailable(model, runId, fh) {
+  const t0 = wind2Now();
   // Demande au BG de télécharger en DB si manquant
   const resp = await sendWindBg({
     target: 'bg',
@@ -786,8 +871,10 @@ async function ensureSnapshotAvailable(model, runId, fh) {
   });
   if (!resp || !resp.ok) {
     if (cfg.debugWind) console.warn('[wind] ensureWindpack failed', resp && resp.error);
+    wind2Log('ensure snapshot failed', { model, runId, fh, ms: wind2Ms(t0), error: resp?.error });
     return false;
   }
+  wind2Log('ensure snapshot ok', { model, runId, fh, ms: wind2Ms(t0) });
   return true;
 }
 
@@ -797,13 +884,23 @@ function floorTo3hAnchor(unixSec) {
 }
 
 export async function applyWindAtTime(targetUnix) {
+  const perfId = ++windPerfSeq;
+  const tApply0 = wind2Now();
   // Throttle : une seule interpolation à la fois, on garde la dernière demandée
   if (windUpdateInProgress) {
     windUpdateQueued = targetUnix;
+    wind2Log('apply queued', { perfId, targetUnix });
     return;
   }
 
   windUpdateInProgress = true;
+  wind2Log('apply start', {
+    perfId,
+    targetUnix,
+    iso: new Date(targetUnix * 1000).toISOString(),
+    mode: getWindTimeMode(),
+    autoPlayState: windUiState.autoPlayState,
+  });
 
   try {
     let info = windUiState.runInfo;
@@ -885,9 +982,11 @@ export async function applyWindAtTime(targetUnix) {
       if (!prevSnap || !nextSnap) return;
 
       if (p.runId === n.runId && p.fh === n.fh) {
-        mapState.windy_proxy.goto_dtg(prevSnap.objectUrl);
+        const render = await mapState.windy_proxy.goto_dtg(prevSnap.objectUrl);
+        wind2Log('apply render vr goto', { perfId, render });
       } else {
-        mapState.windy_proxy.interpolateBetween(prevSnap.objectUrl, nextSnap.objectUrl, targetUnix);
+        const render = await mapState.windy_proxy.interpolateBetween(prevSnap.objectUrl, nextSnap.objectUrl, targetUnix);
+        wind2Log('apply render vr interp', { perfId, render });
       }
       notifyWindTimeChange(targetUnix);
       return;
@@ -929,7 +1028,8 @@ export async function applyWindAtTime(targetUnix) {
         if (ok) bestSnap = await getOrLoadSnapshot(runId, best.fh);
       }
       if (!bestSnap) return;
-      mapState.windy_proxy.goto_dtg(bestSnap.objectUrl);
+      const render = await mapState.windy_proxy.goto_dtg(bestSnap.objectUrl);
+      wind2Log('apply render gfs best', { perfId, render });
       notifyWindTimeChange(targetUnix);
       return;
     }
@@ -946,10 +1046,17 @@ export async function applyWindAtTime(targetUnix) {
     }
     if (!prevSnap || !nextSnap) return;
 
-    mapState.windy_proxy.interpolateBetween(prevSnap.objectUrl, nextSnap.objectUrl, targetUnix);
+    if (prev.fh === next.fh) {
+      const render = await mapState.windy_proxy.goto_dtg(prevSnap.objectUrl);
+      wind2Log('apply render gfs goto', { perfId, render });
+    } else {
+      const render = await mapState.windy_proxy.interpolateBetween(prevSnap.objectUrl, nextSnap.objectUrl, targetUnix);
+      wind2Log('apply render gfs interp', { perfId, render });
+    }
 
 
   } finally {
+    wind2Log('apply end', { perfId, targetUnix, totalMs: wind2Ms(tApply0) });
     windUpdateInProgress = false;
 
     if (windUpdateQueued != null) {
@@ -996,14 +1103,16 @@ export function buildWindLayer() {
   const settings = mapState.windSettings;
 
   // Choix du maxVelocity selon le mode
+  let minKts = 0;
   let maxKts;
   if (settings.mode === 'custom') {
     maxKts = settings.customMaxKts;
   } else if (settings.mode === 'auto' && settings.autoMaxKts) {
+    minKts = settings.autoMinKts || 0;
     maxKts = settings.autoMaxKts;
   } else {
     // default : valeur “climato” raisonnable
-    maxKts = 50;
+    maxKts = 40;
   }
 
   mapState.windyLayer = L.velocityLayer({
@@ -1011,8 +1120,14 @@ export function buildWindLayer() {
     opacity: settings.visible ? 0.6 : 0.0,
     paneName: 'overlayPane',
     colorScale, // ta palette
+    minVelocity: ktsToMps(minKts),
     maxVelocity: ktsToMps(maxKts),   // *** clé pour le gradient ***
     velocityScale: 0.005,
+    particleMultiplier: windUiState.autoPlayState === 'playing' ? 1 / 750 : 1 / 450,
+    frameRate: windUiState.autoPlayState === 'playing' ? 12 : 15,
+    fieldStep: windUiState.autoPlayState === 'playing' ? 6 : 2,
+    interpolateTaskMs: windUiState.autoPlayState === 'playing' ? 8 : 12,
+    interpolateDelayMs: 0,
     displayValues: false,
   });
 
@@ -1022,6 +1137,102 @@ export function buildWindLayer() {
 }
 function ktsToMps(kts) {
   return kts * 0.514444; // conversion
+}
+
+function setWindLayerOptions(options) {
+  const layer = mapState.windyLayer;
+  if (!layer) return;
+
+  layer.options = Object.assign(layer.options || {}, options);
+  if (layer._windy && typeof layer._windy.setOptions === 'function') {
+    layer._windy.setOptions(options);
+  }
+  wind3Log('layer options applied', {
+    mode: mapState.windSettings?.mode,
+    minKts: layer.options.minVelocity != null ? Number((layer.options.minVelocity / 0.514444).toFixed(2)) : null,
+    maxKts: layer.options.maxVelocity != null ? Number((layer.options.maxVelocity / 0.514444).toFixed(2)) : null,
+    particleMultiplier: layer.options.particleMultiplier,
+    fieldStep: layer.options.fieldStep,
+    interpolateTaskMs: layer.options.interpolateTaskMs,
+  });
+}
+
+function applyWindMaxVelocityOnly() {
+  const settings = mapState.windSettings;
+  if (!settings || settings.mode !== 'auto' || !settings.autoMaxKts) return;
+
+  setWindLayerOptions({
+    minVelocity: ktsToMps(settings.autoMinKts || 0),
+    maxVelocity: ktsToMps(settings.autoMaxKts),
+  });
+  wind3Log('auto range applied', {
+    autoMinKts: Number((settings.autoMinKts || 0).toFixed(2)),
+    autoMaxKts: Number(settings.autoMaxKts.toFixed(2)),
+    autoPlayState: windUiState.autoPlayState,
+  });
+}
+
+function applyDeferredAutoMaxVelocity() {
+  if (mapState.windSettings?.mode === 'auto') {
+    applyWindMaxVelocityOnly();
+  }
+}
+
+function setWindPlaybackTuning(enabled) {
+  wind2Log('playback tuning', { enabled });
+  setWindLayerOptions(enabled
+    ? {
+        particleMultiplier: 1 / 750,
+        frameRate: 12,
+        fieldStep: 6,
+        interpolateTaskMs: 8,
+        interpolateDelayMs: 0,
+      }
+    : {
+        particleMultiplier: 1 / 450,
+        frameRate: 15,
+        fieldStep: 2,
+        interpolateTaskMs: 12,
+        interpolateDelayMs: 0,
+      });
+}
+
+export function setWindAutoRangeFromWorker(autoMaxKts, autoMinKts = 0) {
+  const min = Number(autoMinKts);
+  const max = Number(autoMaxKts);
+  if (!Number.isFinite(max) || max <= 0) return;
+
+  const nextMin = Number.isFinite(min) ? Math.max(0, min) : 0;
+  const nextMax = Math.max(nextMin + 0.1, max);
+  if (!mapState.windSettings) return;
+  if (
+    Math.abs((mapState.windSettings.autoMinKts || 0) - nextMin) < 0.01 &&
+    Math.abs((mapState.windSettings.autoMaxKts || 0) - nextMax) < 0.01
+  ) return;
+
+  mapState.windSettings.autoMinKts = nextMin;
+  mapState.windSettings.autoMaxKts = nextMax;
+  wind2Log('auto max update', {
+    autoMinKts: Number(nextMin.toFixed(2)),
+    autoMaxKts: Number(nextMax.toFixed(2)),
+    mode: mapState.windSettings.mode,
+    autoPlayState: windUiState.autoPlayState,
+  });
+  wind3Log('auto range received', {
+    autoMinKts: Number(nextMin.toFixed(2)),
+    autoMaxKts: Number(nextMax.toFixed(2)),
+    mode: mapState.windSettings.mode,
+    autoPlayState: windUiState.autoPlayState,
+  });
+  if (mapState.windSettings.mode !== 'auto') return;
+
+  // Pendant la lecture, setData redemarre deja la couche; il faut donc
+  // appliquer le range juste avant ce redemarrage pour que la palette suive.
+  applyWindMaxVelocityOnly();
+}
+
+export function setWindAutoMaxFromWorker(autoMaxKts) {
+  setWindAutoRangeFromWorker(autoMaxKts, 0);
 }
 // ─────────────────────────────────────────────
 // Récup du manifest & interpolation temps réel
@@ -1088,16 +1299,19 @@ export function applyWindSettings() {
   if (!map || !layer) return;
 
   // 1️⃣ déterminer le maxVelocity
+  let minKts = 0;
   let maxKts;
   if (settings.mode === 'custom') {
     maxKts = settings.customMaxKts;
   } else if (settings.mode === 'auto' && settings.autoMaxKts) {
+    minKts = settings.autoMinKts || 0;
     maxKts = settings.autoMaxKts;
   } else {
-    maxKts = 50; // valeur par défaut
+    maxKts = 40; // valeur par defaut fixe
   }
 
   const maxVelocity = ktsToMps(maxKts);
+  layer.options.minVelocity = ktsToMps(minKts);
   layer.options.maxVelocity = maxVelocity;
 
   // 2️⃣ gérer la visibilité
@@ -1134,23 +1348,35 @@ export function initAutoWindWorker() {
     );
 
     autoWindWorker.onmessage = (e) => {
-      const { autoMaxKts } = e.data;
+      const { autoMinKts, autoMaxKts, count, bounds } = e.data;
       if (!autoMaxKts) return;
 
-      mapState.windSettings.autoMaxKts = autoMaxKts;
-
-      if (mapState.windSettings.mode === 'auto') {
-        applyWindSettings();
-      }
+      wind3Log('auto range response', {
+        autoMinKts,
+        autoMaxKts,
+        count,
+        bounds,
+      });
+      setWindAutoRangeFromWorker(autoMaxKts, autoMinKts);
     };
   }
 }
 let autoWindDebounce = null;
 
 export function requestAutoWindUpdate() {
-  if (mapState.windSettings.mode !== 'auto') return;
-  if (!mapState.windSettings.lastData) return;
-  if (!mapState.map) return;
+  if (mapState.windSettings.mode !== 'auto') {
+    wind3Log('auto range skipped', { reason: 'mode', mode: mapState.windSettings.mode });
+    return;
+  }
+  if (!mapState.windSettings.lastData) {
+    wind3Log('auto range skipped', { reason: 'no-data' });
+    return;
+  }
+  if (!mapState.map) {
+    wind3Log('auto range skipped', { reason: 'no-map' });
+    return;
+  }
+  if (!autoWindWorker) initAutoWindWorker();
 
   clearTimeout(autoWindDebounce);
   autoWindDebounce = setTimeout(() => {
@@ -1160,17 +1386,27 @@ export function requestAutoWindUpdate() {
     const header = payload[0].header;
     const u = payload[0].data;
     const v = payload[1].data;
+    const boundsPayload = {
+      south: bounds.getSouth(),
+      north: bounds.getNorth(),
+      west: bounds.getWest(),
+      east: bounds.getEast(),
+    };
+
+    wind3Log('auto range request', {
+      mode: mapState.windSettings.mode,
+      bounds: boundsPayload,
+      nx: header?.nx,
+      ny: header?.ny,
+      points: u?.length || 0,
+    });
 
     autoWindWorker.postMessage({
       header,
       u,
       v,
-      bounds: {
-        south: bounds.getSouth(),
-        north: bounds.getNorth(),
-        west: bounds.getWest(),
-        east: bounds.getEast(),
-      }
+      bounds: boundsPayload,
+      debugWind3: !!cfg.debugWind3,
     });
   }, 200); // debounce doux
 }

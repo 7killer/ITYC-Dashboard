@@ -168,7 +168,7 @@ export function createNotif(){
 
     notifications.push({race: raceNotif,
         type : type1Notif,
-        val : Util.roundTo(valNotif,2),
+        val : roundTo(valNotif,2),
         repActive : document.getElementById("sel_minuteNotif").checked,
         ope : type2Notif,
         repet: 0,
