@@ -3,7 +3,7 @@ import {formatPosition,formatShortDate,formatDHMS} from '../common.js';
 import {getUserPrefs,saveUserPrefs} from "../../../common/userPrefs.js"
 
 import { mapState,redrawMapCheckPoints,redrawProjectionLine } from './map-race.js';
-import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAtTime,windUiState} from './map-wind.js';
+import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAtTime,windUiState,initWindTimeMode,setWindTimeMode} from './map-wind.js';
 
 import {onCoastColorChange} from "./map-coasts.js"
 
@@ -568,6 +568,9 @@ export function buildMarkerTitle(point)
 
 export     function addMapControl(map)
 {
+    // Initialiser le timeMode du vent depuis les préférences utilisateur
+    initWindTimeMode();
+    
     map.addControl(new L.Control.ScaleNautic({
         metric: true,
         imperial: false,
@@ -607,9 +610,10 @@ export     function addMapControl(map)
     const ctrl = new windPosControl();
     ctrl.addTo(map);
 
+    const savedTimeMode = getUserPrefs()?.map?.windTimeMode || 'gfs';
     const ctrl2 = new WindToggleControl({
         initialMode: mapState.windSettings.visible
-            ? (mapState.windSettings.timeMode === 'vr' ? 'vr' : 'gfs')
+            ? savedTimeMode
             : 'none',
         onToggle: async (mode) => {
             if (mode === 'none') {
@@ -620,7 +624,7 @@ export     function addMapControl(map)
             }
 
             mapState.windSettings.visible = true;
-            mapState.windSettings.timeMode = mode; // 'gfs' ou 'vr'
+            await setWindTimeMode(mode); // 'gfs' ou 'vr' - sauvegarde dans userPrefs
             applyWindSettings();
             await applyWindAtTime(windUiState.currentUnix);
         }

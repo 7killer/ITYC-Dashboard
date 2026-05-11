@@ -1,7 +1,7 @@
 // map-wind.js
 import { mapState, updateBounds } from './map-race.js';
 import L from '@/dashboard/ui/map/leaflet-setup';
-import { getUserPrefs } from '../../../common/userPrefs.js';
+import { getUserPrefs, saveUserPrefs } from '../../../common/userPrefs.js';
 import { WindyDataProxy } from './wind/WindyDataProxy.js';
 import { getData } from '../../../common/dbOpes.js'; 
 import cfg from '@/config.json';
@@ -141,9 +141,25 @@ function getWindTimeMode() {
   return (m === 'vr') ? 'vr' : 'gfs';
 }
 
-function setWindTimeMode(mode) {
+export async function setWindTimeMode(mode) {
   if (!mapState.windSettings) mapState.windSettings = {};
-  mapState.windSettings.timeMode = (mode === 'vr') ? 'vr' : 'gfs';
+  const newMode = (mode === 'vr') ? 'vr' : 'gfs';
+  mapState.windSettings.timeMode = newMode;
+  
+  // Sauvegarder dans les préférences utilisateur
+  const userPrefs = getUserPrefs();
+  if (!userPrefs.map) userPrefs.map = {};
+  userPrefs.map.windTimeMode = newMode;
+  await saveUserPrefs(userPrefs);
+}
+
+// Charger le timeMode depuis les préférences au démarrage
+export function initWindTimeMode() {
+  const userPrefs = getUserPrefs();
+  const savedMode = userPrefs?.map?.windTimeMode || 'gfs';
+  if (!mapState.windSettings) mapState.windSettings = {};
+  mapState.windSettings.timeMode = savedMode;
+  return savedMode;
 }
 
 function formatUtcDate(epochSec) {
