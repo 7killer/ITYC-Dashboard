@@ -1531,7 +1531,7 @@ light
 .ityc-settings-panel {
   position: absolute;
   top: 0;
-  right: 36px; /* décale le menu à gauche du bouton */
+  right: 0; 
   min-width: 220px;
   padding: 8px 10px;
   border-radius: 10px;

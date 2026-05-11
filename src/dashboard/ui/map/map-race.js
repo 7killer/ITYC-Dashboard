@@ -434,9 +434,10 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
                     + roundTo(playerIte.twa, 3) 
                     + "°</b> | HDG: <b>" 
                     + roundTo(playerIte.hdg, 2) 
-                    + "°</b><br>Sail: " 
-                    + sailNames[playerIte.sail] || "-" 
-                    + " | Speed: " 
+                    + "°</b><br>Sail: ";
+                if(sailNames[playerIte.sail]) info += sailNames[playerIte.sail];
+                else info += "-";
+                info += " | Speed: " 
                     + roundTo(playerIte.speed, 3) 
                     + " kts<br>TWS: " 
                     + roundTo(playerIte.tws, 3) + " kts | TWD: " 
