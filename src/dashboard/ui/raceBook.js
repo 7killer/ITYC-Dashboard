@@ -152,7 +152,7 @@ function viewStages(raceInfo, playerIte) {
     'Start',
     formatPosition(raceInfo.start.lat, raceInfo.start.lon),
     ' - ',
-    frag('Date : ', h('span',{class:'pill pill--muted'}, DateUTC(raceInfo.start.date,1,userPrefs.global.localTime ?3:4)))
+    frag('Date : ', h('span',{class:'pill pill--muted'}, DateUTC(raceInfo.start.date,1,userPrefs.global.localTime ?4:3)))
   ]);
 
   // Checkpoints
@@ -187,7 +187,7 @@ function viewStages(raceInfo, playerIte) {
     'End',
     formatPosition(raceInfo.end.lat, raceInfo.end.lon),
     (raceInfo.end?.radius ? `Radius : ${raceInfo.end.radius} mn` : ' - '),
-    frag('Date : ', h('span',{class:'pill pill--muted'}, DateUTC(raceInfo.end.date,1,userPrefs.global.localTime ?3:4)))
+    frag('Date : ', h('span',{class:'pill pill--muted'}, DateUTC(raceInfo.end.date,1,userPrefs.global.localTime ?4:3)))
   ]);
 
   return card('Race Stages', tableModern({head, rows}));
