@@ -230,7 +230,7 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
         routerIcon = '<span id="vrz:' + userId + '">&#x262F;</span>';
     
     const nameClass = (userId == connectedPlayerId)?'highlightMe':"";
-    const categoryIdx = category.indexOf(playerIte.type)?category.indexOf(playerIte.type):4;
+    const categoryIdx = playerIte.type?(category.indexOf(playerIte.type)?category.indexOf(playerIte.type):4):4;
     const nameStyle = (userId == connectedPlayerId)?"color: #b86dff; font-weight: bold; "
                     :("color:"+(darkTheme?categoryStyleDark[categoryIdx].nameStyle:categoryStyle[categoryIdx].nameStyle)+";");
 
