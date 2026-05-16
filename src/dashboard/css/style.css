@@ -551,7 +551,7 @@ td.tdc {
 
 .lastCommandOrder {
 /*    background-color:#111215;*/
-    color: var(--th_color);
+    color: var(--td_color);
 }
 
 .commandLineHeader {
@@ -564,7 +564,7 @@ td.tdc {
 }
 
 .commandLineSub {
-    color: var(--th_color);
+    color: var(--td_color);
     font-weight: 400;
 }
 
@@ -2249,6 +2249,117 @@ a:active {
 #raceStatusTable.race-status-table td.gybe p,
 #raceStatusTable.race-status-table td.sailPenalties p {
     white-space: nowrap;
+}
+
+#recordlog {
+    padding: 0 6px 6px;
+}
+
+.race-log-wrap {
+    max-width: 100%;
+    overflow: visible;
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+    background: var(--td_bg_color);
+    box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.08);
+}
+
+.race-log-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+}
+
+.race-log-table th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 5;
+    padding: 7px 8px;
+    border: 0;
+    border-right: 1px solid var(--border_color);
+    border-bottom: 1px solid var(--border_color);
+    outline: 0;
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.race-log-table td {
+    padding: 6px 8px;
+    border: 0;
+    border-right: 1px solid color-mix(in oklab, var(--border_color), transparent 35%);
+    border-bottom: 1px dashed var(--border_color);
+    vertical-align: middle;
+}
+
+.race-log-table th:last-child,
+.race-log-table td:last-child {
+    border-right: 0;
+}
+
+.race-log-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.race-log-table tbody tr.hovred:hover td,
+.race-log-table tbody tr.commandLine:hover td {
+    background-color: color-mix(in oklab, var(--td_bg_color), #888 12%);
+}
+
+.race-log-table tbody tr.hovred:hover {
+    outline: 0.16em solid red;
+    outline-offset: -0.16em;
+}
+
+.race-log-table .commandLine td {
+    background: color-mix(in oklab, var(--td_bg_color), #888 6%);
+}
+
+.race-log-table .commandLineHeader {
+    margin-bottom: 4px;
+}
+
+.race-log-table .command-grid-item {
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+}
+
+.race-log-table td.position {
+    min-width: 120px;
+}
+
+.race-log-table td.asail,
+.race-log-table td.asail div {
+    white-space: nowrap;
+}
+
+.race-log-table thead.sticky th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.race-log-table td.asail {
+    min-width: 130px;
+}
+
+.race-log-table td.sailPenalties,
+.race-log-table td.gybe,
+.race-log-table td.tack {
+    min-width: 70px;
+}
+
+.race-log-table p {
+    margin: 0;
+    line-height: 1.25;
 }
 
 table#raceidTable2>tbody>tr>td {

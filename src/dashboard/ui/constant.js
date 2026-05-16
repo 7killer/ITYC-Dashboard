@@ -1,6 +1,6 @@
-export const sailNames = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9,
+export const sailNames = [0, "Jib", "Spi", "SS", "LJ", "C0", "HG", "LG", 8, 9,
                      // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
-                     "Auto", "Jib &#x24B6;", "Spi &#x24B6;", "Stay &#x24B6;", "LJ &#x24B6;", "C0 &#x24B6;", "HG &#x24B6;", "LG &#x24B6;"];
+                     "Auto", "Jib &#x24B6;", "Spi &#x24B6;", "SS &#x24B6;", "LJ &#x24B6;", "C0 &#x24B6;", "HG &#x24B6;", "LG &#x24B6;"];
 export const sailColors = ["#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF", "#FF66FF", "#FFC44D", 8, 9,
     // VR sends sailNo + 10 to indicate autoSail. We use sailNo mod 10 to find the sail name sans Auto indication.
                     "#FFFFFF", "#FF6666", "#6666FF", "#66FF66", "#FFF266", "#66CCFF;", "#FF66FF", "#FFC44D"];

@@ -48,9 +48,9 @@ export function buildRaceLogHtml() {
     if(!raceInfo || raceInfo?.length == 0 
       ||  !racePlayerInfos?.ites) {
         document.getElementById("recordlog").innerHTML = `
-            <table class="tabUser">
+            <div class="race-log-wrap"><table class="tabUser race-log-table">
             <thead><tr><th>No infos received for this race.</th></tr></thead>
-            </table>`; 
+            </table></div>`; 
         return;
     }
 
@@ -78,10 +78,10 @@ export function buildRaceLogHtml() {
             #UTC { ${utcStyle} }
             #UTCLocal { ${utcLocalStyle} }
         </style>
-        <table class="tabUser">
+        <div class="race-log-wrap"><table class="tabUser race-log-table">
             <thead class="sticky">${raceLogTableHeader}</thead>
             <tbody>${raceLogContent}</tbody>
-        </table>`;
+        </table></div>`;
     document.getElementById("recordlog").innerHTML = logTxt;
     updateToggleRaceLogCommandsLines();
 }
@@ -98,7 +98,7 @@ function buildRaceLogLineCmd(raceLogLine) {
     return '<tr class="commandLine hovred">'
         + '<td class="time">' + DateUTC(raceLogLine.iteDate, 1) + '</td>'
         + '<td colspan="19">'
-        + '<div class="commandLineHeader"><b>Command ' + commandWhen + '</b> <span class="commandLineSub">' + actionTxt + '</span></div>'
+        + '<div class="commandLineHeader"><span class="commandLineSub">' + actionTxt + '</span> <b>envoyée à ' + commandWhen + '</b></div>'
         + '<div class="command-grid">' + printLastCommand(raceLogLine.action) + '</div>'
         + '</td>'
         + '</tr>';
