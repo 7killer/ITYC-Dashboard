@@ -87,8 +87,7 @@ function collectFleetRows(fleet = getLegFleetInfos()) {
     const rowEntry = userId === currentUserId ? currentPlayerInfos : entry;
     const ite = rowEntry?.ite ?? rowEntry?.ites?.[0];
     if (!ite || !rowEntry?.info) return;
-    if (!isDisplayEnabled(ite, userId, currentUserId)) return;
-    if (getUserPrefs().filters.inRace && ite.state !== 'racing') return;
+    if (!isDisplayEnabled(ite, userId, currentUserId, {playerFleetInfos: rowEntry, raceInfo})) return;
 
     rows.push({
       userId,
@@ -367,4 +366,3 @@ function generateGPX(data) {
   gpxContent += `</trkseg></trk></gpx>`;
   return gpxContent;
 }
-

@@ -760,26 +760,9 @@ const windPosControl = L.Control.extend({
  
      play.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startAutoPlay(); });
      pause.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); pauseAutoPlay(); });
-     stop.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); stopAutoPlay(true); });
+     stop.addEventListener('click', async (e) => { e.preventDefault(); e.stopPropagation(); await stopAutoPlay(true); });
  
-     // ---- Bloc infos (coords + vent) ----
-     const info = document.createElement('div');
-     info.className = 'ityc-posplay-info';
-  
-    const rowCoords = document.createElement('div');
-    rowCoords.className = 'ityc-info-coords';
-    rowCoords.textContent = 'Lat: —   Lng: —';
-
-    const rowWind = document.createElement('div');
-    rowWind.className = 'ityc-info-wind';
-    rowWind.style.display = 'none';
-    rowWind.textContent = 'TWD: —   TWS: —';
-
-    info.appendChild(rowCoords);
-    info.appendChild(rowWind);
     container.appendChild(pb);
-    container.appendChild(info);
-    info.style.display = 'none';
 
     const hoverInfo = document.createElement('div');
     hoverInfo.className = 'ityc-wind-cursor-info';
@@ -788,8 +771,6 @@ const windPosControl = L.Control.extend({
     map.getContainer().classList.add('ityc-wind-crosshair');
 
     this._map = map;
-    this._rowCoords = rowCoords;
-    this._rowWind = rowWind;
     this._hoverInfo = hoverInfo;
 
     // === Mouse move handler ===
@@ -810,11 +791,8 @@ const windPosControl = L.Control.extend({
 
         const { lat, lng } = e.latlng;
         const lines = [];
-
-        rowCoords.innerHTML  =
-            `Lat: ${formatLatDMS(lat)}   Lng: ${formatLngDMS(lng)}`;
-
-        // Si vent actif et windy dispo
+        lines.push(formatLatDMS(lat));
+        lines.push(formatLngDMS(lng));
         if (
             mapState.windSettings.visible  &&
             mapState.windyLayer &&
@@ -831,23 +809,15 @@ const windPosControl = L.Control.extend({
                     (Math.atan2(v[0], -v[1]) * 180) / Math.PI +180
                 );
                 if (dirDeg >= 360) dirDeg -= 360;
-                rowWind.textContent =
-                    `TWD: ${dirDeg}° (${degreesToCardinalDirection(dirDeg)})   TWS: ${speedKt} kt`;
-                rowWind.style.display = '';
                 lines.push(`${speedKt}kts`);
-                lines.push(`${dirDeg}&deg;`);
+                lines.push(`${dirDeg}&deg; (${degreesToCardinalDirection(dirDeg)})`);
                 pb.style.display = '';
             } else {
-                rowWind.style.display = 'none';
                 pb.style.display = 'none';
             }
         } else {
-            rowWind.style.display = 'none';
             pb.style.display = 'none';
         }
-
-        lines.push(formatLatDMS(lat));
-        lines.push(formatLngDMS(lng));
 
         hoverInfo.innerHTML = lines.map((line) => `<div>${line}</div>`).join('');
         hoverInfo.style.display = '';

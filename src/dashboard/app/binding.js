@@ -10,10 +10,12 @@ import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
 import {onCoastColorChange} from "../ui/map/map-coasts.js"
 import {resetAllGraphsZoom} from "../ui/raceGraph.js"
 import {applyRaceAnalysisMode, buildRaceAnalyseAdvance} from "../ui/raceAnalysis.js"
+import {plotPolarResetZoomBestVMG} from "../ui/charts/polarGraph.js"
 import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV,
    exportGraphData, exportStamina, exportOwnBoatTrack, exportRestrictedZones} from "./exportTool.js"
 import {getDoradoUrl} from "../../common/callExternal.js"
 import {adaptUnitNotif,createNotif,createTimeNotif} from "../ui/raceNotif.js"
+import {initFleetFilterBar} from "../ui/fleetFilterBar.js"
 
 
 /**
@@ -87,6 +89,7 @@ function initUIBindings(items) {
 
 export function uiBindingInit() {
   document.addEventListener("click", clickManager);
+  initFleetFilterBar();
   initUIBindings([
     {
       selector: '#sel_race',
@@ -238,6 +241,10 @@ export function uiBindingInit() {
         const userPrefs = getUserPrefs();
         el.value = userPrefs.analysis.polarViewers.spikeSensitivity;
       }
+    },
+    {
+      selector: '#sel_polar_resetZoomBestVMG',
+      onChange: () => { plotPolarResetZoomBestVMG(); },
     },
     {
       selector: '#sel_polarSite',
@@ -529,8 +536,9 @@ export function uiBindingInit() {
       onChange: async () => {createTimeNotif();}
     },
     {
-      selector: '#bt_rt_addLmap',
-      onChange: async () => {sel_type1Notif();}
+      selector: '#sel_type1Notif',
+      onChange: () => {adaptUnitNotif();},
+      onInit: () => {adaptUnitNotif();}
     },
 
 

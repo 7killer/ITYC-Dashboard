@@ -39,6 +39,7 @@ function loadRacingSkipperList(elt)
     const raceItesFleet    = getLegFleetInfos();
     const connectedPlayerId = getConnectedPlayerId();
 
+    const raceInfo = getRaceInfo();
     const fln = Object.fromEntries(
     Object.entries(raceItesFleet)
         .filter(([, p]) => p.state !== "Arrived")
@@ -52,13 +53,15 @@ function loadRacingSkipperList(elt)
             type : p.ite.type,
             type2 : p.ite.type2,
             choice : p.ite.choice,
-            state : p.ite.state
+            state : p.ite.state,
+            playerFleetInfos: p,
+            playerIte: p.ite
         }])
     );
     Object.entries(fln).forEach(([key, value]) => {
     // key   -> la clé
     // value -> la valeur / objet
-        if (isDisplayEnabled(value, key,connectedPlayerId)) {
+        if (isDisplayEnabled(value.playerIte, key, connectedPlayerId, {playerFleetInfos: value.playerFleetInfos, raceInfo})) {
             const option = document.createElement("option");
 
             let optionK = "";

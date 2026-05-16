@@ -37,11 +37,10 @@ export function updateRaceListNotif()
         if (opt.dataset.dynamic === "true") sel.removeChild(opt);
     });
     
-    const opt = document.createElement("option");
-    opt.dataset.dynamic = "true";
-    
     if(raceInfo?.raceId == null || raceInfo?.legNum == null) 
     {
+        const opt = document.createElement("option");
+        opt.dataset.dynamic = "true";
         opt.textContent = "Aucune course disponible";
         opt.disabled = true;
         opt.selected = true;
@@ -51,9 +50,10 @@ export function updateRaceListNotif()
         return;
     }
 
-    opt.disabled = false;
-    
     const raceKey = raceInfo.raceId + '-' + raceInfo.legNum; 
+    const opt = document.createElement("option");
+    opt.dataset.dynamic = "true";
+    opt.disabled = false;
     opt.textContent = `${raceInfo.legName} (${raceKey})`;
     opt.selected = true;
     opt.value = raceKey;
@@ -67,18 +67,42 @@ export function updateRaceListNotif()
         if(raceInfo.raceId != legId.raceId || raceInfo.legNum != legId.legNum)
         {
             const key = `${legId.raceId}-${legId.legNum}`;
-            const legInfo = raceList[key];
+            const oldLegInfo = raceList[key];
+            if (!oldLegInfo) continue;
             
-            const raceKey = raceInfo.raceId + '-' + raceInfo.legNum; 
-            opt.textContent = `${legInfo.legName} (${raceKey})`;
-            opt.value = raceKey;
-            sel.appendChild(opt);
+            const historyOpt = document.createElement("option");
+            historyOpt.dataset.dynamic = "true";
+            historyOpt.textContent = `${oldLegInfo.legName} (${key})`;
+            historyOpt.value = key;
+            sel.appendChild(historyOpt);
         }
     }
 }
 
 export function adaptUnitNotif()
  {
+    const userPrefs = getUserPrefs();
+    let unitText = "";
+    switch(document.getElementById("sel_type1Notif").value) {
+        case "1" :
+        case "2" :
+        case "4" :
+        case "8" :
+            unitText = "deg";
+            break;
+        case "3" :
+        case "7" :
+            unitText = userPrefs.lang == "fr" ? "nds" : "knds";
+            break;
+        case "5" :
+        case "6" :
+            unitText = "%";
+            break;
+        default :
+            break;
+    }
+    document.getElementById("notifUnit").textContent = unitText;
+    return;
     let text ="";
     let padL = "3em";
     switch(document.getElementById("sel_type1Notif").value) {
@@ -156,7 +180,7 @@ export function createNotif(){
         return;
     }
 
-    if(type1Notif == "---" || type2Notif == "---" || !valNotif)
+    if(type1Notif == "0" || type1Notif == "---" || type2Notif == "---" || !valNotif)
     {
         if(userPrefs.lang ==  "fr") {
             alert ("Enregistrement impossible, vérifiez les données !");
@@ -169,7 +193,7 @@ export function createNotif(){
     notifications.push({race: raceNotif,
         type : type1Notif,
         val : roundTo(valNotif,2),
-        repActive : document.getElementById("sel_minuteNotif").checked,
+        repActive : document.getElementById("notif_repeat").checked,
         ope : type2Notif,
         repet: 0,
     });
@@ -191,6 +215,99 @@ export function deleteNotif(id){
 export function showNotifList() {
     const userPrefs = getUserPrefs();
     const isFr = userPrefs.lang ==  "fr"; 
+    const host = document.getElementById("notif");
+    if (!host) return;
+    host.replaceChildren();
+
+    for (let i = 0; i < notifications.length; i++) {
+        if(!notifications[i]) continue;
+
+        const item = document.createElement("div");
+        item.className = "race-notif-item";
+
+        const kind = document.createElement("span");
+        kind.className = "badge race-notif-kind";
+
+        const text = document.createElement("span");
+        text.className = "race-notif-text";
+
+        if(notifications[i].type=="recall") {
+            kind.textContent = isFr ? "Rappel" : "Recall";
+            text.textContent = isFr
+                ? "Rappel vers " + formatTimeNotif(notifications[i].time) + " (heure locale)."
+                : "Recall at " + formatTimeNotif(notifications[i].time) + " (local time).";
+        } else {
+            const raceList = getLegList();
+            const legInfo = raceList[notifications[i].race];
+            kind.textContent = "Race";
+
+            let textNotif = (legInfo?.legName ?? notifications[i].race) + " : ";
+            textNotif += isFr ? "notification si " : "notification if ";
+
+            switch(notifications[i].type) {
+                case "1" : textNotif += "TWA"; break;
+                case "2" : textNotif += "HDG"; break;
+                case "3" : textNotif += "TWS"; break;
+                case "4" : textNotif += "TWD"; break;
+                case "5" : textNotif += "stamina"; break;
+                case "6" : textNotif += "overSpeed"; break;
+                case "7" : textNotif += "boat vmg"; break;
+                case "8" : textNotif += "TWA bvmg"; break;
+                default : break;
+            }
+
+            textNotif += isFr ? " est " : " is ";
+
+            switch(notifications[i].ope) {
+                case "inf" : textNotif += isFr ? "inferieur(e) a " : "inferior to "; break;
+                case "infegal" : textNotif += isFr ? "inferieur(e) ou egale a " : "inferior or equal to "; break;
+                case "egal" : textNotif += isFr ? "egal a " : "equal to "; break;
+                case "supegal" : textNotif += isFr ? "superieur(e) ou egale a " : "superior or equal to "; break;
+                case "sup" : textNotif += isFr ? "superieur(e) a " : "superior to "; break;
+                default : break;
+            }
+
+            textNotif += notifications[i].val;
+
+            switch(notifications[i].type) {
+                case "1" :
+                case "2" :
+                case "4" :
+                case "8" :
+                    textNotif += "deg";
+                    break;
+                case "3" :
+                case "7" :
+                    textNotif += isFr ? "nds" : "knds";
+                    break;
+                case "5" :
+                case "6" :
+                    textNotif += "%";
+                    break;
+                default : break;
+            }
+
+            text.textContent = textNotif + ".";
+        }
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.id = "notif_delete_" + i;
+        del.className = "race-notif-delete";
+        del.setAttribute("aria-label", isFr ? "Supprimer la notification" : "Delete notification");
+        del.textContent = "x";
+
+        item.append(kind, text, del);
+        host.append(item);
+    }
+
+    if (!host.hasChildNodes()) {
+        const empty = document.createElement("div");
+        empty.className = "race-notif-empty";
+        empty.textContent = isFr ? "Aucune notification active." : "No active notification.";
+        host.append(empty);
+    }
+    return;
     const closeImg = userPrefs.theme=="dark"?"./img/closedark.png":"./img/close.png";
     let notifTxt = "";
     for (let i = 0; i < notifications.length; i++) {
@@ -295,7 +412,7 @@ export function sheduleNotif() {
                 textNotif += formatTimeNotif(notifications[i].time) + " !";
                 doNotif(titreNotif, textNotif, 3, i);    
             }
-        } else if(notifications[i].race == raceInfo.legName)
+        } else if(notifications[i].race == `${raceInfo.raceId}-${raceInfo.legNum}`)
         {
            let textType = " : ";
            let textOpe = "";
@@ -361,7 +478,7 @@ export function sheduleNotif() {
                 case "infegal" : // HDG
                     if(val <= notifications[i].val) drawNotif = true;
                     textOpe =isFr? "  est inférieur(e) ou égale à ":" is inferior or equal to ";
-                    if(lang ==  "fr")  textOpe =  "";
+                    if(isFr)  textOpe =  "";
                     else textOpe =  "";
                     break;
                 case "egal" : // equal
@@ -375,7 +492,7 @@ export function sheduleNotif() {
                 case "sup" : // superior
                     if(val > notifications[i].val) drawNotif = true;
                     textOpe =isFr? " est supérieur(e) à ":" is superior to ";
-                    if(lang ==  "fr")  textOpe =  "";
+                    if(isFr)  textOpe =  "";
                     else textOpe =  "";
                     break;
                 default :

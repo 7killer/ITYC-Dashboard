@@ -422,7 +422,7 @@ function ensureWindStatusControl(map) {
 
 const shortGribControl = L.Control.extend({
   options: {
-    position: 'bottomleft',
+    position: 'bottomright',
   },
 
   onAdd: function (map) {
@@ -565,6 +565,12 @@ function resetWindProxyRetryState() {
   windProxyRetryTargetUnix = null;
 }
 
+function clampWindTimelineUnix(epochSec) {
+  const { startUnix, endUnix } = windUiState;
+  if (!startUnix || !endUnix) return epochSec;
+  return Math.min(Math.max(epochSec, startUnix), endUnix);
+}
+
 function scheduleWindProxyRetry(targetUnix) {
   windProxyRetryTargetUnix = targetUnix ?? windProxyRetryTargetUnix ?? windUiState.currentUnix ?? Math.floor(Date.now() / 1000);
 
@@ -600,11 +606,18 @@ function scheduleWindProxyRetry(targetUnix) {
   }, retryDelay);
 }
 
-export function stopAutoPlay() {
+export async function stopAutoPlay(restoreCurrentTime = false) {
   clearAutoPlayTimer();
   windUiState.autoPlayState = 'stopped';
   setWindPlaybackTuning(false);
   applyDeferredAutoMaxVelocity();
+
+  if (!restoreCurrentTime) return;
+
+  const target = clampWindTimelineUnix(Math.floor(Date.now() / 1000));
+  windUiState.currentUnix = target;
+  refreshTimeControlDom();
+  await applyWindAtTime(target);
 }
 
 export function pauseAutoPlay() {
@@ -644,6 +657,8 @@ async function autoPlayStep() {
   if (windUiState.timeLabelEl) {
     windUiState.timeLabelEl.textContent = formatUtcDate(next);
   }
+  const sc = windUiState.statusControl;
+  if (sc && typeof sc.update === 'function') sc.update();
 
   await applyWindAtTime(next);
   wind2Log('autoplay step', {
@@ -678,63 +693,110 @@ function refreshTimelineUI() {
   if (ticksEl && daysEl) buildTimelineTicks(ticksEl, daysEl);
 }
  
- function buildTimelineTicks(ticksEl, daysEl) {
+function buildTimelineTicks(ticksEl, daysEl) {
   ticksEl.innerHTML = '';
   daysEl.innerHTML = '';
-  const start = windUiState.startUnix;
+  const start = windUiState.startUnix; // secondes Unix
   const end   = windUiState.endUnix;
+
   if (!start || !end || end <= start) return;
 
-  const totalSec = end - start;
-  const totalH = totalSec / 3600;
-
-  // ticks 3h
   const tickEveryH = 3;
-  const nbTicks = Math.floor(totalH / tickEveryH);
-  for (let i = 0; i <= nbTicks; i++) {
-    const h = i * tickEveryH;
-    const ratio = h / totalH;
+  const tickEveryMs = tickEveryH * 3600 * 1000;
+
+  const startMs = start * 1000;
+  const endMs = end * 1000;
+  const totalMs = endMs - startMs;
+
+  // Premier tick local aligné sur 0h, 3h, 6h, 9h, 12h, 15h, 18h, 21h
+  const firstTickDate = new Date(startMs);
+  firstTickDate.setMinutes(0, 0, 0);
+
+  const currentHour = firstTickDate.getHours();
+  const nextAlignedHour = Math.ceil(currentHour / tickEveryH) * tickEveryH;
+
+  if (nextAlignedHour >= 24) {
+    firstTickDate.setDate(firstTickDate.getDate() + 1);
+    firstTickDate.setHours(0, 0, 0, 0);
+  } else {
+    firstTickDate.setHours(nextAlignedHour, 0, 0, 0);
+  }
+
+  for (let tickMs = firstTickDate.getTime(); tickMs <= endMs; tickMs += tickEveryMs) {
+    const ratio = (tickMs - startMs) / (endMs - startMs);
+
     const div = document.createElement('div');
     div.className = 'ityc-tl-tick';
     div.style.left = `${ratio * 100}%`;
-    if (h % 24 === 0) div.classList.add('is-day');
+
+    const d = new Date(tickMs);
+
+    // is-day à minuit local
+    if (d.getHours() === 0) {
+      div.classList.add('is-day');
+    }
+
+    const hour = d.getHours();
+    if (hour % 6 === 0) {
+      const label = document.createElement('span');
+      label.className = 'ityc-tl-tick-label';
+      label.textContent = `${hour}h`;
+      div.appendChild(label);
+    }
+
     ticksEl.appendChild(div);
   }
 
-  // labels jours
-  const nbDays = Math.ceil(totalH / 24);
-  for (let d = 0; d <= nbDays; d++) {
-    const ts = start + d * 24 * 3600;
-    if (ts > end) break;
-    const ratio = (d * 24) / totalH;
+  const userPrefs = getUserPrefs();
+
+  const firstDay = new Date(startMs);
+  firstDay.setHours(12, 0, 0, 0);
+
+  // si le midi du jour de start est déjà passé, on commence au lendemain midi
+  if (firstDay.getTime() < startMs) {
+    firstDay.setDate(firstDay.getDate() + 1);
+  }
+
+  for (let dayMs = firstDay.getTime(); dayMs <= endMs; ) {
+    const ratio = (dayMs - startMs) / totalMs;
+
     const lab = document.createElement('div');
     lab.className = 'ityc-tl-day';
     lab.style.left = `${ratio * 100}%`;
-    const date = new Date(ts * 1000);
+
+    const date = new Date(dayMs);
     const today = new Date();
     const isToday = date.toDateString() === today.toDateString();
+    const locale = userPrefs?.lang === 'fr' ? 'fr-FR' : 'en-GB';
     lab.textContent = isToday
-      ? "Aujourd’hui"
-      : new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(date);
+      ? (userPrefs?.lang === 'fr' ? "Aujourd’hui" : "Today")
+      : new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
+
     daysEl.appendChild(lab);
+
+    // jour suivant à 12h local
+    const next = new Date(dayMs);
+    next.setDate(next.getDate() + 1);
+    next.setHours(12, 0, 0, 0);
+    dayMs = next.getTime();
   }
 }
- function ensureWindTimeControl(map) {
-   if (windUiState.timeControl) return windUiState.timeControl;
- 
-   const ctrl = L.control({ position: 'bottomleft' });
- 
-   ctrl.onAdd = function () {
+function ensureWindTimeControl(map) {
+  if (windUiState.timeControl) return windUiState.timeControl;
+
+  const ctrl = L.control({ position: 'bottomright' });
+
+  ctrl.onAdd = function () {
     // Slider “Windy-like” (barre seulement) -> bottom-center via corner custom
-    const root = L.DomUtil.create('div', 'leaflet-bar ityc-info-control ityc-timeline');
-    root.innerHTML = `
-      <div class="ityc-tl-bar">
-        <div class="ityc-tl-ticks" data-role="ticks"></div>
-        <input class="ityc-tl-slider" data-role="slider" type="range" min="0" max="0" step="1" value="0" />
-        <div class="ityc-tl-tooltip" data-role="tip" style="display:none;"></div>
-      </div>
-      <div class="ityc-tl-days" data-role="days"></div>
-    `;
+  const root = L.DomUtil.create('div', 'leaflet-bar ityc-info-control ityc-timeline');
+  root.innerHTML = `
+    <div class="ityc-tl-bar">
+      <div class="ityc-tl-ticks" data-role="ticks"></div>
+      <input class="ityc-tl-slider" data-role="slider" type="range" min="0" max="0" step="1" value="0" />
+      <div class="ityc-tl-tooltip" data-role="tip" style="display:none;"></div>
+    </div>
+    <div class="ityc-tl-days" data-role="days"></div>
+  `;
 
     L.DomEvent.disableClickPropagation(root);
     L.DomEvent.disableScrollPropagation(root);
@@ -755,6 +817,12 @@ function refreshTimelineUI() {
     buildTimelineTicks(elTicks, elDays);
 
     const bar = root.querySelector('.ityc-tl-bar');
+    const setTipLeft = (ratio) => {
+      const offset = Number.parseFloat(
+        getComputedStyle(bar).getPropertyValue('--ityc-tl-thumb-offset')
+      ) || 0;
+      elTip.style.left = `calc(${offset}px + ${ratio * 100}% - ${ratio * offset * 2}px)`;
+    };
     const showTipAt = (clientX) => {
       const rect = elSlider.getBoundingClientRect();
       const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
@@ -762,7 +830,7 @@ function refreshTimelineUI() {
       const ts = (windUiState.startUnix || 0) + idx * windUiState.stepSec;
       elTip.textContent = formatLocalDateTime(ts);
       elTip.style.display = '';
-      elTip.style.left = `${Math.round(ratio * 100)}%`;
+      setTipLeft(ratio);
     };
     const hideTip = () => { elTip.style.display = 'none'; };
 
@@ -776,7 +844,7 @@ function refreshTimelineUI() {
       const ratio = max ? (idx / max) : 0;
       elTip.textContent = formatLocalDateTime(ts);
       elTip.style.display = '';
-      elTip.style.left = `${Math.round(ratio * 100)}%`;
+      setTipLeft(ratio);
     };
 
     elSlider.addEventListener('input', () => {

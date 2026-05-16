@@ -21,7 +21,7 @@ import {loadUserPrefs, getUserPrefs} from '../common/userPrefs.js'
 import {onPlayerConnect, updateRaceListDisplay,onRaceOpen} from './ui/header.js'
 import {buildRaceStatusHtml} from './ui/raceStatus.js'
 import {uiBindingInit} from'./app/binding.js'
-import {tabSwitch} from'./app/tab.js'
+import {tabSwitch, refreshActiveTab} from'./app/tab.js'
 import {initCachedTilesList} from './ui/map/map-coasts.js'
 import {raceGraphOnLoad} from'./ui/raceGraph.js'
 import {updateNmeaIndicator} from './ui/common.js'
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const repeater = startRepeating(() => {
         if(upDateDisplay)
         {
-            tabSwitch();
+            refreshActiveTab();
             upDateDisplay = false;
           console.log("⏰ Display update ", new Date().toLocaleTimeString());
         }
@@ -80,6 +80,7 @@ function doDbListener()
             if(newValue.loggedUser && initDone) {
                 setConnectedPlayerId(newValue.loggedUser);
                 await updatePlayersList();
+                await updateLegList();
                 await updateTeamsList();
                 await updateConnectedPlayerInfos();
                 await updateLegPlayerInfos();
@@ -101,9 +102,8 @@ function doDbListener()
                 await updatePolar();
                 updateRaceListDisplay(); 
                 updateRaceListNotif();
-                //update display map, fleet racestatus,, race book 
                 buildRaceStatusHtml();
-                tabSwitch();
+                refreshActiveTab();
             }
         }
     });
@@ -120,8 +120,7 @@ function doDbListener()
                 await updateLegFleetInfos();
                 await updateLegPlayerInfos();
                 await updateLegPlayersOrder();
-                tabSwitch();
-                //update display connectedUser Fleet
+                refreshActiveTab();
             }
         }
     });
@@ -138,8 +137,7 @@ function doDbListener()
                 await updateLegFleetInfos();
                 await updateLegPlayerInfos();
                 await updateLegPlayersOrder();
-                tabSwitch();
-                //update display connectedUser Fleet
+                refreshActiveTab();
             }
         }
     });
@@ -153,7 +151,7 @@ function doDbListener()
             {   //updated infos
                 setPolarsUpdate(newValue.ts);
                 await updatePolar();
-                tabSwitch();
+                refreshActiveTab();
                 //update display connectedUser Fleet polar page
             }
         }
@@ -169,8 +167,7 @@ function doDbListener()
                 await updateLegPlayerInfos();
                 await updateLegPlayersOrder();      
                 buildRaceStatusHtml();
-                tabSwitch();
-                //update display Fleet
+                refreshActiveTab();
             }
         }
     });
@@ -183,9 +180,8 @@ function doDbListener()
             {   //updated infos
                 setLegFleetInfosUpdate(newValue.ts);
                 await updateLegFleetInfos();
-                //update display Fleet
                 buildRaceStatusHtml();
-                tabSwitch();
+                refreshActiveTab();
             }
         }
     });
@@ -199,10 +195,7 @@ function doDbListener()
                 setLegPlayersOptionsUpdate(newValue.ts);
                 await updateLegPlayersOptions();
                 await updateLegPlayerInfos();
-                tabSwitch();
-    //            await updateLegPlayersOrder();
-    //            await updateLegFleetInfos();
-                //update display Fleet
+                refreshActiveTab();
             }
         }
     });
@@ -217,8 +210,7 @@ function doDbListener()
                 setLegPlayersOrderUpdate(newValue.ts)
                 await updateLegPlayersOrder();
                 buildRaceStatusHtml();
-                tabSwitch();
-                //update display raceLog map,raceStatus
+                refreshActiveTab();
             }
         },
     });
@@ -252,7 +244,7 @@ function doDbListener()
                 await updateLegPlayersTracks();
                 onRaceOpen();
                 buildRaceStatusHtml();
-                tabSwitch();
+                refreshActiveTab();
                 openAutoRouter();
             }
         },
@@ -266,8 +258,7 @@ function doDbListener()
         {   //updated infos
             setLegPlayersTracksUpdate(newValue.ts);
             await updateLegPlayersTracks();
-            tabSwitch();
-            //update display raceLog map,raceStatus
+            refreshActiveTab();
         }
     },
     });
@@ -281,16 +272,9 @@ function doDbListener()
 
 }
 
-/* */
-//updateRaceList
-
 function startRepeating(callback, interval = 5000) {
-  // Lancer immédiatement la première exécution (facultatif)
   callback();
-
-  // Puis toutes les 5 secondes
   const id = setInterval(callback, interval);
-
   return {
     stop() {
       clearInterval(id);

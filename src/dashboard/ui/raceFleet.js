@@ -142,7 +142,7 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
 
     const userId = playerIte.userId;
 
-    const isDisplay = isDisplayEnabled(playerIte, userId,connectedPlayerId) &&  ( !userPrefs.filters.inRace|| r.state == "racing" );
+    const isDisplay = isDisplayEnabled(playerIte, userId, connectedPlayerId, {playerFleetInfos, raceInfo});
     if(!isDisplay) 
         return "";
 
@@ -242,9 +242,12 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
     
     const sailStyle = 'style="color:'+sailColors[playerIte.sail]+'"';
     const sailName = sailNames[playerIte.sail%10] || "-";
-    const foils = iteDash?.realFoilFactor==null?(foilsType?"no":"?"):(roundTo(iteDash.realFoilFactor,1)+"%")
+    let foils = "?";
+    if(foilsType == 1) foils = "no";
+    else if(foilsType == 0) foils = "?";
+    else if(iteDash?.realFoilFactor==null) foils = "0.0%";
+    else foils = roundTo(iteDash.realFoilFactor,1)+"%";
     
-
     return '<tr class="' + nameClass + ' hovred" id="ui:' + userId + '">'
         + '<td class="tdc">' + routerIcon + '</td>'
         + gentd("Time","",null, formatTime(playerIte.iteDate, 1))
@@ -270,7 +273,9 @@ function buildRaceFleetLine(playerFleetInfos,raceInfo,connectedPlayerId) {
         + gentd("Position","",null, (playerIte.pos ? formatPosition(playerIte.pos.lat, playerIte.pos.lon) : "-") )
         + gentd("Options",optionsStyle,optionsTitle, optionsTxt)
         + gentd("State", "", txtTitle, iconState)
-        + gentd("Remove", "", null, (getLegSelectedPlayersState(userId) && userId != connectedPlayerId ? '<span class="removeSelectedBoat" data-id="' + userId + '" title="Remove this boat: ' + name + '">❌</span>' : ""))
+        + gentd("Remove", "", null, (userId != connectedPlayerId
+            ? '<span class="toggleSelectedBoat" data-id="' + userId + '" data-selected="' + (getLegSelectedPlayersState(userId) ? "true" : "false") + '" title="' + (getLegSelectedPlayersState(userId) ? "Remove this boat: " : "Select this boat: ") + name + '">' + (getLegSelectedPlayersState(userId) ? "❌" : "➕") + '</span>'
+            : ""))
         + '</tr>';
 }
 
@@ -319,10 +324,10 @@ function drawOptions(playerOptions) {
     let optionsTxt = "";
     let optionsStyle = "";
     let optionsTitle = "";
-    let foilsType = false;
+    let foilsType = 0;
 
     if(!playerOptions)
-        return {optionsTxt:"",optionsTitle:"",optionsStyle:"",foilsType:false};
+        return {optionsTxt:"",optionsTitle:"",optionsStyle:"",foilsType:0};
 
     let optSail = "";
     let optPerf = "";
@@ -343,7 +348,7 @@ function drawOptions(playerOptions) {
         )
             optPerf = "[";
         if(pOptions.winch) optPerf += "winch,";
-        if(pOptions.foil) {optPerf += "foil,";foilsType = true;}
+        if(pOptions.foil) {optPerf += "foil,";foilsType = 2;} else {foilsType = 1;}
         if(pOptions.hull) optPerf += "hull,";
         if(pOptions.comfortLoungePug) optPerf += "comfortLoungePug,";
         if(pOptions.magicFurler) optPerf += "magicFurler,";
@@ -369,7 +374,10 @@ function drawOptions(playerOptions) {
         if(isBitSet(pOptions,guessOptionBits["winchDetected"]) && isBitSet(pOptions,guessOptionBits["winch"]))
             optPerf += "winch,";
         if(isBitSet(pOptions,guessOptionBits["foilDetected"]) && isBitSet(pOptions,guessOptionBits["foil"]))
-        {    optPerf += "foil,";foilsType = true;}
+        {    optPerf += "foil,";foilsType = 2;}
+        else if(isBitSet(pOptions,guessOptionBits["foilDetected"]) && !isBitSet(pOptions,guessOptionBits["foil"]))
+        {    foilsType = 1;}
+        
         if(isBitSet(pOptions,guessOptionBits["hullDetected"]) && isBitSet(pOptions,guessOptionBits["hull"]))
             optPerf += "hull,";
         optionsStyle = 'style="font-style: italic;"';
@@ -416,11 +424,13 @@ function drawOptions(playerOptions) {
 }
 
 function addEventListenersToRemoveSelectedBoatButtons() {
-    document.querySelectorAll('.removeSelectedBoat').forEach(function(e) {
-        e.addEventListener('click', function() {
+    document.querySelectorAll('.toggleSelectedBoat').forEach(function(e) {
+        e.addEventListener('click', function(ev) {
+            ev.stopPropagation();
             const boatId = this.getAttribute('data-id');
-            setLegSelectedPlayers(boatId,false);
-            buildRaceFleetHtml()
+            const isSelected = this.getAttribute('data-selected') === "true";
+            setLegSelectedPlayers(boatId, !isSelected);
+            buildRaceFleetHtml();
         });
     });
 }

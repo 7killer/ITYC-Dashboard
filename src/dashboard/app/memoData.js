@@ -192,49 +192,6 @@ export async function updateLegList() {
   }
 }
 
-/*
-export async function updateLegList()
-{
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    const legList = await getAllData("legList")
-    .catch(error => {
-        console.error("getLegList error :", error);
-    });
-    // Filtrage : exclusion des courses terminées depuis + d'une semaine
-    const filtered = legList.filter(leg => {
-    const endDate = leg.end?.date ? new Date(leg.end.date) : null;
-    const isFinishedOld =
-        leg.status === "finished" &&
-        endDate &&
-        endDate < oneWeekAgo;
-        return !isFinishedOld && leg.id !== "update";
-    });
-
-    // Tri par date de départ croissante
-    filtered.sort((a, b) => {
-        const da = new Date(a.start?.date || 0);
-        const db = new Date(b.start?.date || 0);
-        return da - db;
-    });
-
-    raceList = [];
-    if (filtered.length !== 0) {
-        filtered.forEach(leg => {
-            const raceListItem = {raceId : leg.raceId, legNum:leg.legNum,name : leg.legName};
-            const fullRaceId = leg.raceId + '-' + leg.legNum;
-            raceList[fullRaceId] = raceListItem;
-
-            if(openedRaceId?.raceId && openedRaceId?.legNum
-                && openedRaceId.raceId == leg.raceId && openedRaceId.legNum == leg.legNum 
-            ) {
-                raceInfo = leg;
-            }
-        });
-    }
-}
-*/
 export function getPlayersUpdate()
 {
     return playersUpdate;
@@ -356,9 +313,13 @@ export async function updateLegFleetInfos()
             if(!'userId' in item[1]) continue;
             const userId = item[1].userId;
 
+            if(item[1].choice) legSelectedPlayers[userId] = true;
+            item[1].choice = getLegSelectedPlayersState(userId); 
+
             const playerOptionRace = legPlayersOptions[userId]?legPlayersOptions[userId]:{options:[],guessOptions:0};
             const playerInfo = playersList[userId];
             const teamInfo = playerInfo?.teamId?(teamList[playerInfo.teamId]?teamList[playerInfo.teamId]:{id:null,name:""}):{id:null,name:""};
+            
             const itePlayer = {
                 ite :item[1],             // ← ton tableau d’entrées
                 info: playerInfo,
@@ -367,8 +328,6 @@ export async function updateLegFleetInfos()
             };
             
             legFleetInfos[userId] = itePlayer; 
-
-            if(item[1].choice) legSelectedPlayers[userId] = true;
         }
     } else
         legFleetInfos = [];

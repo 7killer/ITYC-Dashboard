@@ -88,39 +88,42 @@ export function tabSwitch(tabId = null)
             showNotifList();
             break;
     }
-/*
-    if (tabsel) {
-        // Tab-Selection
-        originClick= rmatch ;
-     //   EX.extraRoute("hidden");
-        for (let t = 1; t <= nbTabs; t++) {
-            if(t==3)
-                document.getElementById("tab-content" + t).style.display = (rmatch == t ? "flex" : "none");
-            else document.getElementById("tab-content" + t).style.display = (rmatch == t ? "block" : "none");
-        }
-        if (rmatch == 2) {
-            
-            updateFleetHTML(raceFleetMap.get(selRace.value));
-            display_selbox("visible");
-        } else if (rmatch == 3) {
-            var race = races.get(selRace.value);
-            rt.updateFleet(race,raceFleetMap);
-            initializeMap(race);
-            EX.extraRoute("visible");
-            display_selbox("visible");
-        } else if (rmatch == 4) {
-            buildlogBookHTML(races.get(selRace.value));
-        } else if (rmatch == 5) {
-            var race = races.get(selRace.value);
-            if(race && race.recordedData) {
-                gr.upDateGraph(race.recordedData);
-            }
-        } else if (rmatch == 6) {
-            nf.showList();
-        } else if (rmatch == 8) {
-//                 updateUserConfigHTML();
-        }  else if (rmatch == 9) {
-            document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;
-        } 
-    }*/
+}
+
+export function refreshActiveTab(tabId)
+{
+
+    if(tabId == null)
+    {
+        tabId = activeTab;
+    }
+
+    const tabName = tabList[tabId];
+
+    switch(tabName) {
+        case "config":
+        case "rawLog":
+            break;
+        case "raceLog":
+            buildRaceLogHtml();
+            break;
+        case "raceFleet":
+            buildRaceFleetHtml();
+            break;
+        case "raceMap":
+            initializeMap();
+            break;
+        case "raceBook":
+            buildRaceBookHtml();            
+            break;
+        case "raceGraph":
+            upDateGraph();
+            break;
+        case "raceAnalyse":
+            buildRaceAnalyseAdvance();
+            break;
+        case "notif":
+            showNotifList();
+            break;
+    }
 }

@@ -1,9 +1,11 @@
 
 import {getUserPrefs} from "../../common/userPrefs.js"
-import {isOptionsActivated} from "../../common/utils.js"
+import {cleanSpecial, isOptionsActivated, roundTo} from "../../common/utils.js"
 import cfg from '@/config.json';
 let sortOrder = 0;
 let sortField = "none";
+
+const SAIL_NAMES = [0, "Jib", "Spi", "Stay", "LJ", "C0", "HG", "LG", 8, 9];
 
 
 export const FLEET_SORT_KEY_BY_TH_ID = {
@@ -51,10 +53,119 @@ export function getSortOrder()
     return sortOrder;
 }
 
+export function getFleetFilterTypeState(key) {
+    return getUserPrefs()?.filters?.types?.[key] ?? "ignored";
+}
 
-export function isDisplayEnabled(playerIte, userId, connectPlayerId) {
+function normalizeFilterText(value) {
+    return cleanSpecial(String(value ?? "")).toLowerCase();
+}
+
+function getTypeConditions(playerIte) {
+    return {
+        friends: (playerIte.type2 === "followed"),
+        team: (playerIte.type2 === "team" || playerIte.team === true),
+        opponents: (playerIte.type2 === "normal"),
+        top: (playerIte.type === "top" || playerIte.type2 === "top"),
+        certified: (playerIte.type2 === "certified"),
+        real: (playerIte.type2 === "real" || playerIte.type === "real"),
+        sponsors: (playerIte.type === "sponsor" || playerIte.type2 === "sponsor"),
+        selected: (playerIte.choice === true),
+        inRace: (playerIte.state === "racing"),
+        waiting: (playerIte.state === "waiting" || playerIte.state === "staying"),
+        arrived: (playerIte.state === "arrived")
+    };
+}
+
+function passTypeFilters(playerIte, typeFilters = {}) {
+    const conditions = getTypeConditions(playerIte);
+    const activeKeys = Object.entries(typeFilters).filter(([, state]) => state === "active").map(([key]) => key);
+    const excludedKeys = Object.entries(typeFilters).filter(([, state]) => state === "excluded").map(([key]) => key);
+
+    if (excludedKeys.some((key) => conditions[key])) return false;
+    if (activeKeys.length === 0) return true;
+    return activeKeys.some((key) => conditions[key]);
+}
+
+function getDisplayName(playerIte, playerFleetInfos) {
+    const baseName = playerFleetInfos?.info?.name ?? playerIte?.name ?? playerIte?.displayName ?? "";
+    if (playerIte?.type === "sponsor" && playerIte?.branding?.name) {
+        return `${baseName}(${playerIte.branding.name})`;
+    }
+    return baseName;
+}
+
+function passSearchFilter(playerIte, playerFleetInfos, searchText) {
+    const needle = normalizeFilterText(searchText);
+    if (!needle) return true;
+    return normalizeFilterText(getDisplayName(playerIte, playerFleetInfos)).includes(needle);
+}
+
+function passTeamFilters(playerIte, playerFleetInfos, selectedTeams = []) {
+    if (!Array.isArray(selectedTeams) || selectedTeams.length === 0) return true;
+    const teamId = playerFleetInfos?.team?.id ?? playerIte?.team?.id;
+    const teamName = playerFleetInfos?.team?.name ?? playerIte?.team?.name ?? "";
+    return selectedTeams.some((team) => {
+        const selectedId = team?.id == null ? "" : String(team.id);
+        const selectedName = team?.name ?? "";
+        return (selectedId && selectedId === String(teamId)) || (selectedName && selectedName === teamName);
+    });
+}
+
+function getDynamicValue(filter, playerIte, playerFleetInfos, raceInfo) {
+    const metaDash = playerIte?.metaDash;
+    switch (filter.variable) {
+        case "twa": return Math.abs(playerIte?.twa ?? 0);
+        case "tws": return playerIte?.tws;
+        case "hdg": return playerIte?.hdg;
+        case "twd": return playerIte?.twd ? playerIte.twd : metaDash?.twd;
+        case "speed": return playerIte?.speed;
+        case "rank": return playerIte?.rank;
+        case "sail": return SAIL_NAMES[(playerIte?.sail ?? 0) % 10];
+        case "autoSail": return playerIte?.isRegulated ? "Active" : "Desactive";
+        case "avgSpeed": return raceInfo?.raceType === "record" ? metaDash?.avgSpeed : "";
+        case "xfactor": return roundTo(metaDash?.xfactor, 4);
+        case "distance": return metaDash?.dtf === metaDash?.dtfC ? roundTo(metaDash?.dtfC, 3) : roundTo(metaDash?.dtf, 3);
+        case "options": return playerFleetInfos?.options ?? playerIte?.options;
+        default: return undefined;
+    }
+}
+
+function compareDynamicValue(actual, operator, expected) {
+    if (actual == null || actual === "") return false;
+    if (operator === "eq" || operator === "neq") {
+        const result = normalizeFilterText(actual) === normalizeFilterText(expected);
+        return operator === "eq" ? result : !result;
+    }
+
+    const actualNumber = Number(actual);
+    const expectedNumber = Number(expected);
+    if (!Number.isFinite(actualNumber) || !Number.isFinite(expectedNumber)) return false;
+
+    switch (operator) {
+        case "lt": return actualNumber < expectedNumber;
+        case "lte": return actualNumber <= expectedNumber;
+        case "gte": return actualNumber >= expectedNumber;
+        case "gt": return actualNumber > expectedNumber;
+        default: return actualNumber === expectedNumber;
+    }
+}
+
+function passDynamicFilters(playerIte, playerFleetInfos, raceInfo, dynamicFilters = []) {
+    if (!Array.isArray(dynamicFilters) || dynamicFilters.length === 0) return true;
+    return dynamicFilters.every((filter) => {
+        if (filter.variable === "options") return true;
+        return compareDynamicValue(getDynamicValue(filter, playerIte, playerFleetInfos, raceInfo), filter.operator, filter.value);
+    });
+}
+
+export function isDisplayEnabled(playerIte, userId, connectPlayerId, context = {}) {
     const userPrefs = getUserPrefs();
     const userFilters = userPrefs.filters;
+    const playerFleetInfos = context.playerFleetInfos ?? null;
+    const raceInfo = context.raceInfo ?? null;
+
+    if (userId === connectPlayerId) return true;
 
     if(cfg.debugFilter1)
     {
@@ -64,19 +175,13 @@ export function isDisplayEnabled(playerIte, userId, connectPlayerId) {
         console.log("→ userFilters :", userFilters);
     }
     const conditions = {
-        self: (userId === connectPlayerId),
-        followed: (playerIte.type2 === "followed" && userFilters.friends),
-        team: (playerIte.type2 === "team" && userFilters.team),
-        normal: (playerIte.type2 === "normal" && userFilters.opponents),
-        top: ((playerIte.type === "top" || playerIte.type2 === "top") && userFilters.top),
-        certified: (playerIte.type2 === "certified" && userFilters.certified),
-        real: (playerIte.type2 === "real" && userFilters.real),
-        sponsor: ((playerIte.type === "sponsor" || playerIte.type2 === "sponsor") && userFilters.sponsors),
-        selected: (playerIte.choice === true && userFilters.selected),
-        inRace: (playerIte.state === "racing" && userFilters.inRace)
+        search: passSearchFilter(playerIte, playerFleetInfos, userFilters?.searchText),
+        type: passTypeFilters(playerIte, userFilters?.types),
+        teams: passTeamFilters(playerIte, playerFleetInfos, userFilters?.teams),
+        dynamic: passDynamicFilters(playerIte, playerFleetInfos, raceInfo, userFilters?.dynamic)
     };
 
-    const result = Object.values(conditions).some(Boolean);
+    const result = Object.values(conditions).every(Boolean);
     if(cfg.debugFilter1)
     {
 

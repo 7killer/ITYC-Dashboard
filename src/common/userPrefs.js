@@ -105,15 +105,22 @@ export const userPrefsDefault =
     sailRankId : "",
     separator : "sep_1" /* EU ; US , SailRank Tabs */,
     filters: {
-        friends : true,
-        opponents : false,
-        certified : true,
-        team : true,
-        top : true,
-        real :false,
-        sponsors : true,
-        inRace : false,
-        selected :true
+        searchText: "",
+        types: {
+            team: "active",
+            friends: "active",
+            top: "active",
+            sponsors: "active",
+            certified: "active",
+            opponents: "ignored",
+            real: "ignored",
+            selected: "active",
+            inRace: "ignored",
+            waiting: "ignored",
+            arrived: "ignored"
+        },
+        teams: [],
+        dynamic: []
     }
 }
 
@@ -169,6 +176,77 @@ function normalizeUserPrefs(rawPrefs)
     {
         prefs.filters = structuredClone(userPrefsDefault.filters);
         shouldSave = true;
+    }
+    else
+    {
+        const oldFilters = prefs.filters;
+        if(!oldFilters.types)
+        {
+            prefs.filters = {
+                searchText: "",
+                types: {
+                    team: oldFilters.team ? "active" : "ignored",
+                    friends: oldFilters.friends ? "active" : "ignored",
+                    top: oldFilters.top ? "active" : "ignored",
+                    sponsors: oldFilters.sponsors ? "active" : "ignored",
+                    certified: oldFilters.certified ? "active" : "ignored",
+                    opponents: oldFilters.opponents ? "active" : "ignored",
+                    real: oldFilters.real ? "active" : "ignored",
+                    selected: oldFilters.selected ? "active" : "ignored",
+                    inRace: oldFilters.inRace ? "active" : "ignored",
+                    waiting: "ignored",
+                    arrived: "ignored"
+                },
+                teams: [],
+                dynamic: []
+            };
+            shouldSave = true;
+        }
+
+        if(typeof prefs.filters.searchText !== 'string')
+        {
+            prefs.filters.searchText = "";
+            shouldSave = true;
+        }
+
+        if(!prefs.filters.types)
+        {
+            prefs.filters.types = structuredClone(userPrefsDefault.filters.types);
+            shouldSave = true;
+        }
+
+        for (const [key, defaultState] of Object.entries(userPrefsDefault.filters.types))
+        {
+            if(!["ignored", "active", "excluded"].includes(prefs.filters.types[key]))
+            {
+                prefs.filters.types[key] = defaultState;
+                shouldSave = true;
+            }
+        }
+
+        if(!Array.isArray(prefs.filters.teams))
+        {
+            prefs.filters.teams = [];
+            shouldSave = true;
+        }
+
+        if(!Array.isArray(prefs.filters.dynamic))
+        {
+            prefs.filters.dynamic = [];
+            shouldSave = true;
+        }
+
+        const cleanFilters = {
+            searchText: prefs.filters.searchText,
+            types: Object.fromEntries(Object.keys(userPrefsDefault.filters.types).map((key) => [key, prefs.filters.types[key]])),
+            teams: prefs.filters.teams,
+            dynamic: prefs.filters.dynamic
+        };
+        if(Object.keys(prefs.filters).some((key) => !Object.hasOwn(cleanFilters, key)))
+        {
+            shouldSave = true;
+        }
+        prefs.filters = cleanFilters;
     }
     if(!prefs.map)
     {

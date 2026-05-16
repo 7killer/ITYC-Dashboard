@@ -110,7 +110,8 @@
             </div>
             <fieldset class="fieldset" id="sel_skippers" align="left">
                 <legend id="t_filter">Filters</legend>
-                <ul  id="fleetFilterList" class="tab3">
+                <div id="fleetFilterList" class="fleet-filter-bar">
+                    <template id="fleetFilterLegacyTemplate">
                     <li class="tab">
                         <input type="checkbox" id="sel_team" name="checkbox1" class="content hidden" checked>
                         <label for="sel_team" id="lbl_team"><span style="color:Red;">&#x2B24;</span>&nbsp;Team</label>
@@ -147,7 +148,62 @@
                         <input type="checkbox" id="sel_inrace" name="checkbox9" class="content hidden">
                         <label for="sel_inrace" id="lbl_inrace">En course</label>
                     </li>
-                </ul>
+                    </template>
+                    <div class="fleet-filter-search">
+                        <label class="fleet-filter-search-label" for="fleetFilterSearch">&#x1F50E;</label>
+                        <input type="search" id="fleetFilterSearch" autocomplete="off" placeholder="Search">
+                        <button type="button" id="fleetFilterToggle" class="fleet-filter-icon" aria-expanded="false" aria-controls="fleetFilterPopup" title="Filters">&#x2699;</button>
+                    </div>
+                    <div id="fleetFilterPopup" class="fleet-filter-popup" hidden>
+                        <div class="fleet-filter-panel">
+                            <div class="fleet-filter-row fleet-filter-main-row" id="fleetFilterTypeList"></div>
+                            <div class="fleet-filter-grid">
+                                <section class="fleet-filter-section">
+                                    <h3 id="fleetFilterTeamsTitle">Selecteurs teams</h3>
+                                    <div class="fleet-filter-team-editor">
+                                        <select id="fleetFilterTeamSelect"></select>
+                                        <button type="button" id="fleetFilterAddTeam" class="fleet-filter-action">Ajouter</button>
+                                    </div>
+                                </section>
+                                <section class="fleet-filter-section">
+                                    <h3 id="fleetFilterDynamicTitle">Dynamic active filters</h3>
+                                    <div class="fleet-filter-dynamic-editor">
+                                        <select id="fleetFilterDynamicVariable"></select>
+                                        <select id="fleetFilterDynamicOperator">
+                                            <option value="lt">&lt;</option>
+                                            <option value="lte">&lt;=</option>
+                                            <option value="eq">=</option>
+                                            <option value="gte">&gt;=</option>
+                                            <option value="gt">&gt;</option>
+                                        </select>
+                                        <input type="number" id="fleetFilterDynamicValue" inputmode="decimal">
+                                        <select id="fleetFilterDynamicList"></select>
+                                        <span id="fleetFilterDynamicUnit" class="fleet-filter-unit">nm</span>
+                                        <button type="button" id="fleetFilterAddDynamic" class="fleet-filter-action">Ajouter</button>
+                                    </div>
+                                </section>
+                                <section class="fleet-filter-section">
+                                    <h3 id="fleetFilterActiveTeamsTitle">Active team selection</h3>
+                                    <div id="fleetFilterActiveTeams" class="fleet-filter-chips"></div>
+                                </section>
+                                <section class="fleet-filter-section">
+                                    <h3 id="fleetFilterActiveDynamicTitle">Active Dynamic filters</h3>
+                                    <div id="fleetFilterActiveDynamic" class="fleet-filter-chips"></div>
+                                </section>
+                            </div>
+                            <button type="button" id="fleetFilterReset" class="fleet-filter-reset">Reset</button>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="sel_team" class="content hidden" checked>
+                    <input type="checkbox" id="sel_friends" class="content hidden" checked>
+                    <input type="checkbox" id="sel_top" class="content hidden" checked>
+                    <input type="checkbox" id="sel_sponsors" class="content hidden" checked>
+                    <input type="checkbox" id="sel_certified" class="content hidden" checked>
+                    <input type="checkbox" id="sel_opponents" class="content hidden">
+                    <input type="checkbox" id="sel_reals" class="content hidden">
+                    <input type="checkbox" id="sel_selected" class="content hidden" checked>
+                    <input type="checkbox" id="sel_inrace" class="content hidden">
+                </div>
             </fieldset>
             <fieldset  class="fieldset" id="sel_export"  id="export" align="left">
                 <legend>Export</legend>
@@ -438,11 +494,6 @@
                     <canvas id="polarVMCChart"  class="myfChart" ></canvas>  
                 </div>        
             </div>
-            <div id="polarDensityDiv" >
-                <div class="polarChartBox">
-                    <canvas id="polarDensity" ></canvas>
-                </div>
-            </div> 
         </div>
         
         <div id="polarDiv" class="expertAnalysis">
@@ -540,57 +591,105 @@
                     <table id="polarTableSpikeInfo" class="table_polar">
                     </table>
                 </div>
+                <div id="polarDensityDiv" >
+                    <div class="polarChartBox">
+                        <canvas id="polarDensity" ></canvas>
+                    </div>
+                </div> 
+                <div id="polarBestVMGDiv" >
+                    <div  id="polarChartBestVMGTitle">
+                        <div  id="polarChartBestVMGTitle_name" class="polarChartHeaderTitle"></div>
+                        <ul><li class="but">
+                            <input type="checkbox" id="sel_polar_resetZoomBestVMG" name="checkbox1" class="content hidden" >
+                            <label for="sel_polar_resetZoomBestVMG" id="lbl_polar_resetZoomBestVMG">Reset Zoom</label>
+                        </li></ul>
+                    </div> 
+                    <div class="polarChartBox">
+                        <canvas id="polarBestVMGTWAChart"  class="myfChart" ></canvas> 
+                    </div>         
+                </div>
             </div>
         </div> 
         <iframe id="ityc_frame" class="basicsAnalysis" src="" width="100%" height="100%" style="border:none; " frameborder="0" ></iframe>
     </div>
     <div id="tab-content6" class="content hidden">
-        <div class="shadowbox" style="margin-top:40px">
-            <H3 id="t_notif2" style="margin-top:0px">Notifications</H3>
-            <p>
-                <span id="t_notif21">Sélectionner une course :</span>
-                <select id="sel_raceNotif" name="raceNotif" class="notif">
-                    <option>---</option>
-                </select>
-            </p>
-            <p id="t_notif22">Paramètres :</p>
-            <select id="sel_type1Notif" name="twa" class="notif">
-                <option value="0">---</option>
-                <option value="1">TWA</option>
-                <option value="2">HDG</option>
-                <option value="3">TWS</option>
-                <option value="4">TWD</option>
-                <option value="5">STAMINA</option>
-            </select>
-            <select id="sel_type2Notif" name="type" class="notif">
-                <option>---</option>
-                <option value ="inf" id="t_notif_opt1">inférieur</option>
-                <option value ="infegal" id="t_notif_opt2">inférieur ou égal</option>
-                <option value ="egal" id="t_notif_opt3">égal</option>
-                <option value ="supegal" id="t_notif_opt4">supérieur ou égal</option>
-                <option value ="sup" id="t_notif_opt5">supérieur</option>
-            </select>
-            <label class="notif" id="t_notif23">à</label>
-            <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif" style="width:50px">
-            
-            <label id="notifUnit" class="notif notifSpacer"></label>    
-            <label id="notifPrecision" class="notif">(XX.XX)</label>
-            <p class="notifBorderBottom">
-                <input type="checkbox" id="notif_repeat" checked>
-                <label for="notif_repeat" id="t_notif_repeat" class="notif">Répétition (x3)</label>
-                <button id="bt_notif" style="font-size:14px; margin-left:170px">Créer</button>
-            </p>            
-            <h3 id="t_notif2" style="margin-top:0px">Rappels</h3>
-            <p class="notif">
-                <label id="t_notif25">M'envoyer un rappel dans</label>
-                <input type="number" id="sel_minuteNotif" name="minute" min="10" max="900" step="5" class="notif" style="width:50px">
-                <label id="t_notif25b"> minutes.</label>
-            </p>
-            <input type="checkbox" id="notif_repeat2" checked>
-            <label for="notif_repeat2" id="t_notif_repeat2" class="notif">Répétition (x3)</label>
-            <button id="bt_notif2" style="font-size:14px; margin-left:170px">Créer</button>
+        <div class="race-notif-page">
+            <div class="rb-grid">
+                <section class="card race-notif-card">
+                    <div class="card-header">
+                        <span class="badge">Alert</span>
+                        <h3 id="t_notif2">Notifications</h3>
+                    </div>
+                    <div class="card-body race-notif-form">
+                        <label class="race-notif-field race-notif-field-wide">
+                            <span id="t_notif21">Sélectionner une course :</span>
+                            <select id="sel_raceNotif" name="raceNotif" class="notif">
+                                <option>---</option>
+                            </select>
+                        </label>
+                        <div class="race-notif-section-title" id="t_notif22">Paramètres :</div>
+                        <div class="race-notif-rule">
+                            <select id="sel_type1Notif" name="twa" class="notif">
+                                <option value="0">---</option>
+                                <option value="1">TWA</option>
+                                <option value="2">HDG</option>
+                                <option value="3">TWS</option>
+                                <option value="4">TWD</option>
+                                <option value="5">STAMINA</option>
+                            </select>
+                            <select id="sel_type2Notif" name="type" class="notif">
+                                <option>---</option>
+                                <option value ="inf" id="t_notif_opt1">inférieur</option>
+                                <option value ="infegal" id="t_notif_opt2">inférieur ou égal</option>
+                                <option value ="egal" id="t_notif_opt3">égal</option>
+                                <option value ="supegal" id="t_notif_opt4">supérieur ou égal</option>
+                                <option value ="sup" id="t_notif_opt5">supérieur</option>
+                            </select>
+                            <label class="notif race-notif-to" id="t_notif23" for="sel_valNotif">à</label>
+                            <input type="number" min="0" max="360" id="sel_valNotif" name="choice" class="notif">
+                            <span id="notifUnit" class="notif race-notif-unit"></span>
+                            <span id="notifPrecision" class="notif race-notif-hint">(XX.XX)</span>
+                        </div>
+                        <div class="race-notif-actions">
+                            <label class="race-notif-check">
+                                <input type="checkbox" id="notif_repeat" checked>
+                                <span id="t_notif_repeat" class="notif">Répétition (x3)</span>
+                            </label>
+                            <button id="bt_notif" class="fleet-filter-action">Créer</button>
+                        </div>
+                    </div>
+                </section>
+                <section class="card race-notif-card">
+                    <div class="card-header">
+                        <span class="badge">Time</span>
+                        <h3 id="t_notif_reminder">Rappels</h3>
+                    </div>
+                    <div class="card-body race-notif-form">
+                        <div class="race-notif-reminder">
+                            <label id="t_notif25" for="sel_minuteNotif">M'envoyer un rappel dans</label>
+                            <input type="number" id="sel_minuteNotif" name="minute" min="10" max="900" step="5" class="notif">
+                            <span id="t_notif25b"> minutes.</span>
+                        </div>
+                        <div class="race-notif-actions">
+                            <label class="race-notif-check">
+                                <input type="checkbox" id="notif_repeat2" checked>
+                                <span id="t_notif_repeat2" class="notif">Répétition (x3)</span>
+                            </label>
+                            <button id="bt_notif2" class="fleet-filter-action">Créer</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <section class="card race-notif-list-card">
+                <div class="card-header">
+                    <span class="badge">List</span>
+                    <h3>Notifications actives</h3>
+                </div>
+                <div class="card-body">
+                    <div id="notif" class="notif race-notif-list"></div>
+                </div>
+            </section>
         </div>
-        <div class="box2 shadowbox" style="margin-top:100px;" id="notif"></div>
     </div>
     <div id="tab-content7" class="content hidden">
         <div id="userConfig">

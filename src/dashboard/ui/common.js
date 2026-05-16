@@ -9,10 +9,8 @@ import {saveData} from '../../common/dbOpes.js';
 
 export function uiFilterMode(alternate)
 {
-    if(alternate)
-        document.getElementById('fleetFilterList').className = 'tab3';
-    else
-        document.getElementById('fleetFilterList').className = 'tab2';
+    const filterList = document.getElementById('fleetFilterList');
+    if(filterList) filterList.dataset.mode = alternate ? 'expanded' : 'compact';
 }
 export function switchTheme(theme)
 {

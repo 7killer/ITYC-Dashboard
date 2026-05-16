@@ -99,7 +99,7 @@ function viewCredits(raceInfo,playerIte) {
     'Gains'
   ];
 
-  const playerRank =playerIte?.ites[0]?.rank ?? playerIte?.ites[1]?.rank ?? playerIte?.ites[2]?.rank ?? null;
+  const playerRank =playerIte?.ites?(playerIte?.ites[0]?.rank ?? playerIte?.ites[1]?.rank ?? playerIte?.ites[2]?.rank ?? null):null;
   const awarded = (playerRank > 0)
     ? Math.round(creditsMaxAwardedByPriceLevel[raceInfo.priceLevel-1] / (Math.pow(playerRank, 0.4)))
     : '-';
@@ -110,8 +110,6 @@ function viewCredits(raceInfo,playerIte) {
   const currentCell = `${(playerIte?.info?.credits || playerIte?.info?.credits===0) ? playerIte.info.credits : '???'}  `;
   const gainsCell   = String(awarded);
 
-  
-  // Ligne du haut : uniquement les 4 cellules "crédits"
   const topRow = [
     creditsCell,
     freeCell,

@@ -1,6 +1,7 @@
 
 import {getUserPrefs,saveUserPrefs} from '../../../common/userPrefs.js'
 import {ensureLayerControlClickable,applyBoundsForCurrentMode, buildPolarCRS, createArcticWMS, computeComfortView} from './map-core.js'
+import {windUiState} from './map-wind.js'
 import {initButtonToCenterViewMap,enableCoordinateCopyingWithShortcut} from './map-shortcuts.js'
 import {buildPt2, buildMarker,
     buildTextIcon,buildCircleEndRace,buildCircle,
@@ -392,7 +393,7 @@ function updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId) {
 
 
         const playerIte = playerFleetInfos.ite;
-        if(playerIte && userId && userId != connectedPlayerId && isDisplayEnabled(playerIte, userId,connectedPlayerId))
+        if(playerIte && userId && userId != connectedPlayerId && isDisplayEnabled(playerIte, userId, connectedPlayerId, {playerFleetInfos, raceInfo}))
         {
             let zi;
             /*if (key == currentId){
@@ -732,9 +733,19 @@ export async function initializeMap()
         }
         const wasArctic = !!POLAR.enabled;
 
-        if (hasProj4Leaflet() && (isArctic !== wasArctic)) {
+        if (POLAR.crs && (isArctic !== wasArctic)) {
             const center = map.getCenter();
             const zoom   = map.getZoom();
+
+            // Nettoyer les contrôles du vent avant de recréer la carte
+            if (windUiState.statusControl) {
+                windUiState.statusControl.remove();
+                windUiState.statusControl = null;
+            }
+            if (windUiState.timeControl) {
+                windUiState.timeControl.remove();
+                windUiState.timeControl = null;
+            }
 
             map.off('baselayerchange', onBaseLayerChange);
             map.off('moveend zoomend', set_userCustomZoom);
@@ -806,6 +817,13 @@ export async function initializeMap()
             updateMapMe(connectedPlayerId,playerItes.ite);
             updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
             updateMapLeader(playerItes.ite);
+
+            enableCoordinateCopyingWithShortcut();
+    
+//            initAutoWindWorker();
+            buildWindLayer();
+//            startWindWorker();
+            updateWindLayer();
             return;
         }
 
@@ -813,7 +831,6 @@ export async function initializeMap()
         applyBoundsForCurrentMode(map);
     }
     addMapControl(map);
-
 
     mapState.refLayer = L.layerGroup();
 
