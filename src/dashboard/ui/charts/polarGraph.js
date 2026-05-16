@@ -1,11 +1,13 @@
 
 import { Chart} from "chart.js";
-import { applyChartDefaultsForTheme, roundTo } from "./chartCommon.js";
+import { applyChartDefaultsForTheme, getGridColor, roundTo } from "./chartCommon.js";
 import {
   registerTimeSeriesPlugins,
   createLinkedLineChart,
+  makeZoomOptions,
   resetZoomGroup,
 } from "./timeSeriesCharts.js";
+import { sailColors, sailNames } from "../constant.js";
 
 let __itycAddonChartsRegistered = false;
 function ensureAddonChartsRegistered() {
@@ -17,11 +19,23 @@ function ensureAddonChartsRegistered() {
 
 const POLAR_TWS_GROUP_ID = "polarTws";
 const POLAR_TWA_GROUP_ID = "polarTwa";
+const POLAR_BVMG_GROUP_ID = "polarBestVmg";
 
 let polarTWSChart;
 let polarVMGChart;
 let polarVMCChart;
 let polarTWAChart;
+let polarBestVmgTwaChart;
+
+function getCanvas(canvasId) {
+  const el = document.getElementById(canvasId);
+  if (!el) throw new Error(`Chart canvas not found: #${canvasId}`);
+  return el;
+}
+
+function colorForSail(sailId, fallback) {
+  return sailColors?.[Number(sailId)] || fallback;
+}
 
 function buildSpikeLines(spikes, baseXValues) {
   const summit = document.getElementById("sel_polar_summit")?.checked;
@@ -227,16 +241,142 @@ export function plotPolarTwaChart(drawData, currentTwa) {
   });
 }
 
+export function plotPolarBestVmgTwaChart(drawData) {
+  ensureAddonChartsRegistered();
+  applyChartDefaultsForTheme(Chart);
+
+  const titleEl = document.getElementById("polarChartBestVMGTitle_name");
+  if (titleEl) titleEl.innerHTML = "Best VMG TWA";
+
+  if (polarBestVmgTwaChart) polarBestVmgTwaChart.destroy();
+
+  const groupId = POLAR_BVMG_GROUP_ID;
+  const gridColor = getGridColor(Chart);
+  const zoomOptions = makeZoomOptions(groupId);
+
+  polarBestVmgTwaChart = new Chart(getCanvas("polarBestVMGTWAChart"), {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Best VMG DW",
+          data: drawData.tws.map((x, i) => ({ x, y: drawData.downwindTwa[i] })),
+          parsing: false,
+          pointRadius: 0,
+          borderColor: "#f08a00",
+          backgroundColor: "#f08a00",
+          _itycSails: drawData.downwindSail,
+          segment: {
+            borderColor: (ctx) => colorForSail(drawData.downwindSail?.[ctx.p0DataIndex], "#f08a00"),
+          },
+        },
+        {
+          label: "Best VMG UP",
+          data: drawData.tws.map((x, i) => ({ x, y: drawData.upwindTwa[i] })),
+          parsing: false,
+          pointRadius: 0,
+          borderColor: "#ff6a70",
+          backgroundColor: "#ff6a70",
+          _itycSails: drawData.upwindSail,
+          segment: {
+            borderColor: (ctx) => colorForSail(drawData.upwindSail?.[ctx.p0DataIndex], "#ff6a70"),
+          },
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      parsing: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        zoom: {
+          ...zoomOptions,
+          pan: {
+            ...zoomOptions.pan,
+            onPanComplete({ chart }) {
+              if (typeof zoomOptions.pan?.onPanComplete === "function") {
+                zoomOptions.pan.onPanComplete({ chart });
+              }
+              chart.update("none");
+            },
+          },
+          zoom: {
+            ...zoomOptions.zoom,
+            onZoomComplete({ chart }) {
+              if (typeof zoomOptions.zoom?.onZoomComplete === "function") {
+                zoomOptions.zoom.onZoomComplete({ chart });
+              }
+              chart.update("none");
+            },
+          },
+        },
+        itycSyncPlugin: { groupId },
+        itycZoomSyncPlugin: { groupId },
+        legend: { display: true },
+        tooltip: {
+          xAlign: "left",
+          yAlign: "top",
+          callbacks: {
+            title: (items) => {
+              const x = items?.[0]?.parsed?.x;
+              return "TWS : " + roundTo(x, 1) + " nds";
+            },
+            labelColor: (ctx) => {
+              const sailId = ctx.dataset?._itycSails?.[ctx.dataIndex];
+              const color = colorForSail(sailId, ctx.dataset?.borderColor || "#ffffff");
+              return {
+                borderColor: color,
+                backgroundColor: color,
+              };
+            },
+            label: (ctx) => {
+              const y = ctx.parsed?.y;
+              if (y == null) return "";
+              const sailId = ctx.dataset?._itycSails?.[ctx.dataIndex];
+              const sailName = sailNames?.[sailId] ? ` ${sailNames[sailId]}` : "";
+              return `${ctx.dataset.label} : ${Number(y).toFixed(1)} °${sailName}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: "linear",
+          grid: { color: gridColor },
+          ticks: {
+            autoSkip: false,
+            maxRotation: 0,
+            minRotation: 0,
+            stepSize: 10,
+            callback: (v) => dynamicWindsSpeedAxisTicks(v, " nds"),
+          },
+        },
+        y: {
+          grid: { color: gridColor },
+          title: { display: true, text: "True Wind Angle (°)" },
+          ticks: {
+            stepSize: 4,
+            callback(v) {
+              return `${Number(v).toFixed(0)} °`;
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function plotPolarResetZoomTWS() {
   if (!polarTWSChart) return;
   polarTWSChart.resetZoom?.();
-  resetZoomGroup(polarTWSChart, POLAR_GROUP_ID);
+  resetZoomGroup(polarTWSChart, POLAR_TWA_GROUP_ID);
 }
 
 export function plotPolarResetZoomTWA() {
   if (!polarTWAChart) return;
   polarTWAChart.resetZoom?.();
-  resetZoomGroup(polarTWAChart, POLAR_TWA_GROUP_ID);
+  resetZoomGroup(polarTWAChart, POLAR_TWS_GROUP_ID);
 }
 
 export function plotPolarResetZoomVMG() {
@@ -251,17 +391,25 @@ export function plotPolarResetZoomVMC() {
   resetZoomGroup(polarVMCChart, POLAR_TWA_GROUP_ID);
 }
 
+export function plotPolarResetZoomBestVMG() {
+  if (!polarBestVmgTwaChart) return;
+  polarBestVmgTwaChart.resetZoom?.();
+  resetZoomGroup(polarBestVmgTwaChart, POLAR_BVMG_GROUP_ID);
+}
+
 // Backward-compatible globals (legacy HTML usage)
 if (typeof window !== "undefined") {
   window.plotPolarTwsChart = plotPolarTwsChart;
   window.plotPolarVmgChart = plotPolarVmgChart;
   window.plotPolarVmcChart = plotPolarVmcChart;
   window.plotPolarTwaChart = plotPolarTwaChart;
+  window.plotPolarBestVmgTwaChart = plotPolarBestVmgTwaChart;
 
   window.plotPolarResetZoomTWS = plotPolarResetZoomTWS;
   window.plotPolarResetZoomTWA = plotPolarResetZoomTWA;
   window.plotPolarResetZoomVMG = plotPolarResetZoomVMG;
   window.plotPolarResetZoomVMC = plotPolarResetZoomVMC;
+  window.plotPolarResetZoomBestVMG = plotPolarResetZoomBestVMG;
 }
 function dynamicWindsSpeedAxisTicks(tickValue, unit = "") {
   const tick = Math.round(Number(tickValue) * 10) / 10;

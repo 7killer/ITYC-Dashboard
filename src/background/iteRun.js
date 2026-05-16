@@ -479,9 +479,8 @@ export async function computeOwnIte(raceId, legNum, userId)
 
     metaDash.deltaReceiveCompute = metaDash.receivedTS - latest.iteDate;
 
+    metaDash.isAutoSail = latest.sail >= 10; // Permanent auto-sail if sail is in auto-sail range
 
-    metaDash.isAutoSail = latest.hasPermanentAutoSails ||
-            (latest.tsEndOfAutoSail &&(latest.tsEndOfAutoSail - latest.iteDate) > 0);
     metaDash.autoSailTime = latest.hasPermanentAutoSails ?"inf" : (latest.tsEndOfAutoSail - latest.iteDate)
     latest.metaDash = metaDash;
     

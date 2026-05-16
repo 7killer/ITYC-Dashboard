@@ -2,7 +2,9 @@
 import { roundTo } from './../common/utils.js';
 
 export function  theoreticalSpeed(polar,options = [],tws,twa,sailId = null,highP = false) {
-    if (polar == undefined || tws == undefined)
+    if (polar == undefined || tws == undefined 
+        || polar.tws == undefined || polar.twa == undefined 
+        || polar.sail == undefined || polar.foil == undefined)
         return undefined;
     const foilFactor = foilingFactor(options, tws, twa, polar.foil);
     const foilRate = (foilFactor - 1.0) * 100 / (polar.foil.speedRatio - 1.0);

@@ -5,6 +5,7 @@ import { isSailisInOptions } from  '../../polar/utils.js';
 import { computePolarState } from '../../polar/polarEngine.js'; 
 import { roundTo } from '../../common/utils.js';
 import { sailColors, sailNames } from './constant.js';
+import { initRaceAnalysis2, updateRaceAnalysis2 } from './raceAnalysis2.js';
 
 import {
   getOpenedRaceId,
@@ -15,7 +16,8 @@ import {
 import {plotPolarTwsChart,
 plotPolarVmgChart,
 plotPolarVmcChart,
-plotPolarTwaChart} from './charts/polarGraph.js'
+plotPolarTwaChart,
+plotPolarBestVmgTwaChart} from './charts/polarGraph.js'
 
 /* =========================================================================
  *  STATE / CONSTANTES
@@ -116,6 +118,12 @@ function schedulePolarRedraw(polar, drawTheme, withScale = false) {
 }
 function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
   const cog = ite.metaDash?.cog === undefined ? undefined:ite.metaDash?.cog;
+  if(polar == null || polar.tws == undefined || polar.twa == undefined || polar.sail == undefined || polar.foil == undefined)
+  {
+    document.getElementById('polar_date').innerHTML = 'No polar data';
+    showExpertAnalysis('none');
+    return;
+  } 
   getDataArray(rid, options, polar,twa, tws, twd, cog );
   
   divPolarTws.value = roundTo(tws, 2);
@@ -130,6 +138,8 @@ function refreshPolarChart(rid, ite, options, polar, drawTheme, tws, twa, twd) {
   plotPolarVmgChart(_drawData,_currentResultset.current.__tws);
   plotPolarVmcChart(_drawData,_currentResultset.current.__tws,_currentResultset.current.__twd);
   plotPolarTwaChart(_drawDataTWA,_currentResultset.current.__twa);
+  requestPolarBestVMGData(rid, options, polar);
+  updateRaceAnalysis2({ raceId: rid, options, polar });
     
 }
 
@@ -210,7 +220,6 @@ function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
     // tu peux continuer à appeler tes fonctions getPolarTWSData / getPolarTWAData ici :
     getPolarTWSData(state.current.__twa);
     getPolarTWAData(state.current.__tws);
-
     // Et leur injecter les spikes VMG / VMC issus du moteur
     _drawData.spikesVmg = state.spikesVmg;
     _drawData.spikesVmc = state.spikesVmc;
@@ -218,6 +227,68 @@ function getDataArray(rid, options, boatPolars,twa, tws, twd, cog) {
 }
 
 let _drawData = [];
+let bestVmgWorker = null;
+let bestVmgRequestSeq = 0;
+let bestVmgLastKey = '';
+
+function getBestVmgWorker() {
+  if (bestVmgWorker) return bestVmgWorker;
+
+  bestVmgWorker = new Worker(new URL('../../polar/polarMapWorker.js', import.meta.url), { type: 'module' });
+  bestVmgWorker.onerror = (error) => {
+    console.warn('[raceAnalysis] Best VMG curve worker error:', error?.message || error);
+  };
+  bestVmgWorker.onmessage = (event) => {
+    const message = event.data;
+    if (message?.requestId !== bestVmgRequestSeq) return;
+
+    if (message.type === 'bestVmgCurveReady') {
+      _drawDataBestVMG = message.data;
+      plotPolarBestVmgTwaChart(_drawDataBestVMG);
+    } else if (message.type === 'bestVmgCurveError') {
+      console.warn('[raceAnalysis] Best VMG curve worker error:', message.error);
+    }
+  };
+
+  return bestVmgWorker;
+}
+
+function getBestVmgRequestKey(rid, options, boatPolars) {
+  const optionsKey = Object.keys(options ?? {})
+    .sort()
+    .map((key) => `${key}:${options[key] ? 1 : 0}`)
+    .join('|');
+
+  return [
+    rid ?? '',
+    boatPolars?._id ?? boatPolars?.id ?? '',
+    boatPolars?._updatedAt ?? '',
+    boatPolars?.label ?? '',
+    boatPolars?.globalSpeedRatio ?? '',
+    optionsKey,
+  ].join('::');
+}
+
+function requestPolarBestVMGData(rid, options, boatPolars) {
+  const key = getBestVmgRequestKey(rid, options, boatPolars);
+  if (key === bestVmgLastKey && _drawDataBestVMG?.tws?.length) {
+    plotPolarBestVmgTwaChart(_drawDataBestVMG);
+    return;
+  }
+
+  bestVmgLastKey = key;
+  getBestVmgWorker().postMessage({
+    type: 'buildBestVmgCurve',
+    requestId: ++bestVmgRequestSeq,
+    raceId: rid,
+    options,
+    boatPolars,
+    config: {
+      twsStep: 0.1,
+      twaStep: 0.1,
+    },
+  });
+}
 
 function getPolarTWSData(twa) {
   _drawData = {
@@ -263,6 +334,7 @@ function getPolarTWSData(twa) {
 }
 
 let _drawDataTWA = [];
+let _drawDataBestVMG = [];
 
 function getPolarTWAData(tws) {
   _drawDataTWA = {
@@ -813,7 +885,7 @@ function spikesSpeedHtml() {
   
   let tabSpikes = '<thead>' +
     '<tr><th  colspan="9">'+ title + '</th></tr>' +
-    '<tr><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th><th>TWA</th><th>Speed</th><th>Sails</th></tr>' +
+    '<tr><th>TWA</th><th>Speed</th><th>Sails</th><th class="spikeGroupStart">TWA</th><th>Speed</th><th>Sails</th><th class="spikeGroupStart">TWA</th><th>Speed</th><th>Sails</th></tr>' +
     '</thead>' +
     '<tbody>';
 
@@ -826,29 +898,29 @@ function spikesSpeedHtml() {
     let lineNumber = 0;
     for (let i = 0; i < spikes.length; i++) {
       const spike = spikes[i];
-      if(lineNumber == 0) tabSpikes += '<tr>';
-      lineNumber += 1;
       if (
         (showHole && spike.type === 'hole') ||
         (showSummit && spike.type === 'sum')
       ) {
+        if(lineNumber == 0) tabSpikes += '<tr>';
+        lineNumber += 1;
         const colorType = spike.type === 'hole' ? 'red' : 'green';
         tabSpikes +=  `<td style="color:${colorType}">${spike.idx} °</td>` +
           `<td style="color:${colorType}">${spike.speed.toFixed(3)} nds</td>` +
           `<td style="color:${colorType}">${sailNames[spike.sail]}</td>`;
+
+        noneDrawn = false;
         if(lineNumber == 3)
         {
           tabSpikes += '</tr>';
           lineNumber = 0;
-        }   
-        noneDrawn = false;
+        }
       }
+         
     }
     if(lineNumber !=0)
-    {
-      for(let i = 0;i<(3-lineNumber);i++) {
-        tabSpikes += '<td colspan="3"></td>';
-      }
+    {      
+      tabSpikes += '<td colspan="'+ 3*(3-lineNumber) +'"></td>';
       tabSpikes += '</tr>';
     }
 
@@ -1043,6 +1115,7 @@ function initialize() {
   divPolarTwa = document.getElementById('polar_twa');
   divPolarGraph = document.getElementById('polarGraph');
   divPolarDensity = document.getElementById('polarDensity');
+  initRaceAnalysis2('polarDensity');
   inputSpikeSensitivity = document.getElementById('polar_spike_sensitivity');
   selRace = document.getElementById('sel_race');
   const polarViewersPrefs = getUserPrefs()?.analysis?.polarViewers;
