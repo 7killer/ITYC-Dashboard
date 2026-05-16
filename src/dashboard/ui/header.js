@@ -6,6 +6,21 @@ function setText(id, value) {
     if (el) el.textContent = value;
 }
 
+let dashboardVersion = null;
+
+async function updateDashboardVersion() {
+    if (dashboardVersion) {
+        setText("lb_version", dashboardVersion);
+        return;
+    }
+
+    const manifest = globalThis.chrome?.runtime?.getManifest?.();
+    if (manifest?.version) {
+        dashboardVersion = manifest.version;
+        setText("lb_version", dashboardVersion);
+    }
+}
+
 function updateVIPTag(isVIP) {
     const vipTag = document.getElementById("lb_boatvip");
     if (!vipTag) return;
@@ -22,12 +37,13 @@ function updateVIPTag(isVIP) {
 }
 export function onPlayerConnect() {
 
+  updateDashboardVersion();
   const playerInfo = getConnectedPlayerInfos();
   if(playerInfo.length == 0) return;
   setText("lb_boatname", playerInfo.name);
   setText("lb_credits", playerInfo.credits);
   updateVIPTag(playerInfo.isVIP);
-  if(playerInfo.team?.length)
+  if(playerInfo.team?.name)
   {
     setText("lb_teamname", playerInfo.team.name);
   }

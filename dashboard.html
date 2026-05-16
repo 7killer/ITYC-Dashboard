@@ -11,58 +11,74 @@
 <body>
 <div class="container">
     <div class="top">
-        <div class="flexrow">
-            <div>
-                <label><b id="t_boat">Bateau : </b></label>
+        <div class="flexrow topbar">
+            <div class="topbar-card topbar-identity">
+                <label class="topbar-label"><b id="t_boat">Bateau : </b></label>
                 <span id="lb_boatvip"></span>
-                <label><span id="lb_boatname" style="color:Red; font-weight:bold;">unknown</span><span> [&#128176;<span id="lb_credits">0</span>]</span></label>
+                <label class="topbar-boatline"><span id="lb_boatname">unknown</span><span class="topbar-credit"> [&#128176;<span id="lb_credits">0</span>]</span></label>
             </div>
-            <div>
+            <div class="topbar-card topbar-team">
                 <label><b id="t_team">Équipe: </b></label>
                 <label id="lb_teamname">-</label>
             </div>
-            <div>
-                <label id="t_race">Course</label>
+            <div class="topbar-card topbar-race">
+                <label class="topbar-label" id="t_race" for="sel_race">Course</label>
                 <select id="sel_race" name="race"></select>
-                <button id="bt_router">Go</button>
+                <button id="bt_router" class="fleet-filter-action">Go</button>
             </div>
-            <div>
+            <div class="topbar-card topbar-router">
                 <input type="checkbox" id="auto_router" checked>
-                <label for="auto_router">Auto router window</label>
+                <label class="topbar-check" for="auto_router">Auto router window</label>
                 <select id="sel_router" name="defaultRouter">
                     <option value="zezo">Zezo</option>
                     <option value="vrzen">VrZen</option>
                     <option value="both">Les Deux</option>
                 </select>
-                <label id="lb_cycle"></label>
+                <label id="lb_cycle" class="topbar-cycle"></label>
             </div>
-            <div>
+            <div class="topbar-card topbar-nmea">
                 <input type="checkbox" id="nmea_output">
-                <label id="t_NMEA" for="nmea_output">NMEA output</label>
+                <label class="topbar-check" id="t_NMEA" for="nmea_output">NMEA output</label>
                 <select id="sel_nmeaport" name="nmeaport">
                     <option value="8081">8081</option>
                     <option value="8082">8082</option>
                     <option value="8083">8083</option>
                     <option value="8084">8084</option>
                 </select>
-                <span id="ledNmeaStatus" style="color:LightGrey;font-size:16px;"><b>&#9679;</b></span>
+                <span id="ledNmeaStatus" class="topbar-led"><b>&#9679;</b></span>
             </div>
-            <div>
-                <input type="checkbox" id="color_theme" checked>
-                <label for="color_theme">Light/Dark</label>
+            <div class="topbar-card topbar-compact">
+                <button type="button" id="color_theme" class="topbar-theme-toggle" aria-pressed="true" title="Light/Dark">
+                    <span class="topbar-theme-icon topbar-theme-sun" aria-hidden="true">&#9728;</span>
+                    <span class="topbar-theme-icon topbar-theme-moon" aria-hidden="true">&#9790;</span>
+                </button>
             </div>
-            <div>
+            <div class="topbar-card topbar-compact">
+                <button type="button" id="configPopupToggle" class="topbar-icon-button" aria-expanded="false" aria-controls="configPopup" title="Config">&#9881;</button>
+            </div>
+            <div class="topbar-card topbar-lang">
                 <img id="lg_fr" src="./img/fr.png" title="Français">
                 <img id="lg_en" src="./img/en.png" title="English">
                 <!--<img id="lg_es" src="./img/es.png" title="Español">-->
             </div>
-            <div>
-                <label><a href="https://ityc.fr/aide_dash.html" title="Aide en ligne" target="_blank" id="t_help">Aide</a></label>
+            <div class="topbar-card topbar-link">
+                <a href="https://ityc.fr/aide_dash.html" title="Aide en ligne" target="_blank" id="t_help">Aide</a>
             </div>
-            <div>
-                <label class="version">Version</label>
-                <label class="version" id="lb_version"></label>
+            <div class="topbar-card topbar-version">
+                <span class="version">Version</span>
+                <span class="version" id="lb_version"></span>
             </div>
+        </div>
+        <div id="configPopup" class="config-popup" hidden>
+            <div class="config-popup-backdrop" id="configPopupBackdrop"></div>
+            <section class="config-popup-panel card" role="dialog" aria-modal="true" aria-labelledby="configPopupTitle">
+                <div class="card-header config-popup-header">
+                    <span class="badge">&#9881;</span>
+                    <h3 id="configPopupTitle">Config</h3>
+                    <button type="button" id="configPopupClose" class="race-notif-delete" aria-label="Fermer">x</button>
+                </div>
+                <div class="card-body config-popup-body" id="configPopupBody"></div>
+            </section>
         </div>
         <div id="raceStatus">
             <table id="raceStatusTable"  class="tabUser"></table>
@@ -97,10 +113,6 @@
                     <li class="tab">
                         <input type="radio" name="tabs" id="ts:6">
                         <label for="ts:6" id="t_notif">Notifications</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:7">
-                        <label for="ts:7" id="t_config">Config</label>
                     </li>
                     <li class="tab">
                         <input type="radio" name="tabs" id="ts:8">
@@ -691,7 +703,7 @@
             </section>
         </div>
     </div>
-    <div id="tab-content7" class="content hidden">
+    <div id="configContentSource" hidden>
         <div id="userConfig">
             <div>
                 <div class="flex-container flex-container-2cols flex-container-border">

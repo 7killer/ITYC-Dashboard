@@ -17,6 +17,44 @@ import {getDoradoUrl} from "../../common/callExternal.js"
 import {adaptUnitNotif,createNotif,createTimeNotif} from "../ui/raceNotif.js"
 import {initFleetFilterBar} from "../ui/fleetFilterBar.js"
 
+function updateThemeButton(el, theme) {
+  if (!el) return;
+  const isDark = theme === "dark";
+  el.title = isDark ? "Dark mode" : "Light mode";
+  el.setAttribute("aria-label", el.title);
+  el.setAttribute("aria-pressed", String(isDark));
+}
+
+const configPopupState = {
+  originalParent: null,
+  originalNextSibling: null
+};
+
+function setConfigPopupOpen(open) {
+  const popup = document.getElementById("configPopup");
+  const body = document.getElementById("configPopupBody");
+  const toggle = document.getElementById("configPopupToggle");
+  const config = document.getElementById("userConfig");
+  if (!popup || !body || !toggle || !config) return;
+
+  if (open) {
+    if (!configPopupState.originalParent) {
+      configPopupState.originalParent = config.parentNode;
+      configPopupState.originalNextSibling = config.nextSibling;
+    }
+    body.append(config);
+    popup.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+    return;
+  }
+
+  popup.hidden = true;
+  toggle.setAttribute("aria-expanded", "false");
+  if (configPopupState.originalParent) {
+    configPopupState.originalParent.insertBefore(config, configPopupState.originalNextSibling);
+  }
+}
+
 
 /**
  * Initialise des éléments UI avec gestion automatique des events et init
@@ -132,8 +170,33 @@ export function uiBindingInit() {
     },
     {
       selector: '#color_theme',
-      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.theme = checked?"dark":"light";await saveUserPrefs(userPrefs);switchTheme(userPrefs.theme);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.theme=="dark"; switchTheme(userPrefs.theme);}
+      onChange: async(value, ev, el) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.theme = userPrefs.theme == "dark" ? "light" : "dark";
+        await saveUserPrefs(userPrefs);
+        switchTheme(userPrefs.theme);
+        updateThemeButton(el, userPrefs.theme);
+      },
+      onInit: (value, el) => {
+        const userPrefs = getUserPrefs();
+        switchTheme(userPrefs.theme);
+        updateThemeButton(el, userPrefs.theme);
+      }
+    },
+    {
+      selector: '#configPopupToggle',
+      onChange: () => {
+        const popup = document.getElementById("configPopup");
+        setConfigPopupOpen(!!popup?.hidden);
+      }
+    },
+    {
+      selector: '#configPopupClose',
+      onChange: () => {setConfigPopupOpen(false);}
+    },
+    {
+      selector: '#configPopupBackdrop',
+      onChange: () => {setConfigPopupOpen(false);}
     },
     {
       selector: '#reuse_tab',

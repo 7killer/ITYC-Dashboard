@@ -20,7 +20,6 @@ export const tabList = Object.freeze({
     5 : "raceGraph",
     9 : "raceAnalyse",
     6 : "notif",
-    7 : "config",
     8 : "rawLog",
   });
 
@@ -56,7 +55,6 @@ export function tabSwitch(tabId = null)
     const tabName = tabList[tabId];
 
     switch(tabName) {
-        case "config":
         case "rawLog":
             break;
         case "raceLog":
@@ -101,7 +99,6 @@ export function refreshActiveTab(tabId)
     const tabName = tabList[tabId];
 
     switch(tabName) {
-        case "config":
         case "rawLog":
             break;
         case "raceLog":
