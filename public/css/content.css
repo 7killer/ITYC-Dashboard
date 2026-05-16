@@ -421,3 +421,98 @@ td.position p {
   font-size: 11px !important;
   line-height: 1.4;
 }
+
+.embedded-toolbar-wrap {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  background: var(--td_bg_color);
+  box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.08);
+}
+
+#raceStatusTable.embedded-toolbar-table {
+  width: 100%;
+  margin: 0;
+  border: 0 !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+
+#raceStatusTable.embedded-toolbar-table th {
+  top: 0;
+  z-index: 2;
+  padding: 7px 8px !important;
+  border: 0;
+  border-right: 1px solid var(--border_color);
+  border-bottom: 1px solid var(--border_color);
+  outline: 0 !important;
+  background: var(--th_bg_color);
+  color: var(--th_color) !important;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#raceStatusTable.embedded-toolbar-table td {
+  padding: 6px 8px !important;
+  border: 0;
+  border-right: 1px solid color-mix(in oklab, var(--border_color), transparent 35%);
+  border-bottom: 1px dashed var(--border_color);
+  vertical-align: middle;
+}
+
+#raceStatusTable.embedded-toolbar-table th:last-child,
+#raceStatusTable.embedded-toolbar-table td:last-child {
+  border-right: 0;
+}
+
+#raceStatusTable.embedded-toolbar-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#raceStatusTable.embedded-toolbar-table tbody tr:hover td {
+  background-color: color-mix(in oklab, var(--td_bg_color), #888 12%);
+}
+
+#raceStatusTable.embedded-toolbar-table td.tdc {
+  padding: 3px 4px !important;
+}
+
+#raceStatusTable.embedded-toolbar-table td.tdc span {
+  min-width: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--td_color);
+  background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+  border: 1px solid var(--border_color);
+  border-radius: 7px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+#raceStatusTable.embedded-toolbar-table td.tdc span:hover {
+  filter: brightness(1.08);
+}
+
+#raceStatusTable.embedded-toolbar-table td.tack,
+#raceStatusTable.embedded-toolbar-table td.gybe,
+#raceStatusTable.embedded-toolbar-table td.sailPenalties {
+  min-width: 96px;
+}
+
+#raceStatusTable.embedded-toolbar-table td.tack div,
+#raceStatusTable.embedded-toolbar-table td.gybe div,
+#raceStatusTable.embedded-toolbar-table td.sailPenalties div {
+  white-space: nowrap;
+}
+
+#raceStatusTable.embedded-toolbar-table p,
+#raceStatusTable.embedded-toolbar-table div {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.25;
+}

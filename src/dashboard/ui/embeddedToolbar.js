@@ -45,14 +45,14 @@ export async function buildEmbeddedToolbarHtml(raceId, legNum, connectedPlayerId
     embeddedToolbarHeader += '</tr>';
     
     let embeddedToolbarLine = await buildEmbeddedToolbarLine(raceId, legNum, connectedPlayerId);
-    const embeddedToolBarTable =  '<table id="raceStatusTable">'
+    const embeddedToolBarTable =  '<div class="embedded-toolbar-wrap"><table id="raceStatusTable" class="embedded-toolbar-table">'
                     + '<thead>'
                     + embeddedToolbarHeader
                     + '</thead>'
                     + '<tbody>'
                     + embeddedToolbarLine
                     + '</tbody>'
-                    + '</table>';
+                    + '</table></div>';
 
     buildEmbeddedToolbarContent = {
         content:embeddedToolBarTable,
