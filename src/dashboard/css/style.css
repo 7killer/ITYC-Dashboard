@@ -902,20 +902,49 @@ fieldset {
     background: #555555;
     color: #F5F5F5;
 }
-#sel_skippers, #sel_export {
-    display : block;
-    margin-left:1em;
-    visibility: visible;
-/*    margin-top: 0.1em;*/
-    float: left;
-    font-size: 0.8em;
-/*    padding-top: 0.2em; */
+.fleet-toolbar-tile {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin-left: 1em;
+    padding: 7px;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 8%);
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.08);
+}
 
+#sel_skippers,
+#sel_export {
+    display: block;
+    visibility: visible;
+    margin: 0;
+    padding: 0;
+    float: none;
+    font-size: 0.8em;
+}
+
+.fleet-toolbar-section {
+    min-width: 0;
+    border: 0;
+}
+
+.fleet-toolbar-section legend {
+    padding: 0 3px;
+    color: var(--filter_color);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.fleet-export-section {
+    border-left: 1px solid var(--border_color);
+    padding-left: 10px;
 }
 
 .fleet-filter-bar {
     position: relative;
-    min-width: 260px;
+    min-width: 265px;
     color: var(--td_color);
 }
 
@@ -952,6 +981,14 @@ fieldset {
     border: 1px solid var(--border_color);
     border-radius: 6px;
     cursor: pointer;
+}
+
+.fleet-filter-funnel {
+    width: 13px;
+    height: 13px;
+    display: block;
+    background: currentColor;
+    clip-path: polygon(8% 12%, 92% 12%, 62% 48%, 62% 88%, 38% 88%, 38% 48%);
 }
 
 .fleet-filter-icon[aria-expanded="true"] {
@@ -1091,6 +1128,57 @@ fieldset {
 .fleet-filter-action:disabled {
     cursor: not-allowed;
     opacity: .45;
+}
+
+.fleet-export-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.fleet-export-actions .tab {
+    display: inline-flex;
+    align-items: center;
+}
+
+.fleet-export-actions .fleet-export-button {
+    display: inline-flex;
+    align-items: center;
+    min-width: 76px;
+    height: 24px;
+    padding: 3px 8px;
+    justify-content: center;
+    box-sizing: border-box;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.fleet-export-actions .fleet-export-button:hover {
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 14%);
+    filter: brightness(1.08);
+}
+
+.fleet-export-actions .fleet-export-button:active,
+.fleet-export-actions #sel_ExportFleet:checked + .fleet-export-button {
+    top: auto;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+}
+
+.fleet-export-icon {
+    width: 26px;
+    height: 26px;
+    display: block;
+    cursor: pointer;
 }
 
 .fleet-filter-reset {
@@ -1380,6 +1468,17 @@ fieldset {
     color: var(--th_color);
     background: var(--th_bg_color);
     border-radius: 8px;
+}
+
+.config-popup-body .config-maintenance-section button.danger {
+    background: #d9232d;
+    color: #fff;
+    border-color: #7a1419;
+}
+
+.config-popup-body .config-maintenance-section button:disabled {
+    cursor: wait;
+    opacity: .62;
 }
 
 .config-popup-body .flex-container-sub > .flex-container-sub {
@@ -2249,6 +2348,143 @@ a:active {
 #raceStatusTable.race-status-table td.gybe p,
 #raceStatusTable.race-status-table td.sailPenalties p {
     white-space: nowrap;
+}
+
+#friendList {
+    padding: 0 6px 6px;
+}
+
+.race-fleet-wrap {
+    max-width: 100%;
+    overflow: auto;
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+    background: var(--td_bg_color);
+    box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.08);
+}
+
+.race-fleet-table {
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+    font-size: 11px;
+}
+
+.race-fleet-table th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 5;
+    padding: 6px 5px;
+    border: 0;
+    border-right: 1px solid var(--border_color);
+    border-bottom: 1px solid var(--border_color);
+    outline: 0;
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.race-fleet-table td {
+    padding: 5px 5px;
+    border: 0;
+    border-right: 1px solid color-mix(in oklab, var(--border_color), transparent 35%);
+    border-bottom: 1px dashed var(--border_color);
+    vertical-align: middle;
+}
+
+.race-fleet-table th:last-child,
+.race-fleet-table td:last-child {
+    border-right: 0;
+}
+
+.race-fleet-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.race-fleet-table tbody tr.hovred:hover td {
+    background-color: color-mix(in oklab, var(--td_bg_color), #888 12%);
+}
+
+.race-fleet-table tbody tr.hovred:hover {
+    outline: 0.16em solid red;
+    outline-offset: -0.16em;
+}
+
+.race-fleet-table tbody tr.selectedLine {
+    outline: 0.16em solid #b86dff;
+    outline-offset: -0.16em;
+}
+
+.race-fleet-table tbody tr.highlightMe td {
+    font-weight: 600;
+}
+
+.race-fleet-table td.tdc {
+    padding: 3px;
+}
+
+.race-fleet-table td.tdc span {
+    min-width: 22px;
+    min-height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+    border: 1px solid var(--border_color);
+    border-radius: 7px;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.race-fleet-table td.tdc span:hover,
+.race-fleet-table .toggleSelectedBoat:hover {
+    filter: brightness(1.08);
+}
+
+.race-fleet-table td.Skipper,
+.race-fleet-table td.Team,
+.race-fleet-table td.Options,
+.race-fleet-table td.Position {
+    white-space: nowrap;
+}
+
+.race-fleet-table td.Skipper {
+    max-width: 300px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+.race-fleet-table td.Team {
+    max-width: 180px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+.race-fleet-table td.Options {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.race-fleet-table #th_lu {
+    width: auto;
+}
+
+.race-fleet-table #th_remove,
+.race-fleet-table td.Remove,
+.race-fleet-table td.State {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
 }
 
 #recordlog {

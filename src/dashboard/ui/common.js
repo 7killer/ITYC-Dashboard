@@ -258,13 +258,8 @@ export function genth(id, content, title, sortfield, sortmark) {
         th_state: "state",
         th_remove: "select"
     };
-    let checkboxId = '';
-    if (!content) {
-        checkboxId = id.split("_")[1].toLowerCase();
-    } else {
-        checkboxId = fleetColumnMap[id] ?? id;
-    }
-    const checked = userPrefs?.fleet?.column[checkboxId];
+    const checkboxId = fleetColumnMap[id] ?? (!content ? id.split("_")[1].toLowerCase() : id);
+    const checked = getFleetColumnChecked(userPrefs?.fleet?.column, checkboxId);
     if (checked == undefined || checked ) {
         if (sortfield && sortmark != undefined) {
             content = content + " " + (sortmark ? "&#x25b2;" : "&#x25bc;");
@@ -307,7 +302,7 @@ export function gentd(name, style,title, value) {
         Remove: "select"
     };
     const columnKey = fleetColumnMap[name] ?? name;
-    const checked = userPrefs?.fleet?.column[columnKey];
+    const checked = getFleetColumnChecked(userPrefs?.fleet?.column, columnKey);
     if (checked == undefined || checked ) {
         return '<td class="' + name + '" ' 
                             + style 
@@ -317,6 +312,20 @@ export function gentd(name, style,title, value) {
         return ""
     }
 
+}
+
+function getFleetColumnChecked(columns, key) {
+    const fleetColumnAliases = {
+        select: ["select", "remove", "selected"],
+        state: ["state", "etat"],
+        option: ["option", "options"],
+        foil: ["foil", "foils"]
+    };
+    const aliases = fleetColumnAliases[key] ?? [key];
+    for (const alias of aliases) {
+        if (columns?.[alias] !== undefined) return columns[alias];
+    }
+    return undefined;
 }
 export function getxFactorStyle(raceIte)
 {
@@ -570,12 +579,15 @@ export function changeState(lbl_tochange) {
 export function display_selbox(state) {
 //    document.getElementById("sel_skippers").style.visibility = state;
 //    document.getElementById("sel_export").style.visibility = state;
+    const fleetToolbarTile = document.getElementById("fleetToolbarTile");
     if(state == "visible")
     {
+        if(fleetToolbarTile) fleetToolbarTile.style.display = "flex";
         document.getElementById("sel_skippers").style.display = "block";
         document.getElementById("sel_export").style.display = "block";
     } else
     {
+        if(fleetToolbarTile) fleetToolbarTile.style.display = "none";
         document.getElementById("sel_skippers").style.display = "none";
         document.getElementById("sel_export").style.display = "none";
     }   
