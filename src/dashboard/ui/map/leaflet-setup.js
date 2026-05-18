@@ -13,6 +13,7 @@ import 'leaflet-ruler/src/leaflet-ruler.css';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css';
 import 'leaflet-polylinedecorator';
+import 'font-awesome/css/font-awesome.min.css';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.js';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import 'leaflet.geodesic'

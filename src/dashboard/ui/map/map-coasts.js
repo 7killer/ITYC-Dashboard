@@ -103,33 +103,7 @@ export async function showCoastTiles()
     }
     coastLayersCleanAll(map);
     await Promise.all(
-        coastsToLoad.map(async (id) => {
-            const existing = mapState.coasts.get(id);
-            if (existing) {
-                existing.displayed = true;
-            return;
-            }
-
-            try {
-            const resp = await fetch(`../coasts/${id}`);
-            if (!resp.ok) return;
-
-            const blob = await resp.blob();
-            const ds = new DecompressionStream("gzip");
-            const decompressedStream = blob.stream().pipeThrough(ds);
-            const jsonText = await new Response(decompressedStream).text();
-            if (!jsonText) return;
-
-            mapState.coasts.set(id, {
-                id,
-                json: JSON.parse(jsonText),
-                layer: null,
-                displayed: true,
-            });
-            } catch (e) {
-            console.warn('coast fetch failed', id, e);
-            }
-        })
+        coastsToLoad.map(id => ensureCoastTileLoaded(id, true))
     );
 
     coastDrawAllLayers(map);
@@ -186,4 +160,42 @@ export function onCoastColorChange() {
     coastDrawAllLayers(map,true);
 
 }
+
+export function hasCachedCoastTile(id) {
+    return cachedTileList.includes(id);
+}
+
+export async function ensureCoastTileLoaded(id, displayed = false) {
+    const existing = mapState.coasts.get(id);
+    if (existing?.json) {
+        if (displayed) existing.displayed = true;
+        return existing;
+    }
+
+    if (!cachedTileList.includes(id)) return null;
+
+    try {
+        const resp = await fetch(`../coasts/${id}`);
+        if (!resp.ok) return null;
+
+        const blob = await resp.blob();
+        const ds = new DecompressionStream("gzip");
+        const jsonText = await new Response(blob.stream().pipeThrough(ds)).text();
+        if (!jsonText) return null;
+
+        const coast = {
+            id,
+            json: JSON.parse(jsonText),
+            layer: null,
+            displayed,
+        };
+
+        mapState.coasts.set(id, coast);
+        return coast;
+    } catch (e) {
+        console.warn('coast fetch failed', id, e);
+        return null;
+    }
+}
+
 

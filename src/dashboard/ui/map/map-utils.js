@@ -7,7 +7,7 @@ import {applyWindSettings, stopAutoPlay, pauseAutoPlay,startAutoPlay,applyWindAt
 
 import {onCoastColorChange} from "./map-coasts.js"
 
-import {onSailsMarkersChange} from "./map-routes.js"
+import {hideShowTracks, onMarkersChange, onSailsMarkersChange} from "./map-routes.js"
 
 export const greenRRIcon = L.icon({
     iconUrl: '../img/greenIcon.png',
@@ -215,7 +215,9 @@ export function buildTrace (tpath,layer,pointsContainer, color,weight,opacity,da
                         color: color,
                         opacity: opacity,
                         weight: weight,
-                        wrap:false
+                        wrap:false,
+                        dashArray: dashArray,
+                        dashOffset: dashOffset
                     });
             } else
             {
@@ -224,7 +226,9 @@ export function buildTrace (tpath,layer,pointsContainer, color,weight,opacity,da
                         color: color,
                         opacity: opacity,
                         weight: weight,
-                        wrap:false
+                        wrap:false,
+                        dashArray: dashArray,
+                        dashOffset: dashOffset
                     });                
             }
             if(dashArray) trackLineP.options.dashArray = dashArray;
@@ -691,6 +695,20 @@ export     function addMapControl(map)
         await saveUserPrefs(userPrefs);
         onSailsMarkersChange(state);
     },  
+    getShowMarkers: () => getUserPrefs().map?.showMarkers || false,
+    setShowMarkers: async (state) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.showMarkers = state;
+        await saveUserPrefs(userPrefs);
+        onMarkersChange();
+    },
+    getShowTracks: () => getUserPrefs().map?.showTracks || false,
+    setShowTracks: async (state) => {
+        const userPrefs = getUserPrefs(); 
+        userPrefs.map.showTracks = state;
+        await saveUserPrefs(userPrefs);
+        hideShowTracks();
+    },
     });
 
     map.attributionControl.addAttribution('&copy;SkipperDuMad / Trait de cotes &copy;Kurun56');
@@ -1031,7 +1049,11 @@ export function addSettingsMenuControl(map, {
   getShowHiddenBouys,
   setShowHiddenBouys,
   getShowSailsMarkers,
-  setShowSailsMarkers
+  setShowSailsMarkers,
+  getShowMarkers,
+  setShowMarkers,
+  getShowTracks,
+  setShowTracks
 
 } = {}) {
   const SettingsControl = L.Control.extend({
@@ -1094,12 +1116,19 @@ export function addSettingsMenuControl(map, {
 
         <div class="ityc-settings-divider"></div>
         <div class="ityc-settings-row">
-          <label class="ityc-settings-label">Afficher bouées cachées</label>
+          <label class="ityc-settings-label">Bouées cachées</label>
           <input class="ityc-settings-checkbox" data-role="show-hidden-bouys" type="checkbox">
         </div>
-        <div class="ityc-settings-divider"></div>
         <div class="ityc-settings-row">
-          <label class="ityc-settings-label">Afficher marques de voiles</label>
+          <label class="ityc-settings-label" for="sel_showTracksLmap">Traces</label>
+          <input id="sel_showTracksLmap" class="ityc-settings-checkbox" data-role="show-tracks" type="checkbox">
+        </div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label" for="sel_showMarkersLmap">Marqueurs traces</label>
+          <input id="sel_showMarkersLmap" class="ityc-settings-checkbox" data-role="show-markers" type="checkbox">
+        </div>
+        <div class="ityc-settings-row">
+          <label class="ityc-settings-label">Marqueurs voiles</label>
           <input class="ityc-settings-checkbox" data-role="show-sails-markers" type="checkbox">
         </div>
 
@@ -1120,6 +1149,8 @@ export function addSettingsMenuControl(map, {
       const inpProjectionLenght = panel.querySelector('[data-role="projection-lenght"]');
       const inpPShowHiddenbouys = panel.querySelector('[data-role="show-hidden-bouys"]');
       const inpPShowSailsMarkers = panel.querySelector('[data-role="show-sails-markers"]');
+      const inpPShowMarkers = panel.querySelector('[data-role="show-markers"]');
+      const inpPShowTracks = panel.querySelector('[data-role="show-tracks"]');
         
 
       const mode0 = getWindMode ? getWindMode() : 'default';
@@ -1143,6 +1174,12 @@ export function addSettingsMenuControl(map, {
 
       const pSailsMarkers = getShowSailsMarkers ? getShowSailsMarkers() : false;
       inpPShowSailsMarkers.checked = pSailsMarkers;
+
+      const pMarkers = getShowMarkers ? getShowMarkers() : false;
+      inpPShowMarkers.checked = pMarkers;
+
+      const pTracks = getShowTracks ? getShowTracks() : false;
+      inpPShowTracks.checked = pTracks;
 
       const refreshCustomVisibility = () => {
         const mode = selMode.value;
@@ -1187,6 +1224,14 @@ export function addSettingsMenuControl(map, {
       inpPShowSailsMarkers.addEventListener('change', () => {
         const sSailsMarkers = inpPShowSailsMarkers.checked;
         if (setShowSailsMarkers) setShowSailsMarkers(sSailsMarkers);
+      });
+      inpPShowMarkers.addEventListener('change', () => {
+        const sMarkers = inpPShowMarkers.checked;
+        if (setShowMarkers) setShowMarkers(sMarkers);
+      });
+      inpPShowTracks.addEventListener('change', () => {
+        const sTracks = inpPShowTracks.checked;
+        if (setShowTracks) setShowTracks(sTracks);
       });
       // hover open/close (survol)
       const open = () => root.classList.add('open');

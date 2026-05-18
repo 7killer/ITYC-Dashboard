@@ -30,7 +30,8 @@ import { gcDistance, roundTo, courseAngle} from '../../../common/utils.js';
 
 import {drawProjectionLine} from './map-proj.js';
 import {showCoastTiles, coastLayersCleanAll} from './map-coasts.js';
-import {startWindWorker, buildWindLayer, updateWindLayer,applyWindSettings,initAutoWindWorker,requestAutoWindUpdate} from './map-wind.js';
+import {startWindWorker, buildWindLayer, updateWindLayer,applyWindSettings,initAutoWindWorker,requestAutoWindUpdate,resetWindControls} from './map-wind.js';
+import { detectWaypointCoastCollisions } from './coast-collision.js';
 
 import L from '@/dashboard/ui/map/leaflet-setup';
 
@@ -70,6 +71,9 @@ export const mapState = {
 };
 const MAP_CONTAINER_ID = 'lMap';
 const COAST_MIN_ZOOM = 7;
+const WAYPOINT_COLOR = '#FF00FF';
+const WAYPOINT_COLLISION_COLOR = '#FF0000';
+const WAYPOINT_DASH = '4, 8';
 
 export function updateBounds()
 {
@@ -158,13 +162,48 @@ function updateMapCheckpoints(raceInfo,playerIte) {
     if(!mapState.userZoom) updateBounds();
 }
 
-function updateMapWaypoints(playerIte) {
+function buildWaypointPath(points) {
+    return buildPath(points.map(({ lat, lon }) => ({ lat, lon })));
+}
+
+function drawWaypointTrace(points, color, dashArray) {
+    if (!Array.isArray(points) || points.length < 2) return;
+    buildTrace(
+        buildWaypointPath(points),
+        mapState.wayPointLayer,
+        mapState.refPoints,
+        color,
+        1.5,
+        0.7,
+        dashArray
+    );
+}
+
+function getFirstWaypointCollision(collisions) {
+    return [...collisions]
+        .filter(collision => !collision.isCurrent)
+        .sort((a, b) => {
+            const aKey = a.type === 'segment-cross-land'
+                ? (a.fromRouteIndex ?? 0) + (a.t ?? 1)
+                : (a.routeIndex ?? 0);
+            const bKey = b.type === 'segment-cross-land'
+                ? (b.fromRouteIndex ?? 0) + (b.t ?? 1)
+                : (b.routeIndex ?? 0);
+            return aKey - bKey;
+        })[0] ?? null;
+}
+
+function buildWarningIcon() {
+    return buildTextIcon('exclamation-triangle', 'white', 'red', '!');
+}
+
+async function updateMapWaypoints(playerIte) {
     const raceOrder = getLegPlayersOrder();
     if (!mapState || !mapState.map) return;
     const map = mapState.map;
 
     if (!playerIte) return; // current position unknown
-    if(!raceOrder || raceOrder.lenght==0 || raceOrder[0]?.action?.type !== "wp") return; //last order not wp
+    if(!raceOrder || raceOrder.length ==0 || raceOrder[0]?.action?.type !== "wp") return; //last order not wp
 
     if(mapState.wayPointLayer)
     {
@@ -173,32 +212,80 @@ function updateMapWaypoints(playerIte) {
     mapState.wayPointLayer = L.layerGroup();
 
     const wpOrder = raceOrder[0].action.action;  
-    const lastWpIdx = playerIte.lastWpIdx;
+    const lastWpIdx = playerIte.lastWpIdx ?? -1;
     const currPos = playerIte.pos;
     
     // Waypoint lines already passed
-    let wpPts = [];
+    const wpPts = [];
     wpOrder.forEach(({ lat, lon, idx }) => {
         if(idx <= lastWpIdx) wpPts.push({lat,lon});
     });
-    let cpath = buildPath(wpPts,null,null,currPos.lat, currPos.lon);
-    buildTrace(cpath,mapState.wayPointLayer,mapState.refPoints,"#FF00FF",1.5,0.7,[0,1,0,1]);
+    const cpath = buildPath(wpPts,null,null,currPos.lat, currPos.lon);
+    buildTrace(cpath,mapState.wayPointLayer,mapState.refPoints,WAYPOINT_COLOR,1.5,0.7,WAYPOINT_DASH);
 
-    // Waypoint lines    
-    wpPts = [];
-    wpOrder.forEach(({ lat, lon, idx }) => {
-        if(idx > lastWpIdx) wpPts.push({lat,lon});
+    const nextWpPts = wpOrder.filter(({ idx }) => idx > lastWpIdx);
+    const routePts = [{
+        lat: currPos.lat,
+        lon: currPos.lon,
+        idx: lastWpIdx,
+        isCurrent: true,
+    }, ...nextWpPts];
+
+    const collisions = await detectWaypointCoastCollisions(routePts, {
+        testPoints: true,
+        testSegments: true,
     });
-    
-    cpath = buildPath(wpOrder,currPos.lat, currPos.lon);
-    buildTrace(cpath,mapState.wayPointLayer,mapState.refPoints,"#FF00FF",1.5,0.7);
+
+    const firstCollision = getFirstWaypointCollision(collisions);
+
+    if (firstCollision) {
+        const collisionPoint = {
+            lat: firstCollision.lat,
+            lon: firstCollision.lon,
+            idx: firstCollision.idx,
+        };
+        const collisionRouteIndex = firstCollision.routeIndex ?? routePts.length - 1;
+        const lastValidRouteIndex = Math.max(0, collisionRouteIndex - 1);
+
+        drawWaypointTrace(routePts.slice(0, lastValidRouteIndex + 1), WAYPOINT_COLOR);
+        drawWaypointTrace([
+            routePts[lastValidRouteIndex],
+            collisionPoint,
+        ], WAYPOINT_COLLISION_COLOR);
+        drawWaypointTrace([
+            collisionPoint,
+            ...routePts.slice(collisionRouteIndex),
+        ], WAYPOINT_COLLISION_COLOR, WAYPOINT_DASH);
+    } else {
+        drawWaypointTrace(routePts, WAYPOINT_COLOR);
+    }
+
     // Waypoint markers
     wpOrder.forEach(({ lat, lon, idx }) => {
         const pos = buildPt2(lat, lon);
         const title = formatPosition(lat, lon);
-        buildCircle(pos,mapState.wayPointLayer,"#FF00FF", 2,1, title);
+        buildCircle(pos,mapState.wayPointLayer,WAYPOINT_COLOR, 2,1, title);
         mapState.refPoints.push(pos[1]);
-    });     
+    });
+
+    collisions.forEach(collision => {
+        const pos = buildPt2(collision.lat, collision.lon);
+
+        const title = collision.type === 'point-in-land'
+            ? `WP ${collision.idx} sur terre`
+            : `Segment WP ${collision.fromIdx} → ${collision.toIdx} coupe la terre`;
+
+        buildMarker(
+            pos,
+            mapState.wayPointLayer,
+            buildWarningIcon(),
+            title,
+            90,
+            1,
+            0
+        );
+        mapState.refPoints.push(pos[1]);
+    });
     mapState.wayPointLayer.addTo(map); 
     if(!mapState.userZoom) updateBounds();
 }
@@ -538,6 +625,7 @@ function cleanMap() {
 
     // l'état Leaflet reste en mémoire ; si tu veux vraiment tout purger, tu peux faire :
     if (mapState.map) {
+        resetWindControls();
         mapState.map.off();
         mapState.map.remove();
     }
@@ -615,7 +703,7 @@ export async function initializeMap()
         // couches dynamiques
         if(!mapState.userZoom) updateBounds();
         updateMapCheckpoints(raceInfo, playerItes.ite);
-        updateMapWaypoints(playerItes.ite);
+        await updateMapWaypoints(playerItes.ite);
         updateMapMe(connectedPlayerId,playerItes.ite);
         updateMapLeader(playerItes.ite);
         updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
@@ -625,6 +713,7 @@ export async function initializeMap()
     }
 
     if (mapState.map) {
+        resetWindControls();
         mapState.map.off();
         mapState.map.remove();
         mapState.map = null;
@@ -813,7 +902,7 @@ export async function initializeMap()
             }
             updateBounds(raceInfo);
             updateMapCheckpoints(raceInfo, playerItes.ite); 
-            updateMapWaypoints(playerItes.ite);
+            await updateMapWaypoints(playerItes.ite);
             updateMapMe(connectedPlayerId,playerItes.ite);
             updateMapFleet(raceInfo, raceItesFleet, connectedPlayerId);
             updateMapLeader(playerItes.ite);
@@ -930,12 +1019,12 @@ export async function initializeMap()
             {
                 if(lMapRoute.traceLayer) lMapRoute.traceLayer.addTo(map);
                 if(lMapRoute.boatLayer) lMapRoute.boatLayer.addTo(map);
-                if(lMapRoute.markersLayer && document.getElementById('sel_showMarkersLmap').checked) lMapRoute.markersLayer.addTo(map);
+                if(lMapRoute.markersLayer && getUserPrefs().map.showMarkers) lMapRoute.markersLayer.addTo(map);
             }
         });
     }
 
-    updateMapWaypoints(playerItes.ite);
+    await updateMapWaypoints(playerItes.ite);
     updateMapLeader(playerItes.ite);
     updateMapMe(connectedPlayerId,playerItes.ite);
 

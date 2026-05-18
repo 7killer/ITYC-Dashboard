@@ -270,7 +270,8 @@ export function onMarkersChange() {
     const userPrefs = getUserPrefs();
     const displayMarkers = userPrefs.map.showMarkers;
 
-    document.getElementById('sel_showMarkersLmap').checked=displayMarkers;
+    const markersToggle = document.getElementById('sel_showMarkersLmap');
+    if(markersToggle) markersToggle.checked=displayMarkers;
 
     if(mapState.route[rid])
     {
@@ -329,7 +330,8 @@ export function hideShowTracks() {
 
     const userPrefs = getUserPrefs();
     const displayTracks = userPrefs.map.showTracks;
-    document.getElementById('sel_showTracksLmap').checked=displayTracks;
+    const tracksToggle = document.getElementById('sel_showTracksLmap');
+    if(tracksToggle) tracksToggle.checked=displayTracks;
     if(mapState.fleetLayerTracks)
     {
         if(displayTracks)  
