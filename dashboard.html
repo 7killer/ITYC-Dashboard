@@ -120,7 +120,8 @@
                     </li>
                 </ul>
             </div>
-            <fieldset class="fieldset" id="sel_skippers" align="left">
+            <div id="fleetToolbarTile" class="fleet-toolbar-tile">
+            <fieldset class="fieldset fleet-toolbar-section" id="sel_skippers" align="left">
                 <legend id="t_filter">Filters</legend>
                 <div id="fleetFilterList" class="fleet-filter-bar">
                     <template id="fleetFilterLegacyTemplate">
@@ -164,21 +165,21 @@
                     <div class="fleet-filter-search">
                         <label class="fleet-filter-search-label" for="fleetFilterSearch">&#x1F50E;</label>
                         <input type="search" id="fleetFilterSearch" autocomplete="off" placeholder="Search">
-                        <button type="button" id="fleetFilterToggle" class="fleet-filter-icon" aria-expanded="false" aria-controls="fleetFilterPopup" title="Filters">&#x2699;</button>
+                        <button type="button" id="fleetFilterToggle" class="fleet-filter-icon" aria-expanded="false" aria-controls="fleetFilterPopup" title="Filters"><span class="fleet-filter-funnel" aria-hidden="true"></span></button>
                     </div>
                     <div id="fleetFilterPopup" class="fleet-filter-popup" hidden>
                         <div class="fleet-filter-panel">
                             <div class="fleet-filter-row fleet-filter-main-row" id="fleetFilterTypeList"></div>
                             <div class="fleet-filter-grid">
                                 <section class="fleet-filter-section">
-                                    <h3 id="fleetFilterTeamsTitle">Selecteurs teams</h3>
+                                    <h3 id="fleetFilterTeamsTitle">Equipe</h3>
                                     <div class="fleet-filter-team-editor">
                                         <select id="fleetFilterTeamSelect"></select>
                                         <button type="button" id="fleetFilterAddTeam" class="fleet-filter-action">Ajouter</button>
                                     </div>
                                 </section>
                                 <section class="fleet-filter-section">
-                                    <h3 id="fleetFilterDynamicTitle">Dynamic active filters</h3>
+                                    <h3 id="fleetFilterDynamicTitle">Filtres dynamiques</h3>
                                     <div class="fleet-filter-dynamic-editor">
                                         <select id="fleetFilterDynamicVariable"></select>
                                         <select id="fleetFilterDynamicOperator">
@@ -195,11 +196,11 @@
                                     </div>
                                 </section>
                                 <section class="fleet-filter-section">
-                                    <h3 id="fleetFilterActiveTeamsTitle">Active team selection</h3>
+                                    <h3 id="fleetFilterActiveTeamsTitle">Equipes sélectionnées</h3>
                                     <div id="fleetFilterActiveTeams" class="fleet-filter-chips"></div>
                                 </section>
                                 <section class="fleet-filter-section">
-                                    <h3 id="fleetFilterActiveDynamicTitle">Active Dynamic filters</h3>
+                                    <h3 id="fleetFilterActiveDynamicTitle">Filtres actifs</h3>
                                     <div id="fleetFilterActiveDynamic" class="fleet-filter-chips"></div>
                                 </section>
                             </div>
@@ -217,18 +218,22 @@
                     <input type="checkbox" id="sel_inrace" class="content hidden">
                 </div>
             </fieldset>
-            <fieldset  class="fieldset" id="sel_export"  id="export" align="left">
+            <fieldset class="fieldset fleet-toolbar-section fleet-export-section" id="sel_export" align="left">
                 <legend>Export</legend>
-                <ul class="tab2">
+                <ul class="tab2 fleet-export-actions">
                     <li class="tab">
                         <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
-                        <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRank - CSV in clipboard">SailRanks</label>
+                        <label for="sel_ExportFleet" id="lbl_ExportFleet" class="fleet-filter-action fleet-export-button" title="Export SailRank - CSV in clipboard">SailRanks</label>
                     </li>
                     <li class="tab">
-                        <img  id="doradoUrl" src="./img/doradoSmall.png">
+                        <button type="button" id="bt_exportFleet" class="fleet-filter-action fleet-export-button" title="Export flotte - CSV">Flotte CSV</button>
+                    </li>
+                    <li class="tab">
+                        <img id="doradoUrl" class="fleet-export-icon" src="./img/doradoSmall.png" title="Dorado">
                     </li>
                 </ul>
             </fieldset>
+            </div>
             <div id="analysisModeSwitch">
                 <span class="analysisModeLabel">N</span>
                 <label class="switch" for="analysis_mode_expert" aria-label="Basculer entre mode normal et mode expert">
@@ -267,13 +272,6 @@
             <div id="extraLmap" class="mapBtDiv">
                 <input type="button" id="sel_helpLmap" name="button4" checked class="content hidden">
                 <label for="sel_helpLmap" id="lbl_helpLmap">Aide</label>
-            </div>
-            <div class="extraMapSep"></div>
-            <div id="existingRouteLmap" class="mapBtDiv mapPrevSep">
-                <input type="checkbox" id="sel_showMarkersLmap" name="button12" class="content hidden">
-                <label for="sel_showMarkersLmap" id="lbl_showMarkersLmap">Marqueurs</label>
-                <input type="checkbox" id="sel_showTracksLmap" name="button12" class="content hidden">
-                <label for="sel_showTracksLmap" id="lbl_showTracksLmap">Traces</label>
             </div>
             <div class="extraMapSep"></div>
             <div id="existingRoute2Lmap" class="mapBtDiv mapPrevSep">
@@ -855,7 +853,19 @@
                                     <option value ="sep_2" id="t_sep_2">, (US style)</option>
                                     <option value ="sep_3" id="t_sep_3">Tab (SailRanks)</option>
                                 </select>
-                                <button id="bt_exportFleet">Flotte (.csv)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-container-2cols flex-container-border config-maintenance-section">
+                    <div class="flex-item us_title" id="t_config_maintenance">Maintenance</div>
+                    <div class="flex-item">
+                        <div class="flex-container flex-container-sub">
+                            <div class="flex-item">
+                                <button type="button" id="bt_resetWindDb">Recharger les vents</button>
+                            </div>
+                            <div class="flex-item">
+                                <button type="button" id="bt_resetAllDb" class="danger">Purger toutes les données</button>
                             </div>
                         </div>
                     </div>

@@ -7,7 +7,15 @@ import {
     updateNmeaOffscreenSnapshot,
 } from './ensureOffscreen.js';
 import { computeOwnIte, computeFleetIte } from './iteRun.js';
-import { createKeyChangeListener, getAllData, getData, saveData, deleteByRaceLeg } from '../common/dbOpes.js';
+import {
+    createKeyChangeListener,
+    getAllData,
+    getData,
+    saveData,
+    deleteByRaceLeg,
+    clearStore,
+    resetDatabaseContent,
+} from '../common/dbOpes.js';
 import { loadUserPrefs } from '../common/userPrefs.js';
 import { buildEmbeddedToolbarHtml, getbuildEmbeddedToolbarContent } from '../dashboard/ui/embeddedToolbar.js';
 import { manageDashState } from './dashState.js';
@@ -648,6 +656,33 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             })();
                 return true;
             }
+
+        case 'maintenance/resetWindpacks': {
+            (async () => {
+                try {
+                    await clearStore('windpacks');
+                    const info = await syncLatestWindpacksWindowed();
+                    sendResponse({ ok: true, info });
+                } catch (e) {
+                    console.error('[maintenance] reset windpacks error', e);
+                    sendResponse({ ok: false, error: String(e) });
+                }
+            })();
+            return true;
+        }
+
+        case 'maintenance/resetDatabase': {
+            (async () => {
+                try {
+                    await resetDatabaseContent();
+                    sendResponse({ ok: true });
+                } catch (e) {
+                    console.error('[maintenance] reset database error', e);
+                    sendResponse({ ok: false, error: String(e) });
+                }
+            })();
+            return true;
+        }
 
         default:
         // autres messages → ignorés ici (ou gérés par d'autres listeners plus haut)

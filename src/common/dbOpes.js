@@ -7,6 +7,84 @@ const DB_NAME = 'VRDashboardDB3';
 const DB_VERSION = 9;
 const MIN_BULK_SIZE = 10;
 
+function getInitialInternalRecords() {
+    return [
+        {
+            id: "paramStamina",
+            paramStamina: paramStamina
+        },
+        {
+            id : 'lastLoggedUser',
+            loggedUser : null
+        },
+        {
+            id : 'lastOpennedRace',
+            raceId : null,
+            legNum : null,
+            lastOpennedRace : null
+        },
+        {
+            id: "playersUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "teamsUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "polarsUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legListUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legFleetInfosUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legPlayersInfosUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legFleetInfosDashUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legPlayersInfosDashUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legPlayersOptionsUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "legPlayersOrderUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "playersTracksUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "state",
+            state: 'dashInstalled'
+        },
+        {
+            id: "NMEAstate",
+            state: 'off',
+            activated : false
+        }
+    ];
+}
+
+async function seedInitialInternalStore(store) {
+    for (const record of getInitialInternalRecords()) {
+        await store.put(record);
+    }
+}
+
 export async function openDatabase() {
     try {
         return await openDB(DB_NAME, DB_VERSION, {
@@ -14,75 +92,9 @@ export async function openDatabase() {
               if (!db.objectStoreNames.contains('internal')) {
                   const store = db.createObjectStore('internal', { keyPath: 'id' });
                   if(cfg.debugDB) console.log('Created "internal" object store');
-            
-                  store.add({
-//                      key: "paramStamina",
-                    id: "paramStamina",
-                    paramStamina: paramStamina
-                  }) ;
-                  store.add({
-                      id : 'lastLoggedUser',
-                      loggedUser : null
-                  });
-                  store.add({
-                      id : 'lastOpennedRace',
-                      raceId : null,
-                      legNum : null,
-                      lastOpennedRace : null
-                  });
-                  store.add({
-                      id: "playersUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "teamsUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "polarsUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legListUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legFleetInfosUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legPlayersInfosUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legFleetInfosDashUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legPlayersInfosDashUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legPlayersOptionsUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "legPlayersOrderUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "playersTracksUpdate",
-                      ts: Date.now()
-                  });
-                  store.add({
-                      id: "state",
-                      state: 'dashInstalled'
-                  });
-                  store.add({
-                      id: "NMEAstate",
-                      state: 'off',
-                      activated : false
-                  });
+                  for (const record of getInitialInternalRecords()) {
+                      store.add(record);
+                  }
               }
               if (!db.objectStoreNames.contains('players')) {
                   db.createObjectStore('players', { keyPath: 'id' });
@@ -318,6 +330,50 @@ export async function deleteData(storeName, key) {
     } catch (error) {
         if(cfg.debugDBErr) console.error(`Error deleting data from ${storeName}:`, error);
         throw error;
+    }
+}
+
+export async function clearStore(storeName) {
+    let db;
+    try {
+        db = await openDatabase();
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        await store.clear();
+        await tx.done;
+
+        if(cfg.debugDB) console.log(`Store ${storeName} cleared`);
+    } catch (error) {
+        if(cfg.debugDBErr) console.error(`Error clearing store ${storeName}:`, error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
+    }
+}
+
+export async function resetDatabaseContent() {
+    let db;
+    try {
+        db = await openDatabase();
+        const storeNames = Array.from(db.objectStoreNames);
+        const tx = db.transaction(storeNames, 'readwrite');
+
+        for (const storeName of storeNames) {
+            await tx.objectStore(storeName).clear();
+        }
+
+        if (storeNames.includes('internal')) {
+            await seedInitialInternalStore(tx.objectStore('internal'));
+        }
+
+        await tx.done;
+
+        if(cfg.debugDB) console.log('Database content reset');
+    } catch (error) {
+        if(cfg.debugDBErr) console.error('Error resetting database content:', error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
     }
 }
 

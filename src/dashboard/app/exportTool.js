@@ -177,7 +177,7 @@ export async function onFleetInCpyClipBoard(fleet = getLegFleetInfos(), currentU
       ...(race.raceType == 'record' ? [ite.startDate ? formatTime(ite.startDate) : '-'] : []),
       ...(race.raceType == 'record' ? [metaDash.eRT ? formatDHMS(metaDash.eRT) : '-'] : []),
       ...(race.raceType == 'record' ? [metaDash.avgSpeed ? roundTo(metaDash.avgSpeed, 2) : '-'] : []),
-      formatDate(ite.iteDate,3),
+      formatDateForExport(ite.iteDate),
       ite.rank ?? '-',
       ...(race.raceType !== 'record' ? [metaDash.raceTime ? formatDHMS(metaDash.raceTime,true) : '-'] : []),
       (metaDash.dtf?roundTo(metaDash.dtf,1):'-'),

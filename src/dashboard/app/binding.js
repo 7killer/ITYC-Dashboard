@@ -3,7 +3,6 @@ import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 
 import {switchTheme,onUserChangeRace,uiFilterMode} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
-import {hideShowTracks,onMarkersChange} from "../ui/map/map-routes.js"
 import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
   onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick
 } from '../ui/raceMap.js'
@@ -23,6 +22,121 @@ function updateThemeButton(el, theme) {
   el.title = isDark ? "Dark mode" : "Light mode";
   el.setAttribute("aria-label", el.title);
   el.setAttribute("aria-pressed", String(isDark));
+}
+
+const maintenanceTexts = {
+  fr: {
+    section: "Maintenance",
+    resetWind: "Supprimer et recharger les vents",
+    resetWindWorking: "Rechargement des vents...",
+    resetWindDone: "Base des vents supprimée et rechargement lancé.",
+    resetAll: "Purger toutes les données",
+    resetAllWorking: "Purge en cours...",
+    resetAllConfirm: "Toutes les données du dashboard seront perdues.\n\nAprès la purge, il faudra redémarrer le jeu et la dash.\n\nConfirmer la purge complète ?",
+    resetAllDone: "Toutes les données ont été purgées. Redémarre le jeu et la dash.",
+    error: "Opération impossible : "
+  },
+  en: {
+    section: "Maintenance",
+    resetWind: "Delete and reload winds",
+    resetWindWorking: "Reloading winds...",
+    resetWindDone: "Wind database deleted and reload started.",
+    resetAll: "Purge all data",
+    resetAllWorking: "Purging...",
+    resetAllConfirm: "All dashboard data will be lost.\n\nAfter the purge, you must restart the game and the dash.\n\nConfirm full purge?",
+    resetAllDone: "All data has been purged. Restart the game and the dash.",
+    error: "Operation failed: "
+  }
+};
+
+function getMaintenanceTexts() {
+  const lang = getUserPrefs()?.lang === "en" ? "en" : "fr";
+  return maintenanceTexts[lang];
+}
+
+function applyMaintenanceTranslations() {
+  const t = getMaintenanceTexts();
+  const section = document.getElementById("t_config_maintenance");
+  const resetWind = document.getElementById("bt_resetWindDb");
+  const resetAll = document.getElementById("bt_resetAllDb");
+
+  if (section) section.textContent = t.section;
+  if (resetWind && !resetWind.disabled) resetWind.textContent = t.resetWind;
+  if (resetAll && !resetAll.disabled) resetAll.textContent = t.resetAll;
+}
+
+function sendRuntimeMessage(message) {
+  return new Promise((resolve, reject) => {
+    if (!globalThis.chrome?.runtime?.sendMessage) {
+      reject(new Error("chrome.runtime.sendMessage unavailable"));
+      return;
+    }
+
+    chrome.runtime.sendMessage(message, (response) => {
+      const runtimeError = chrome.runtime.lastError;
+      if (runtimeError) {
+        reject(new Error(runtimeError.message));
+        return;
+      }
+
+      if (!response?.ok) {
+        reject(new Error(response?.error || "Unknown error"));
+        return;
+      }
+
+      resolve(response);
+    });
+  });
+}
+
+async function setLang(lang) {
+  const userPrefs = getUserPrefs();
+  userPrefs.lang = lang;
+  await saveUserPrefs(userPrefs);
+  document.documentElement.lang = lang;
+  applyMaintenanceTranslations();
+}
+
+async function resetWindDatabase(el) {
+  const t = getMaintenanceTexts();
+  if (el) {
+    el.disabled = true;
+    el.textContent = t.resetWindWorking;
+  }
+
+  try {
+    await sendRuntimeMessage({ type: "maintenance/resetWindpacks" });
+    alert(t.resetWindDone);
+  } catch (error) {
+    alert(t.error + String(error?.message || error));
+  } finally {
+    if (el) {
+      el.disabled = false;
+      el.textContent = getMaintenanceTexts().resetWind;
+    }
+  }
+}
+
+async function resetAllDatabase(el) {
+  const t = getMaintenanceTexts();
+  if (!confirm(t.resetAllConfirm)) return;
+
+  if (el) {
+    el.disabled = true;
+    el.textContent = t.resetAllWorking;
+  }
+
+  try {
+    await sendRuntimeMessage({ type: "maintenance/resetDatabase" });
+    alert(t.resetAllDone);
+  } catch (error) {
+    alert(t.error + String(error?.message || error));
+  } finally {
+    if (el) {
+      el.disabled = false;
+      el.textContent = getMaintenanceTexts().resetAll;
+    }
+  }
 }
 
 const configPopupState = {
@@ -128,6 +242,7 @@ function initUIBindings(items) {
 export function uiBindingInit() {
   document.addEventListener("click", clickManager);
   initFleetFilterBar();
+  applyMaintenanceTranslations();
   initUIBindings([
     {
       selector: '#sel_race',
@@ -148,6 +263,14 @@ export function uiBindingInit() {
       onChange: (value) => {const userPrefs = getUserPrefs(); userPrefs.lang = value;saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.lang}
     },*/
+    {
+      selector: '#lg_fr',
+      onChange: async() => { await setLang("fr"); },
+    },
+    {
+      selector: '#lg_en',
+      onChange: async() => { await setLang("en"); },
+    },
     {
       selector: '#auto_router',
       onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.router.auto = checked;await saveUserPrefs(userPrefs);},
@@ -449,6 +572,14 @@ export function uiBindingInit() {
       onChange: async() => { exportOwnBoatTrack(); }
     },
     {
+      selector: '#bt_resetWindDb',
+      onChange: async(value, ev, el) => { await resetWindDatabase(el); }
+    },
+    {
+      selector: '#bt_resetAllDb',
+      onChange: async(value, ev, el) => { await resetAllDatabase(el); }
+    },
+    {
       selector: '#fleet_team',
       onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.fleet.column.team = checked;await saveUserPrefs(userPrefs);},
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.fleet.column.team }
@@ -547,16 +678,6 @@ export function uiBindingInit() {
       selector: '#bt_router',
       onChange: () => {/*todo call routerPage*/}
     },
-    {
-      selector: '#sel_showMarkersLmap',
-      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showMarkers = checked?false:true;await saveUserPrefs(userPrefs);onMarkersChange(checked);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showMarkers }
-    },
-    {
-      selector: '#sel_showTracksLmap',
-      onChange: async (checked) => {const userPrefs = getUserPrefs(); userPrefs.map.showTracks = checked?false:true;await saveUserPrefs(userPrefs);hideShowTracks(checked);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.map.showTracks }
-    },  
     {
       selector: '#lbl_rt_openLmap',
       onChange: () => {onPopupOpenLmap();}
