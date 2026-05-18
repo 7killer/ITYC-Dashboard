@@ -119,6 +119,18 @@ export function onWindTimeChange(cb) {
   return () => {};
 }
 
+export function resetWindControls() {
+  removeWindControl(windUiState.statusControl);
+  removeWindControl(windUiState.timeControl);
+  windUiState.statusControl = null;
+  windUiState.timeControl = null;
+  windUiState.sliderEl = null;
+  windUiState.timeLabelEl = null;
+  windUiState.ticksEl = null;
+  windUiState.daysEl = null;
+  windUiState.tipEl = null;
+}
+
 function notifyWindTimeChange(epochSec) {
   windUiState.currentUnix = epochSec;
   for (const cb of windUiState.timeListeners) {
@@ -409,15 +421,33 @@ function applyRunInfoToTimeline(info) {
   refreshTimelineUI();
   return info;
 }
+
+function isControlAliveOnMap(control, map) {
+  const container = control?._container || control?.getContainer?.();
+  return !!control && control._map === map && !!container && container.isConnected;
+}
+
+function removeWindControl(control) {
+  if (!control) return;
+  try {
+    control.remove();
+  } catch (_) {}
+}
+
 function ensureWindStatusControl(map) {
   const el = windUiState.statusControl;
-  if (el) el.update();
-  else
-  {
-      const ctrl = new shortGribControl();
-      ctrl.addTo(map);
-      windUiState.statusControl = ctrl; 
+  if (isControlAliveOnMap(el, map)) {
+    el.update();
+    return el;
   }
+
+  removeWindControl(el);
+  windUiState.statusControl = null;
+
+  const ctrl = new shortGribControl();
+  ctrl.addTo(map);
+  windUiState.statusControl = ctrl;
+  return ctrl;
 }
 
 const shortGribControl = L.Control.extend({
@@ -782,7 +812,14 @@ function buildTimelineTicks(ticksEl, daysEl) {
   }
 }
 function ensureWindTimeControl(map) {
-  if (windUiState.timeControl) return windUiState.timeControl;
+  if (isControlAliveOnMap(windUiState.timeControl, map)) return windUiState.timeControl;
+
+  removeWindControl(windUiState.timeControl);
+  windUiState.timeControl = null;
+  windUiState.sliderEl = null;
+  windUiState.ticksEl = null;
+  windUiState.daysEl = null;
+  windUiState.tipEl = null;
 
   const ctrl = L.control({ position: 'bottomright' });
 
@@ -866,6 +903,13 @@ function ensureWindTimeControl(map) {
     });
 
     return root;
+   };
+
+   ctrl.onRemove = function () {
+     windUiState.sliderEl = null;
+     windUiState.ticksEl = null;
+     windUiState.daysEl = null;
+     windUiState.tipEl = null;
    };
  
    ctrl.addTo(map);
