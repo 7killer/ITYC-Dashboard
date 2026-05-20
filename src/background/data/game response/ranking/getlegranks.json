@@ -1,0 +1,840 @@
+
+legRank_request_data = {
+    "race_id": 801,
+    "leg_num": 1,
+    "user_id": "5fa8609fa73ee0501829b85d",
+    "partition": 0,
+    "value": "",
+    "members": [],
+    "friends": [],
+    "page_number": 1,
+    "page_size": 100,
+    "request_type": 1
+}
+
+
+legRank_{
+    "rc": "ok",
+    "res": {
+        "rank": [
+            {
+                "_id": "5e8df6b8080c8cbd4514ea2e",
+                "distance": 0,
+                "time": 515675249,
+                "displayName": "BlackPanther",
+                "country": "FR",
+                "rank": 1
+            },
+            {
+                "_id": "5fa7d50aa73ee05018b55410",
+                "distance": 0,
+                "time": 515922306,
+                "displayName": "Malaouig35 BSP",
+                "country": "FR",
+                "rank": 2
+            },
+            {
+                "_id": "5e7e1302080c8cbd450f1f69",
+                "distance": 0,
+                "time": 516067004,
+                "displayName": "Sandokan-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 3
+            },
+            {
+                "_id": "59c0d503b395b292ed620fa4",
+                "distance": 0,
+                "time": 516089411,
+                "displayName": "Arylla - INC",
+                "country": "GR",
+                "rank": 4
+            },
+            {
+                "_id": "61828ce12a05eec971f39d9f",
+                "distance": 0,
+                "time": 516149442,
+                "displayName": "MC kele - INC",
+                "country": "IT",
+                "rank": 5
+            },
+            {
+                "_id": "59cd5cefb395b292ed62f931",
+                "distance": 0,
+                "time": 516180543,
+                "displayName": "Ross - INC",
+                "country": "IT",
+                "rank": 6
+            },
+            {
+                "_id": "5bdf02de517022fc09d77461",
+                "distance": 0,
+                "time": 516441351,
+                "displayName": "Bayadère - INC",
+                "country": "FR",
+                "rank": 7
+            },
+            {
+                "_id": "59fc6267e0750e372d687df1",
+                "distance": 0,
+                "time": 516666864,
+                "displayName": "Cerise30 - BSP",
+                "country": "FR",
+                "rank": 8
+            },
+            {
+                "_id": "59c17010b395b292ed621d53",
+                "distance": 0,
+                "time": 516680549,
+                "displayName": "MTZ8493-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 9
+            },
+            {
+                "_id": "59da1a1ce7821e295491a74f",
+                "distance": 0,
+                "time": 516745134,
+                "displayName": "Papattts-PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 10
+            },
+            {
+                "_id": "5bdeeb0f517022fc09d6ea4f",
+                "distance": 0,
+                "time": 516869750,
+                "displayName": "PeterPan - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 11
+            },
+            {
+                "_id": "5fcceea006999515a3442835",
+                "distance": 0,
+                "time": 516897315,
+                "displayName": "did.mdm - BSP",
+                "country": "FR",
+                "rank": 12
+            },
+            {
+                "_id": "59d8b264e7821e29549176d1",
+                "distance": 0,
+                "time": 516967172,
+                "displayName": "zecagou BSP",
+                "country": "FR",
+                "rank": 13
+            },
+            {
+                "_id": "5fac3401a73ee05018b553c7",
+                "distance": 0,
+                "time": 516983419,
+                "displayName": "maelian44-EZ The Sea Cleaners",
+                "country": "FR",
+                "rank": 14
+            },
+            {
+                "_id": "5faad0dfa73ee05018a0a49e",
+                "distance": 0,
+                "time": 517040324,
+                "displayName": "Okkoto - TORC",
+                "country": "FR",
+                "rank": 15
+            },
+            {
+                "_id": "5f980477a73ee0501838bffa",
+                "distance": 0,
+                "time": 517135111,
+                "displayName": "FleM LJDE",
+                "country": "FR",
+                "rank": 16
+            },
+            {
+                "_id": "5fa7eee8a73ee05018adc41b",
+                "distance": 0,
+                "time": 517346650,
+                "displayName": "MAMY.85 - TORC",
+                "country": "FR",
+                "rank": 17
+            },
+            {
+                "_id": "59c2979db395b292ed6232a7",
+                "distance": 0,
+                "time": 517349207,
+                "displayName": "PenGuinVIII",
+                "country": "FR",
+                "rank": 18
+            },
+            {
+                "_id": "653d3dc36c7e26c03dea0b48",
+                "distance": 0,
+                "time": 517357215,
+                "displayName": "Chartreuse Blanche",
+                "country": "CV",
+                "rank": 19
+            },
+            {
+                "_id": "59c0f5e0b395b292ed62121c",
+                "distance": 0,
+                "time": 517446606,
+                "displayName": "Cdt Mitchell-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 20
+            },
+            {
+                "_id": "626b8c6d8c6fa6461854d5f8",
+                "distance": 0,
+                "time": 517525768,
+                "displayName": "Amity-TP83",
+                "country": "FR",
+                "rank": 21
+            },
+            {
+                "_id": "5fa7d682a73ee05018d9c30e",
+                "distance": 0,
+                "time": 517534617,
+                "displayName": "PatriceC-TVV",
+                "country": "CV",
+                "rank": 22
+            },
+            {
+                "_id": "59c16f64b395b292ed621d2e",
+                "distance": 0,
+                "time": 517572841,
+                "displayName": "Tipapacheri BSP",
+                "country": "CH",
+                "rank": 23
+            },
+            {
+                "_id": "59d8bf79e7821e2954917a20",
+                "distance": 0,
+                "time": 517828544,
+                "displayName": "RaraAvis",
+                "country": "FR",
+                "rank": 24
+            },
+            {
+                "_id": "5dc9a2ee98b1b8ca5946b039",
+                "distance": 0,
+                "time": 517853033,
+                "displayName": "metalmaster-TP83",
+                "country": "FR",
+                "rank": 25
+            },
+            {
+                "_id": "59d0d0a7b395b292ed6347f2",
+                "distance": 0,
+                "time": 517994593,
+                "displayName": "Yohann des Monts d'Arrée. LDB",
+                "country": "FR",
+                "rank": 26
+            },
+            {
+                "_id": "5fa590afa73ee050186de7b1",
+                "distance": 0,
+                "time": 518149826,
+                "displayName": "PHL-CNPVA - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 27
+            },
+            {
+                "_id": "6182ccac2a05eec971375598",
+                "distance": 0,
+                "time": 518269848,
+                "displayName": "PapaSmurf / LSV-Trustable",
+                "country": "FR",
+                "rank": 28
+            },
+            {
+                "_id": "59c1527db395b292ed621abd",
+                "distance": 0,
+                "time": 518364908,
+                "displayName": "juraEZic-TheSeaCleaners",
+                "country": "FR",
+                "rank": 29
+            },
+            {
+                "_id": "5fa879e9a73ee050183e5532",
+                "distance": 0,
+                "time": 518424392,
+                "displayName": "Brunours-ESF",
+                "country": "FR",
+                "rank": 30
+            },
+            {
+                "_id": "5c29de34517022fc09fe67e2",
+                "distance": 0,
+                "time": 518550704,
+                "displayName": "Héphaïstos - INC",
+                "country": "FR",
+                "rank": 31
+            },
+            {
+                "_id": "5f9c4be2a73ee0501814ecbf",
+                "distance": 0,
+                "time": 518572724,
+                "displayName": "Ven2bou-EZ TheSeaCleaners",
+                "country": "IS",
+                "rank": 32
+            },
+            {
+                "_id": "636cd3caf8181a917cf28eb1",
+                "distance": 0,
+                "time": 518604345,
+                "displayName": "Lisarah - TORC",
+                "country": "FR",
+                "rank": 33
+            },
+            {
+                "_id": "5fb91fbe06999515a3494b60",
+                "distance": 0,
+                "time": 518615404,
+                "displayName": "FSR NAN - TORC/YWCN",
+                "country": "FR",
+                "rank": 34
+            },
+            {
+                "_id": "6720dfa5fd122904a5aa85e7",
+                "distance": 0,
+                "time": 518678484,
+                "displayName": "Djéripat",
+                "country": "FR",
+                "rank": 35
+            },
+            {
+                "_id": "5bdea3d2517022fc09d5fcdf",
+                "distance": 0,
+                "time": 518896521,
+                "displayName": "RVW-BFC",
+                "country": "CV",
+                "rank": 36
+            },
+            {
+                "_id": "638c4bd25d24a353f5fc9fff",
+                "distance": 0,
+                "time": 518897646,
+                "displayName": "BenoitBBB",
+                "country": "FR",
+                "rank": 37
+            },
+            {
+                "_id": "5fa69ceba73ee05018e6fbf5",
+                "distance": 0,
+                "time": 518918533,
+                "displayName": "nicokite976-TVV",
+                "country": "CV",
+                "rank": 38
+            },
+            {
+                "_id": "5fabc4b8a73ee050181c4da5",
+                "distance": 0,
+                "time": 518929735,
+                "displayName": "iOsch - NTL",
+                "country": "BE",
+                "rank": 39
+            },
+            {
+                "_id": "59c249f9b395b292ed62293d",
+                "distance": 0,
+                "time": 519123738,
+                "displayName": "Bsqsir_Croisiera.com_",
+                "country": "CV",
+                "rank": 40
+            },
+            {
+                "_id": "59fc6b82e0750e372d688026",
+                "distance": 0,
+                "time": 519128215,
+                "displayName": "fitrops-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 41
+            },
+            {
+                "_id": "5fa7eb72a73ee050180d2050",
+                "distance": 0,
+                "time": 519246839,
+                "displayName": "Déferlante Malherbiste / LSV-Trustable",
+                "country": "FR",
+                "rank": 42
+            },
+            {
+                "_id": "5a45184a7b296eaadfc8394a",
+                "distance": 0,
+                "time": 519317465,
+                "displayName": "C&MTotW-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 43
+            },
+            {
+                "_id": "5fa980eaa73ee0501800dd2b",
+                "distance": 0,
+                "time": 519405248,
+                "displayName": "regis jrx - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 44
+            },
+            {
+                "_id": "5fa463eea73ee0501878fd69",
+                "distance": 0,
+                "time": 519413230,
+                "displayName": "MUSHROOMBOAT - INC",
+                "country": "FR",
+                "rank": 45
+            },
+            {
+                "_id": "5fa8609fa73ee0501829b85d",
+                "distance": 0,
+                "time": 519687778,
+                "displayName": "SkipperDuMad ITYC.FR - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 46
+            },
+            {
+                "_id": "5f50164752e859ef0300ae9b",
+                "distance": 0,
+                "time": 519692292,
+                "displayName": "Margaraf-ÉcoMaris",
+                "country": "FR",
+                "rank": 47
+            },
+            {
+                "_id": "63638bc0c1724c4b1dd8214f",
+                "distance": 0,
+                "time": 519715007,
+                "displayName": "Spiral Tribe Mauritius - TP83",
+                "country": "MU",
+                "rank": 48
+            },
+            {
+                "_id": "636e8f550cffcfa11049fb71",
+                "distance": 0,
+                "time": 519725461,
+                "displayName": "W00dy13 - BSP",
+                "country": "FR",
+                "rank": 49
+            },
+            {
+                "_id": "5f8f5a3652e859ef0311acab",
+                "distance": 0,
+                "time": 519880708,
+                "displayName": "latourangelle CNE - ISF",
+                "country": "FR",
+                "rank": 50
+            },
+            {
+                "_id": "5fb94ed506999515a3b6aed0",
+                "distance": 0,
+                "time": 519975204,
+                "displayName": "MaevaSR / LSV-Trustable",
+                "country": "FR",
+                "rank": 51
+            },
+            {
+                "_id": "5b850614517022fc09d06bb3",
+                "distance": 0,
+                "time": 520033506,
+                "displayName": "Philippe-VSA",
+                "country": "FR",
+                "rank": 52
+            },
+            {
+                "_id": "5b473f01517022fc09cf3895",
+                "distance": 0,
+                "time": 520039988,
+                "displayName": "Luke31",
+                "country": "FR",
+                "rank": 53
+            },
+            {
+                "_id": "5e8a4eb0080c8cbd4513a7b4",
+                "distance": 0,
+                "time": 520050561,
+                "displayName": "Duaruog_TVD/SODEBO",
+                "country": "FR",
+                "rank": 54
+            },
+            {
+                "_id": "59c7bed7b395b292ed62a6ac",
+                "distance": 0,
+                "time": 520095468,
+                "displayName": "Bewareth",
+                "country": "GR",
+                "rank": 55
+            },
+            {
+                "_id": "5a1b17c17b296eaadfc4b4c1",
+                "distance": 0,
+                "time": 520134706,
+                "displayName": "Lollipop",
+                "country": "NZ",
+                "rank": 56
+            },
+            {
+                "_id": "59feafd1e0750e372d6924e2",
+                "distance": 0,
+                "time": 520216609,
+                "displayName": "Gem01 - TFS - EcoMaris",
+                "country": "FR",
+                "rank": 57
+            },
+            {
+                "_id": "59c143e7b395b292ed621938",
+                "distance": 0,
+                "time": 520223961,
+                "displayName": "M63-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 58
+            },
+            {
+                "_id": "5fa7b336a73ee05018c0a695",
+                "distance": 0,
+                "time": 520231071,
+                "displayName": "Florus00 - TORC",
+                "country": "FR",
+                "rank": 59
+            },
+            {
+                "_id": "5fa28cffa73ee0501871bcb1",
+                "distance": 0,
+                "time": 520274497,
+                "displayName": "ay_rth - BFC",
+                "country": "FR",
+                "rank": 60
+            },
+            {
+                "_id": "59c0f22ab395b292ed6211c0",
+                "distance": 0,
+                "time": 520275381,
+                "displayName": "gameuro 974-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 61
+            },
+            {
+                "_id": "5b0e8489517022fc09cd9959",
+                "distance": 0,
+                "time": 520325740,
+                "displayName": "LAMA2 BSP",
+                "country": "FR",
+                "rank": 62
+            },
+            {
+                "_id": "5ad204d37b296eaadfcfb498",
+                "distance": 0,
+                "time": 520339100,
+                "displayName": "Raging Biz BSP",
+                "country": "FR",
+                "rank": 63
+            },
+            {
+                "_id": "5bdc2436517022fc09d48aee",
+                "distance": 0,
+                "time": 520414225,
+                "displayName": "manureva/EcoMaris-TFS",
+                "country": "FR",
+                "rank": 64
+            },
+            {
+                "_id": "5fa809efa73ee05018dc5a0e",
+                "distance": 0,
+                "time": 520418592,
+                "displayName": "Asterix-TP83",
+                "country": "BE",
+                "rank": 65
+            },
+            {
+                "_id": "5dac5bfe6f64cfd4344c02d3",
+                "distance": 0,
+                "time": 520425790,
+                "displayName": "Opaleflam - NTL",
+                "country": "FR",
+                "rank": 66
+            },
+            {
+                "_id": "5fa6d2d0a73ee05018c668a1",
+                "distance": 0,
+                "time": 520483774,
+                "displayName": "SuperZombi-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 67
+            },
+            {
+                "_id": "5b3e8a36517022fc09cefe49",
+                "distance": 0,
+                "time": 520494072,
+                "displayName": "Totoship17_ALTA",
+                "country": "FR",
+                "rank": 68
+            },
+            {
+                "_id": "5bd9e4b3517022fc09d3c5e0",
+                "distance": 0,
+                "time": 520514141,
+                "displayName": "La-Mora-CNE-ISF",
+                "country": "FR",
+                "rank": 69
+            },
+            {
+                "_id": "5fa171c8a73ee050182a033f",
+                "distance": 0,
+                "time": 520532147,
+                "displayName": "Crazy Sea-Horse - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 70
+            },
+            {
+                "_id": "5fa98d7da73ee0501836e2b1",
+                "distance": 0,
+                "time": 520556389,
+                "displayName": "Bunggy_60 - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 71
+            },
+            {
+                "_id": "5db58aec34559d27edba418b",
+                "distance": 0,
+                "time": 520640174,
+                "displayName": "JUCEAL - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 72
+            },
+            {
+                "_id": "5bdf6108517022fc09d90c5e",
+                "distance": 0,
+                "time": 520686671,
+                "displayName": "FredC45-TP83",
+                "country": "FR",
+                "rank": 73
+            },
+            {
+                "_id": "5fa84112a73ee05018e9e567",
+                "distance": 0,
+                "time": 520726563,
+                "displayName": "Skwal-ALTA",
+                "country": "FR",
+                "rank": 74
+            },
+            {
+                "_id": "5fa7c580a73ee05018d4a513",
+                "distance": 0,
+                "time": 520771889,
+                "displayName": "Coyote53 - ESF",
+                "country": "FR",
+                "rank": 75
+            },
+            {
+                "_id": "5ffd684a24ee49200129e895",
+                "distance": 0,
+                "time": 520795099,
+                "displayName": "ErnadoO - NTL",
+                "country": "FR",
+                "rank": 76
+            },
+            {
+                "_id": "69ff334a522f7c2b589ace07",
+                "distance": 0,
+                "time": 520834920,
+                "displayName": "Gordon 29",
+                "country": "FR",
+                "rank": 77
+            },
+            {
+                "_id": "5dff781798b1b8ca595fbdb2",
+                "distance": 0,
+                "time": 520867930,
+                "displayName": "Viper640",
+                "country": "US",
+                "rank": 78
+            },
+            {
+                "_id": "5fa32733a73ee05018902b96",
+                "distance": 0,
+                "time": 520877963,
+                "displayName": "LASER - EDM",
+                "country": "FR",
+                "rank": 79
+            },
+            {
+                "_id": "5f9426a3a73ee05018ac1bbb",
+                "distance": 0,
+                "time": 520996466,
+                "displayName": "Gone n' Rosette shepherd LMT",
+                "country": "FR",
+                "rank": 80
+            },
+            {
+                "_id": "5fa4648aa73ee050188235ec",
+                "distance": 0,
+                "time": 521020864,
+                "displayName": "Ju 2-100glier - TORC",
+                "country": "FR",
+                "rank": 81
+            },
+            {
+                "_id": "5fac65dba73ee0501847f10c",
+                "distance": 0,
+                "time": 521078349,
+                "displayName": "PAT56709-PV3",
+                "country": "FR",
+                "rank": 82
+            },
+            {
+                "_id": "59f3274ee0750e372d675c8c",
+                "distance": 0,
+                "time": 521090300,
+                "displayName": "*LiveStrong*",
+                "country": "FR",
+                "rank": 83
+            },
+            {
+                "_id": "59c40ab3b395b292ed625660",
+                "distance": 0,
+                "time": 521163136,
+                "displayName": "Galere_Splendiose_ALTA",
+                "country": "FR",
+                "rank": 84
+            },
+            {
+                "_id": "5fad501aa73ee05018ffe9d3",
+                "distance": 0,
+                "time": 521168161,
+                "displayName": "LaZozodesRimet",
+                "country": "FR",
+                "rank": 85
+            },
+            {
+                "_id": "59ee4baee0750e372d664eaf",
+                "distance": 0,
+                "time": 521191688,
+                "displayName": "oeildelynx2008 / LSV-Trustable",
+                "country": "FR",
+                "rank": 86
+            },
+            {
+                "_id": "59fda4b5e0750e372d68c40e",
+                "distance": 0,
+                "time": 521211579,
+                "displayName": "Floyd-ÉcoMaris-TFS",
+                "country": "FR",
+                "rank": 87
+            },
+            {
+                "_id": "5fb5d8b206999515a38e720a",
+                "distance": 0,
+                "time": 521220588,
+                "displayName": "Mar1dodouce IOT",
+                "country": "US",
+                "rank": 88
+            },
+            {
+                "_id": "5be94f01517022fc09e36af6",
+                "distance": 0,
+                "time": 521230001,
+                "displayName": "LaBrigantine EcoMaris-TFS",
+                "country": "FR",
+                "rank": 89
+            },
+            {
+                "_id": "5fa90c99a73ee050185629a1",
+                "distance": 0,
+                "time": 521264102,
+                "displayName": "Tresenretard BSP",
+                "country": "FR",
+                "rank": 90
+            },
+            {
+                "_id": "5bdb4ef8517022fc09d44d86",
+                "distance": 0,
+                "time": 521335454,
+                "displayName": "AdeLSO CNE - ISF",
+                "country": "FR",
+                "rank": 91
+            },
+            {
+                "_id": "5f9c4b43a73ee050180e1124",
+                "distance": 0,
+                "time": 521412297,
+                "displayName": "Graffiti85_TVD/SODEBO",
+                "country": "FR",
+                "rank": 92
+            },
+            {
+                "_id": "59c17439b395b292ed621dac",
+                "distance": 0,
+                "time": 521423030,
+                "displayName": "MicKaro - XXX - Mimil",
+                "country": "FR",
+                "rank": 93
+            },
+            {
+                "_id": "5fa50b08a73ee0501843ad13",
+                "distance": 0,
+                "time": 521440274,
+                "displayName": "LaLicorne38 / LSV-Trustable",
+                "country": "FR",
+                "rank": 94
+            },
+            {
+                "_id": "5f9c6b4da73ee0501833dd63",
+                "distance": 0,
+                "time": 521462799,
+                "displayName": "Nanar86-TGV EVO",
+                "country": "FR",
+                "rank": 95
+            },
+            {
+                "_id": "5c239593517022fc09fd1a67",
+                "distance": 0,
+                "time": 521492431,
+                "displayName": "Scolibri3 VR TEAM 49",
+                "country": "FR",
+                "rank": 96
+            },
+            {
+                "_id": "5eb7cefc080c8cbd4523f272",
+                "distance": 0,
+                "time": 521498901,
+                "displayName": "jacquesdaniel",
+                "country": "FR",
+                "rank": 97
+            },
+            {
+                "_id": "59fef75ee0750e372d697e48",
+                "distance": 0,
+                "time": 521501472,
+                "displayName": "Mekazilla - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "rank": 98
+            },
+            {
+                "_id": "673123bc9168cf8713b191ce",
+                "distance": 0,
+                "time": 521567657,
+                "displayName": "fab54nyc / LSV-Trustable",
+                "country": "FR",
+                "rank": 99
+            },
+            {
+                "_id": "5a4609947b296eaadfc84645",
+                "distance": 0,
+                "time": 521652360,
+                "displayName": "Pirond-EZ TheSeaCleaners",
+                "country": "FR",
+                "rank": 100
+            }
+        ],
+        "me": {
+            "_id": "5fa8609fa73ee0501829b85d",
+            "distance": 0,
+            "time": 519687778,
+            "displayName": "SkipperDuMad ITYC.FR - PVe/SERVTEC/D-ICE",
+            "country": "FR",
+            "rank": 46
+        },
+        "pagination": {
+            "nextPage": 2,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "documentsCount": 12045,
+            "pagesCount": 121,
+            "pageNumber": 1,
+            "pageSize": 100
+        },
+        "request_type": 1
+    }
+}

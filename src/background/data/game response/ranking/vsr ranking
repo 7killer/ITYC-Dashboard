@@ -1,0 +1,1619 @@
+
+{
+    "@class": "LogEventRequest",
+    "eventKey": "Ranking_VSR",
+    "pageNumber": 1,
+    "page_size": 100,
+    "filters": {},
+    "requestId": "639147381484750000_19",
+    "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZmE4NjA5ZmE3M2VlMDUwMTgyOWI4NWQiLCJpYXQiOjE3NzkxMzQxMTksImV4cCI6MTc3OTE3NzMxOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.JeCq6bD3katw40eu4TNHGsDuTkzghFEwu8WrE365Z4vlkTJkwtEnJTAlkftm5ZbViRmREHyvEb44D7g5ECSVpGFnjFJBgVrp1tXrswlmJ-pmBufeC0Of7EpY2fDUTBd0xV4d0p6ITRYD1tbh4VV3Wk0sh6Xqxv0oczwRK-8P0tjqfno3d-Vzh6-ff6ZarprXbQxJC8J6p0h5UEfW86Xd40g8GyKJSOZFYYK9QlzCwuC5-3xL7hlFz9biFKIB-3cuIfdpW0LZ1U6xjmhIDpf9P2rv1xRc2b7aIsWX85IJUCdRSi-64cvLkKQILi5J41AYez5VM1SreXGQRoI_yjPYKQ",
+    "playerId": "5fa8609fa73ee0501829b85d"
+}
+
+{
+    "scriptData": {
+        "dataVSR": [
+            {
+                "points": 120891,
+                "vsrRank": 1,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5e8df6b8080c8cbd4514ea2e",
+                "userName": "BlackPanther",
+                "country": "FR",
+                "championStatus": true,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 120688,
+                "vsrRank": 2,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "61828ce12a05eec971f39d9f",
+                "userName": "MC kele - INC",
+                "country": "IT",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": true
+            },
+            {
+                "points": 118868,
+                "vsrRank": 3,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "6011b67cd7d77a6aa455dd17",
+                "userName": "Kah-Yu - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": true,
+                "isFollowed": true
+            },
+            {
+                "points": 113862,
+                "vsrRank": 4,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5bdf02de517022fc09d77461",
+                "userName": "Bayadère - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": true
+            },
+            {
+                "points": 112765,
+                "vsrRank": 5,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c16f64b395b292ed621d2e",
+                "userName": "Tipapacheri BSP",
+                "country": "CH",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": true,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 112099,
+                "vsrRank": 6,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c2d2c4b395b292ed623ae9",
+                "userName": "Pakebo61 - PVe /SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": true,
+                "isFollowed": true
+            },
+            {
+                "points": 109701,
+                "vsrRank": 7,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa2d419a73ee05018ad0d25",
+                "userName": "LeModeste - PVe/SERVTEC/D-ICE",
+                "country": "CH",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": true,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 109648,
+                "vsrRank": 8,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c0d503b395b292ed620fa4",
+                "userName": "Arylla - INC",
+                "country": "GR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": true,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 107443,
+                "vsrRank": 9,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5eccecee8e4c1d3e55e6e7d1",
+                "userName": "falcon470 - INC",
+                "country": "IT",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": true,
+                "isFollowed": true
+            },
+            {
+                "points": 106854,
+                "vsrRank": 10,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "66fc52310d8b1c915ffd98c5",
+                "userName": "EdY - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": true,
+                "isFollowed": true
+            },
+            {
+                "points": 106132,
+                "vsrRank": 11,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5a5ca2f67b296eaadfca3626",
+                "userName": "MALIBU - TP83",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4b905622544051a821d56",
+                    "name": "Team Pro 83",
+                    "badgeId": "4-fra_provence-alpes-cotedazure"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 104617,
+                "vsrRank": 12,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "636cd3caf8181a917cf28eb1",
+                "userName": "Lisarah - TORC",
+                "country": "FR",
+                "team": {
+                    "id": "5fcb48264a672a054d0b7316",
+                    "name": "TORC eSailing",
+                    "badgeId": "3-nat-ukr"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 104493,
+                "vsrRank": 13,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa70bafa73ee050185468d1",
+                "userName": "Bro-Naoned - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 104052,
+                "vsrRank": 14,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa9273ba73ee0501838d7a0",
+                "userName": "Nico_jud - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 102246,
+                "vsrRank": 15,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59fef2ace0750e372d69768d",
+                "userName": "Sem la Guédonne - TORC",
+                "country": "FR",
+                "team": {
+                    "id": "5fcb48264a672a054d0b7316",
+                    "name": "TORC eSailing",
+                    "badgeId": "3-nat-ukr"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 102011,
+                "vsrRank": 16,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5dc9a2ee98b1b8ca5946b039",
+                "userName": "metalmaster-TP83",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4b905622544051a821d56",
+                    "name": "Team Pro 83",
+                    "badgeId": "4-fra_provence-alpes-cotedazure"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 101915,
+                "vsrRank": 17,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa956ffa73ee050184d0d16",
+                "userName": "papi.michel-PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 101536,
+                "vsrRank": 18,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59fc6267e0750e372d687df1",
+                "userName": "Cerise30 - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 101334,
+                "vsrRank": 19,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59cd5cefb395b292ed62f931",
+                "userName": "Ross - INC",
+                "country": "IT",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 100768,
+                "vsrRank": 20,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c143e7b395b292ed621938",
+                "userName": "M63-EZ TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 100171,
+                "vsrRank": 21,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c0f22ab395b292ed6211c0",
+                "userName": "gameuro 974-EZ TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 99876,
+                "vsrRank": 22,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "626b8c6d8c6fa6461854d5f8",
+                "userName": "Amity-TP83",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4b905622544051a821d56",
+                    "name": "Team Pro 83",
+                    "badgeId": "4-fra_provence-alpes-cotedazure"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 99712,
+                "vsrRank": 23,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5faafaeba73ee050182a9a22",
+                "userName": "Isbjorn45 / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 99648,
+                "vsrRank": 24,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa7eb72a73ee050180d2050",
+                "userName": "Déferlante Malherbiste / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 99173,
+                "vsrRank": 25,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fcceea006999515a3442835",
+                "userName": "did.mdm - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 99125,
+                "vsrRank": 26,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5db58aec34559d27edba418b",
+                "userName": "JUCEAL - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 98978,
+                "vsrRank": 27,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5bdd66c9517022fc09d50fe8",
+                "userName": "Brug35 / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 98147,
+                "vsrRank": 28,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa590afa73ee050186de7b1",
+                "userName": "PHL-CNPVA - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 97992,
+                "vsrRank": 29,
+                "vsrVariation": 2,
+                "levelXp": 14,
+                "userId": "5fa5b407a73ee05018a43fbd",
+                "userName": "Pelican Alpha - TORC",
+                "country": "FR",
+                "team": {
+                    "id": "5fcb48264a672a054d0b7316",
+                    "name": "TORC eSailing",
+                    "badgeId": "3-nat-ukr"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 97632,
+                "vsrRank": 30,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa3a4aba73ee05018265394",
+                "userName": "TcAir11 - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 97534,
+                "vsrRank": 31,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59d8b264e7821e29549176d1",
+                "userName": "zecagou BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 96884,
+                "vsrRank": 32,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5faad0dfa73ee05018a0a49e",
+                "userName": "Okkoto - TORC",
+                "country": "FR",
+                "team": {
+                    "id": "5fcb48264a672a054d0b7316",
+                    "name": "TORC eSailing",
+                    "badgeId": "3-nat-ukr"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 96637,
+                "vsrRank": 33,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa7d50aa73ee05018b55410",
+                "userName": "Malaouig35 BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 96399,
+                "vsrRank": 34,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa879e9a73ee050183e5532",
+                "userName": "Brunours-ESF",
+                "country": "FR",
+                "team": {
+                    "id": "5e932a8ba747a6057cc1fddf",
+                    "name": "Esailing France",
+                    "badgeId": ""
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 96252,
+                "vsrRank": 35,
+                "vsrVariation": 2,
+                "levelXp": 14,
+                "userId": "5bdf0cd6517022fc09d7b5ff",
+                "userName": "Canard - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 95971,
+                "vsrRank": 36,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5a00782f7b296eaadfc09ab5",
+                "userName": "Pier123 - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 95831,
+                "vsrRank": 37,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5f92b3f1a73ee05018206053",
+                "userName": "Tumi - INC",
+                "country": "PE",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false,
+                "isBlocked": true
+            },
+            {
+                "points": 95441,
+                "vsrRank": 38,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "59c13440b395b292ed62179c",
+                "userName": "PHIL72 - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 95261,
+                "vsrRank": 39,
+                "vsrVariation": 45,
+                "levelXp": 14,
+                "userId": "59c1527db395b292ed621abd",
+                "userName": "juraEZic-TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87669,
+                "vsrRank": 39,
+                "vsrVariation": 45,
+                "levelXp": 14,
+                "userId": "59c1527db395b292ed621abd",
+                "userName": "juraEZic-TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 94861,
+                "vsrRank": 40,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa56298a73ee05018467775",
+                "userName": "Mousse volant-CNE-ISF",
+                "country": "FR",
+                "team": {
+                    "id": "65d296bc73eaa4713d6849cf",
+                    "name": "CNE\\-ISF",
+                    "badgeId": "2-ecu-illu-1_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 94809,
+                "vsrRank": 41,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5a45184a7b296eaadfc8394a",
+                "userName": "C&MTotW-EZ TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 94375,
+                "vsrRank": 42,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa79ce8a73ee0501802808c",
+                "userName": "Lohann la Terreur - BFC",
+                "country": "FR",
+                "team": {
+                    "id": "5bc8c56757ef4c051fb210d0",
+                    "name": "Team BFC",
+                    "badgeId": "3-nat-fra"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 94354,
+                "vsrRank": 43,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c0e543b395b292ed6210ed",
+                "userName": "MousseLine BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 94250,
+                "vsrRank": 44,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa3cd6aa73ee05018fc395c",
+                "userName": "BroDreger-BHT /TRRacing",
+                "country": "FR",
+                "team": {
+                    "id": "5c166e3ff763d2052d4d403f",
+                    "name": "BHT / TRRacing",
+                    "badgeId": "1-ecu-forme-12_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 94120,
+                "vsrRank": 45,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa463eea73ee0501878fd69",
+                "userName": "MUSHROOMBOAT - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 94049,
+                "vsrRank": 46,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fe648f924ee492001a0586b",
+                "userName": "Mimi5672 - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 93723,
+                "vsrRank": 47,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59cf6909b395b292ed632539",
+                "userName": "Scoub21 - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 93721,
+                "vsrRank": 48,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c2979db395b292ed6232a7",
+                "userName": "PenGuinVIII",
+                "country": "FR",
+                "team": {
+                    "id": "5bddb5ab81177a7fd975d073",
+                    "name": "Les Champions",
+                    "badgeId": "3-nat-fra"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 93133,
+                "vsrRank": 49,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "636e8f550cffcfa11049fb71",
+                "userName": "W00dy13 - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 93060,
+                "vsrRank": 50,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5bdeeb0f517022fc09d6ea4f",
+                "userName": "PeterPan - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 92898,
+                "vsrRank": 51,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "608e291b37e7cb7ea86eb11f",
+                "userName": "SIGNORINI - FIV",
+                "country": "IT",
+                "team": {
+                    "id": "5e00128356dae70579d039c5",
+                    "name": "Federazione Italiana Vela",
+                    "badgeId": "3-nat-ita"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 92629,
+                "vsrRank": 52,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "6182ccac2a05eec971375598",
+                "userName": "PapaSmurf / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 92585,
+                "vsrRank": 53,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c686a9b395b292ed629444",
+                "userName": "Tikahiva56-ESF",
+                "country": "FR",
+                "team": {
+                    "id": "5e932a8ba747a6057cc1fddf",
+                    "name": "Esailing France",
+                    "badgeId": ""
+                },
+                "championStatus": false
+            },
+            {
+                "points": 92496,
+                "vsrRank": 54,
+                "vsrVariation": 0,
+                "levelXp": 14,
+                "userId": "5fa28cffa73ee0501871bcb1",
+                "userName": "ay_rth - BFC",
+                "country": "FR",
+                "team": {
+                    "id": "5bc8c56757ef4c051fb210d0",
+                    "name": "Team BFC",
+                    "badgeId": "3-nat-fra"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 92341,
+                "vsrRank": 55,
+                "vsrVariation": 5,
+                "levelXp": 14,
+                "userId": "5e8a4eb0080c8cbd4513a7b4",
+                "userName": "Duaruog_TVD/SODEBO",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4c33257ef4c051f81f94c",
+                    "name": "Team Vendée TVD/SODEBO",
+                    "badgeId": "4-fra_pays-de-la-loire"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 92334,
+                "vsrRank": 56,
+                "vsrVariation": -3,
+                "levelXp": 14,
+                "userId": "5fa6822aa73ee05018f61d03",
+                "userName": "El_Double_Ve",
+                "country": "DE",
+                "team": {
+                    "id": "5fb81b875c7a42054839daec",
+                    "name": "Crash",
+                    "badgeId": "2-ecu-illu-12_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 91949,
+                "vsrRank": 57,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa809efa73ee05018dc5a0e",
+                "userName": "Asterix-TP83",
+                "country": "BE",
+                "team": {
+                    "id": "5bc4b905622544051a821d56",
+                    "name": "Team Pro 83",
+                    "badgeId": "4-fra_provence-alpes-cotedazure"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 91882,
+                "vsrRank": 58,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5feca77824ee492001424aff",
+                "userName": "Mauro9500-EDM",
+                "country": "IT",
+                "team": {
+                    "id": "6563c6e1d4c1ad1003dc8cb2",
+                    "name": "L'Ecume Des Mers",
+                    "badgeId": "2-ecu-illu-12_2"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 91817,
+                "vsrRank": 59,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5f980477a73ee0501838bffa",
+                "userName": "FleM LJDE",
+                "country": "FR",
+                "team": {
+                    "id": "5fb183ec7d2fdc054db29847",
+                    "name": "Le Jade LJDE",
+                    "badgeId": "2-ecu-illu-5_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 91753,
+                "vsrRank": 60,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "60609fe437e7cb7ea8adb923",
+                "userName": "LAKOURSENTETE - BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true,
+                "isFriend": true
+            },
+            {
+                "points": 91532,
+                "vsrRank": 61,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa980eaa73ee0501800dd2b",
+                "userName": "regis jrx - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 90818,
+                "vsrRank": 62,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5ad204d37b296eaadfcfb498",
+                "userName": "Raging Biz BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 90724,
+                "vsrRank": 63,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5dff781798b1b8ca595fbdb2",
+                "userName": "Viper640",
+                "country": "US",
+                "team": {
+                    "id": "6210d0c8d478010566ab516e",
+                    "name": "InternationalOffshoreTeam",
+                    "badgeId": "2-ecu-illu-5_2"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 90690,
+                "vsrRank": 64,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa7c580a73ee05018d4a513",
+                "userName": "Coyote53 - ESF",
+                "country": "FR",
+                "team": {
+                    "id": "5e932a8ba747a6057cc1fddf",
+                    "name": "Esailing France",
+                    "badgeId": ""
+                },
+                "championStatus": false
+            },
+            {
+                "points": 90412,
+                "vsrRank": 65,
+                "vsrVariation": 3,
+                "levelXp": 14,
+                "userId": "59ff2d5fec355084ecde3b08",
+                "userName": "Nuto35-SITS",
+                "country": "FR",
+                "team": {
+                    "id": "5e64c58bf33a4b057c08f0ce",
+                    "name": "Sailors in the storm",
+                    "badgeId": "3-nat-mli"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 90360,
+                "vsrRank": 66,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa90c99a73ee050185629a1",
+                "userName": "Tresenretard BSP",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 90355,
+                "vsrRank": 67,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa823d5a73ee05018906f7f",
+                "userName": "Temerus - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollowed": true
+            },
+            {
+                "points": 90272,
+                "vsrRank": 68,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fac3401a73ee05018b553c7",
+                "userName": "maelian44-EZ The Sea Cleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 90180,
+                "vsrRank": 69,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa8609fa73ee0501829b85d",
+                "userName": "SkipperDuMad ITYC.FR - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 90135,
+                "vsrRank": 70,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5b850614517022fc09d06bb3",
+                "userName": "Philippe-VSA",
+                "country": "FR",
+                "team": {
+                    "id": "5bc61a59ca6fae0515b41ab7",
+                    "name": "vannes et ses alentours",
+                    "badgeId": "4-fra_breton"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 90080,
+                "vsrRank": 71,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5f9ecce6a73ee050184ada12",
+                "userName": "philou015 / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 90007,
+                "vsrRank": 72,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa9cba7a73ee050180fbe88",
+                "userName": "Partris TG II",
+                "country": "DE",
+                "team": {
+                    "id": "5cf8da14d36b7a0511a0b6ef",
+                    "name": "Team Germany II",
+                    "badgeId": "2-ecu-illu-1_2"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 89973,
+                "vsrRank": 73,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5faa895da73ee05018d984a8",
+                "userName": "modus34_ALTA",
+                "country": "FR",
+                "team": {
+                    "id": "5c54a54592c9fc0520f29090",
+                    "name": "ALTA Red",
+                    "badgeId": "2-ecu-illu-12_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 89700,
+                "vsrRank": 74,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c60645b395b292ed628842",
+                "userName": "Titophe-BHT / TRRacing",
+                "country": "FR",
+                "team": {
+                    "id": "5c166e3ff763d2052d4d403f",
+                    "name": "BHT / TRRacing",
+                    "badgeId": "1-ecu-forme-12_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 89673,
+                "vsrRank": 75,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5cdc271cf6c716887cd893fa",
+                "userName": "Mohan-EZ TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 89122,
+                "vsrRank": 76,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5f9e676ba73ee0501869158b",
+                "userName": "L'Albatros Noir BSP",
+                "country": "CH",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 88925,
+                "vsrRank": 77,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "6187c67d2a05eec971092313",
+                "userName": "Misterfi33 - TP83",
+                "country": "FR",
+                "team": {
+                    "id": "5bc4b905622544051a821d56",
+                    "name": "Team Pro 83",
+                    "badgeId": "4-fra_provence-alpes-cotedazure"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 88717,
+                "vsrRank": 78,
+                "vsrVariation": 1,
+                "levelXp": 14,
+                "userId": "5e3995ba98b1b8ca59797753",
+                "userName": "HAPPINESS",
+                "country": "DE",
+                "team": {
+                    "id": "5cf8da14d36b7a0511a0b6ef",
+                    "name": "Team Germany II",
+                    "badgeId": "2-ecu-illu-1_2"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 88661,
+                "vsrRank": 79,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa50b08a73ee0501843ad13",
+                "userName": "LaLicorne38 / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 88640,
+                "vsrRank": 80,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5bd9e4b3517022fc09d3c5e0",
+                "userName": "La-Mora-CNE-ISF",
+                "country": "FR",
+                "team": {
+                    "id": "65d296bc73eaa4713d6849cf",
+                    "name": "CNE\\-ISF",
+                    "badgeId": "2-ecu-illu-1_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 88190,
+                "vsrRank": 81,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "6508471ddb7c611e4cc799c2",
+                "userName": "Idec30 / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 88068,
+                "vsrRank": 82,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5bdf43a3517022fc09d8aa8f",
+                "userName": "Pac-Man - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87775,
+                "vsrRank": 83,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5a777ae57b296eaadfcb80cf",
+                "userName": "Miceri",
+                "country": "DK",
+                "team": {
+                    "id": "6210d0c8d478010566ab516e",
+                    "name": "InternationalOffshoreTeam",
+                    "badgeId": "2-ecu-illu-5_2"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87709,
+                "vsrRank": 84,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59d11260b395b292ed636bb9",
+                "userName": "loange - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87637,
+                "vsrRank": 86,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c3c64cb395b292ed624baa",
+                "userName": "LeDidko37 - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87515,
+                "vsrRank": 87,
+                "vsrVariation": 1,
+                "levelXp": 14,
+                "userId": "59ff13dfec355084ecde02f9",
+                "userName": "Domlevis-TLCM69",
+                "country": "FR",
+                "team": {
+                    "id": "5be7849109be78051651767a",
+                    "name": "LYON\\-CATA\\-MARRANT\\-69",
+                    "badgeId": ""
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87439,
+                "vsrRank": 88,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "5fa4648aa73ee050188235ec",
+                "userName": "Ju 2-100glier - TORC",
+                "country": "FR",
+                "team": {
+                    "id": "5fcb48264a672a054d0b7316",
+                    "name": "TORC eSailing",
+                    "badgeId": "3-nat-ukr"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 87430,
+                "vsrRank": 89,
+                "vsrVariation": -2,
+                "levelXp": 14,
+                "userId": "59ffa55e7b296eaadfc039b4",
+                "userName": "dinio_ALTA",
+                "country": "FR",
+                "team": {
+                    "id": "5c54a54592c9fc0520f29090",
+                    "name": "ALTA Red",
+                    "badgeId": "2-ecu-illu-12_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 87225,
+                "vsrRank": 90,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59c1ffdeb395b292ed62233a",
+                "userName": "Daflo ESF",
+                "country": "FR",
+                "team": {
+                    "id": "5e932a8ba747a6057cc1fddf",
+                    "name": "Esailing France",
+                    "badgeId": ""
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87071,
+                "vsrRank": 91,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59d0bbafb395b292ed63425f",
+                "userName": "Zeb Attitude-NTL",
+                "country": "FR",
+                "team": {
+                    "id": "6204452ec91a5c055d9afcaf",
+                    "name": "NAUTILUS",
+                    "badgeId": "2-ecu-illu-12_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87043,
+                "vsrRank": 92,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5a3ed7447b296eaadfc7bc05",
+                "userName": "RoxaNao - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 87039,
+                "vsrRank": 93,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa6e39aa73ee0501815c49d",
+                "userName": "Acidstorms / LSV-Trustable",
+                "country": "FR",
+                "team": {
+                    "id": "5e9969eaa747a6057c9f4d16",
+                    "name": "LSV Trustable 🫶",
+                    "badgeId": "1-ecu-trustable-1_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 87025,
+                "vsrRank": 94,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5db7e81c34559d27edbc6a14",
+                "userName": "Venec32-NTL",
+                "country": "FR",
+                "team": {
+                    "id": "6204452ec91a5c055d9afcaf",
+                    "name": "NAUTILUS",
+                    "badgeId": "2-ecu-illu-12_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 87013,
+                "vsrRank": 95,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa7d75da73ee05018f0387c",
+                "userName": "LaVigieRMC - TFS - EcoMaris",
+                "country": "FR",
+                "team": {
+                    "id": "6186b8bf983fd6158a7127c1",
+                    "name": "TFS - EcoMaris",
+                    "badgeId": "2-ecu-illu-7_1"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 86959,
+                "vsrRank": 96,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5b3a7f51517022fc09cee349",
+                "userName": "feg-ITA ST2.0",
+                "country": "IT",
+                "team": {
+                    "id": "5d854464f8b878051fbbddc8",
+                    "name": "Italia ST2.0",
+                    "badgeId": "3-nat-ita"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 86934,
+                "vsrRank": 97,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "659a817bee335bbe8cf48ad5",
+                "userName": "Marshmello - BSP",
+                "country": "GB",
+                "team": {
+                    "id": "5bc4fae4ca6fae051563fb8a",
+                    "name": "Black Sailing Project",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false,
+                "isFollower": true
+            },
+            {
+                "points": 86789,
+                "vsrRank": 98,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5bde9ef9517022fc09d5f796",
+                "userName": "pascal83-EZ TheSeaCleaners",
+                "country": "FR",
+                "team": {
+                    "id": "5bc592dc622544051ad12840",
+                    "name": "ExtaZ Sea The SeaCleaners",
+                    "badgeId": "2-ecu-illu-2_3"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 86650,
+                "vsrRank": 99,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5ac0c4ee7b296eaadfcf3d51",
+                "userName": "Ced007 - INC",
+                "country": "FR",
+                "team": {
+                    "id": "5c35adcb6226880513022817",
+                    "name": "Team INC",
+                    "badgeId": "2-ecu-illu-9_1"
+                },
+                "championStatus": false
+            },
+            {
+                "points": 86620,
+                "vsrRank": 100,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "59fef75ee0750e372d697e48",
+                "userName": "Mekazilla - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false
+            }
+        ],
+        "dataPlayer": [
+            {
+                "points": 90180,
+                "vsrRank": 68,
+                "vsrVariation": -1,
+                "levelXp": 14,
+                "userId": "5fa8609fa73ee0501829b85d",
+                "userName": "SkipperDuMad ITYC.FR - PVe/SERVTEC/D-ICE",
+                "country": "FR",
+                "gender": "M",
+                "team": {
+                    "id": "5fec43b7d018c2055564ba0c",
+                    "name": "PVe / SERVTEC / D ICE",
+                    "badgeId": "2-ecu-illu-4_1"
+                },
+                "championStatus": false
+            }
+        ],
+        "pagination": {
+            "nextPage": 2,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "documentsCount": 398148,
+            "pagesCount": 3982,
+            "pageNumber": 1,
+            "pageSize": 100,
+            "option": {
+                "Global": 0
+            }
+        },
+        "rc": "ok"
+    },
+    "@class": ".LogEventResponse",
+    "requestId": "639147381484750000_19",
+    "traceId": "Root=1-6a0b6ec4-2d01462f4e0671fe101d71cb;Parent=4d65ffe7f3074f11;Sampled=0;Lineage=1:e2ef51fb:0"
+}

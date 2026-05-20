@@ -9,6 +9,7 @@ import {initializeMap} from '../ui/map/map-race.js'
 import {upDateGraph} from'../ui/raceGraph.js'
 import {buildRaceAnalyseAdvance} from '../ui/raceAnalysis.js'
 import {showNotifList} from'../ui/raceNotif.js'
+import {buildRaceRankingHtml, clearRaceRankingDock} from '../ui/raceRanking.js'
 
 
 
@@ -20,6 +21,7 @@ export const tabList = Object.freeze({
     5 : "raceGraph",
     9 : "raceAnalyse",
     6 : "notif",
+    7 : "ranking",
     8 : "rawLog",
   });
 
@@ -28,6 +30,17 @@ export function getActiveTabId()
 {
     return activeTab;
 }
+
+function syncActiveTabButton(tabId)
+{
+    document.querySelectorAll("[data-tab-id]").forEach((tabButton) => {
+        const isActive = tabButton.dataset.tabId == tabId;
+        tabButton.classList.toggle("is-active", isActive);
+        tabButton.setAttribute("aria-selected", String(isActive));
+        tabButton.tabIndex = isActive ? 0 : -1;
+    });
+}
+
 export function tabSwitch(tabId = null)
 {
     if(tabId == null)
@@ -37,6 +50,7 @@ export function tabSwitch(tabId = null)
     } 
 
     activeTab = tabId;
+    syncActiveTabButton(tabId);
 
     display_selbox("hidden");
     document.getElementById("analysisModeSwitch").style.display = "none";
@@ -53,6 +67,7 @@ export function tabSwitch(tabId = null)
     }
 
     const tabName = tabList[tabId];
+    if(tabName !== "ranking") clearRaceRankingDock();
 
     switch(tabName) {
         case "rawLog":
@@ -84,6 +99,9 @@ export function tabSwitch(tabId = null)
             break;
         case "notif":
             showNotifList();
+            break;
+        case "ranking":
+            buildRaceRankingHtml();
             break;
     }
 }
@@ -121,6 +139,9 @@ export function refreshActiveTab(tabId)
             break;
         case "notif":
             showNotifList();
+            break;
+        case "ranking":
+            buildRaceRankingHtml();
             break;
     }
 }

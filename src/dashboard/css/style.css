@@ -34,10 +34,14 @@
     --a_link_hover : "blue";
     --popup_bg_img :linear-gradient(180deg, #fff, #ddd 40%, #ccc);
 
-    --tabNotActive_color: #000000;
-    --tabNotActive_background: #EEEEEE;
-    --tabActive_color: #F5F5F5;
-    --tabActive_background: #555555;
+    --dashboardTabs_shell_bg: rgba(238, 242, 247, 0.9);
+    --dashboardTabs_border: #c9d2df;
+    --dashboardTabs_color: #3b4656;
+    --dashboardTabs_hover_bg: #ffffff;
+    --dashboardTabs_active_bg: #2563eb;
+    --dashboardTabs_active_color: #ffffff;
+    --dashboardTabs_focus: rgba(37, 99, 235, 0.34);
+    --dashboardTabs_shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
 
     --mapControl_background: rgba(255,255,255,0.9);
     --mapControl_color: #333;
@@ -101,10 +105,14 @@ light
     --a_link_hover : "lightgreen";
     --popup_bg_img :linear-gradient(180deg, #0a0a0a, #252930 40%, #000000);
     
-    --tabActive_color: #000000;
-    --tabActive_background: #EEEEEE;
-    --tabNotActive_color: #F5F5F5;
-    --tabNotActive_background: #555555;
+    --dashboardTabs_shell_bg: rgba(41, 42, 45, 0.92);
+    --dashboardTabs_border: rgb(73, 76, 80);
+    --dashboardTabs_color: #d7dce4;
+    --dashboardTabs_hover_bg: rgba(255, 255, 255, 0.08);
+    --dashboardTabs_active_bg: #f3f4f6;
+    --dashboardTabs_active_color: #111827;
+    --dashboardTabs_focus: rgba(243, 244, 246, 0.32);
+    --dashboardTabs_shadow: 0 10px 24px rgba(0, 0, 0, 0.26);
 
     --mapControl_background: rgba(0,0,0,0.75);
     --mapControl_color: #fff!important;
@@ -395,10 +403,15 @@ html, body {
 .content {
     flex: 1;
     overflow: auto;
+    min-height: 0;
 }
 
 .hidden {
     display: none;
+}
+
+#tab-content7 {
+    overflow: hidden;
 }
 
 .centered {
@@ -904,10 +917,14 @@ fieldset {
 }
 .fleet-toolbar-tile {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     gap: 10px;
-    margin-left: 1em;
-    padding: 7px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-top: 0.35em;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 5px 7px;
     color: var(--td_color);
     background: color-mix(in oklab, var(--td_bg_color), #888 8%);
     border: 1px solid var(--border_color);
@@ -926,15 +943,22 @@ fieldset {
 }
 
 .fleet-toolbar-section {
+    display: flex;
+    align-items: center;
     min-width: 0;
     border: 0;
 }
 
 .fleet-toolbar-section legend {
-    padding: 0 3px;
-    color: var(--filter_color);
-    font-size: 11px;
-    font-weight: 600;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .fleet-export-section {
@@ -1201,20 +1225,33 @@ fieldset {
 }
 #headSpacer {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: flex-start;
-    padding-bottom: 0.7em;
+    gap: 0.75em;
+    padding-bottom: 0.45em;
     position: relative;
     z-index: 2500;
 }
 
-#headSpacer > div:first-child {
-    flex: 1 1 auto;
+#headSpacer > .dashboard-tabs-nav {
+    flex: 0 1 auto;
     min-width: 0;
 }
 
-#headSpacer>div>.tabs {
-    margin-top: 1em;
+
+.ranking-tabs-dock {
+    display: flex;
+    flex: 1 1 420px;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-width: 280px;
+    margin-top: 0.35em;
+}
+
+.ranking-tabs-dock[hidden] {
+    display: none;
 }
 
 #doradoUrl { 
@@ -1544,39 +1581,69 @@ div#selRankSlave {
     top: 50%;
 } 
 
-.tabs {
-    display: block;
-    position: relative;
-    padding: 2px 0 0 0;
+.dashboard-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 5px;
+    background: var(--dashboardTabs_shell_bg);
+    border: 1px solid var(--dashboardTabs_border);
+    border-radius: 8px;
+    box-shadow: var(--dashboardTabs_shadow);
 }
 
-.tabs .tab {
-    float: left;
-    display: block;
-    margin: auto 3px 3px 3px;
-}
-
-.tabs .tab>input[type="radio"] {
-    position: absolute;
-    display: none;
-}
-
-.tabs .tab>label {
-    display: block;
-    padding: 6px 19px;
+.dashboard-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 6px;
+    color: var(--dashboardTabs_color);
+    background: transparent;
+    font-family: inherit;
     font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
     text-transform: uppercase;
+    white-space: nowrap;
     cursor: pointer;
-    position: relative;
-    color: var(--tabNotActive_color);
-    background: var(--tabNotActive_background);
+    transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
 
-.tabs>.tab>[id^="ts:"]:checked + label {
-    top: 0;
-    color: var(--tabActive_color);
-    background: var(--tabActive_background);
+.dashboard-tab:hover {
+    background: var(--dashboardTabs_hover_bg);
+}
 
+.dashboard-tab:focus-visible {
+    outline: 2px solid var(--dashboardTabs_focus);
+    outline-offset: 2px;
+}
+
+.dashboard-tab.is-active {
+    color: var(--dashboardTabs_active_color);
+    background: var(--dashboardTabs_active_bg);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+}
+
+.dashboard-tab.is-active:hover {
+    background: var(--dashboardTabs_active_bg);
+}
+
+@media (max-width: 760px) {
+    .dashboard-tabs {
+        width: 100%;
+    }
+
+    .dashboard-tab {
+        flex: 1 1 auto;
+        min-width: 94px;
+    }
 }
 
 
@@ -1964,6 +2031,250 @@ thead.sticky th {
     .race-notif-kind {
         grid-column: 1 / -1;
         justify-self: start;
+    }
+}
+
+.race-ranking-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.race-ranking-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 5px;
+    background: var(--dashboardTabs_shell_bg);
+    border: 1px solid var(--dashboardTabs_border);
+    border-radius: 8px;
+}
+
+.race-ranking-tabs + .race-ranking-tabs {
+    margin-top: -4px;
+    background: color-mix(in oklab, var(--dashboardTabs_shell_bg), var(--bg_body_color) 28%);
+}
+
+.race-ranking-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 6px;
+    color: var(--dashboardTabs_color);
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.race-ranking-tab:hover {
+    background: var(--dashboardTabs_hover_bg);
+}
+
+.race-ranking-tab:focus-visible {
+    outline: 2px solid var(--dashboardTabs_focus);
+    outline-offset: 2px;
+}
+
+.race-ranking-tab.is-active {
+    color: var(--dashboardTabs_active_color);
+    background: var(--dashboardTabs_active_bg);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+}
+
+.ranking-tabs-dock .race-ranking-tabs + .race-ranking-tabs {
+    margin-top: 0;
+}
+
+.race-ranking-card {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 140px;
+    overflow: hidden;
+}
+
+.race-ranking-body {
+    flex: 1 1 auto;
+    min-height: 90px;
+    overflow: hidden;
+}
+
+.race-ranking-content {
+    height: 100%;
+    min-height: 64px;
+    overflow: hidden;
+}
+
+.race-ranking-card .card-header {
+    flex-wrap: wrap;
+}
+
+.race-ranking-pager {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.race-ranking-meta {
+    color: var(--th_color);
+    font-size: 12px;
+    font-weight: 600;
+    opacity: .76;
+}
+
+.race-ranking-page-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 26px;
+    color: var(--th_color);
+    background: color-mix(in oklab, var(--th_bg_color), #fff 12%);
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.race-ranking-page-button:hover {
+    background: color-mix(in oklab, var(--th_bg_color), #fff 22%);
+}
+
+.race-ranking-page-button:disabled {
+    cursor: default;
+    opacity: .45;
+}
+
+.race-ranking-page-label {
+    min-width: 52px;
+    color: var(--th_color);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.race-ranking-table-wrap {
+    height: 100%;
+    max-height: none;
+    overflow: auto;
+    position: relative;
+}
+
+.race-ranking-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.race-ranking-table th:nth-child(1),
+.race-ranking-table td:nth-child(1),
+.race-ranking-table th:nth-child(4),
+.race-ranking-table td:nth-child(4) {
+    text-align: right;
+}
+
+.race-ranking-table th:nth-child(2),
+.race-ranking-table td:nth-child(2),
+.race-ranking-table th:nth-child(3),
+.race-ranking-table td:nth-child(3) {
+    text-align: left;
+}
+
+.race-ranking-team-table th:nth-child(2),
+.race-ranking-team-table td:nth-child(2) {
+    text-align: left;
+}
+
+.race-ranking-team-table th:nth-child(3),
+.race-ranking-team-table td:nth-child(3) {
+    text-align: right;
+}
+
+.race-ranking-course-table th:nth-child(2),
+.race-ranking-course-table td:nth-child(2),
+.race-ranking-course-table th:nth-child(3),
+.race-ranking-course-table td:nth-child(3) {
+    text-align: left;
+}
+
+.race-ranking-course-table th:nth-child(4),
+.race-ranking-course-table td:nth-child(4),
+.race-ranking-course-table th:nth-child(5),
+.race-ranking-course-table td:nth-child(5),
+.race-ranking-course-table th:nth-child(6),
+.race-ranking-course-table td:nth-child(6) {
+    text-align: right;
+}
+
+.race-ranking-inter-team-table th:nth-child(2),
+.race-ranking-inter-team-table td:nth-child(2) {
+    text-align: left;
+}
+
+.race-ranking-inter-team-table th:nth-child(3),
+.race-ranking-inter-team-table td:nth-child(3),
+.race-ranking-inter-team-table th:nth-child(4),
+.race-ranking-inter-team-table td:nth-child(4),
+.race-ranking-inter-team-table th:nth-child(5),
+.race-ranking-inter-team-table td:nth-child(5) {
+    text-align: right;
+}
+
+.race-ranking-course-team-table th:nth-child(3),
+.race-ranking-course-team-table td:nth-child(3),
+.race-ranking-course-team-table th:nth-child(4),
+.race-ranking-course-team-table td:nth-child(4) {
+    text-align: left;
+}
+
+.race-ranking-course-team-table th:nth-child(1),
+.race-ranking-course-team-table td:nth-child(1),
+.race-ranking-course-team-table th:nth-child(2),
+.race-ranking-course-team-table td:nth-child(2),
+.race-ranking-course-team-table th:nth-child(5),
+.race-ranking-course-team-table td:nth-child(5),
+.race-ranking-course-team-table th:nth-child(6),
+.race-ranking-course-team-table td:nth-child(6),
+.race-ranking-course-team-table th:nth-child(7),
+.race-ranking-course-team-table td:nth-child(7) {
+    text-align: right;
+}
+
+.race-ranking-empty {
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    color: var(--filter_color);
+    font-size: 13px;
+}
+
+@media (max-width: 760px) {
+    .race-ranking-tabs {
+        width: 100%;
+    }
+
+    .race-ranking-tab {
+        flex: 1 1 auto;
+        min-width: 94px;
+    }
+
+    .race-ranking-pager {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
     }
 }
 

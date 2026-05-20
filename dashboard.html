@@ -84,42 +84,20 @@
             <table id="raceStatusTable"  class="tabUser"></table>
         </div>
         <div id="headSpacer">
-            <div align="inline">
-                <ul class="tabs">
-                    <li class="tab">
-                        <input type="radio" name="tabs" checked="checked" id="ts:1">
-                        <label for="ts:1" id="t_raceLog">Journal</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:2">
-                        <label for="ts:2" id="t_fleet">Flotte</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:3">
-                        <label for="ts:3" id="t_map">Carte</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:4">
-                        <label for="ts:4" id="t_resume">Résumé</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:5">
-                        <label for="ts:5" id="t_graph">Graph</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:9">
-                        <label for="ts:9" id="t_analyse">Analyse</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:6">
-                        <label for="ts:6" id="t_notif">Notifications</label>
-                    </li>
-                    <li class="tab">
-                        <input type="radio" name="tabs" id="ts:8">
-                        <label for="ts:8" id="t_rawLog">Raw Log</label>
-                    </li>
-                </ul>
-            </div>
+            <nav class="dashboard-tabs-nav" aria-label="Sections dashboard">
+                <div class="dashboard-tabs" role="tablist">
+                    <button type="button" class="dashboard-tab is-active" id="t_raceLog" data-tab-id="1" role="tab" aria-selected="true" aria-controls="tab-content1">Journal</button>
+                    <button type="button" class="dashboard-tab" id="t_fleet" data-tab-id="2" role="tab" aria-selected="false" aria-controls="tab-content2">Flotte</button>
+                    <button type="button" class="dashboard-tab" id="t_map" data-tab-id="3" role="tab" aria-selected="false" aria-controls="tab-content3">Carte</button>
+                    <button type="button" class="dashboard-tab" id="t_resume" data-tab-id="4" role="tab" aria-selected="false" aria-controls="tab-content4">Résumé</button>
+                    <button type="button" class="dashboard-tab" id="t_graph" data-tab-id="5" role="tab" aria-selected="false" aria-controls="tab-content5">Graph</button>
+                    <button type="button" class="dashboard-tab" id="t_analyse" data-tab-id="9" role="tab" aria-selected="false" aria-controls="tab-content9">Analyse</button>
+                    <button type="button" class="dashboard-tab" id="t_notif" data-tab-id="6" role="tab" aria-selected="false" aria-controls="tab-content6">Notifications</button>
+                    <button type="button" class="dashboard-tab" id="t_ranking" data-tab-id="7" role="tab" aria-selected="false" aria-controls="tab-content7">Ranking</button>
+                    <button type="button" class="dashboard-tab" id="t_rawLog" data-tab-id="8" role="tab" aria-selected="false" aria-controls="tab-content8">Raw Log</button>
+                </div>
+            </nav>
+            <div id="rankingTabsDock" class="ranking-tabs-dock" hidden></div>
             <div id="fleetToolbarTile" class="fleet-toolbar-tile">
             <fieldset class="fieldset fleet-toolbar-section" id="sel_skippers" align="left">
                 <legend id="t_filter">Filters</legend>
@@ -700,6 +678,9 @@
                 </div>
             </section>
         </div>
+    </div>
+    <div id="tab-content7" class="content hidden">
+        <div id="ranking" class="race-ranking-page"></div>
     </div>
     <div id="configContentSource" hidden>
         <div id="userConfig">

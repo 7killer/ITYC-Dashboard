@@ -2,7 +2,7 @@
 import { accountDetailsDataModel } from './ingesterModels/accountDetails.js';
 import { legListDataModel ,raceSchema} from './ingesterModels/getLegList.js';
 import { endLegPrepDataModel } from './ingesterModels/getEndLegPrep.js';
-import {processDBOperations,getData} from '../../common/dbOpes.js';
+import {processDBOperations,getData, deleteByRaceLegPartition, deleteByType} from '../../common/dbOpes.js';
 import {getBoatInfosRequestDataSchema,
         getBoatInfosResponseSchema,
         getBoatInfosBoatStateSchema,
@@ -13,6 +13,11 @@ import {boatActionResponseData } from './ingesterModels/boatAction.js'
 
 /* addBoatActionResponseData */ 
 import { getFleetRequestDataSchema, getFleetResponseSchema } from './ingesterModels/getFleet.js';
+import { getLegRankResponseSchema, getLegRankRequestDataSchema } from './ingesterModels/getLegRank.js';
+import { vsrRankResponseSchema, vsrTeamRankResponseSchema } from './ingesterModels/vsrRank.js';
+import { leaderboardDataRequestSchema, leaderboardDataResponseSchema } from './ingesterModels/leaderboardData.js';
+
+
 import { polarSchema} from './ingesterModels/polar.js';
 import { ghostTrackRequestDataSchema, ghostTrackResponseSchema } from './ingesterModels/getGhostTrack.js';
 
@@ -599,6 +604,316 @@ export async function ingestRaceList(legListData) {
   }
 }
 
+export async function ingestLegRanks(request, response) {
+  try 
+  {
+    const req = getLegRankRequestDataSchema.validateSync(request, {
+      stripUnknown: true
+    });
+
+    const res = getLegRankResponseSchema.validateSync(response, {
+      stripUnknown: true
+    });
+
+    const now = Date.now();
+    const rankMap = (p) => ({
+      userId: p._id,
+      distance: p.distance,
+      time: p.time,
+      rank: p.rank
+    });
+
+    const rank = res.res.rank.map(rankMap);
+    const me = res.res.me;
+    if (me && !rank.some((p) => p.userId === me._id)) {
+      rank.push(rankMap(me));
+    }
+
+    const legRank = [
+      ...(req.page_number === 1 ? [{
+        raceId: req.race_id,
+        legNum: req.leg_num,
+        partition: req.partition,
+        type: 'info',
+        pageNumber: 1,
+        documentsCount: res.res.pagination.documentsCount,
+        pagesCount: res.res.pagination.pagesCount
+      }] : []),
+      {
+        raceId: req.race_id,
+        legNum: req.leg_num,
+        partition: req.partition,
+        type: 'data',
+        pageNumber: req.page_number,
+        rank
+      }
+    ];
+
+    const playersById = new Map(
+      [...res.res.rank, ...(me ? [me] : [])].map((p) => [
+        p._id,
+        {
+          id: p._id,
+          name: p.displayName,
+          timestamp: now,
+        }
+      ])
+    );
+
+    if (req.page_number === 1) {
+      await deleteByRaceLegPartition('legRank', req.race_id, req.leg_num, req.partition);
+    }
+
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        legRank,
+        players: Array.from(playersById.values()),
+        internal: [
+          { id: "legRankUpdate", ts: now },
+          { id: "playersUpdate", ts: now }
+        ]
+      }
+    ];
+
+    await processDBOperations(dbOpe);
+    if(cfg.debugIngester) console.log(`✅ Ingested leg ranks page ${req.page_number} for race ${req.race_id}, leg ${req.leg_num}, partition ${req.partition}`);
+
+  } catch (err) {
+    if(cfg.debugIngesterErr) console.error("❌ Leg ranks ingest failed:", err.errors ?? err);
+    return {rstTimer: false}
+  }
+  return {rstTimer: false} ;
+}
+
+export async function ingestLegRankTeam(request, response) {
+  try
+  {
+    const req = leaderboardDataRequestSchema.validateSync(request, {
+      stripUnknown: true
+    });
+
+    if (!req.leaderboardShortCode.startsWith('LDB_Team_Leg')) {
+      return {rstTimer: false};
+    }
+
+    const rankKey = req.leaderboardShortCode.split('.')[2];
+    const [raceIdRaw, legNumRaw] = (rankKey ?? '').split('-');
+    const raceId = Number(raceIdRaw);
+    const legNum = Number(legNumRaw);
+    if (!Number.isFinite(raceId) || !Number.isFinite(legNum)) {
+      throw new Error(`Invalid leaderboardShortCode: ${req.leaderboardShortCode}`);
+    }
+
+    const res = leaderboardDataResponseSchema.validateSync(response, {
+      stripUnknown: true
+    });
+
+    const now = Date.now();
+    const partition = 16;
+    const pageNumber = Number(req.offset) + 1;
+    const rank = res.data.map((entry) => ({
+      rank: entry.rank,
+      teamId: entry.teamId,
+      arrived: entry["SUPPLEMENTAL-arrived"],
+      racing: entry["SUPPLEMENTAL-racing"],
+    }));
+
+    const legRank = [
+      ...(pageNumber === 1 ? [{
+        raceId,
+        legNum,
+        partition,
+        type: 'info',
+        pageNumber: 1,
+        documentsCount: req.offset + res.data.length,
+        pagesCount: pageNumber
+      }] : []),
+      {
+        raceId,
+        legNum,
+        partition,
+        type: 'data',
+        pageNumber,
+        rank
+      }
+    ];
+
+    const teamsById = new Map(
+      res.data.map((entry) => [
+        entry.teamId,
+        {
+          id: entry.teamId,
+          name: entry.teamName
+        }
+      ])
+    );
+
+    if (pageNumber === 1) {
+      await deleteByRaceLegPartition('legRank', raceId, legNum, partition);
+    }
+
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        legRank,
+        teams: Array.from(teamsById.values()),
+        internal: [
+          { id: "legRankUpdate", ts: now },
+          { id: "teamsUpdate", ts: now }
+        ]
+      }
+    ];
+
+    await processDBOperations(dbOpe);
+    if(cfg.debugIngester) console.log(`✅ Ingested team leg rank page ${pageNumber} for race ${raceId}, leg ${legNum}, partition ${partition}`);
+
+  } catch (err) {
+    if(cfg.debugIngesterErr) console.error("❌ Team leg ranks ingest failed:", err.errors ?? err);
+    return {rstTimer: false}
+  }
+  return {rstTimer: false};
+}
+
+export async function ingestVsrRank(pageNumber, response) {
+  try
+  {
+    const page = Number(pageNumber);
+    if (!Number.isFinite(page)) {
+      throw new Error(`Invalid VSR pageNumber: ${pageNumber}`);
+    }
+    const res = vsrRankResponseSchema.validateSync(response, {
+      stripUnknown: true
+    });
+
+    const now = Date.now();
+    const dataVSR = res.scriptData.dataVSR;
+
+    const vsrRank = [
+      {
+        type: 'player',
+        pageNumber: page,
+        rank: dataVSR.map(p => ({
+          userId: p.userId,
+          rank: p.vsrRank,
+          points: p.points,
+        }))
+      }
+    ];
+
+    const playersById = new Map(
+      dataVSR.map(p => [
+        p.userId,
+        {
+          id: p.userId,
+          name: p.userName,
+          timestamp: now,
+          ...(p.team?.id ? { teamId: p.team.id } : {})
+        }
+      ])
+    );
+
+    const teamsById = new Map(
+      dataVSR
+        .filter(p => p.team?.id)
+        .map(p => [
+          p.team.id,
+          {
+            id: p.team.id,
+            name: p.team.name
+          }
+        ])
+    );
+
+    if (page === 1) {
+      await deleteByType('vsrRank', 'player');
+    }
+
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        vsrRank,
+        players: Array.from(playersById.values()),
+        ...(teamsById.size ? { teams: Array.from(teamsById.values()) } : {}),
+        internal: [
+          { id: "vsrRankUpdate", ts: now },
+          { id: "playersUpdate", ts: now },
+          ...(teamsById.size ? [{ id: "teamsUpdate", ts: now }] : [])
+        ]
+      }
+    ];
+
+    await processDBOperations(dbOpe);
+    if(cfg.debugIngester) console.log(`✅ Ingested VSR rank page ${page}`);
+
+  } catch (err) {
+    if(cfg.debugIngesterErr) console.error("❌ VSR rank ingest failed:", err.errors ?? err);
+    return {rstTimer: false}
+  }
+  return {rstTimer: false} ;
+}
+
+export async function ingestVsrTeamRank(pageNumber, response) {
+  try
+  {
+    const page = Number(pageNumber);
+    if (!Number.isFinite(page)) {
+      throw new Error(`Invalid VSR team pageNumber: ${pageNumber}`);
+    }
+    const res = vsrTeamRankResponseSchema.validateSync(response, {
+      stripUnknown: true
+    });
+
+    const now = Date.now();
+    const data = res.scriptData.data;
+
+    const vsrRank = [
+      {
+        type: 'team',
+        pageNumber: page,
+        rank: data.map(t => ({
+          teamId: t._id,
+          rank: t.vsrRank,
+          points: t.points,
+        }))
+      }
+    ];
+
+    const teamsById = new Map(
+      data.map(t => [
+        t._id,
+        {
+          id: t._id,
+          name: t.teamName,
+        }
+      ])
+    );
+
+    if (page === 1) {
+      await deleteByType('vsrRank', 'team');
+    }
+
+    const dbOpe = [
+      {
+        type: "putOrUpdate",
+        vsrRank,
+        teams: Array.from(teamsById.values()),
+        internal: [
+          { id: "vsrRankUpdate", ts: now },
+          { id: "teamsUpdate", ts: now }
+        ]
+      }
+    ];
+
+    await processDBOperations(dbOpe);
+    if(cfg.debugIngester) console.log(`✅ Ingested VSR team rank page ${page}`);
+
+  } catch (err) {
+    if(cfg.debugIngesterErr) console.error("❌ VSR team rank ingest failed:", err.errors ?? err);
+    return {rstTimer: false}
+  }
+  return {rstTimer: false} ;
+}
 
 export async function ingestFleetData(request, response) {
   let rstTimer = false;
@@ -644,6 +959,7 @@ export async function ingestFleetData(request, response) {
       ...(p.followed ? { followed: p.followed } : {}),
       ...(p.team ? { team: p.team } : {})
     }));
+
 
     const legPlayersInfos = res.res.filter(p => p.userId == req.user_id)
         .map(p => ({

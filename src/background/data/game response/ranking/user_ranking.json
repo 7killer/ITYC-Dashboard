@@ -1,0 +1,46 @@
+
+{
+    "@class": "LogEventRequest",
+    "eventKey": "Ranking_UserData",
+    "user_id": "5fa8609fa73ee0501829b85d",
+    "addLinkData": 0,
+    "requestId": "639147385443930000_23",
+    "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZmE4NjA5ZmE3M2VlMDUwMTgyOWI4NWQiLCJpYXQiOjE3NzkxMzQxMTksImV4cCI6MTc3OTE3NzMxOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.JeCq6bD3katw40eu4TNHGsDuTkzghFEwu8WrE365Z4vlkTJkwtEnJTAlkftm5ZbViRmREHyvEb44D7g5ECSVpGFnjFJBgVrp1tXrswlmJ-pmBufeC0Of7EpY2fDUTBd0xV4d0p6ITRYD1tbh4VV3Wk0sh6Xqxv0oczwRK-8P0tjqfno3d-Vzh6-ff6ZarprXbQxJC8J6p0h5UEfW86Xd40g8GyKJSOZFYYK9QlzCwuC5-3xL7hlFz9biFKIB-3cuIfdpW0LZ1U6xjmhIDpf9P2rv1xRc2b7aIsWX85IJUCdRSi-64cvLkKQILi5J41AYez5VM1SreXGQRoI_yjPYKQ",
+    "playerId": "5fa8609fa73ee0501829b85d"
+}
+
+{
+    "scriptData": {
+        "displayName": "SkipperDuMad ITYC.FR - PVe/SERVTEC/D-ICE",
+        "vsr": {
+            "rank": 68,
+            "diff": -1
+        },
+        "vsrCountry": {
+            "rank": 56,
+            "diff": null,
+            "name": "FR"
+        },
+        "teamRank": {
+            "rank": 14,
+            "diff": 0,
+            "name": "PVe / SERVTEC / D ICE",
+            "badgeId": "2-ecu-illu-4_1"
+        },
+        "performance": {
+            "nbRaces": 274,
+            "nbFinishedRaces": 264,
+            "bestPerformance": {
+                "raceId": 700,
+                "legNum": 1,
+                "legName": "Halloween Challenge",
+                "rank": 9,
+                "players": 78964
+            }
+        },
+        "rc": "ok"
+    },
+    "@class": ".LogEventResponse",
+    "requestId": "639147385443930000_23",
+    "traceId": "Root=1-6a0b7050-38cc520c3b552d2b112a4239;Parent=588eaf85d40dec4c;Sampled=0;Lineage=1:e2ef51fb:0"
+}

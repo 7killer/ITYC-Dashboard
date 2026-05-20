@@ -4,9 +4,12 @@ export * from "./accountDetails";
 export * from "./boatAction";
 export * from "./getBoatInfos";
 export * from "./getFleet";
+export * from "./getLegRank";
 export * from "./getTeam";
+export * from "./leaderboardData";
 export * from "./legList";
 export * from "./polar";
+export * from "./vsrRank";
 
 export type IncomingMessage = z.infer<typeof incomingMessageSchema>;
 

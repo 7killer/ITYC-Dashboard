@@ -1,0 +1,2586 @@
+
+{
+    "scriptData": {
+        "data": [
+            {
+                "_id": "5fec43b7d018c2055564ba0c",
+                "points": 101485250000,
+                "vsrRank": 1,
+                "teamName": "PVe / SERVTEC / D ICE",
+                "teamBadgeId": "2-ecu-illu-4_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5fa823d5a73ee05018906f7f",
+                    "displayName": "Temerus - PVe/SERVTEC/D-ICE",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c35adcb6226880513022817",
+                "points": 98076650000,
+                "vsrRank": 2,
+                "teamName": "Team INC",
+                "teamBadgeId": "2-ecu-illu-9_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5bdf02de517022fc09d77461",
+                    "displayName": "Bayadère - INC",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5bc4fae4ca6fae051563fb8a",
+                "points": 96587800000,
+                "vsrRank": 3,
+                "teamName": "Black Sailing Project",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5d35b1f7f6c716887c0ca3db",
+                    "displayName": "Mickey - BSP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc592dc622544051ad12840",
+                "points": 92800650000,
+                "vsrRank": 4,
+                "teamName": "ExtaZ Sea The SeaCleaners",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": true,
+                "coach": {
+                    "_id": "59c143e7b395b292ed621938",
+                    "displayName": "M63-EZ TheSeaCleaners",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e9969eaa747a6057c9f4d16",
+                "points": 87621100000,
+                "vsrRank": 5,
+                "teamName": "LSV Trustable 🫶",
+                "teamBadgeId": "1-ecu-trustable-1_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "6182ccac2a05eec971375598",
+                    "displayName": "PapaSmurf / LSV-Trustable",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc4b905622544051a821d56",
+                "points": 85797850000,
+                "vsrRank": 6,
+                "teamName": "Team Pro 83",
+                "teamBadgeId": "4-fra_provence-alpes-cotedazure",
+                "championStatus": true,
+                "coach": {
+                    "_id": "59c16781b395b292ed621c64",
+                    "displayName": "Gswing - TP83",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fcb48264a672a054d0b7316",
+                "points": 85484050000,
+                "vsrRank": 7,
+                "teamName": "TORC eSailing",
+                "teamBadgeId": "3-nat-ukr",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5faf10c706999515a391ed18",
+                    "displayName": "Bannidu85 - TORC",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c54a54592c9fc0520f29090",
+                "points": 84797100000,
+                "vsrRank": 8,
+                "teamName": "ALTA Red",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "59c40ab3b395b292ed625660",
+                    "displayName": "Galere_Splendiose_ALTA",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5bc8c56757ef4c051fb210d0",
+                "points": 82338300000,
+                "vsrRank": 9,
+                "teamName": "Team BFC",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5bcb0a77517022fc09d21580",
+                    "displayName": "Zanpayo-BFC",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6204452ec91a5c055d9afcaf",
+                "points": 81015350000,
+                "vsrRank": 10,
+                "teamName": "NAUTILUS",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5f89e91952e859ef030f3702",
+                    "displayName": "Flocas64 - NTL",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e932a8ba747a6057cc1fddf",
+                "points": 80544750000,
+                "vsrRank": 11,
+                "teamName": "Esailing France",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fad293ca73ee05018c43c59",
+                    "displayName": "SweetyMermaid - ESF",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "60453ae9d018c25e40355227",
+                "points": 77308250000,
+                "vsrRank": 12,
+                "championStatus": false
+            },
+            {
+                "_id": "6210d0c8d478010566ab516e",
+                "points": 77185600000,
+                "vsrRank": 13,
+                "teamName": "InternationalOffshoreTeam",
+                "teamBadgeId": "2-ecu-illu-5_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c1a233b395b292ed622088",
+                    "displayName": "Toppen",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c166e3ff763d2052d4d403f",
+                "points": 76864850000,
+                "vsrRank": 14,
+                "teamName": "BHT / TRRacing",
+                "teamBadgeId": "1-ecu-forme-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa710d7a73ee05018bf1b63",
+                    "displayName": "KRT59-BHT / TRRacing",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6134cef5aeaf1c054a0601d3",
+                "points": 76176250000,
+                "vsrRank": 15,
+                "teamName": "TGV EVO",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5eae9c76080c8cbd45214cca",
+                    "displayName": "ROHY ONE -TGV EVO",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6186b8bf983fd6158a7127c1",
+                "points": 76108800000,
+                "vsrRank": 16,
+                "teamName": "TFS - EcoMaris",
+                "teamBadgeId": "2-ecu-illu-7_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6ff42a73ee0501859f233",
+                    "displayName": "Carrera56 - TFS - EcoMaris",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fb81b875c7a42054839daec",
+                "points": 75554250000,
+                "vsrRank": 17,
+                "teamName": "Crash",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6462aa73ee05018025fb1",
+                    "displayName": "NumeroDixTV",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e00128356dae70579d039c5",
+                "points": 75467500000,
+                "vsrRank": 18,
+                "teamName": "Federazione Italiana Vela",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c45ec3f517022fc09032b87",
+                    "displayName": "ITA86 - FIV",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60bb1c25aeaf1c054a6746ea",
+                "points": 75225450000,
+                "vsrRank": 19,
+                "teamName": "Les Barjots Pirates",
+                "teamBadgeId": "1-ecu-forme-4_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59d13342b395b292ed637a7b",
+                    "displayName": "Ballsbreaker- LBP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc4c33257ef4c051f81f94c",
+                "points": 75161650000,
+                "vsrRank": 20,
+                "teamName": "Team Vendée TVD/SODEBO",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59eb043ce0750e372d64db22",
+                    "displayName": "Moustache78_TVD/SODEBO",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "65d296bc73eaa4713d6849cf",
+                "points": 74466650000,
+                "vsrRank": 21,
+                "teamName": "CNE-ISF",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6512a5b1a5fb42bc49b9fd7a",
+                    "displayName": "Aliphariane-CNE-ISF",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5cf8da14d36b7a0511a0b6ef",
+                "points": 74267600000,
+                "vsrRank": 22,
+                "teamName": "Team Germany II",
+                "teamBadgeId": "2-ecu-illu-1_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5ce43921f6c716887cd9aa6d",
+                    "displayName": "Fireabend TG II",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5d9d23aa4d772c0526c397ed",
+                "points": 73453300000,
+                "vsrRank": 23,
+                "teamName": "ELKANO USS TEAM",
+                "teamBadgeId": "3-nat-esp",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59d8d614e7821e2954917e97",
+                    "displayName": "USS RODNOIR",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fb9700054e61d055797466a",
+                "points": 73001150000,
+                "vsrRank": 24,
+                "teamName": "PV3 Projection Virtuelle",
+                "teamBadgeId": "4-fra_terre-australe-antartique",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa82d98a73ee05018692e1e",
+                    "displayName": "Tamanart99 - PV",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "6563c6e1d4c1ad1003dc8cb2",
+                "points": 72566800000,
+                "vsrRank": 25,
+                "teamName": "L'Ecume Des Mers",
+                "teamBadgeId": "2-ecu-illu-12_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bcf76f2517022fc09d25214",
+                    "displayName": "Traou - EDM",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60684f2ea4096b44187fc8f1",
+                "points": 72545900000,
+                "vsrRank": 26,
+                "teamName": "Coeur2Breizh \\- C2B \\- ESF3",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6aa35a73ee05018d03c8f",
+                    "displayName": "Rem's 29 - C2B - ESF3",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "629e284330f9110c49123d25",
+                "points": 71809700000,
+                "vsrRank": 27,
+                "teamName": "TGV EVO 2",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "62a437ba8c6fa64618eedfec",
+                    "displayName": "Teamboat TGV EVO 2"
+                }
+            },
+            {
+                "_id": "5bddb5ab81177a7fd975d073",
+                "points": 71193550000,
+                "vsrRank": 28,
+                "teamName": "Les Champions",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c2979db395b292ed6232a7",
+                    "displayName": "PenGuinVIII",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc61a59ca6fae0515b41ab7",
+                "points": 70939500000,
+                "vsrRank": 29,
+                "teamName": "vannes et ses alentours",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c37f21b395b292ed6244de",
+                    "displayName": "daf56890vsa",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c9934ace375b3051995d6a9",
+                "points": 70644100000,
+                "vsrRank": 30,
+                "teamName": "LES AFFRANCHIS",
+                "teamBadgeId": "2-ecu-illu-3_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa92187a73ee05018510998",
+                    "displayName": "JaqDaniels59-AFF",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "617f96edfd895435ca91ba23",
+                "points": 69874850000,
+                "vsrRank": 31,
+                "teamName": "ANJOU VR TEAM    AVT49",
+                "teamBadgeId": "4-can-quebec",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5be20477517022fc09dbc487",
+                    "displayName": "[J] - AVT49",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e64c58bf33a4b057c08f0ce",
+                "points": 69642000000,
+                "vsrRank": 32,
+                "teamName": "Sailors in the storm",
+                "teamBadgeId": "3-nat-mli",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c10050b395b292ed6212f5",
+                    "displayName": "CHOUKEBOU - SITS",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc89269ca6fae0515ff0e8b",
+                "points": 69479650000,
+                "vsrRank": 33,
+                "teamName": "Real Vikings \\\\& Normands",
+                "teamBadgeId": "4-fra_normandie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ec58a6e0750e372d65306d",
+                    "displayName": "Kap.Fagnet-RV&N",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6016c9aa44a26e7c327aeb3c",
+                "points": 69306200000,
+                "vsrRank": 34,
+                "teamName": "Les Pirates Des Bermudes",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6be00a73ee0501840baec",
+                    "displayName": "Naphta-LPDB",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60d181af983fd6054d19bf5b",
+                "points": 68824250000,
+                "vsrRank": 35,
+                "teamName": "Wind Busters",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "600f03c324ee4920012ed900",
+                    "displayName": "Bateau_Balai - WB",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5dfe1e7faac7bd057f6e4011",
+                "points": 68608300000,
+                "vsrRank": 36,
+                "teamName": "The Big 5",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bd1a3f7517022fc09d27ef0",
+                    "displayName": "☆*: .｡. ╰( O U N C H )╯ .｡.:*☆",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc516c3ca6fae05156ed96e",
+                "points": 68583300000,
+                "vsrRank": 37,
+                "teamName": "Team Boxing Kangaroos AI",
+                "teamBadgeId": "3-nat-aus",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fec543e0750e372d693192",
+                    "displayName": "Shockwave BK AI",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "609665e7983fd6054d326b4b",
+                "points": 68376900000,
+                "vsrRank": 38,
+                "teamName": "Les Mats Traqués\\LMT",
+                "teamBadgeId": "2-ecu-illu-9_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "604a18bfd7d77a6aa406c884",
+                    "displayName": "veve1 LMT",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc6e596622544051a2cd888",
+                "points": 67688650000,
+                "vsrRank": 39,
+                "teamName": "PERROS\\\\-GUIREC SRP",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fb1188e0750e372d685542",
+                    "displayName": "Karnyx 22"
+                }
+            },
+            {
+                "_id": "5e132ad6f5bcfd057cef6951",
+                "points": 67686100000,
+                "vsrRank": 40,
+                "teamName": "Seawolves Aussie Assault",
+                "teamBadgeId": "3-nat-aus",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5d0868dcf6c716887cec620c",
+                    "displayName": "FRESH UNDIES-AADU-4 FREO",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "61bfef88e2c8d20565102edd",
+                "points": 67415200000,
+                "vsrRank": 41,
+                "championStatus": false
+            },
+            {
+                "_id": "5ffd4cc0b720092039209314",
+                "points": 66602600000,
+                "vsrRank": 42,
+                "teamName": "PV4 Projection Virtuelle",
+                "teamBadgeId": "1-ecu-forme-9_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa11fc3a73ee05018fa79da",
+                    "displayName": "Cdl10 - PV",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5ff0fe539d44bc054f7b873e",
+                "points": 66331000000,
+                "vsrRank": 43,
+                "teamName": "PV7 Projection Virtuelle",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6b34ea73ee0501874e4b7",
+                    "displayName": "CaptainLoz - PV",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c937646e375b30519ee46b4",
+                "points": 66016750000,
+                "vsrRank": 44,
+                "teamName": "La Meute Du Pentécontère",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa7b099a73ee05018805585",
+                    "displayName": "BlueOlympe-MDP",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5fd5d2bebe6741054c9e4a90",
+                "points": 65728400000,
+                "vsrRank": 45,
+                "teamName": "HPy Team Pyrénées",
+                "teamBadgeId": "2-ecu-illu-2_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fac0113a73ee05018817251",
+                    "displayName": "Txitxarro HPy",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5ea04e61bab45d057a75fd2a",
+                "points": 65318450000,
+                "vsrRank": 46,
+                "teamName": "Les Enfants de l'Océan",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e6f2015080c8cbd45084ca5",
+                    "displayName": "KreizMor_LEO",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fabbf8ecd72ca054ab225b7",
+                "points": 65311450000,
+                "vsrRank": 47,
+                "teamName": "Elite Bretagne",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bcdf4ee517022fc09d23cfd",
+                    "displayName": "Tréguier EB",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "615de6d3fd89540554cc0885",
+                "points": 65138550000,
+                "vsrRank": 48,
+                "teamName": "regatta team \\\\\\\\-GER",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a2bc26f7b296eaadfc5be33",
+                    "displayName": "GER 292"
+                }
+            },
+            {
+                "_id": "5bc70ddfca6fae0515ebd172",
+                "points": 64941950000,
+                "vsrRank": 49,
+                "teamName": "Esprits du NORD \\(EDN\\)",
+                "teamBadgeId": "4-fra_nord-pas-de-calais",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a1870a07b296eaadfc46648",
+                    "displayName": "TBOY / edn",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5f9dec44cd72ca054a4b0613",
+                "points": 64565950000,
+                "vsrRank": 50,
+                "teamName": "Les loups de Brocéliande",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c63a38b395b292ed628e01",
+                    "displayName": "ceoukonva-LDB",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "672dd3c613e7a1d1eb032a65",
+                "points": 64326950000,
+                "vsrRank": 51,
+                "teamName": "Les Crapauds",
+                "teamBadgeId": "1-ecu-forme-8_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "672dbdce732f4e869ae0152d",
+                    "displayName": "Kitor",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fafd7d882c3580556ea022b",
+                "points": 64130450000,
+                "vsrRank": 52,
+                "teamName": "PV GIRL",
+                "teamBadgeId": "2-ecu-illu-4_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdeb888517022fc09d625a9",
+                    "displayName": "Clarinette - PV Girl / MACSF",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "659c8c3792daf4b0f2238425",
+                "points": 63987200000,
+                "vsrRank": 53,
+                "teamName": "BRAVO RST",
+                "teamBadgeId": "3-nat-esp",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c07e2f4517022fc09f564bf",
+                    "displayName": "Galaico76 RST",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc646aeca6fae0515c3e179",
+                "points": 63427050000,
+                "vsrRank": 54,
+                "teamName": "A Pelo Spain _/)",
+                "teamBadgeId": "3-nat-esp",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c795e9b395b292ed62a3ed",
+                    "displayName": "RACING4SPAIN_APS",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "660a739dbd598b15c25fcac8",
+                "points": 63406300000,
+                "vsrRank": 55,
+                "teamName": "Offshore Polska",
+                "teamBadgeId": "1-ecu-forme-11_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "635aa3165f9fd93ecfb3b0ee",
+                    "displayName": "szymonW"
+                }
+            },
+            {
+                "_id": "5e1b53c5f5bcfd057c1f7342",
+                "points": 63264050000,
+                "vsrRank": 56,
+                "teamName": "Les Pirates Des Océans",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c0eea0b395b292ed62118b",
+                    "displayName": "La Martinette - LPDO",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5bc7772857ef4c051fb76cc6",
+                "points": 62949200000,
+                "vsrRank": 57,
+                "teamName": "YCO",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa85419a73ee050184e5c0c",
+                    "displayName": "TheChoux - YCO",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc53d67622544051ab8b6ca",
+                "points": 62886000000,
+                "vsrRank": 58,
+                "teamName": "TEAM LÉMAN",
+                "teamBadgeId": "3-nat-sui",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5f9eccbea73ee0501849f0b2",
+                    "displayName": "SwissTurtle-TL",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c1a8dc4cf4ce0051bfc45d0",
+                "points": 62854150000,
+                "vsrRank": 59,
+                "teamName": "La Carlota TP83",
+                "teamBadgeId": "4-fra_provence-alpes-cotedazure",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c262239517022fc09fdad8c",
+                    "displayName": "DaSwing - TP83",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "605ced9ff6c0846e75381a99",
+                "points": 62770000000,
+                "vsrRank": 60,
+                "teamName": "TEAM VOILOU VOILOU",
+                "teamBadgeId": "2-ecu-illu-10_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5ff220f724ee492001dfc86d",
+                    "displayName": "Yo_86-TVV Pour Morgan",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5be3c73e93fda9668b86684a",
+                "points": 62689600000,
+                "vsrRank": 61,
+                "teamName": "NAPs",
+                "teamBadgeId": "2-ecu-illu-11_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a6651217b296eaadfcad744",
+                    "displayName": "Mara-88-NAP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c553a3f92c9fc052043861c",
+                "points": 61989500000,
+                "vsrRank": 62,
+                "teamName": "Pen Duick TABARLY YACHT",
+                "teamBadgeId": "3-nat-ukr",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bda0aee517022fc09d3d849",
+                    "displayName": "JB19 - PDTY",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bce2779ca6fae0515d13720",
+                "points": 61873450000,
+                "vsrRank": 63,
+                "teamName": "FLOATING NUTS",
+                "teamBadgeId": "2-ecu-illu-2_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59df3b4be0750e372d639ff9",
+                    "displayName": "Fly38-FNU",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "601db990be67414f3cc37ff5",
+                "points": 61516850000,
+                "vsrRank": 64,
+                "teamName": "Poseidon South Africa",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fc78f2906999515a30628c5",
+                    "displayName": "Throgness - PSA",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "621f87c1655a7f0567507568",
+                "points": 61179600000,
+                "vsrRank": 65,
+                "teamName": "Le bateau ivre",
+                "teamBadgeId": "2-ecu-illu-11_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5dab55336f64cfd4344b81c9",
+                    "displayName": "Randonneur7.LBI",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "645192aeb90c0c3ea49bce2e",
+                "points": 60859750000,
+                "vsrRank": 66,
+                "teamName": "•YACHT CLUB ITALIA•",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "61cb08142a05eec971c3219e",
+                    "displayName": "Vento del Sud - YCI",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fa6b1634312f7054b317289",
+                "points": 60757450000,
+                "vsrRank": 67,
+                "championStatus": false
+            },
+            {
+                "_id": "6057a53db7806478052a46f2",
+                "points": 60644550000,
+                "vsrRank": 68,
+                "teamName": "Iguana Team",
+                "teamBadgeId": "2-ecu-illu-11_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e764cda080c8cbd450b3ea2",
+                    "displayName": "l’aloha / Iguana Team",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c700459bbb7790515d8532d",
+                "points": 60411700000,
+                "vsrRank": 69,
+                "teamName": "les amis dromois",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ff292aec355084ecde32ba",
+                    "displayName": "Riverzof",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "62fa8c70edc29e5f1ae5360d",
+                "points": 60211800000,
+                "vsrRank": 70,
+                "teamName": "Le Mans Sarthe VR",
+                "teamBadgeId": "",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c401757517022fc090244c1",
+                    "displayName": "Pat Sarbacane",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc5b2d1622544051adbd3d7",
+                "points": 60059350000,
+                "vsrRank": 71,
+                "teamName": "No Money Sailors",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "643ab8bc4fed4fe8d887faf4",
+                    "displayName": "ECOSIA SEARCH - NMS",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5be5cd16305f27051b0998f0",
+                "points": 59550250000,
+                "vsrRank": 72,
+                "teamName": "PYR \\\\- ESF",
+                "teamBadgeId": "2-ecu-illu-2_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5f0a6ebc52e859ef03f6510d",
+                    "displayName": "TEAM-PYR",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5bc79c68622544051a14e44d",
+                "points": 59254000000,
+                "vsrRank": 73,
+                "teamName": "Vaucluse\\\\\\\\\\-V84",
+                "teamBadgeId": "4-fra_provence-alpes-cotedazure",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fdc43ee0750e372d68d4ba",
+                    "displayName": "Steph-V84",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc771b0ca6fae05155dfcbd",
+                "points": 59091100000,
+                "vsrRank": 74,
+                "teamName": "VERTS 42 & Cie",
+                "teamBadgeId": "2-ecu-illu-3_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fdcab5e0750e372d68d77c",
+                    "displayName": "KorbenDalas-V42",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc49d1d622544051a747563",
+                "points": 58793200000,
+                "vsrRank": 75,
+                "teamName": "~33\\&Co~",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ca7caeb395b292ed62cb69",
+                    "displayName": "Granbillon ~33&Co~",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fe082a4b780640550a753bd",
+                "points": 58438500000,
+                "vsrRank": 76,
+                "teamName": "TEAM Les 3 Arts \\\\- L3A",
+                "teamBadgeId": "1-ecu-forme-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "63f00250d38b3903d3b2089b",
+                    "displayName": "Dédé is back",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "678fd5801323ca0ca55f08de",
+                "points": 58176750000,
+                "vsrRank": 77,
+                "teamName": "EcoMaris - TFS",
+                "teamBadgeId": "4-can-quebec",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5eab002a080c8cbd45202451",
+                    "displayName": "Kenseth-Écomaris",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e949604d0bfb005673257c8",
+                "points": 58121800000,
+                "vsrRank": 78,
+                "teamName": "CIRCOLO VELICO ITALIANO",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e9075ba080c8cbd4515a347",
+                    "displayName": "Bottarga - CVI"
+                }
+            },
+            {
+                "_id": "60afff6afd89540554fa1253",
+                "points": 58048200000,
+                "vsrRank": 79,
+                "teamName": "GB Mutineers",
+                "teamBadgeId": "4-chi_magallanes",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c57265b395b292ed627e63",
+                    "displayName": "nunu73 GBM",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bef01b2c8a395052d9e1e81",
+                "points": 57981750000,
+                "vsrRank": 80,
+                "teamName": "LESLy",
+                "teamBadgeId": "4-fra_nouvelle-aquitaine",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5db20c7b34559d27edb823c5",
+                    "displayName": "Lovitch - LESLy",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "653a493b00d75e723f35e071",
+                "points": 57956650000,
+                "vsrRank": 81,
+                "teamName": "Team Breizh Bzh",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdee6b7517022fc09d6ce6f",
+                    "displayName": "poulpout1er_Bzh",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc4f1da57ef4c051f9f5173",
+                "points": 56665200000,
+                "vsrRank": 82,
+                "teamName": "Team Sgps Fvr",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c1430fb395b292ed621922",
+                    "displayName": "Barbebleux_sgps",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "65568dd6f4b1c3fc330bb068",
+                "points": 56346750000,
+                "vsrRank": 83,
+                "teamName": "Thalienours",
+                "teamBadgeId": "4-fra_nord-pas-de-calais",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6212a4852a05eec97188fbb3",
+                    "displayName": "blissladymokroc"
+                }
+            },
+            {
+                "_id": "5f8c3dddf8e077055517ce31",
+                "points": 56009050000,
+                "vsrRank": 84,
+                "teamName": "Alizés Sailing Team",
+                "teamBadgeId": "4-fra_picardie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c56ef8b395b292ed627d9a",
+                    "displayName": "cotcotcot - AST",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5e80ecabe49d170577596e0c",
+                "points": 55971650000,
+                "vsrRank": 85,
+                "teamName": "54 vue sur la mer",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e775961080c8cbd450bb00b",
+                    "displayName": "Benhur23_54VSM",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60716eb51d68ef0547942083",
+                "points": 55887050000,
+                "vsrRank": 86,
+                "teamName": "Jenri Gaming Team Pénoche",
+                "teamBadgeId": "2-ecu-illu-5_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "605b450fd7d77a6aa44cbcfc",
+                    "displayName": "Jenri Gaming - JGTP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5f04e6855daac65b773b2509",
+                "points": 55807900000,
+                "vsrRank": 87,
+                "teamName": "lamarginale",
+                "teamBadgeId": "3-nat-fin",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c4c1f6b395b292ed626500",
+                    "displayName": "bebert975",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "635d2fcd30ee71bfc911aa2c",
+                "points": 55725950000,
+                "vsrRank": 88,
+                "teamName": "Circolo della Vela",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "691373a10a024b44f754fca1",
+                    "displayName": "Orso Yoghi",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc829d4ca6fae05155d9f0d",
+                "points": 55577350000,
+                "vsrRank": 89,
+                "teamName": "Team Portugal_PORT",
+                "teamBadgeId": "3-nat-por",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a02d8427b296eaadfc18599",
+                    "displayName": "Rizas_PORT",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "600c9fb62058ef7e159015ab",
+                "points": 55558100000,
+                "vsrRank": 90,
+                "teamName": "Les Maritimes du 13 & 17",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa7ba97a73ee050188f3ccb",
+                    "displayName": "Padalino - Mar13&17",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "655de4c201dbd523b7d82948",
+                "points": 55503200000,
+                "vsrRank": 91,
+                "teamName": "Team ALBATROS",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "61125f062a05eec971f8e77c",
+                    "displayName": "Le p'tit cos"
+                }
+            },
+            {
+                "_id": "614b4c37aeaf1c054a21a73a",
+                "points": 55184900000,
+                "vsrRank": 92,
+                "teamName": "Sailing For Fun",
+                "teamBadgeId": "2-ecu-illu-1_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5f8b798b52e859ef030ff82e",
+                    "displayName": "Frederique70",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "63fe14fec335adf019198fdb",
+                "points": 54559050000,
+                "vsrRank": 93,
+                "teamName": "marins marrants",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6187778c2a05eec971a75b56",
+                    "displayName": "olivedenice06"
+                }
+            },
+            {
+                "_id": "636605809011ac2ff831ae72",
+                "points": 53865200000,
+                "vsrRank": 94,
+                "teamName": "La Rose Blanche",
+                "teamBadgeId": "2-ecu-illu-9_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6355481df7a651f95a648dce",
+                    "displayName": "chat-mouille"
+                }
+            },
+            {
+                "_id": "5fd7f3e8792f2e05584d9ee4",
+                "points": 53162850000,
+                "vsrRank": 95,
+                "teamName": "La France passion",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdf5da9517022fc09d9048d",
+                    "displayName": "FISTON41-LFP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bf193f6c8a395052d80d7d8",
+                "points": 52927650000,
+                "vsrRank": 96,
+                "teamName": "The Viking Tribe _) _) _)",
+                "teamBadgeId": "3-nat-swe",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c819c7b395b292ed62adc8",
+                    "displayName": "Hezzz",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60fc8246c6cecc054fa1c526",
+                "points": 52429850000,
+                "vsrRank": 97,
+                "teamName": "Flying Kiwi",
+                "teamBadgeId": "1-ecu-forme-12_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5d542f4b6f64cfd43429e018",
+                    "displayName": "KiwiJack - Flying Kiwi",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "615eff9a983fd6054d63566e",
+                "points": 51983850000,
+                "vsrRank": 98,
+                "teamName": "Team Champagne Ardennes",
+                "teamBadgeId": "1-ecu-forme-6_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6d459a73ee05018e432a8",
+                    "displayName": "Sorcier 08 TCA",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "66579ba48f4a486e4f7921f0",
+                "points": 51950450000,
+                "vsrRank": 99,
+                "teamName": "Fun&Sail",
+                "teamBadgeId": "4-fra_terre-australe-antartique",
+                "championStatus": false,
+                "coach": {
+                    "_id": "61865f552a05eec971ee5c7e",
+                    "displayName": "Friends Sailing"
+                }
+            },
+            {
+                "_id": "61211d33983fd6054d445f09",
+                "points": 51721150000,
+                "vsrRank": 100,
+                "teamName": "Good Boulonnais 62",
+                "teamBadgeId": "1-ecu-forme-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a377f367b296eaadfc72d42",
+                    "displayName": "Cédric62"
+                }
+            }
+        ],
+        "dataTeam": [
+            {
+                "_id": "5fec43b7d018c2055564ba0c",
+                "points": 101485250000,
+                "vsrRank": 1,
+                "teamName": "PVe / SERVTEC / D ICE",
+                "teamBadgeId": "2-ecu-illu-4_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5fa823d5a73ee05018906f7f",
+                    "displayName": "Temerus - PVe/SERVTEC/D-ICE",
+                    "gender": "M"
+                }
+            }
+        ],
+        "pagination": {
+            "nextPage": 2,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "documentsCount": 3844,
+            "pagesCount": 39,
+            "pageNumber": 1,
+            "pageSize": 100
+        },
+        "rc": "ok"
+    },
+    "@class": ".LogEventResponse",
+    "requestId": "639147381853560000_21",
+    "traceId": "Root=1-6a0b6ee9-72c32a16038b8a232540d757;Parent=79c20f67d9dde815;Sampled=0;Lineage=1:e2ef51fb:0"
+}
+
+
+
+{
+    "@class": "LogEventRequest",
+    "eventKey": "Ranking_Team",
+    "pageNumber": 2,
+    "pageSize": 100,
+    "requestId": "639147381904180000_22",
+    "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZmE4NjA5ZmE3M2VlMDUwMTgyOWI4NWQiLCJpYXQiOjE3NzkxMzQxMTksImV4cCI6MTc3OTE3NzMxOSwiYXVkIjoiVmlydHVhbFJlZ2F0dGEiLCJpc3MiOiJhdXRoLnZpcnR1YWxyZWdhdHRhLmNvbSIsInN1YiI6InZyYXV0aCJ9.JeCq6bD3katw40eu4TNHGsDuTkzghFEwu8WrE365Z4vlkTJkwtEnJTAlkftm5ZbViRmREHyvEb44D7g5ECSVpGFnjFJBgVrp1tXrswlmJ-pmBufeC0Of7EpY2fDUTBd0xV4d0p6ITRYD1tbh4VV3Wk0sh6Xqxv0oczwRK-8P0tjqfno3d-Vzh6-ff6ZarprXbQxJC8J6p0h5UEfW86Xd40g8GyKJSOZFYYK9QlzCwuC5-3xL7hlFz9biFKIB-3cuIfdpW0LZ1U6xjmhIDpf9P2rv1xRc2b7aIsWX85IJUCdRSi-64cvLkKQILi5J41AYez5VM1SreXGQRoI_yjPYKQ",
+    "playerId": "5fa8609fa73ee0501829b85d"
+}
+{
+    "scriptData": {
+        "data": [
+            {
+                "_id": "6432bf7c561c839f59d65a11",
+                "points": 51616900000,
+                "vsrRank": 101,
+                "teamName": "Cap de creus - Catalunya",
+                "teamBadgeId": "4-esp_catalan",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6418767379ae4aca21243da4",
+                    "displayName": "Filomeno3"
+                }
+            },
+            {
+                "_id": "6783f0769071731e6f203bdb",
+                "points": 51611300000,
+                "vsrRank": 102,
+                "teamName": "vir reg 28",
+                "teamBadgeId": "4-usa_rhode-islande",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c0baf4d517022fc09f6ab6b",
+                    "displayName": "ASSE for ever VR28",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "672e99fd354f455902a11447",
+                "points": 51173550000,
+                "vsrRank": 103,
+                "teamName": "OCEAN PROTECT REGATTA",
+                "teamBadgeId": "2-ecu-illu-2_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "672e6c503a7de4699fade49d",
+                    "displayName": "GouGou - OCEAN PROTECT REGATTA",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fea487a839d570549fab340",
+                "points": 50255200000,
+                "vsrRank": 104,
+                "teamName": "No Money Sailors 2.0",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fbb677506999515a30aa5ac",
+                    "displayName": "Sindbad-HH"
+                }
+            },
+            {
+                "_id": "5ecb5b97bab45d057a1df9a1",
+                "points": 50252950000,
+                "vsrRank": 105,
+                "teamName": "LSV Trustable Academy 🫶",
+                "teamBadgeId": "1-ecu-trustable-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "698452a8fa0ca42fa058f84e",
+                    "displayName": "LSV Formation"
+                }
+            },
+            {
+                "_id": "60ce2430fd89540554a89012",
+                "points": 49308250000,
+                "vsrRank": 106,
+                "teamName": "LOB@S DE MAR",
+                "teamBadgeId": "4-esp_communaute-valencienne",
+                "championStatus": false,
+                "coach": {
+                    "_id": "60a8761d37e7cb7ea8d15048",
+                    "displayName": "ALKAID 2 # LOB@S DE MAR #",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6731b8f78d6af283cf02415a",
+                "points": 48892700000,
+                "vsrRank": 107,
+                "teamName": "Flyzen team ELITE / FLYe",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "62588e838c6fa64618df1b32",
+                    "displayName": "Flyzenfreez - FLY",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c0da3bbc8a395052df98225",
+                "points": 48577650000,
+                "vsrRank": 108,
+                "teamName": "TEAM 92",
+                "teamBadgeId": "2-ecu-illu-3_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fbc540706999515a3240873",
+                    "displayName": "Arnaud2C team92",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5d854464f8b878051fbbddc8",
+                "points": 47774900000,
+                "vsrRank": 109,
+                "teamName": "Italia ST2.0",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59d88249e7821e2954916ab1",
+                    "displayName": "cabobranco ITA ST2.0",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5e8dbfbd1ea5c8057f35d148",
+                "points": 47766850000,
+                "vsrRank": 110,
+                "teamName": "Celtic Dream Team",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59eb9edde0750e372d650cc7",
+                    "displayName": "CDT-Vartolod",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "651d1fbdcae3fe85b84a2f7e",
+                "points": 47366650000,
+                "vsrRank": 111,
+                "teamName": "Team Spirit by NVRZG",
+                "teamBadgeId": "2-ecu-illu-10_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "64d510c5912ad6ea7b187502",
+                    "displayName": "TS Captain"
+                }
+            },
+            {
+                "_id": "5dcc2997744e65052444e285",
+                "points": 45443750000,
+                "vsrRank": 112,
+                "teamName": "Team38 Nord Dauphiné\\-TND1",
+                "teamBadgeId": "4-fra_provence-alpes-cotedazure",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fec6d2e0750e372d6933a2",
+                    "displayName": "Alboreve-TND",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "674ae9573814e14aef4b3088",
+                "points": 45281200000,
+                "vsrRank": 113,
+                "teamName": "TGV EVO 3",
+                "teamBadgeId": "2-ecu-illu-7_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6708e87f7d9b51f9609f48d2",
+                    "displayName": "capitaine rohyone sur discord",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5bd0ca47622544051ac9c40e",
+                "points": 45138650000,
+                "vsrRank": 114,
+                "teamName": "Alicante VR",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b12ad89517022fc09cdb170",
+                    "displayName": "El abuelo",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "673274ce97a2876ac746524a",
+                "points": 45019950000,
+                "vsrRank": 115,
+                "teamName": "Les Marins de Twitch",
+                "teamBadgeId": "2-ecu-illu-4_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6702d0a33590f45d88f1f568",
+                    "displayName": "Mooque-LMDT",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6330aba84895e7a44e7556fd",
+                "points": 44957100000,
+                "vsrRank": 116,
+                "championStatus": false
+            },
+            {
+                "_id": "67554ddc9ffa44be7260de5d",
+                "points": 44457550000,
+                "vsrRank": 117,
+                "teamName": "Schlickschlitten",
+                "teamBadgeId": "2-ecu-illu-9_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "673368ab70170b0d61bfb165",
+                    "displayName": "HakunaKuna",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "64287f9afd45728e912d92ce",
+                "points": 44380200000,
+                "vsrRank": 118,
+                "teamName": "No Money Sailors  3\\.0",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6886d7050b5667c5a4c68480",
+                    "displayName": "SUDAMERICA YACHTS",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5bf80012305f27051b2a6554",
+                "points": 43125950000,
+                "vsrRank": 119,
+                "teamName": "Les corsaires du 69",
+                "teamBadgeId": "4-fra_breton",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ff0719e0750e372d69b065",
+                    "displayName": "sanyohan13",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "688a31337a9d489f5cb8e620",
+                "points": 42793200000,
+                "vsrRank": 120,
+                "teamName": "White Sailing Project™",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6728eab470e09f60ad3c5880",
+                    "displayName": "Anthopraz74-WSP",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5cdd130d49769d051f5587e8",
+                "points": 42322100000,
+                "vsrRank": 121,
+                "teamName": "EUSKAL HERRIA rock\\&ron",
+                "teamBadgeId": "4-fra_basque",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c38798b395b292ed62457a",
+                    "displayName": "kaikutarra EH R&R",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "65611356922b3fd877976ced",
+                "points": 41540950000,
+                "vsrRank": 122,
+                "teamName": "Team Drakkar Matossé PDD",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ea152fe0750e372d64b12e",
+                    "displayName": "damy50",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5cfbe57ef8dbe6052102ee2b",
+                "points": 41208650000,
+                "vsrRank": 123,
+                "teamName": "France MED",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c79fc8b395b292ed62a497",
+                    "displayName": "Alexor60 - Fr MED",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fb183ec7d2fdc054db29847",
+                "points": 40233300000,
+                "vsrRank": 124,
+                "teamName": "Le Jade LJDE",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5f980477a73ee0501838bffa",
+                    "displayName": "FleM LJDE",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "63da9a5077fcaf2071da9bbe",
+                "points": 39904300000,
+                "vsrRank": 125,
+                "teamName": "Les Tontons Skippers",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "62148f5c2a05eec971a6b059",
+                    "displayName": "Le Gugusse de Montauban"
+                }
+            },
+            {
+                "_id": "5c0d1ff0305f27051b07ec1e",
+                "points": 38361950000,
+                "vsrRank": 126,
+                "teamName": "Les XXX",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c228a6b395b292ed622612",
+                    "displayName": "FranckHamburg - XXX",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "68bf06c22445dc4f9fc44784",
+                "points": 37856800000,
+                "vsrRank": 127,
+                "teamName": "White Sailing Project™ 2",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6187d57f2a05eec97186dee4",
+                    "displayName": "WazapconDid 64 - WSP",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5bdad415ca6fae0515b5ae97",
+                "points": 37835300000,
+                "vsrRank": 128,
+                "championStatus": false
+            },
+            {
+                "_id": "600326469b1b593ceca50a17",
+                "points": 37245350000,
+                "vsrRank": 129,
+                "teamName": "Team LPP \\\\\\- BLUTOPIA",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa7b425a73ee05018d8fcab",
+                    "displayName": "JOker - LPP BLUTOPIA",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc7a4a5622544051a29893e",
+                "points": 36504250000,
+                "vsrRank": 130,
+                "teamName": "OCEAN DREAM",
+                "teamBadgeId": "2-ecu-illu-4_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c502dfc517022fc090494a8",
+                    "displayName": "CAPELLO72 OCEAN DREAM",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bff80e909be780516f9a015",
+                "points": 36446800000,
+                "vsrRank": 131,
+                "teamName": "Team Marins",
+                "teamBadgeId": "",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdaa7d8517022fc09d3f544",
+                    "displayName": "RobinboatII-MAR",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5ce7e81af8dbe605214b825c",
+                "points": 35770100000,
+                "vsrRank": 132,
+                "teamName": "LE PHARE OUEST",
+                "teamBadgeId": "2-ecu-illu-1_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fd90aee0750e372d68ba55",
+                    "displayName": "NONO512.LPO-ESF2",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fa800a51e06fd054c62e598",
+                "points": 35439400000,
+                "vsrRank": 133,
+                "championStatus": false
+            },
+            {
+                "_id": "5e52929bef57c90578e21566",
+                "points": 34898500000,
+                "vsrRank": 134,
+                "teamName": "Picardie Race Team",
+                "teamBadgeId": "4-fra_picardie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fe6726024ee492001080891",
+                    "displayName": "le petit brayon",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6917975de59e26bf02acf081",
+                "points": 34597600000,
+                "vsrRank": 135,
+                "teamName": "ALBATROS",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59f0bd33e0750e372d66ece1",
+                    "displayName": "Captain85-ALBATROS",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "685d7dce3a4a0e0016fcca26",
+                "points": 34189300000,
+                "vsrRank": 136,
+                "teamName": "YCO2",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa99b5fa73ee05018b455e9",
+                    "displayName": "Mélissa2008",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "68a9ac99ae985bd74926836c",
+                "points": 33839000000,
+                "vsrRank": 137,
+                "teamName": "Vents du Large",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6248b27c2a05eec971e92666",
+                    "displayName": "Bora Bora",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5df3b01f4bbb1d056f35e1b9",
+                "points": 33667050000,
+                "vsrRank": 138,
+                "teamName": "Grand Large Perseverance",
+                "teamBadgeId": "2-ecu-illu-11_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c437e99517022fc0902cd10",
+                    "displayName": "GrandLarge-team",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5be7849109be78051651767a",
+                "points": 33641500000,
+                "vsrRank": 139,
+                "teamName": "LYON\\-CATA\\-MARRANT\\-69",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59d2b3c3b395b292ed63c02e",
+                    "displayName": "Homer74-TLCM69",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "607ec948983fd6054df140ca",
+                "points": 33155600000,
+                "vsrRank": 140,
+                "teamName": "Les Saumons Frétillants",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fafa49006999515a337d884",
+                    "displayName": "BossBossBossBossBoss SPEED-LSF",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc5859057ef4c051fc9381f",
+                "points": 32605050000,
+                "vsrRank": 141,
+                "teamName": "Team Hungary",
+                "teamBadgeId": "3-nat-hun",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59cfe65fb395b292ed6333f8",
+                    "displayName": "KovA-HUN / vrhun.hu",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "67f0d53fee30dad002e862ac",
+                "points": 30509150000,
+                "vsrRank": 142,
+                "teamName": "DinnerForOne",
+                "teamBadgeId": "4-usa_rhode-islande",
+                "championStatus": false,
+                "coach": {
+                    "_id": "67d6f389b3d88b9bb0803e17",
+                    "displayName": "ChampagneWithTheBird",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5bc73d2eca6fae0515001818",
+                "points": 29411000000,
+                "vsrRank": 143,
+                "championStatus": false
+            },
+            {
+                "_id": "5d6e0b9c5d04ac0525204486",
+                "points": 29304333333,
+                "vsrRank": 144,
+                "championStatus": false
+            },
+            {
+                "_id": "5bc77f9d622544051ad138a1",
+                "points": 28918900000,
+                "vsrRank": 145,
+                "teamName": "LES COPAINS D'ABORD",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c267abb395b292ed622c75",
+                    "displayName": "magel lent aoc",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c255e0db75fba0511daabea",
+                "points": 28906700000,
+                "vsrRank": 146,
+                "teamName": "TEAM DU BELIN MAR LIGURE",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b03fcca517022fc09cd2ef1",
+                    "displayName": "LaPiovra71",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fe110929d44bc054f341ac1",
+                "points": 28787400000,
+                "vsrRank": 147,
+                "teamName": "PV5 Projection Virtuelle",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "622f75312a05eec971a07ab8",
+                    "displayName": "commu.PV5",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5cba3b5ee49dc4051c81e289",
+                "points": 28698500000,
+                "vsrRank": 148,
+                "teamName": "YCO3",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fb9b79a06999515a3bd7ca4",
+                    "displayName": "Audrey-YCO3"
+                }
+            },
+            {
+                "_id": "5e273119f5bcfd057c3a518c",
+                "points": 28622700000,
+                "vsrRank": 149,
+                "teamName": "Marins sans frontières",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59cb8d4db395b292ed62d82d",
+                    "displayName": "Kalou21-MSF",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fa90e969ae6c5054b80ce93",
+                "points": 27817350000,
+                "vsrRank": 150,
+                "teamName": "PV2 Projection Virtuelle",
+                "teamBadgeId": "2-ecu-illu-11_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "651ee546485b88a55e8487c8",
+                    "displayName": "Capi-PV2"
+                }
+            },
+            {
+                "_id": "5fa8120b9940fd05560539d3",
+                "points": 26262350000,
+                "vsrRank": 151,
+                "teamName": "PV1 Projection Virtuelle",
+                "teamBadgeId": "2-ecu-illu-4_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fabe7f3a73ee05018d8be54",
+                    "displayName": "klaxon",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6186853845f98d05622e3cb2",
+                "points": 26145850000,
+                "vsrRank": 152,
+                "teamName": "Regatta & Foils",
+                "teamBadgeId": "2-ecu-illu-9_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5f9f0a76a73ee05018b9c75d",
+                    "displayName": "Ragoûttoutou R&F",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6968e430f9c6b56b87811aee",
+                "points": 25755500000,
+                "vsrRank": 153,
+                "teamName": "lamarginale2",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c51175b395b292ed626d74",
+                    "displayName": "Ragondin79",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5be2c279ca6fae3634b95bf5",
+                "points": 24052600000,
+                "vsrRank": 154,
+                "teamName": "Les Mordus de VR Offshore",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bd9ea4f517022fc09d3c88c",
+                    "displayName": "F250",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c35e9afb75fba05119aa2bf",
+                "points": 23905900000,
+                "vsrRank": 155,
+                "teamName": "ISF FRANCE",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fb8071f06999515a3ed559a",
+                    "displayName": "Toutes Voiles Dehors - CNE-ISF"
+                }
+            },
+            {
+                "_id": "5fd755c637e93b054fd4f249",
+                "points": 23637700000,
+                "vsrRank": 156,
+                "teamName": "Germany Bathtub Racing :)",
+                "teamBadgeId": "2-ecu-illu-2_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e77ac9d080c8cbd450be7fd",
+                    "displayName": "novus_GBR"
+                }
+            },
+            {
+                "_id": "671dfe04d16009a2d928a4b1",
+                "points": 22969800000,
+                "vsrRank": 157,
+                "teamName": "Les Matelots Ardechois",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5faa6ce8a73ee05018b55235",
+                    "displayName": "Chris LMA",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c052a8809be78051615ab21",
+                "points": 22927950000,
+                "vsrRank": 158,
+                "teamName": "VENTS du GRAND OUEST",
+                "teamBadgeId": "2-ecu-illu-9_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ef5d04e0750e372d669c3f",
+                    "displayName": "Tuscky star",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6900bc5ff72ec5f29fcd1ec6",
+                "points": 22898600000,
+                "vsrRank": 159,
+                "teamName": "LES VALLEES DE SAVOIE",
+                "teamBadgeId": "1-ecu-forme-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59febc1fe0750e372d6929cb",
+                    "displayName": "F73",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "638b384bfe249760b5efdd27",
+                "points": 21738250000,
+                "vsrRank": 160,
+                "teamName": "Jenri Gaming Team Plaisir",
+                "teamBadgeId": "3-nat-cam",
+                "championStatus": false,
+                "coach": {
+                    "_id": "63875ed3cf8d985d0ba2a087",
+                    "displayName": "Jenri G. Team Plaisir"
+                }
+            },
+            {
+                "_id": "698cde8bd1f16a9bdff930d1",
+                "points": 21532600000,
+                "vsrRank": 161,
+                "teamName": "Esailing Portugal",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "611bf5af2a05eec97130f408",
+                    "displayName": "Nuno Ricardo",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5c24b01a622688051325ff78",
+                "points": 21339400000,
+                "vsrRank": 162,
+                "teamName": "AUSTRALIA-INTERNATIONAL",
+                "teamBadgeId": "3-nat-aus",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5c23802e517022fc09fd13fd",
+                    "displayName": "Roger that!",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "60581958be674169c3c6cb6c",
+                "points": 21333400000,
+                "vsrRank": 163,
+                "teamName": "Madrid Chulap@s",
+                "teamBadgeId": "3-nat-esp",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ff25e4ec355084ecde2bad",
+                    "displayName": "peredia (MC)",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "600c6456f6c0843003eb2e50",
+                "points": 21262800000,
+                "vsrRank": 164,
+                "teamName": "Skippers 2 Savoie - S2S",
+                "teamBadgeId": "3-nat-den",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa7f134a73ee05018176056",
+                    "displayName": "Chocard-74.S2S"
+                }
+            },
+            {
+                "_id": "673452ec0a664c34b0869736",
+                "points": 20709750000,
+                "vsrRank": 165,
+                "teamName": "SAILOR SPIRIT",
+                "teamBadgeId": "2-ecu-illu-4_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "672fc4f043ed744106384b89",
+                    "displayName": "Matim II",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "5bc565d4ca6fae051579f275",
+                "points": 19729500000,
+                "vsrRank": 166,
+                "teamName": "Long Neck Sailors - 28 ",
+                "teamBadgeId": "1-ecu-forme-3_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b1182b3517022fc09cdabbc",
+                    "displayName": "domingo216",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fd59da1730c4c054a4d1352",
+                "points": 19716100000,
+                "vsrRank": 167,
+                "teamName": "G V D",
+                "teamBadgeId": "4-gbr_wale",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5ccdec1c517022fc09157c92",
+                    "displayName": "vert-desir-mode-GVD",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fcb7a76f6c084054854d25b",
+                "points": 19630100000,
+                "vsrRank": 168,
+                "teamName": "esprit marin",
+                "teamBadgeId": "2-ecu-illu-7_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c17e63b395b292ed621e9a",
+                    "displayName": "Rouscailleur",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5f3b82d0667e6a48a490adbc",
+                "points": 19338650000,
+                "vsrRank": 169,
+                "teamName": "85 Les Sables d'olonnes",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e62368b080c8cbd450385f1",
+                    "displayName": "gegelamy 85LSO"
+                }
+            },
+            {
+                "_id": "6417da059f15dc01d7121888",
+                "points": 18820400000,
+                "vsrRank": 170,
+                "teamName": "SEAWOLVES-THIRD-ASSAULT",
+                "teamBadgeId": "3-nat-aus",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fe26c3f24ee492001e2a8fb",
+                    "displayName": "HFA"
+                }
+            },
+            {
+                "_id": "6129409aaeaf1c054ac3b32b",
+                "points": 18740200000,
+                "vsrRank": 171,
+                "teamName": "Legend Squad Sailing",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6c537a73ee05018c09fc3",
+                    "displayName": "BennKoo - LSS",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc4b467ca6fae05153bbdab",
+                "points": 18646800000,
+                "vsrRank": 172,
+                "teamName": "A FOND LES 85",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c1167eb395b292ed621535",
+                    "displayName": "captainjams85 AFL85",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc5925f57ef4c051fce8f06",
+                "points": 18197300000,
+                "vsrRank": 173,
+                "championStatus": false
+            },
+            {
+                "_id": "620bf643c91a5c055dcd1d6a",
+                "points": 18181100000,
+                "vsrRank": 174,
+                "teamName": "Au Cas Ou",
+                "teamBadgeId": "4-fra_normandie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa564d1a73ee05018631861",
+                    "displayName": "ChampiGlou - L3A"
+                }
+            },
+            {
+                "_id": "5fafef917d2fdc054dc96817",
+                "points": 18006800000,
+                "vsrRank": 175,
+                "teamName": "Les Seniors Sous Le Vent",
+                "teamBadgeId": "2-ecu-illu-10_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5faba6d4a73ee05018377c9e",
+                    "displayName": "Twenty_SSLV",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "5bc73c6d622544051a4fef4c",
+                "points": 17776650000,
+                "vsrRank": 176,
+                "teamName": "YES WE CAM",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdac1d9517022fc09d40005",
+                    "displayName": "Eric54 - YWC",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5be3dbb4c8e2900527175691",
+                "points": 17545950000,
+                "vsrRank": 177,
+                "teamName": "Team Italia",
+                "teamBadgeId": "3-nat-ita",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5e6d36c3080c8cbd45077e0a",
+                    "displayName": "Diletta"
+                }
+            },
+            {
+                "_id": "5cd0b4f498afcb051ec9b915",
+                "points": 17523200000,
+                "vsrRank": 178,
+                "teamName": "YCO 0",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b5caa57517022fc09cfb942",
+                    "displayName": "YCO"
+                }
+            },
+            {
+                "_id": "6028fd3eb720092039046e7b",
+                "points": 17363450000,
+                "vsrRank": 179,
+                "teamName": "A Val d'Oiseau 95",
+                "teamBadgeId": "1-ecu-forme-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdc5ae6517022fc09d4aa4d",
+                    "displayName": "supergains",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "615af24afd8954055473497c",
+                "points": 17334450000,
+                "vsrRank": 180,
+                "teamName": "e-Sailing South Africa",
+                "teamBadgeId": "1-ecu-forme-12_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa8f13ea73ee050188492c4",
+                    "displayName": "Spitfire - WS"
+                }
+            },
+            {
+                "_id": "5bc7411557ef4c051f4c8f04",
+                "points": 17122000000,
+                "vsrRank": 181,
+                "teamName": "VR TEAM 49 ",
+                "teamBadgeId": "3-nat-cam",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c6bc7cb395b292ed6298c3",
+                    "displayName": "Laurent ...",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "602ff9a2338b5f655eee0347",
+                "points": 16882850000,
+                "vsrRank": 182,
+                "teamName": "Projection Virtuelle #9",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "60bcb9dd37e7cb7ea841230c",
+                    "displayName": "Capi-PV4",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "69ac1c457c58bc96898267a0",
+                "points": 16501800000,
+                "vsrRank": 183,
+                "teamName": "FORCE 53",
+                "teamBadgeId": "4-fra_pays-de-la-loire",
+                "championStatus": false,
+                "coach": {
+                    "_id": "6730a4963f9f02f96a6b263b",
+                    "displayName": "Armaggedon",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6738e8737f1370606c0763a9",
+                "points": 16446300000,
+                "vsrRank": 184,
+                "teamName": "Les Morfalous",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdef3d0517022fc09d72968",
+                    "displayName": "PapyFred - Morfalous",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bd063e6ca6fae051514fa1e",
+                "points": 16104900000,
+                "vsrRank": 185,
+                "teamName": "USA Great Lakes",
+                "teamBadgeId": "2-ecu-illu-4_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b0011d4517022fc09cd0492",
+                    "displayName": "Whippoorwill"
+                }
+            },
+            {
+                "_id": "604969de7d2fdc1190e943bc",
+                "points": 15600050000,
+                "vsrRank": 186,
+                "teamName": "H2O",
+                "teamBadgeId": "2-ecu-illu-11_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fb8fed406999515a32e8f68",
+                    "displayName": "Marisalauber --H2O--"
+                }
+            },
+            {
+                "_id": "5bc5b4b7622544051adc5681",
+                "points": 15579950000,
+                "vsrRank": 187,
+                "teamName": "Les Marins d'Ardèche",
+                "teamBadgeId": "2-ecu-illu-1_2",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59fdeb56e0750e372d68e417",
+                    "displayName": "Guest_1770309228",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5dd120930718400523aba48e",
+                "points": 15568000000,
+                "vsrRank": 188,
+                "teamName": "Team89",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5da8a4916f64cfd4344a7651",
+                    "displayName": "Tonus89-T89"
+                }
+            },
+            {
+                "_id": "5bf93f4dc8a395052d853a00",
+                "points": 15252350000,
+                "vsrRank": 189,
+                "teamName": "LA MAYENNE",
+                "teamBadgeId": "2-ecu-illu-12_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59ce2b67b395b292ed630889",
+                    "displayName": "leMayennais"
+                }
+            },
+            {
+                "_id": "603e7ca00e6ad13b1e915e43",
+                "points": 14854650000,
+                "vsrRank": 190,
+                "teamName": "cash à l'eau du 91",
+                "teamBadgeId": "2-ecu-illu-1_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa6d008a73ee0501890e60b",
+                    "displayName": "Ti-Punch91",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "609bb9fefd89540554e7e79f",
+                "points": 14601350000,
+                "vsrRank": 191,
+                "teamName": "LDL\\\\\\\\\\\\-Team",
+                "teamBadgeId": "2-ecu-illu-12_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdaf591517022fc09d41b7b",
+                    "displayName": "bilouForEver",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "6535498669ee66e287ec21ee",
+                "points": 14010350000,
+                "vsrRank": 192,
+                "teamName": "Rebelde Sailing Team RST",
+                "teamBadgeId": "2-ecu-illu-8_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59cd0b73b395b292ed62f267",
+                    "displayName": "k9slater"
+                }
+            },
+            {
+                "_id": "674779316d79a31bca86ed16",
+                "points": 13931600000,
+                "vsrRank": 193,
+                "teamName": "Flyzen team Challenger",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "670b828df4204c88f73a2d6f",
+                    "displayName": "Flyzenfreez 2.0",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "6734bbfabbb124ad33c9eb0d",
+                "points": 13927300000,
+                "vsrRank": 194,
+                "teamName": "Flyzen team 3",
+                "teamBadgeId": "3-nat-fra",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59c85620b395b292ed62aff8",
+                    "displayName": "Raphlou",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "66ea9d872257e44d241a7c2c",
+                "points": 13408050000,
+                "vsrRank": 195,
+                "teamName": "Team Malraux 2024",
+                "teamBadgeId": "4-fra_occitanie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5b997267517022fc09d0d2a5",
+                    "displayName": "Malraux VDG",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bf05f524f99c3051772cb28",
+                "points": 13294500000,
+                "vsrRank": 196,
+                "teamName": "GPPP 13 ",
+                "teamBadgeId": "2-ecu-illu-1_1",
+                "championStatus": false,
+                "coach": {
+                    "_id": "59d0c471b395b292ed6343fc",
+                    "displayName": "manoumurphy",
+                    "gender": "F"
+                }
+            },
+            {
+                "_id": "67309f436440590e5da8ba24",
+                "points": 13230450000,
+                "vsrRank": 197,
+                "teamName": "Team IONET",
+                "teamBadgeId": "2-ecu-illu-5_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fd6137806999515a3aed117",
+                    "displayName": "BoByYyNeT",
+                    "gender": "NC"
+                }
+            },
+            {
+                "_id": "6038bbba4a672a057afd8724",
+                "points": 13214550000,
+                "vsrRank": 198,
+                "teamName": "Les Baroudeurs Des Mers",
+                "teamBadgeId": "2-ecu-illu-12_3",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5bdbfe4a517022fc09d476b3",
+                    "displayName": "Sunflower 31 BDM",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5bc4dd2a622544051a97079e",
+                "points": 12925600000,
+                "vsrRank": 199,
+                "teamName": "Team 76",
+                "teamBadgeId": "4-fra_normandie",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5a03ff3c7b296eaadfc1d4e5",
+                    "displayName": "TomTom76",
+                    "gender": "M"
+                }
+            },
+            {
+                "_id": "5fbacfbbe74585054f1d8efb",
+                "points": 12339400000,
+                "vsrRank": 200,
+                "teamName": "Lé ZAMIS DAMI du MONDE",
+                "teamBadgeId": "ecusson-VR",
+                "championStatus": false,
+                "coach": {
+                    "_id": "5fa7aa66a73ee05018f2862e",
+                    "displayName": "Séverine FORMAPI / SELFORME - ZDM",
+                    "gender": "F"
+                }
+            }
+        ],
+        "dataTeam": [
+            {
+                "_id": "5fec43b7d018c2055564ba0c",
+                "points": 101485250000,
+                "vsrRank": 1,
+                "teamName": "PVe / SERVTEC / D ICE",
+                "teamBadgeId": "2-ecu-illu-4_1",
+                "championStatus": true,
+                "coach": {
+                    "_id": "5fa823d5a73ee05018906f7f",
+                    "displayName": "Temerus - PVe/SERVTEC/D-ICE",
+                    "gender": "M"
+                }
+            }
+        ],
+        "pagination": {
+            "nextPage": 3,
+            "hasNextPage": true,
+            "previousPage": 1,
+            "hasPreviousPage": true,
+            "documentsCount": 3844,
+            "pagesCount": 39,
+            "pageNumber": 2,
+            "pageSize": 100
+        },
+        "rc": "ok"
+    },
+    "@class": ".LogEventResponse",
+    "requestId": "639147381904180000_22",
+    "traceId": "Root=1-6a0b6eee-3c66e0e4505fd91f62327bee;Parent=68bb8c30e7fa2eb8;Sampled=0;Lineage=1:e2ef51fb:0"
+}

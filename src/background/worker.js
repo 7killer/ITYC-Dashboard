@@ -410,7 +410,9 @@ chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => 
 
             if (eventClass === 'AccountDetailsRequest') {
                 await msgInjest.ingestAccountDetails(body);
-            } else if (eventClass === 'LogEventRequest') {
+            } else if (eventClass == 'LeaderboardDataRequest') {
+                await msgInjest.ingestLegRankTeam(postData, body);
+            }  else if (eventClass === 'LogEventRequest') {
                 const eventKey = postData.eventKey;
                 if (eventKey === 'Leg_GetList') {
                     await msgInjest.ingestRaceList(body);
@@ -425,6 +427,10 @@ chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => 
                     await msgInjest.ingestBoatAction(body);
                 } else if (eventKey === 'Game_GetGhostTrack') {
                     await msgInjest.ingestGhostTrack(postData, body);
+                } else if (eventKey === 'Ranking_VSR') {
+                    await msgInjest.ingestVsrRank(postData.pageNumber, body);
+                } else if (eventKey === 'Ranking_Team') {
+                    await msgInjest.ingestVsrTeamRank(postData.pageNumber, body);
                 }
             } else {
                 const event = msg.url.substring(msg.url.lastIndexOf('/') + 1);
@@ -436,6 +442,8 @@ chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => 
                 } else if (event === 'getfleet') {
                     const ret = await msgInjest.ingestFleetData(postData, body);
                     rstTimer = ret.rstTimer;
+                } else if (event == 'getlegranks') {
+                    await msgInjest.ingestLegRanks(postData, body);
                 }
             }
         } else if(msg.type=="openZezo") {

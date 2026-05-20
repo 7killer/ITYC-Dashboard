@@ -4,8 +4,21 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 9;
+const DB_VERSION = 11;
 const MIN_BULK_SIZE = 10;
+
+function getRankingInternalRecords() {
+    return [
+        {
+            id: "legRankUpdate",
+            ts: Date.now()
+        },
+        {
+            id: "vsrRankUpdate",
+            ts: Date.now()
+        }
+    ];
+}
 
 function getInitialInternalRecords() {
     return [
@@ -67,6 +80,7 @@ function getInitialInternalRecords() {
             id: "playersTracksUpdate",
             ts: Date.now()
         },
+        ...getRankingInternalRecords(),
         {
             id: "state",
             state: 'dashInstalled'
@@ -94,6 +108,11 @@ export async function openDatabase() {
                   if(cfg.debugDB) console.log('Created "internal" object store');
                   for (const record of getInitialInternalRecords()) {
                       store.add(record);
+                  }
+              } else {
+                  const store = transaction.objectStore('internal');
+                  for (const record of getRankingInternalRecords()) {
+                      store.put(record);
                   }
               }
               if (!db.objectStoreNames.contains('players')) {
@@ -173,6 +192,32 @@ export async function openDatabase() {
                   const store = transaction.objectStore('playersTracks');
                   if (!store.indexNames.contains('byRaceLeg')) {
                       store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
+                  }
+              }
+              if (!db.objectStoreNames.contains('legRank')) {
+                  const store = db.createObjectStore('legRank', {
+                        keyPath: ['raceId', 'legNum', 'partition', 'type', 'pageNumber']  });
+                  store.createIndex('byRaceLegPartition', ['raceId', 'legNum', 'partition'], { unique: false });
+                  store.createIndex('byRaceLegPartitionType', ['raceId', 'legNum', 'partition', 'type'], { unique: false });
+                  if(cfg.debugDB) console.log('Created "legRank" object store');
+              } else {
+                  const store = transaction.objectStore('legRank');
+                  if (!store.indexNames.contains('byRaceLegPartition')) {
+                      store.createIndex('byRaceLegPartition', ['raceId', 'legNum', 'partition'], { unique: false });
+                  }
+                  if (!store.indexNames.contains('byRaceLegPartitionType')) {
+                      store.createIndex('byRaceLegPartitionType', ['raceId', 'legNum', 'partition', 'type'], { unique: false });
+                  }
+              }
+              if (!db.objectStoreNames.contains('vsrRank')) {
+                  const store = db.createObjectStore('vsrRank', {
+                        keyPath: ['type', 'pageNumber']  });
+                  store.createIndex('byType', 'type', { unique: false });
+                  if(cfg.debugDB) console.log('Created "vsrRank" object store');
+              } else {
+                  const store = transaction.objectStore('vsrRank');
+                  if (!store.indexNames.contains('byType')) {
+                      store.createIndex('byType', 'type', { unique: false });
                   }
               }
               if (!db.objectStoreNames.contains('windpacks')) {
@@ -371,6 +416,70 @@ export async function resetDatabaseContent() {
         if(cfg.debugDB) console.log('Database content reset');
     } catch (error) {
         if(cfg.debugDBErr) console.error('Error resetting database content:', error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
+    }
+}
+
+export async function deleteByRaceLegPartition(storeName, raceId, legNum, partition) {
+    let db;
+    try {
+        db = await openDatabase();
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+
+        if (!store.indexNames.contains('byRaceLegPartition')) {
+            throw new Error(`deleteByRaceLegPartition: missing 'byRaceLegPartition' index on ${storeName}`);
+        }
+
+        const index = store.index('byRaceLegPartition');
+        const range = IDBKeyRange.only([raceId, legNum, partition]);
+        let deletedCount = 0;
+
+        let cursor = await index.openKeyCursor(range);
+        while (cursor) {
+            await store.delete(cursor.primaryKey);
+            deletedCount++;
+            cursor = await cursor.continue();
+        }
+
+        await tx.done;
+        return deletedCount;
+    } catch (error) {
+        if(cfg.debugDBErr) console.error(`Error deleting race/leg/partition data from ${storeName}:`, error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
+    }
+}
+
+export async function deleteByType(storeName, type) {
+    let db;
+    try {
+        db = await openDatabase();
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+
+        if (!store.indexNames.contains('byType')) {
+            throw new Error(`deleteByType: missing 'byType' index on ${storeName}`);
+        }
+
+        const index = store.index('byType');
+        const range = IDBKeyRange.only(type);
+        let deletedCount = 0;
+
+        let cursor = await index.openKeyCursor(range);
+        while (cursor) {
+            await store.delete(cursor.primaryKey);
+            deletedCount++;
+            cursor = await cursor.continue();
+        }
+
+        await tx.done;
+        return deletedCount;
+    } catch (error) {
+        if(cfg.debugDBErr) console.error(`Error deleting type=${type} data from ${storeName}:`, error);
         throw error;
     } finally {
         try { db?.close(); } catch {}

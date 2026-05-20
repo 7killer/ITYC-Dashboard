@@ -25,8 +25,13 @@ let paramStamina = [];
 let legPlayersOrderUpdate = 0;
 let legPlayersOrder = [];
 let legSelectedPlayers = [];
+let legRankUpdate = 0;
+let legRank = [];
 let legPlayersTracksUpdate = 0;
 let legPlayersTracks = [];
+let vsrRankUpdate = 0;
+let vsrPlayerRank = [];
+let vsrTeamRank = [];
 
 export async function initMemo()
 {
@@ -37,6 +42,7 @@ export async function initMemo()
 
     await updatePlayersList();
     await updateTeamsList();
+    await updateVsrRank();
     await updateLegList();
     await updateConnectedPlayerInfos();
 
@@ -51,6 +57,7 @@ export async function initMemo()
         await updateLegPlayersOrder();
         await updateLegPlayersOptions();
         await updateLegPlayersTracks();
+        await updateLegRank();
 
     } else
     {
@@ -62,6 +69,7 @@ export async function initMemo()
         legPlayerInfosHistory = [];
         legPlayersOptions = [];
         legPlayersTracks = [];
+        legRank = [];
     }
     openedRaceIdHistory = [];
     legPlayerInfosHistory = [];
@@ -76,6 +84,128 @@ export async function initMemo()
     legFleetInfosUpdate = await getData('internal', 'legFleetInfosDashUpdate');
     legPlayersInfosUpdate = await getData('internal', 'legPlayersInfosDashUpdate');
     legPlayersOptionsUpdate = await getData('internal', 'legPlayersOptionsUpdate');
+    const legRankUpdateRecord = await getData('internal', 'legRankUpdate');
+    legRankUpdate = legRankUpdateRecord?.ts ?? 0;
+    const vsrRankUpdateRecord = await getData('internal', 'vsrRankUpdate');
+    vsrRankUpdate = vsrRankUpdateRecord?.ts ?? 0;
+}
+
+function flattenVsrRankPages(pages)
+{
+    if (!Array.isArray(pages) || pages.length === 0) return [];
+
+    return pages
+        .filter((page) => Array.isArray(page?.rank))
+        .sort((a, b) => Number(a.pageNumber ?? 0) - Number(b.pageNumber ?? 0))
+        .flatMap((page) => page.rank.map((rankEntry) => ({
+            ...rankEntry,
+            pageNumber: page.pageNumber,
+        })));
+}
+
+export function getVsrRankUpdate()
+{
+    return vsrRankUpdate;
+}
+
+export function setVsrRankUpdate(ts)
+{
+    vsrRankUpdate = ts;
+}
+
+export function getVsrPlayerRank()
+{
+    return vsrPlayerRank;
+}
+
+export function getVsrTeamRank()
+{
+    return vsrTeamRank;
+}
+
+export async function updateVsrRank()
+{
+    const vsrRankPages = await getAllData("vsrRank").catch(error => {
+        console.error("getVsrRank error :", error);
+    });
+
+    const pages = Array.isArray(vsrRankPages) ? vsrRankPages : [];
+    vsrPlayerRank = flattenVsrRankPages(pages.filter((page) => page.type === "player"));
+    vsrTeamRank = flattenVsrRankPages(pages.filter((page) => page.type === "team"));
+}
+
+function flattenLegRankPages(pages)
+{
+    if (!Array.isArray(pages) || pages.length === 0) return [];
+
+    const rows = pages
+        .filter((page) => Array.isArray(page?.rank))
+        .sort((a, b) => Number(a.pageNumber ?? 0) - Number(b.pageNumber ?? 0))
+        .flatMap((page) => page.rank.map((rankEntry) => ({
+            ...rankEntry,
+            pageNumber: page.pageNumber,
+        })));
+
+    const rowsByIdentity = new Map();
+    rows.forEach((row) => {
+        const identity = row?.userId ?? row?.teamId;
+        if (!identity) return;
+
+        const existing = rowsByIdentity.get(identity);
+        if (!existing || Number(row.rank ?? Number.POSITIVE_INFINITY) < Number(existing.rank ?? Number.POSITIVE_INFINITY)) {
+            rowsByIdentity.set(identity, row);
+        }
+    });
+
+    return Array.from(rowsByIdentity.values())
+        .sort((a, b) => Number(a.rank ?? Number.POSITIVE_INFINITY) - Number(b.rank ?? Number.POSITIVE_INFINITY));
+}
+
+export function getLegRankUpdate()
+{
+    return legRankUpdate;
+}
+
+export function setLegRankUpdate(ts)
+{
+    legRankUpdate = ts;
+}
+
+export function getLegRank()
+{
+    return legRank;
+}
+
+export async function updateLegRank()
+{
+    if(!openedRaceId?.raceId || !openedRaceId?.legNum) {
+        legRank = [];
+        return;
+    }
+
+    const legRankPages = await getAllData("legRank").catch(error => {
+        console.error("getLegRank error :", error);
+    });
+
+    const pages = Array.isArray(legRankPages) ? legRankPages : [];
+    const racePages = pages.filter((page) =>
+        page.raceId === openedRaceId.raceId
+        && page.legNum === openedRaceId.legNum
+    );
+
+    const partitions = [...new Set(racePages.map((page) => page.partition))]
+        .sort((a, b) => Number(a) - Number(b));
+
+    const nextLegRank = [];
+    partitions.forEach((partition) => {
+        const partitionPages = racePages.filter((page) => page.partition === partition);
+        nextLegRank[partition] = {
+            info: partitionPages.find((page) => page.type === "info") ?? null,
+            rank: flattenLegRankPages(partitionPages.filter((page) => page.type === "data")),
+        };
+    });
+
+    legRank = nextLegRank;
 }
 
 async function updateParamStamina() {
@@ -538,6 +668,7 @@ export async function updateOpenedRaceId()
     legFleetInfos = [];
     raceInfo = [];
     legPlayersOrder = [];
+    legRank = [];
     await updateLegList();
     openedRaceId.polar_id = raceInfo.polar_id;
     await updatePolar();

@@ -11,7 +11,8 @@
     "debugWind":false,
     "debugWind2":false,
     "debugWind3":false,
-    "debugITYC":false
+    "debugITYC":false,
+    "debugCool":true
 
 
   }

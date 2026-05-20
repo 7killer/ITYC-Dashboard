@@ -12,8 +12,10 @@ getLegPlayersInfosUpdate, setLegPlayersInfosUpdate, updateLegPlayerInfos,
 getLegPlayersOrderUpdate, setLegPlayersOrderUpdate, updateLegPlayersOrder,
 getLegFleetInfosUpdate, setLegFleetInfosUpdate, updateLegFleetInfos,
 getLegPlayersOptionsUpdate, setLegPlayersOptionsUpdate, updateLegPlayersOptions,
+getLegRankUpdate, setLegRankUpdate, updateLegRank,
 getLegPlayersTracksUpdate, setLegPlayersTracksUpdate,updateLegPlayersTracks,
 getOpenedRaceId, setOpenedRaceId, updateOpenedRaceId,
+getVsrRankUpdate, setVsrRankUpdate, updateVsrRank,
 initMemo
 
 } from './app/memoData.js'
@@ -142,6 +144,18 @@ function doDbListener()
         }
     });
 
+    const vsrRankListener = createKeyChangeListener('internal', 'vsrRankUpdate');
+    vsrRankListener.start({
+        referenceValue: {ts : getVsrRankUpdate()},
+        onChange: async ({ oldValue, newValue }) => {
+            if(newValue?.ts != getVsrRankUpdate() && initDone)
+            {   //updated infos
+                setVsrRankUpdate(newValue.ts);
+                await updateVsrRank();
+                refreshActiveTab();
+            }
+        }
+    });
 
     const polarListener = createKeyChangeListener('internal', 'polarsUpdate');
     polarListener.start({
@@ -200,6 +214,19 @@ function doDbListener()
         }
     });
 
+    const legRankListener = createKeyChangeListener('internal', 'legRankUpdate');
+    legRankListener.start({
+        referenceValue: {ts : getLegRankUpdate()},
+        onChange: async ({ oldValue, newValue }) => {
+            if(newValue?.ts != getLegRankUpdate() && initDone)
+            {   //updated infos
+                setLegRankUpdate(newValue.ts);
+                await updateLegRank();
+                refreshActiveTab();
+            }
+        }
+    });
+
     const legPlayersOrdersListener = createKeyChangeListener('internal', 'legPlayersOrderUpdate');
     legPlayersOrdersListener.start({
         referenceValue: {ts : getLegPlayersOrderUpdate()},
@@ -242,6 +269,7 @@ function doDbListener()
                 await updateLegPlayerInfos();
                 await updateLegPlayersOrder();
                 await updateLegPlayersTracks();
+                await updateLegRank();
                 onRaceOpen();
                 buildRaceStatusHtml();
                 refreshActiveTab();

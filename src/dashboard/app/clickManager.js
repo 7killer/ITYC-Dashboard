@@ -5,6 +5,11 @@ import {openRouterSiteFront,openPolarSiteFront,openWindySiteFront} from '../../c
 export function clickManager(ev)
 {
 
+    const tabButton = ev.target.closest?.("[data-tab-id]");
+    if (tabButton) {
+        tabSwitch(tabButton.dataset.tabId);
+        return;
+    }
 
     const ev_lbl = ev.target.id;
     //sort management
@@ -19,7 +24,6 @@ export function clickManager(ev)
     let call_cp = false;
     let call_vrzen = false;
     let friend = false;
-    let tabsel = false;
     let cbox = false;
     let delNotif = false;
     let rmatch = null;
@@ -30,7 +34,6 @@ export function clickManager(ev)
     const re_vrzen = new RegExp("^vrz:(.+)"); // Call-Vrzen
     const re_rsel = new RegExp("^rs:(.+)"); // Race-Selection
     const re_usel = new RegExp("^ui:(.+)"); // User-Selection
-    const re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
     const re_cbox = new RegExp("^sel_(.+)"); // Checkbox-Selection
     const re_cpsp = new RegExp("^cp:(.+)"); // Call-Compass
     const re_ntdel = new RegExp("^notif_delete_(.+)"); // Notif delete button
@@ -55,9 +58,6 @@ export function clickManager(ev)
         } else if (match = re_usel.exec(id)) {
             rmatch = match[1];
             friend = true;
-        } else if (match = re_tsel.exec(id)) {
-            rmatch = match[1];
-            tabsel = true;
         } else if (match = re_cbox.exec(id)) {
             rmatch = match[1];
             cbox = true;
@@ -68,9 +68,8 @@ export function clickManager(ev)
     }
     if(!rmatch) return;
 
-    if(tabsel) tabSwitch(rmatch); 
-//    else if(friend) //Click line fleet
-    else if(cbox) {
+//    if(friend) //Click line fleet
+    if(cbox) {
         changeState(ev_lbl);
         tabSwitch();
     }
