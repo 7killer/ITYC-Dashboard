@@ -20,7 +20,7 @@ export const userPrefsDefault =
     global : 
     {
         separatorPos : false , /* - dans pos*/
-        alternateFilter : true,
+        notificationsEnabled : true,
         reuseTab : true,
         localTime : true,
         polarSite : "LSV", /* toxxct inc lsv */
@@ -256,6 +256,16 @@ function normalizeUserPrefs(rawPrefs)
     if(prefs.global.analysisMode == null)
     {
         prefs.global.analysisMode = userPrefsDefault.global.analysisMode;
+        shouldSave = true;
+    }
+    if(typeof prefs.global.notificationsEnabled !== 'boolean')
+    {
+        prefs.global.notificationsEnabled = userPrefsDefault.global.notificationsEnabled;
+        shouldSave = true;
+    }
+    if(Object.hasOwn(prefs.global, 'alternateFilter'))
+    {
+        delete prefs.global.alternateFilter;
         shouldSave = true;
     }
     if(!['default', 'custom', 'auto'].includes(prefs.map.windMode))

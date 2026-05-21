@@ -11,17 +11,59 @@ getOpenedRaceHistory,
 getLegPlayerInfos
 } from '../app/memoData.js'
 
-var permission = false;
 const notifications = [];     // Notifications
+const persistentAlerts = {
+    aground: { active: false, notified: false },
+    badSail: { active: false, notified: false },
+};
+let permission = typeof Notification !== 'undefined' ? Notification.permission : 'denied';
+let permissionRequestPromise = null;
 
-Notification.requestPermission(function (status) {
-    if (Notification.permission !== status) {
-        Notification.permission = status;
+function notificationsEnabled() {
+    return getUserPrefs()?.global?.notificationsEnabled !== false;
+}
 
+async function requestNotificationPermission() {
+    if (!notificationsEnabled() || typeof Notification === 'undefined') return false;
+    permission = Notification.permission;
+    if (permission === 'granted') return true;
+    if (permission === 'denied') return false;
+
+    if (!permissionRequestPromise) {
+        permissionRequestPromise = Notification.requestPermission()
+            .then((status) => {
+                permission = status;
+                console.log("Notifications status " + status);
+                return status;
+            })
+            .finally(() => {
+                permissionRequestPromise = null;
+            });
     }
-    permission = status;
-    console.log("Notifications status " + status);
-});
+
+    return (await permissionRequestPromise) === 'granted';
+}
+
+export async function setNotificationsEnabled(enabled) {
+    if (enabled) await requestNotificationPermission();
+}
+
+function schedulePersistentAlert(key, active, title, body, icon) {
+    const alertState = persistentAlerts[key];
+    if (!alertState) return;
+
+    if (!active) {
+        alertState.active = false;
+        alertState.notified = false;
+        return;
+    }
+
+    alertState.active = true;
+    if (alertState.notified) return;
+
+    alertState.notified = true;
+    doNotif(title, body, icon);
+}
 
 
 export function updateRaceListNotif()
@@ -378,6 +420,7 @@ export function showNotifList() {
 export function sheduleNotif() {
     
     const userPrefs = getUserPrefs(); 
+    if(userPrefs?.global?.notificationsEnabled === false) return;
     const isFr = userPrefs.lang ==  "fr"; 
     const raceInfo = getRaceInfo();
     const raceItes = getLegPlayerInfos();
@@ -385,20 +428,17 @@ export function sheduleNotif() {
     const currIte = raceItes?.ites?.[0]?? null;
     const playerName = raceItes?.name;
     
-    const titreNotif = raceInfo.legName;
+    const titreNotif = raceInfo?.legName ?? "";
 
     let textNotif = "";
 
     // Notification Echouement
-    if (currIte?.aground == true) {
-        textNotif = playerName + isFr?" : vous êtes échoué !":" : you are aground !";
-        doNotif(titreNotif, textNotif, 2);
-    }
+    textNotif = playerName + (isFr ? " : vous etes echoue !" : " : you are aground !");
+    schedulePersistentAlert("aground", currIte?.aground == true, titreNotif, textNotif, 2);
+
     // Notification Mauvaise voile
-    if (currIte?.badSail == true && currIte?.metaDash.dtf > 1) {
-        textNotif = playerName + isFr?" : vous naviguez sous mauvaise voile !":" : you use bad sail !";
-        doNotif(titreNotif, textNotif, 2);
-    }
+    textNotif = playerName + (isFr ? " : vous naviguez sous mauvaise voile !" : " : you use bad sail !");
+    schedulePersistentAlert("badSail", currIte?.badSail == true && currIte?.metaDash?.dtf > 1, titreNotif, textNotif, 2);
 
     for (let i = 0; i < notifications.length; i++) {
         if(!notifications[i]) continue;
@@ -520,7 +560,9 @@ export function sheduleNotif() {
     }
 }
 
-function doNotif(TitreNotif, TextNotif, icon, i) {
+async function doNotif(TitreNotif, TextNotif, icon, i) {
+    if(!await requestNotificationPermission()) return;
+
     const options = {
         "lang": "FR",
         "icon": "./img/"+icon + ".png",
@@ -529,7 +571,7 @@ function doNotif(TitreNotif, TextNotif, icon, i) {
 
     var notif = new Notification(TitreNotif, options);
     notif.onclick = function(x) {
-        if (i && notifications[i]) delete notifications[i];
+        if (i != null && notifications[i]) delete notifications[i];
         showNotifList();
         window.focus();
         this.close();

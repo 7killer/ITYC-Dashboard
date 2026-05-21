@@ -7,11 +7,6 @@ import {getRaceInfo} from '../app/memoData.js'
 
 import {saveData} from '../../common/dbOpes.js';
 
-export function uiFilterMode(alternate)
-{
-    const filterList = document.getElementById('fleetFilterList');
-    if(filterList) filterList.dataset.mode = alternate ? 'expanded' : 'compact';
-}
 export function switchTheme(theme)
 {
 

@@ -1,7 +1,7 @@
 
 import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 
-import {switchTheme,onUserChangeRace,uiFilterMode} from "../ui/common.js"
+import {switchTheme,onUserChangeRace} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
 import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
   onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick
@@ -13,7 +13,7 @@ import {plotPolarResetZoomBestVMG} from "../ui/charts/polarGraph.js"
 import {onFleetInCpyClipBoard, exportPolar, generateFleetCSV,
    exportGraphData, exportStamina, exportOwnBoatTrack, exportRestrictedZones} from "./exportTool.js"
 import {getDoradoUrl} from "../../common/callExternal.js"
-import {adaptUnitNotif,createNotif,createTimeNotif} from "../ui/raceNotif.js"
+import {adaptUnitNotif,createNotif,createTimeNotif,setNotificationsEnabled} from "../ui/raceNotif.js"
 import {initFleetFilterBar} from "../ui/fleetFilterBar.js"
 
 function updateThemeButton(el, theme) {
@@ -332,9 +332,14 @@ export function uiBindingInit() {
       onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.localTime }
     },
     {
-      selector: '#uiFilterMode',
-      onChange: async(checked) => {const userPrefs = getUserPrefs(); userPrefs.global.alternateFilter = checked;await saveUserPrefs(userPrefs);uiFilterMode(userPrefs.global.alternateFilter);},
-      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.alternateFilter ;uiFilterMode(userPrefs.global.alternateFilter);}
+      selector: '#enableNotifications',
+      onChange: async(checked) => {
+        const userPrefs = getUserPrefs();
+        userPrefs.global.notificationsEnabled = checked;
+        await saveUserPrefs(userPrefs);
+        await setNotificationsEnabled(checked);
+      },
+      onInit: (checked, el) => {const userPrefs = getUserPrefs();  el.checked = userPrefs.global.notificationsEnabled !== false;}
     },
     {
       selector: '#vrzenPositionFormat',
@@ -673,10 +678,6 @@ export function uiBindingInit() {
       selector: '#sel_Seperator',
       onChange: async(value) => {const userPrefs = getUserPrefs(); userPrefs.separator = value;await saveUserPrefs(userPrefs);},
       onInit: (value, el) => {const userPrefs = getUserPrefs();  el.value = userPrefs.separator}
-    },
-    {
-      selector: '#bt_router',
-      onChange: () => {/*todo call routerPage*/}
     },
     {
       selector: '#lbl_rt_openLmap',
