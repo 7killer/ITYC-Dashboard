@@ -4,7 +4,7 @@ import cfg from '@/config.json';
 
 
 const DB_NAME = 'VRDashboardDB3';
-const DB_VERSION = 11;
+const DB_VERSION = 12;
 const MIN_BULK_SIZE = 10;
 
 function getRankingInternalRecords() {
@@ -158,7 +158,7 @@ export async function openDatabase() {
               }
               if (!db.objectStoreNames.contains('legPlayersOrder')) {
                   const store = db.createObjectStore('legPlayersOrder', {
-                        keyPath: ['raceId', 'legNum', 'userId', 'iteDate']  });
+                        keyPath: ['raceId', 'legNum', 'userId', 'iteDate', 'type']  });
                   store.createIndex('byTriplet', ['raceId', 'legNum', 'userId'], { unique: false });
                   store.createIndex('byRaceLeg', ['raceId', 'legNum'], { unique: false });
                   if(cfg.debugDB) console.log('Created "legPlayersOrder" object store');
@@ -868,7 +868,7 @@ export function createKeyChangeListener(storeName, key, options = {}) {
                         oldValue: this.initialValue
                     };
 
-                    console.log('🔁 Changement détecté :', payload);
+                   if(cfg.debugDB)  console.log('🔁 Changement détecté :', payload);
 
                     if (typeof this.onChangeCallback === 'function') {
                         this.onChangeCallback(payload);
@@ -1119,18 +1119,26 @@ function withTimeout(promise, ms, onTimeout) {
       // Plage bornée sur la clé primaire ['raceId','legNum','userId','iteDate']
       const lower = [r, l, u, Math.max(0, Number(since) || 0)];
       const upper = [r, l, u, Math.min(Number.MAX_SAFE_INTEGER, Number(until) || Number.MAX_SAFE_INTEGER)];
-      const range = IDBKeyRange.bound(lower, upper);
+      const source = store.indexNames.contains('byTriplet') ? store.index('byTriplet') : store;
+      const range = source === store
+        ? IDBKeyRange.bound(lower, upper)
+        : IDBKeyRange.only([r, l, u]);
   
       const results = [];
       let scanned = 0;
       let reason = 'done';
   
       // Parcours décroissant → plus récent d'abord
-      let cursor = await store.openCursor(range, 'prev');
+      let cursor = await source.openCursor(range, 'prev');
       while (cursor) {
         scanned++;
         const value = cursor.value;
         const iteDate = value?.iteDate ?? cursor.key?.[3];
+
+        if (iteDate > upper[3]) {
+          cursor = await cursor.continue();
+          continue;
+        }
   
         // Comme on est en desc, si on est déjà < since, on peut stopper net.
         if (iteDate < lower[3]) {

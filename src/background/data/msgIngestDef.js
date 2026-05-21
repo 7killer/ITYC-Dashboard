@@ -1125,6 +1125,7 @@ export async function ingestBoatAction(boatActionTxt)
               raceId : raceId,
               legNum : legNum,
               userId : userId,
+              type : 'sail',
               serverTs : ValidboatActionTxt.scriptData.serverTs,
               iteDate : ValidboatActionTxt.scriptData.actionTs,
               action : {type : 'sail', action : userAction.sail}
@@ -1135,6 +1136,7 @@ export async function ingestBoatAction(boatActionTxt)
               raceId : raceId,
               legNum : legNum,
               userId : userId,
+              type : 'order',
               serverTs : ValidboatActionTxt.scriptData.serverTs,
               iteDate : ValidboatActionTxt.scriptData.actionTs,
               action : {type : 'order', action : userAction.heading}
@@ -1145,6 +1147,7 @@ export async function ingestBoatAction(boatActionTxt)
               raceId : raceId,
               legNum : legNum,
               userId : userId,
+              type : 'prog',
               serverTs : ValidboatActionTxt.scriptData.serverTs,
               iteDate : ValidboatActionTxt.scriptData.actionTs,
               action : {type : 'prog', action : prog.order}
@@ -1155,6 +1158,7 @@ export async function ingestBoatAction(boatActionTxt)
               raceId : raceId,
               legNum : legNum,
               userId : userId,
+              type : 'wp',
               serverTs : ValidboatActionTxt.scriptData.serverTs,
               iteDate : ValidboatActionTxt.scriptData.actionTs,
               action : {type : 'wp', action : prog.wp}

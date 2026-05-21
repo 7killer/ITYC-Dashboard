@@ -395,11 +395,10 @@ chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => 
         const msg = request;
         let rstTimer = false;
 
-        console.log('bg R external', msg.type);
+//        console.log('bg R external', msg.type);
 
         if (msg.type === 'data') {
             if (msg.req && msg.req.Accept) {
-                // json ranking request non géré
                 sendResponse({ type: 'dummy' });
                 return;
             }
