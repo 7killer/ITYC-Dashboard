@@ -1,5 +1,6 @@
-import {getLegRank, getLegRankUpdate, getPlayersList, getTeamsList, getVsrPlayerRank, getVsrRankUpdate, getVsrTeamRank} from "../app/memoData.js";
+import {getConnectedPlayerInfos, getLegPlayersOptions, getLegRank, getLegRankUpdate, getPlayersList, getRaceInfo, getTeamsList, getVsrPlayerRank, getVsrRankUpdate, getVsrTeamRank} from "../app/memoData.js";
 import {getUserPrefs} from "../../common/userPrefs.js";
+import {drawOptions, getRankingCategory,haveOptions,convertGuessOptionsToPlayerOptions} from "./common.js";
 
 const RANKING_PAGE_SIZE = 100;
 const rankingTexts = Object.freeze({
@@ -153,6 +154,31 @@ function buildCell(text, className = "")
     return createElement("td", { className, textContent: text ?? "-" });
 }
 
+function buildOptionsCell(playerOptions)
+{
+    const {optionsTxt, optionsTitle, optionsStyle} = drawOptions(playerOptions, true);
+    const cell = buildCell(optionsTxt || "-", "options");
+    if (optionsTitle) cell.setAttribute("title", optionsTitle);
+    const cssText = /^style="([^"]*)"$/.exec(optionsStyle)?.[1];
+    if (cssText) cell.style.cssText = cssText;
+    return cell;
+}
+
+function buildCategoryCell(playerOptions)
+{
+    if (haveOptions(playerOptions?.options)) {
+        return buildCell(getRankingCategory(playerOptions.options), "category");
+    }
+
+    if (playerOptions?.guessOptions) {
+        const cell = buildCell(getRankingCategory(convertGuessOptionsToPlayerOptions(playerOptions.guessOptions)), "category");
+        cell.style.fontStyle = "italic";
+        return cell;
+    }
+
+    return buildCell("?", "category");
+}
+
 function formatNumber(value)
 {
     if (value === null || value === undefined || value === "") return "-";
@@ -169,21 +195,46 @@ function formatDistance(value)
     });
 }
 
-function formatDistanceNm(value)
+function formatGapTime(value)
 {
-    const formatted = formatDistance(value);
-    return formatted === "-" ? formatted : `${formatted} nm`;
+    const time = Number(value);
+    if (!Number.isFinite(time) || time <= 0) return "-";
+
+    let remaining = Math.floor(time / 1000);
+    const milliseconds = Math.floor(time % 1000);
+    const days = Math.floor(remaining / 86400);
+    remaining -= days * 86400;
+    const hours = Math.floor(remaining / 3600);
+    remaining -= hours * 3600;
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining - minutes * 60;
+    const parts = [];
+
+    if (days !== 0) parts.push(`${days}d`);
+    if (hours !== 0) parts.push(`${hours}H`);
+    if (minutes !== 0) parts.push(`${minutes}m`);
+    if (seconds !== 0) parts.push(`${seconds}s`);
+    if (parts.length === 0 && milliseconds !== 0) parts.push(`${milliseconds}ms`);
+    if (parts.length === 0) return "-";
+
+    return `+ ${parts.join(" ")}`;
 }
 
-function formatPositiveDelta(value, reference, formatter = formatNumber)
+function formatRankingGap(entry, firstRank)
 {
-    const currentValue = Number(value);
-    const referenceValue = Number(reference);
-    if (!Number.isFinite(currentValue) || !Number.isFinite(referenceValue) || currentValue === 0) return "-";
+    const firstDistance = Number(firstRank?.distance);
+    const currentDistance = Number(entry?.distance);
+    const firstTime = Number(firstRank?.time);
+    const currentTime = Number(entry?.time);
 
-    const delta = currentValue - referenceValue;
-    if (delta === 0) return "-";
-    return `+ ${formatter(delta)}`;
+    if (!Number.isFinite(firstDistance) || !Number.isFinite(currentDistance)) return "-";
+
+    if (firstDistance === 0 && currentDistance === 0) {
+        if (!Number.isFinite(firstTime) || !Number.isFinite(currentTime)) return "-";
+        return formatGapTime(currentTime - firstTime);
+    }
+
+    return `+ ${formatDistance(currentDistance - firstDistance)} nm`;
 }
 
 function formatLocalDateNoSeconds(timestamp)
@@ -223,6 +274,20 @@ function buildLoadedAtMeta()
         className: "race-ranking-meta",
         textContent: `${getTexts().loadedAt} ${formattedDate}`,
     });
+}
+
+function getCourseRankingTitle(activeTitle)
+{
+    if (activeRankingTab !== "course") return activeTitle;
+
+    const raceInfo = getRaceInfo();
+    const raceName = raceInfo?.legName ?? raceInfo?.name ?? raceInfo?.displayName ?? raceInfo?.title;
+    if (!raceName || !raceInfo?.raceId || !raceInfo?.legNum) return activeTitle;
+
+    const teamName = activeCourseRankingTab === "team" ? getConnectedPlayerInfos()?.team?.name : "";
+    const teamLabel = teamName ? ` - ${teamName}` : "";
+
+    return `${activeTitle} - ${raceName}${teamLabel} (${raceInfo.raceId}-${raceInfo.legNum})`;
 }
 
 function getPlayerName(userId, playersList)
@@ -322,6 +387,7 @@ function buildCourseRankTable(partition, viewId)
 
     const playersList = getPlayersList();
     const teamsList = getTeamsList();
+    const legPlayersOptions = getLegPlayersOptions();
     const { currentPage } = clampPage(viewId, ranking.length);
     const start = (currentPage - 1) * RANKING_PAGE_SIZE;
     const rows = ranking.slice(start, start + RANKING_PAGE_SIZE);
@@ -331,21 +397,26 @@ function buildCourseRankTable(partition, viewId)
         createElement("tr", {}, [
             createElement("th", { textContent: "Rank" }),
             createElement("th", { textContent: "Nom du joueur" }),
+            createElement("th", { textContent: "Pays" }),
+            createElement("th", { textContent: "Options" }),
+            createElement("th", { textContent: "Gap" }),
             createElement("th", { textContent: "Team" }),
-            createElement("th", { textContent: "Time" }),
-            createElement("th", { textContent: "Distance" }),
-            createElement("th", { textContent: "Points" }),
+            createElement("th", { textContent: "Category" }),
         ]),
     ]);
 
-    const tbody = createElement("tbody", {}, rows.map((entry) => createElement("tr", {}, [
-        buildCell(formatNumber(entry.rank), "rank"),
-        buildCell(getPlayerName(entry.userId, playersList), "username"),
-        buildCell(getPlayerTeamName(entry.userId, playersList, teamsList), "teamname"),
-        buildCell(formatPositiveDelta(entry.time, firstRank.time), "time"),
-        buildCell(formatPositiveDelta(entry.distance, firstRank.distance, formatDistanceNm), "distance"),
-        buildCell(formatNumber(entry.points), "points"),
-    ])));
+    const tbody = createElement("tbody", {}, rows.map((entry) => {
+        const playerOptions = legPlayersOptions[entry.userId];
+        return createElement("tr", {}, [
+            buildCell(formatNumber(entry.rank), "rank"),
+            buildCell(getPlayerName(entry.userId, playersList), "username"),
+            buildCell(entry.country || "-", "country"),
+            buildOptionsCell(playerOptions),
+            buildCell(formatRankingGap(entry, firstRank), "gap"),
+            buildCell(getPlayerTeamName(entry.userId, playersList, teamsList), "teamname"),
+            buildCategoryCell(playerOptions),
+        ]);
+    }));
 
     return createElement("div", { className: "table-wrap race-ranking-table-wrap" }, [
         createElement("table", { className: "table-modern race-ranking-table race-ranking-course-table" }, [thead, tbody]),
@@ -387,7 +458,7 @@ function buildCourseInterTeamTable()
     ]);
 }
 
-function buildCoursePlayerRankTable(partition, viewId)
+function buildCoursePlayerRankTable(partition, viewId, showTeamColumn = true)
 {
     const legPlayerRank = getLegRank()?.[partition];
     const ranking = legPlayerRank?.rank;
@@ -399,6 +470,7 @@ function buildCoursePlayerRankTable(partition, viewId)
         .map((entry) => [entry.userId, entry.rank]));
     const playersList = getPlayersList();
     const teamsList = getTeamsList();
+    const legPlayersOptions = getLegPlayersOptions();
     const { currentPage } = clampPage(viewId, ranking.length);
     const start = (currentPage - 1) * RANKING_PAGE_SIZE;
     const rows = ranking.slice(start, start + RANKING_PAGE_SIZE);
@@ -409,22 +481,27 @@ function buildCoursePlayerRankTable(partition, viewId)
             createElement("th", { textContent: "Rank" }),
             createElement("th", { textContent: "RaceRank" }),
             createElement("th", { textContent: "Nom du joueur" }),
-            createElement("th", { textContent: "Teams" }),
-            createElement("th", { textContent: "Time" }),
-            createElement("th", { textContent: "Distance" }),
-            createElement("th", { textContent: "Points" }),
-        ]),
+            createElement("th", { textContent: "Pays" }),
+            createElement("th", { textContent: "Options" }),
+            createElement("th", { textContent: "Gap" }),
+            showTeamColumn ? createElement("th", { textContent: "Teams" }) : null,
+            createElement("th", { textContent: "Category" }),
+        ].filter(Boolean)),
     ]);
 
-    const tbody = createElement("tbody", {}, rows.map((entry) => createElement("tr", {}, [
-        buildCell(formatNumber(entry.rank), "rank"),
-        buildCell(formatNumber(globalRankByUserId.get(entry.userId)), "raceRank"),
-        buildCell(getPlayerName(entry.userId, playersList), "username"),
-        buildCell(getPlayerTeamName(entry.userId, playersList, teamsList), "teamname"),
-        buildCell(formatPositiveDelta(entry.time, firstRank.time), "time"),
-        buildCell(formatPositiveDelta(entry.distance, firstRank.distance, formatDistanceNm), "distance"),
-        buildCell(formatNumber(entry.points), "points"),
-    ])));
+    const tbody = createElement("tbody", {}, rows.map((entry) => {
+        const playerOptions = legPlayersOptions[entry.userId];
+        return createElement("tr", {}, [
+            buildCell(formatNumber(entry.rank), "rank"),
+            buildCell(formatNumber(globalRankByUserId.get(entry.userId)), "raceRank"),
+            buildCell(getPlayerName(entry.userId, playersList), "username"),
+            buildCell(entry.country || "-", "country"),
+            buildOptionsCell(playerOptions),
+            buildCell(formatRankingGap(entry, firstRank), "gap"),
+            showTeamColumn ? buildCell(getPlayerTeamName(entry.userId, playersList, teamsList), "teamname") : null,
+            buildCategoryCell(playerOptions),
+        ].filter(Boolean));
+    }));
 
     return createElement("div", { className: "table-wrap race-ranking-table-wrap" }, [
         createElement("table", { className: "table-modern race-ranking-table race-ranking-course-team-table" }, [thead, tbody]),
@@ -437,7 +514,7 @@ function buildRankingContent()
     if (activeRankingTab === "teamVsr") return buildTeamVsrTable();
     if (activeRankingTab === "course" && activeCourseRankingTab === "interTeam") return buildCourseInterTeamTable();
     if (activeRankingTab === "course" && activeCourseRankingTab === "team") {
-        return buildCoursePlayerRankTable(coursePartitionByTab.team, "courseTeam");
+        return buildCoursePlayerRankTable(coursePartitionByTab.team, "courseTeam", false);
     }
     if (activeRankingTab === "course" && activeCourseRankingTab === "friends") {
         return buildCoursePlayerRankTable(coursePartitionByTab.friends, "courseFriends");
@@ -465,7 +542,7 @@ function buildRankingPanel()
     return createElement("section", { className: "card race-ranking-card" }, [
         createElement("div", { className: "card-header" }, [
             createElement("span", { className: "badge", textContent: "Rank" }),
-            createElement("h3", { id: "t_ranking2", textContent: activeTitle }),
+            createElement("h3", { id: "t_ranking2", textContent: getCourseRankingTitle(activeTitle) }),
             buildLoadedAtMeta(),
             rowsCount > RANKING_PAGE_SIZE ? buildPager(activeViewId, rowsCount) : null,
         ]),

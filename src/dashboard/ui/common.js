@@ -1,7 +1,7 @@
 
 
 import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
-import { roundTo ,sign,isCurrent} from "../../common/utils.js";
+import { roundTo ,sign,isCurrent, isBitSet,guessOptionBits} from "../../common/utils.js";
 import {sailNames,sailColors} from "./constant.js"
 import {getRaceInfo} from '../app/memoData.js'
 
@@ -587,7 +587,38 @@ export function display_selbox(state) {
         document.getElementById("sel_export").style.display = "none";
     }   
 }
+export function haveOptions(playerOptions){
+    if(playerOptions?.light || playerOptions?.reach || playerOptions?.heavy
+    || playerOptions?.foil || playerOptions?.winch || playerOptions?.hull
+    || playerOptions?.comfortLoungePug || playerOptions?.magicFurler || playerOptions?.vrtexJacket 
+    ) 
+        return true;
+    else
+        return false;    
+}
 
+
+export function convertGuessOptionsToPlayerOptions(guessOptions)
+{
+    if(!guessOptions) 
+        return {
+            light : false,
+            reach : false,
+            heavy : false,
+            winch : false,
+            foil : false,
+            hull : false
+        };
+    const playerOptions = {
+        light : isBitSet(guessOptions,guessOptionBits["light"]),
+        reach : isBitSet(guessOptions,guessOptionBits["reach"]),
+        heavy : isBitSet(guessOptions,guessOptionBits["heavy"]),
+        winch : isBitSet(guessOptions,guessOptionBits["winchDetected"]) && isBitSet(guessOptions,guessOptionBits["winch"]),
+        foil : isBitSet(guessOptions,guessOptionBits["foilDetected"]) && isBitSet(guessOptions,guessOptionBits["foil"]),
+        hull : isBitSet(guessOptions,guessOptionBits["hullDetected"]) && isBitSet(guessOptions,guessOptionBits["hull"]),
+    }
+    return playerOptions;
+}
 
 export function getRankingCategory(playerOptions)
 {
@@ -664,3 +695,106 @@ export async function updateNmeaIndicator(state)
     }     
 }
 
+export function drawOptions(playerOptions, longFormat = false) {
+    const userPrefs = getUserPrefs();
+    let optionsTxt = "";
+    let optionsStyle = "";
+    let optionsTitle = "";
+    let foilsType = 0;
+
+    if(!playerOptions)
+        return {optionsTxt:"",optionsTitle:"",optionsStyle:"",foilsType:0};
+
+    let optSail = "";
+    let optPerf = "";
+    const pOptions = playerOptions.options;
+    if(pOptions?.light || pOptions?.reach || pOptions?.heavy
+    || pOptions?.foil || pOptions?.winch || pOptions?.hull
+    || pOptions?.comfortLoungePug || pOptions?.magicFurler || pOptions?.vrtexJacket 
+    ) 
+    {
+        if(pOptions.light || pOptions.reach || pOptions.heavy)
+            optSail = "[";
+        if(pOptions.reach) optSail += "reach,";
+        if(pOptions.light) optSail += "light,";
+        if(pOptions.heavy) optSail += "heavy,";
+
+        if(pOptions.foil || pOptions.winch || pOptions.hull
+            || pOptions.comfortLoungePug || pOptions.magicFurler || pOptions.vrtexJacket
+        )
+            optPerf = "[";
+        if(pOptions.winch) optPerf += "winch,";
+        if(pOptions.foil) {optPerf += "foil,";foilsType = 2;} else {foilsType = 1;}
+        if(pOptions.hull) optPerf += "hull,";
+        if(pOptions.comfortLoungePug) optPerf += "comfortLoungePug,";
+        if(pOptions.magicFurler) optPerf += "magicFurler,";
+        if(pOptions.vrtexJacket) optPerf += "vrtexJacket,";
+
+    } else if(playerOptions.guessOptions  && playerOptions.guessOptions!= 0)
+    {
+        const pOptions = playerOptions.guessOptions;
+        if(isBitSet(pOptions,guessOptionBits["reach"])
+        || isBitSet(pOptions,guessOptionBits["light"])
+        || isBitSet(pOptions,guessOptionBits["heavy"]))
+            optSail ="[";
+        
+        if(isBitSet(pOptions,guessOptionBits["reach"])) optSail += "reach,";
+        if(isBitSet(pOptions,guessOptionBits["light"])) optSail += "light,";
+        if(isBitSet(pOptions,guessOptionBits["heavy"])) optSail += "heavy,";
+
+        if((isBitSet(pOptions,guessOptionBits["winchDetected"]) && isBitSet(pOptions,guessOptionBits["winch"]))
+        || (isBitSet(pOptions,guessOptionBits["foilDetected"]) && isBitSet(pOptions,guessOptionBits["foil"]))
+        || (isBitSet(pOptions,guessOptionBits["hullDetected"]) && isBitSet(pOptions,guessOptionBits["hull"])))
+            optPerf ="[";
+
+        if(isBitSet(pOptions,guessOptionBits["winchDetected"]) && isBitSet(pOptions,guessOptionBits["winch"]))
+            optPerf += "winch,";
+        if(isBitSet(pOptions,guessOptionBits["foilDetected"]) && isBitSet(pOptions,guessOptionBits["foil"]))
+        {    optPerf += "foil,";foilsType = 2;}
+        else if(isBitSet(pOptions,guessOptionBits["foilDetected"]) && !isBitSet(pOptions,guessOptionBits["foil"]))
+        {    foilsType = 1;}
+        
+        if(isBitSet(pOptions,guessOptionBits["hullDetected"]) && isBitSet(pOptions,guessOptionBits["hull"]))
+            optPerf += "hull,";
+        optionsStyle = 'style="font-style: italic;"';
+
+    }
+    
+    if(optSail.length !=0) 
+    {
+        optSail = optSail.substring(0,optSail.length-1);
+        optSail += "]";
+    }
+    if(optPerf.length !=0) 
+    {
+        optPerf = optPerf.substring(0,optPerf.length-1);
+        optPerf += "]";
+    }
+
+    if(optSail.length !=0 && optPerf.length !=0)
+        optionsTxt = optSail + " " + optPerf ;
+    else if(optSail.length !=0 && optPerf.length ==0)
+        optionsTxt = optSail;
+    else if(optSail.length ==0 && optPerf.length !=0)
+        optionsTxt = optPerf ;
+    else if(!playerOptions.guessOptions  || playerOptions.guessOptions == 0)
+        optionsTxt = "?";
+
+    optionsTitle = optionsTxt;
+    if(userPrefs.fleet.shortOption || longFormat)
+    {
+        optionsTxt = optionsTxt.replace("All Options","AO");
+        optionsTxt = optionsTxt.replace("Full Pack","FP");
+        optionsTxt = optionsTxt.replace("reach","R");
+        optionsTxt = optionsTxt.replace("light","L");
+        optionsTxt = optionsTxt.replace("heavy","H");
+        optionsTxt = optionsTxt.replace("winch","W");
+        optionsTxt = optionsTxt.replace("foil","F");
+        optionsTxt = optionsTxt.replace("hull","h");
+        optionsTxt = optionsTxt.replace("magicFurler","M");
+        optionsTxt = optionsTxt.replace("vrtexJacket","J");
+        optionsTxt = optionsTxt.replace("comfortLoungePug","C");
+    }
+    return {optionsTxt:optionsTxt,optionsTitle:optionsTitle,optionsStyle:optionsStyle,foilsType : foilsType};
+
+}
