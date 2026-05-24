@@ -9,7 +9,7 @@ import {getConnectedPlayerId,
         setLegSelectedPlayers
 } from '../app/memoData.js'
 
-import { deleteAllRoutes,hideRoute,showRoute,importRoute} from './map/map-routes.js'
+import { deleteAllRoutes,deleteRoute,hideRoute,showRoute,importRoute} from './map/map-routes.js'
 import { 
     isBitSet,guessOptionBits,isOptionsActivated
 } from '../../common/utils.js';
@@ -19,10 +19,40 @@ import {importExternalRouter,importGPXRoute,importExtraPattern} from '../app/rou
 import {zezoCall,vrZenCall} from '../../common/zezoscript.js'
 
 let popupStateLmap =false;
+let routePopupDismissBound = false;
+let routePopupOpenedAt = 0;
 var actualZezoColor = "#AA0000";
 var actualAvalon06Color ="#005500";
 var actualVRZenColor ="#499300";
 var actualgpxColor ="#009349";
+
+function ensureRoutePopupDismissHandlers()
+{
+    if(routePopupDismissBound) return;
+    routePopupDismissBound = true;
+
+    document.addEventListener("click", (ev) => {
+        if(!popupStateLmap) return;
+        if(Date.now() - routePopupOpenedAt < 120) return;
+
+        const popup = document.getElementById("rt_popupLmap");
+        if(!popup || popup.style.display === "none") return;
+
+        const target = ev.target;
+        if(target.closest?.("#lbl_rt_openLmap")) return;
+
+        if(target.closest?.("#rt_close_popupLmap")) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            onPopupCloseLmap();
+            return;
+        }
+
+        if(!popup.contains(target)) {
+            onPopupCloseLmap();
+        }
+    }, true);
+}
 
 function loadRacingSkipperList(elt)
 {
@@ -76,15 +106,17 @@ function loadRacingSkipperList(elt)
     });
     
     if(optionsSelectStillExist) selectobject.value = optionsSelect;
-    onSkipperSelectedChange("Lmap");
+    if (selectobject.value) onSkipperSelectedChange("Lmap");
 }
 
 export function onPopupOpenLmap()
 {
     const raceInfo = getRaceInfo();
-    if(!raceInfo || popupStateLmap) return;
+    if(!raceInfo) return;
 
+    ensureRoutePopupDismissHandlers();
     popupStateLmap = true;
+    routePopupOpenedAt = Date.now();
     document.getElementById("rt_popupLmap").style.display = "block";
     document.getElementById("sel_rt_skipperLmap").style.display = "block";
     document.getElementById("rt_nameSkipperLmap").style.display = "none";
@@ -96,9 +128,18 @@ export function onPopupOpenLmap()
     onChangeRouteTypeLmap();
 }
 
+export function onRouteImportToggleClick(ev)
+{
+    ev?.preventDefault?.();
+    ev?.stopPropagation?.();
+    onPopupOpenLmap();
+}
+
 export function onPopupCloseLmap() {
     popupStateLmap = false;
     document.getElementById("rt_popupLmap").style.display = "none";
+    const openCheckbox = document.getElementById("sel_rt_openLmap");
+    if(openCheckbox) openCheckbox.checked = false;
 }
 
 
@@ -466,6 +507,16 @@ export function onRouteListClick(target) {
     if(!raceInfo) return;
 
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
+    const deleteButton = target.closest?.('button[id^="delete_rt_name_Lmap:"]');
+    if (deleteButton) {
+        const name = deleteButton.id.slice('delete_rt_name_Lmap:'.length);
+        if(rid && mapState.route[rid][name]) {
+            deleteRoute(name);
+            updateRouteListHTML();
+        }
+        return;
+    }
+
   // clic sur label
     const lbl = target.closest?.('label[id^="lbl_rt_name_Lmap:"]');
     if (lbl) {
@@ -518,6 +569,9 @@ export function updateRouteListHTML()
     if(routeList) {
         Object.keys(routeList).forEach(function (name) {
             tableBody += '<tr class="rt_lst_line">';
+            tableBody += '<td class="rt_lst_delete noBorderElt">';
+                tableBody += '<button type="button" id="delete_rt_name_Lmap:'+name +'" title="Supprimer la route" aria-label="Supprimer la route">×</button>';
+            tableBody += '</td>';
                 tableBody += '<td class="rt_lst_name noBorderElt">';
                     tableBody += '<input type="checkbox" id="';
                     tableBody += 'sel_rt_name_Lmap:'+name;
@@ -525,7 +579,7 @@ export function updateRouteListHTML()
                     if(routeList[name].displayed) tableBody += 'checked';
                     tableBody += '>';
 
-                    tableBody += '<label for:"'+'sel_rt_name_Lmap:'+name + '" id="'+'lbl_rt_name_Lmap:'+name +'">'; 
+                    tableBody += '<label for="'+'sel_rt_name_Lmap:'+name + '" id="'+'lbl_rt_name_Lmap:'+name +'">'; 
                     tableBody += routeList[name].displayedName +'</label>';
                 tableBody += '</td>'    
             tableBody += '<td class="rt_lst_color noBorderElt">';
@@ -552,18 +606,41 @@ export function displayMapTrace(rid,routeName)
 
 // Help for import
 export function showsMapHelp(){
-    var msg = "Affichage des traits de côtes :\n" +
-        "- Zoomer sur la zone de la carte où vous souhaitez afficher les traits de côtes. Ils apparaissent automatiquement en bleu après quelques instants. Pour afficher une zone différente, dézoomez et zommez à l'endroit désiré.\n- La couleur des traits de côtes peut être personnalisée (Sélection couleur 'Côtes')\n\n" + 
-        "Importer un routage :\n" +
-        "- Zezo : importer automatiquement la route suggérée par Zezo en cliquant sur 'Import'.\n" +
-        "- Avalon : depuis votre logiciel Avalon, exportez votre route au format CSV et importez le fichier.\n" +
-        "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
-        "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
-        "Copier les coordonnées pointées par la souris :\n" +
-        "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).\n\n" +
-        "Outil Règle :\n" +
-        "- Pour l'utiliser, il faut activer l'outil en cliquant sur le bouton. Puis, un premier clic gauche sur un emplacement de la carte début le tracé de mesure, un second clic gauche termine le tracé de mesure et permet de débuter un nouveau tracé de mesure. Les tracés terminés restent affichés tant que l'outil est activé.\n" +
-        "- La touche « Echap » annule le tracé de mesure en cours non terminé. Une deuxième pression sur cette touche désactive l'outil.";
-        
-    alert(msg);
+    let modal = document.getElementById("mapHelpDialog");
+    if(!modal) {
+        modal = document.createElement("div");
+        modal.id = "mapHelpDialog";
+        modal.className = "map-help-dialog";
+        modal.innerHTML = `
+            <div class="map-help-panel" role="dialog" aria-modal="true" aria-labelledby="mapHelpTitle">
+                <div class="map-help-header">
+                    <h3 id="mapHelpTitle">Aide carte</h3>
+                    <button type="button" class="map-help-close" aria-label="Fermer">×</button>
+                </div>
+                <div class="map-help-body">
+                    <section>
+                        <h4>Traits de cotes</h4>
+                        <p>Zoomez sur la zone de carte a afficher. Les traits de cotes apparaissent automatiquement en bleu apres quelques instants.</p>
+                        <p>La couleur peut etre personnalisee avec la selection couleur Cotes.</p>
+                    </section>
+                    <section>
+                        <h4>Importer un routage</h4>
+                        <p>Zezo importe automatiquement la route suggeree avec Import.</p>
+                        <p>Avalon et VRZen utilisent un export CSV. GPX permet d'importer un fichier de trace.</p>
+                    </section>
+                    <section>
+                        <h4>Coordonnees et regle</h4>
+                        <p>CTRL + B, ou Cmd + B sur Mac, copie les coordonnees pointees par la souris.</p>
+                        <p>L'outil Regle se lance avec son bouton. Un clic demarre la mesure, un second clic termine le trace. Echap annule le trace en cours puis desactive l'outil.</p>
+                    </section>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+        modal.addEventListener("click", (ev) => {
+            if(ev.target === modal || ev.target.closest(".map-help-close")) {
+                modal.hidden = true;
+            }
+        });
+    }
+    modal.hidden = false;
 }

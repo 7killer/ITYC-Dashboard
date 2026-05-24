@@ -4,7 +4,7 @@ import {getUserPrefs, saveUserPrefs} from "../../common/userPrefs.js"
 import {switchTheme,onUserChangeRace} from "../ui/common.js"
 import {clickManager} from './clickManager.js'
 import {onPopupOpenLmap, onPopupCloseLmap,onCleanAllRoute,onChangeRouteTypeLmap,
-  onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick
+  onAddRouteLmap,onSkipperSelectedChange,showsMapHelp,onRouteListClick,onRouteImportToggleClick
 } from '../ui/raceMap.js'
 import {onCoastColorChange} from "../ui/map/map-coasts.js"
 import {resetAllGraphsZoom} from "../ui/raceGraph.js"
@@ -681,7 +681,7 @@ export function uiBindingInit() {
     },
     {
       selector: '#lbl_rt_openLmap',
-      onChange: () => {onPopupOpenLmap();}
+      onChange: (value, ev) => {onRouteImportToggleClick(ev);}
     },
     {
       selector: '#rt_close_popupLmap',

@@ -121,7 +121,7 @@ function buildRaceStatusHtmlLine(raceInfo ,raceIte)
     returnVal += '<td class="tdc"><span id="wi:' + rid + '"><img class="icon" src="./img/wind.svg"/></span></td>'
     returnVal += '<td class="tdc"><span id="ityc:' + rid + '">&#x2620;</span></td>'
     returnVal += '<td class="tdc"><span id="cp:' + rid + '"><img class="icon" src="./img/compass.svg"/></span></td>'
-    returnVal += '<td class="name">' + raceInfo.legName + '</td>';
+    returnVal += '<td class="name"><span class="race-name-text">' + raceInfo.legName + '</span></td>';
 
     if(raceIte)
     {

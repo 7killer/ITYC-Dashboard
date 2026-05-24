@@ -36,7 +36,9 @@ export function createEmptyRoute(rid,name,skipperName,color,displayedName)
     
     if(!rid || !name) return;
     if(!mapState.route[rid]) mapState.route[rid] = [];
-    if(mapState.route[rid][name]) delete mapState.route[rid][name]; 
+    const routeNameInfo = getAvailableRouteName(rid,name);
+    name = routeNameInfo.name;
+    if (routeNameInfo.index > 0 && displayedName) displayedName += " " + routeNameInfo.index;
 
     mapState.route[rid][name] = [];
 
@@ -50,6 +52,7 @@ export function createEmptyRoute(rid,name,skipperName,color,displayedName)
     currentRoute.skipperName = skipperName;
     currentRoute.color = color;
 
+    return name;
 
 }
 
@@ -59,7 +62,21 @@ export function addNewPoints(rid,name,routeInfoData) {
     mapState.route[rid][name].points.push(routeInfoData);
 
 }
+function isRouteExisting(rid,name) {
+    return !!mapState?.route?.[rid]?.[name];
+}
 
+function getAvailableRouteName(rid,name) {
+    let index = 0;
+    let routeName = name;
+
+    while (isRouteExisting(rid,routeName)) {
+        index += 1;
+        routeName = name + " " + index;
+    }
+
+    return {name: routeName, index};
+}
 
 export function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
 
@@ -78,8 +95,8 @@ export function importGPXRoute(race,gpxFile,routerName,skipperName,color) {
     else if (Array.isArray(gpx.waypoints)) gpxPoints = gpx.waypoints;
     else return "";
 
-    const routeName = cleanSpecial(routerName + " " + skipperName);
-    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
+    let routeName = cleanSpecial(routerName + " " + skipperName);
+    routeName = createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
 
     gpxPoints.forEach(function (pt) {
         
@@ -120,15 +137,14 @@ export function importExternalRouter(rid,fileTxt,routerName,skipperName,color,mo
     {
         return "" ;//File not available
     }
-    const routeName = cleanSpecial(routerName + " " + skipperName);
-    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
+    let routeName = cleanSpecial(routerName + " " + skipperName);
+    routeName = createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
 
     let currentYear = new Date();
     currentYear = currentYear.getFullYear();
     let previousMonth =0;
 
-    const totalLines = lineAvl.length-2;
-    if (mode == 1) totalLines = lineAvl.length-1;
+    const totalLines = (mode == 1)?lineAvl.length-1:lineAvl.length-2; //In VRZen, the last line is empty, in Avalon the first line is header and the last line is empty
     while (i < totalLines) {
         i = i + 1;
         if (i > totalLines) i = totalLines;
@@ -264,8 +280,8 @@ export function importExtraPattern(rid,fileTxt,routerName,skipperName,color) {
 
     if(lineAvl.length<= 1) return "" ;//empty file or file not exits 
 
-    const routeName = cleanSpecial(routerName + " " + skipperName);
-    createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
+    let routeName = cleanSpecial(routerName + " " + skipperName);
+    routeName = createEmptyRoute(rid,routeName,skipperName,color,routerName + " " + skipperName);
 
     while (i < lineAvl.length-2) {
         i = i + 1;
@@ -282,7 +298,7 @@ export function importExtraPattern(rid,fileTxt,routerName,skipperName,color) {
         routeData.twd = "-";
         routeData.sail = "-";
         routeData.speed = "-";
-        addNewPoints(race.id,routeName,routeData);
+        addNewPoints(rid,routeName,routeData);
         
     }
     return routeName;

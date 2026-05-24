@@ -264,9 +264,29 @@ html, body {
 }
 
 .topbar-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 24px;
+    padding: 3px 8px;
+    background: color-mix(in oklab, var(--td_bg_color), #888 10%);
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
     color: var(--td_color);
+    cursor: pointer;
     font-size: 11px;
+    line-height: 1.2;
     white-space: nowrap;
+}
+
+.topbar-check::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .45;
 }
 
 #lb_teamname {
@@ -274,8 +294,31 @@ html, body {
 }
 
 .topbar-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 15px;
+    height: 15px;
     margin: 0;
     accent-color: #25d366;
+}
+
+.topbar-card input[type="checkbox"]:checked + .topbar-check {
+    outline: 2px solid #25d366;
+    background: color-mix(in oklab, var(--td_bg_color), #25d366 16%);
+}
+
+.topbar-card input[type="checkbox"]:checked + .topbar-check::before {
+    color: #25d366;
+    opacity: 1;
+}
+
+.topbar-card input[type="checkbox"]:not(:checked) + .topbar-check {
+    opacity: .62;
+}
+
+.topbar-card input[type="checkbox"]:focus-visible + .topbar-check {
+    outline: 2px solid #ffb400;
+    outline-offset: 2px;
 }
 
 .topbar-theme-toggle {
@@ -2119,14 +2162,24 @@ thead.sticky th {
 }
 
 .race-ranking-card .card-header {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    flex-wrap: initial;
+}
+
+.race-ranking-card .card-header h3 {
+    text-align: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .race-ranking-pager {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-left: auto;
+    margin-left: 0;
 }
 
 .race-ranking-meta {
@@ -2171,12 +2224,32 @@ thead.sticky th {
     max-height: none;
     overflow: auto;
     position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.race-ranking-table {
+    font-size: 11px;
+    width: max-content;
+    min-width: 0;
+    width: auto!important;
 }
 
 .race-ranking-table thead th {
     position: sticky;
     top: 0;
     z-index: 2;
+    padding: 4px 8px!important;
+    line-height: 16px!important;
+}
+
+.race-ranking-table tbody tr {
+    height: 16px;
+}
+
+.race-ranking-table tbody td {
+    padding: 2px 8px!important;
+    line-height: 14px!important;
 }
 
 .race-ranking-table th:nth-child(1),
@@ -2205,17 +2278,22 @@ thead.sticky th {
 
 .race-ranking-course-table th:nth-child(2),
 .race-ranking-course-table td:nth-child(2),
-.race-ranking-course-table th:nth-child(3),
-.race-ranking-course-table td:nth-child(3) {
+.race-ranking-course-table th:nth-child(6),
+.race-ranking-course-table td:nth-child(6),
+.race-ranking-course-table th:nth-child(7),
+.race-ranking-course-table td:nth-child(7) {
     text-align: left;
 }
 
+.race-ranking-course-table th:nth-child(3),
+.race-ranking-course-table td:nth-child(3),
 .race-ranking-course-table th:nth-child(4),
-.race-ranking-course-table td:nth-child(4),
+.race-ranking-course-table td:nth-child(4) {
+    text-align: center;
+}
+
 .race-ranking-course-table th:nth-child(5),
-.race-ranking-course-table td:nth-child(5),
-.race-ranking-course-table th:nth-child(6),
-.race-ranking-course-table td:nth-child(6) {
+.race-ranking-course-table td:nth-child(5) {
     text-align: right;
 }
 
@@ -2235,8 +2313,10 @@ thead.sticky th {
 
 .race-ranking-course-team-table th:nth-child(3),
 .race-ranking-course-team-table td:nth-child(3),
-.race-ranking-course-team-table th:nth-child(4),
-.race-ranking-course-team-table td:nth-child(4) {
+.race-ranking-course-team-table th:nth-child(7),
+.race-ranking-course-team-table td:nth-child(7),
+.race-ranking-course-team-table th:nth-child(8),
+.race-ranking-course-team-table td:nth-child(8) {
     text-align: left;
 }
 
@@ -2244,13 +2324,16 @@ thead.sticky th {
 .race-ranking-course-team-table td:nth-child(1),
 .race-ranking-course-team-table th:nth-child(2),
 .race-ranking-course-team-table td:nth-child(2),
-.race-ranking-course-team-table th:nth-child(5),
-.race-ranking-course-team-table td:nth-child(5),
 .race-ranking-course-team-table th:nth-child(6),
-.race-ranking-course-team-table td:nth-child(6),
-.race-ranking-course-team-table th:nth-child(7),
-.race-ranking-course-team-table td:nth-child(7) {
+.race-ranking-course-team-table td:nth-child(6) {
     text-align: right;
+}
+
+.race-ranking-course-team-table th:nth-child(4),
+.race-ranking-course-team-table td:nth-child(4),
+.race-ranking-course-team-table th:nth-child(5),
+.race-ranking-course-team-table td:nth-child(5) {
+    text-align: center;
 }
 
 .race-ranking-empty {
@@ -2379,31 +2462,54 @@ thead.sticky th {
 }
 
 .mapBtDiv>label  {
-    display: block;
-    padding: 1px 10px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 0 12px;
     font-size: 11px;
+    font-weight: 700;
     cursor: pointer;
     position: relative;
-    color: #000000;
-    background: #EEEEEE;
+    color: var(--dashboardTabs_color);
+    background: color-mix(in oklab, var(--dashboardTabs_shell_bg), #fff 7%);
+    border: 1px solid var(--dashboardTabs_border);
+    border-radius: 6px;
     text-align: center;
-    width: 40%;
-    margin-left: 2%;
-    margin-right: 2%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 
 #lbl_helpLmap {
-    width: 100%
+    width: 100%;
+}
+
+#existingRoute2Lmap {
+    display: flex;
+    gap: 10px;
+}
+
+#existingRoute2Lmap > label {
+    flex: 1 1 0;
 }
 
 .rt_lst_name>label  {
-    display: block;
-    padding: 1px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 2px 10px;
     font-size: 11px;
+    font-weight: 700;
     cursor: pointer;
     position: relative;
-    color: #000000;
-    background: #EEEEEE;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #fff 12%);
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
     text-align: center;
 }
 
@@ -2411,48 +2517,64 @@ thead.sticky th {
 
 
 .rt_lst_name>label:hover ,.mapBtDiv>label:hover {
-    display: block;
-    padding: 1px 10px;
-    font-size: 11px;
-    cursor: pointer;
-    position: relative;
-    color: #000000;
-    background: #d1d1d1;
+    color: var(--dashboardTabs_color);
+    background: var(--dashboardTabs_hover_bg);
 }
 
 .rt_lst_name>label:active, .mapBtDiv>label:active  {
-    display: block;
-    padding: 1px 10px;
-    font-size: 11px;
-    cursor: pointer;
-    position: relative;
-    color: #FFFFFF;
-    background: #555555;
+    color: var(--dashboardTabs_active_color);
+    background: var(--dashboardTabs_active_bg);
 }
 
 .rt_lst_name>[id^="sel_"]:checked + label, .mapBtDiv>[id^="sel_"]:checked + label {
     top: 0;
-    background: #555555;
-    color: #F5F5F5;
+    background: var(--dashboardTabs_active_bg);
+    color: var(--dashboardTabs_active_color);
+    border-color: var(--dashboardTabs_focus);
 }
 
 .rt_lst_name {
-    height:25px;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    width: 80%;
+    height: 34px;
+    padding: 3px 4px;
+    width: 78%;
 }
 .rt_lst_color {
-    /*height:25px;*/
     width: 10%;
 
 }
 .rt_lst_color>input {
-    max-width: 30px;
+    width: 28px;
+    height: 28px;
     border: none;
     background-color: transparent;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.rt_lst_delete {
+    width: 10%;
+    padding: 3px 0;
+}
+
+.rt_lst_delete>button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #fff 10%);
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 17px;
+    line-height: 1;
+}
+
+.rt_lst_delete>button:hover {
+    color: #fff;
+    background: #9b1c1c;
+    border-color: #c2410c;
 }
 
 input[type="color"] {
@@ -2467,23 +2589,44 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 #rt_popupLmap{
-    margin-top: 5%;
-    margin-left: 30%;
-    z-index: 999;
+    top: clamp(170px, 28vh, 300px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1200;
     font-size: 12px;
     font-weight: bold;
-    width: 400px;
-    height: 9.5em;
-    border: 1px solid #333;
-    border-radius:10px;
-    box-shadow: 8px 8px 5px #444;
-    padding: 8px 12px;
-    background-image: var(--popup_bg_img);
+    width: min(520px, calc(100vw - 32px));
+    height: auto !important;
+    max-height: min(72vh, 620px);
+    overflow: auto;
+    color: var(--td_color);
+    background: var(--td_bg_color);
+    border: 1px solid var(--border_color);
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+    padding: 0;
     position: absolute;
 }
 #bt_rt_addLmap{
-    float:left;
-    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 24px);
+    min-height: 32px;
+    margin: 10px 12px 12px;
+    color: var(--dashboardTabs_active_color);
+    background: var(--dashboardTabs_active_bg);
+    border: 1px solid var(--dashboardTabs_focus);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+#bt_rt_addLmap:hover {
+    filter: brightness(1.06);
 }
 
 .popupCloseBt{
@@ -2494,19 +2637,256 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 #t_rtTitle {
-    display:contents;
+    display: block;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0;
 
 }
 #rt_close_popup, #rt_close_popupLmap{
-    width : 5%;
-    height: 5%;
+    box-sizing: border-box;
+    width : 28px;
+    height: 28px;
+    padding: 6px;
     cursor: pointer;
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    background: color-mix(in oklab, var(--th_bg_color), #fff 10%);
 
 }
 #rt_popupHeader, #rt_popupHeaderLmap{
     display :flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    color: var(--th_color);
+    background: var(--th_bg_color);
+    border-bottom: 1px solid var(--border_color);
+}
+
+#rt_popupLmap table {
+    width: calc(100% - 24px);
+    margin: 12px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#rt_popupLmap tbody {
+    display: grid !important;
+    gap: 10px;
+}
+
+#rt_popupLmap tr {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+}
+
+#rt_popupLmap tbody > tr:first-child {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr) 36px;
+    align-items: center;
+    gap: 10px;
+}
+
+#rt_popupLmap td.noBorderElt {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+#rt_popupLmap select,
+#rt_popupLmap input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    height: 34px;
+    min-height: 34px;
+    color: var(--td_color);
+    background: color-mix(in oklab, var(--td_bg_color), #fff 8%);
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    padding: 0 8px;
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 34px;
+}
+
+#rt_popupLmap select {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#rt_popupLmap input[type="color"] {
+    width: 32px;
+    height: 34px;
+    padding: 3px;
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    background: color-mix(in oklab, var(--td_bg_color), #fff 8%);
+    cursor: pointer;
+}
+
+#rt_popupLmap .select-editable {
+    min-width: 0;
+}
+
+#rt_popupLmap .rt_left_col {
+    width: auto;
+}
+
+#rt_popupLmap .rt_lst_color {
+    flex: 0 0 36px;
+    width: auto;
+}
+
+#rt_extraFormatLmap,
+#rt_extraFormat2Lmap,
+#rt_extraFormat3Lmap,
+#rt_extraFormat4Lmap {
+    flex-wrap: wrap;
+    padding: 8px;
+    background: color-mix(in oklab, var(--td_bg_color), #fff 5%);
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+}
+
+#rt_extraFormatLmap td,
+#rt_extraFormat2Lmap td,
+#rt_extraFormat3Lmap td,
+#rt_extraFormat4Lmap td {
+    width: auto !important;
+    min-height: 26px !important;
+}
+
+#rt_extraFormat2Lmap td:first-child,
+#rt_extraFormat3Lmap td:first-child,
+#rt_extraFormat4Lmap td:first-child,
+#rt_extraFormatLmap td:first-child {
+    flex: 0 0 64px;
+    color: var(--th_color);
+}
+
+#rt_extraFormat2Lmap td:not(:first-child),
+#rt_extraFormat3Lmap td:not(:first-child),
+#rt_extraFormat4Lmap td:not(:first-child) {
+    flex: 1 1 88px;
+}
+
+#rt_extraFormatLmap td:not(:first-child) {
+    flex: 1 1 120px;
+}
+
+#rt_popupLmap input[type="checkbox"] {
+    margin: 0 6px 0 0;
+    accent-color: #25d366;
+}
+
+#rt_popupLmap td label {
+    color: var(--td_color);
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: normal;
+}
+#rt_nameSkipperLmap,#sel_rt_skipperLmap  {
+    margin-top: -0.6em;
+    margin-left: -0.5em;
+}
+
+
+.map-help-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.48);
+}
+
+.map-help-dialog[hidden] {
+    display: none;
+}
+
+.map-help-panel {
+    width: min(560px, 92vw);
+    max-height: min(680px, 86vh);
+    overflow: hidden;
+    color: var(--td_color);
+    background: var(--td_bg_color);
+    border: 1px solid var(--border_color);
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+}
+
+.map-help-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--th_bg_color);
+    color: var(--th_color);
+    border-bottom: 1px solid var(--border_color);
+}
+
+.map-help-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.map-help-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--th_color);
+    background: transparent;
+    border: 1px solid var(--border_color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.map-help-close:hover {
+    background: color-mix(in oklab, var(--th_bg_color), #fff 16%);
+}
+
+.map-help-body {
+    display: grid;
+    gap: 12px;
+    max-height: calc(min(680px, 86vh) - 50px);
+    overflow: auto;
+    padding: 14px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.map-help-body section {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border_color);
+}
+
+.map-help-body section:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.map-help-body h4 {
+    margin: 0 0 6px;
+    color: var(--th_color);
+    font-size: 13px;
+}
+
+.map-help-body p {
+    margin: 5px 0;
 }
 .extraMapSep {
     border-bottom: var(--th_border);
@@ -2612,9 +2992,20 @@ a:active {
 }
 
 #raceStatusTable.race-status-table td.name {
-    min-width: 180px;
+    min-width: 145px;
+    max-width: 190px;
     text-align: left;
     font-weight: 600;
+    line-height: 1.25;
+    white-space: normal;
+}
+
+#raceStatusTable.race-status-table td.name .race-name-text {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 #raceStatusTable.race-status-table td.tack,
@@ -2667,7 +3058,7 @@ a:active {
 
 .race-fleet-wrap {
     max-width: 100%;
-    overflow: auto;
+    overflow: visible;
     border: 1px solid var(--border_color);
     border-radius: 8px;
     background: var(--td_bg_color);
@@ -2784,6 +3175,16 @@ a:active {
     max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.race-fleet-table td.Position {
+    min-width: 180px;
+    max-width: 240px;
+    line-height: 1.25;
+    text-align: left;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
 }
 
 .race-fleet-table #th_lu {
@@ -3233,7 +3634,7 @@ light
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 8px 16px;
     background: var(--th_bg_color);
     color: var(--th_color);
     border-bottom: 1px solid var(--border_color);

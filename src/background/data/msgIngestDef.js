@@ -620,7 +620,8 @@ export async function ingestLegRanks(request, response) {
       userId: p._id,
       distance: p.distance,
       time: p.time,
-      rank: p.rank
+      rank: p.rank,
+      country: p.country ? p.country : "-",
     });
 
     const rank = res.res.rank.map(rankMap);

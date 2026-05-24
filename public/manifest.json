@@ -2,7 +2,7 @@
     "name": "VR Dashboard I.T.Y.C. V2",
     "short_name": "VR Dashboard I.T.Y.C. V2",
     "description": "Monitor boat position & call virtual sailor weather router",
-    "version": "2.0.0",
+    "version": "2.0.1",
   "permissions": [
     "tabs",
     "storage",

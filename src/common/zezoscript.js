@@ -94,7 +94,7 @@ export function zezoCall(rid, playerIte, color, raceUrl, timeoutMs = 10_000) {
           routeNameClean = cleanSpecial(routeName);
         }
 
-        createEmptyRoute(rid, routeNameClean, playerIte.info.name, color, routeName);
+        routeNameClean = createEmptyRoute(rid, routeNameClean, playerIte.info.name, color, routeName);
 
         const mScale = /var scale = ([0-9]+)/.exec(result[0] ?? "");
         const scale = mScale?.[1] ? Number(mScale[1]) : null;
@@ -168,18 +168,18 @@ export function vrZenCall(rid, playerIte, color, vrZenName, endLat,endLon,mode,d
   }
 
 
-  let stamina = playerIte.metaDash?.realStamina? playerIte.metaDash.realStamina : playerIte.stamina;
+  let stamina = playerIte.ite.metaDash?.realStamina? playerIte.ite.metaDash.realStamina : playerIte.ite.stamina;
   if(stamina > 100) stamina = 100;
-  const sail = (playerIte.sail?(playerIte.sail % 10):"0");
+  const sail = (playerIte.ite.sail?(playerIte.ite.sail % 10):"0");
 
   const url =
     "https://routage.vrzen.org/Simulation?userID=skm_test" 
     + "&course=" + encodeURIComponent(vrZenName)
-    + "&latitude_origine=" + playerIte.pos.lat
-    + "&longitude_origine=" + playerIte.pos.lon
+    + "&latitude_origine=" + playerIte.ite.pos.lat
+    + "&longitude_origine=" + playerIte.ite.pos.lon
     + "&latitude_cible=" + endLat
     + "&longitude_cible=" + endLon
-    + "&parametres=" +vrZenOpt + ":"+day+ ":4:True:"+ mode +":-1::1:"+ sail +":"+playerIte.hdg+":False:True:"+ stamina +":MIXGEFS025"
+    + "&parametres=" +vrZenOpt + ":"+day+ ":4:True:"+ mode +":-1::1:"+ sail +":"+playerIte.ite.hdg+":False:True:"+ stamina +":MIXGEFS025"
     + "&preferences=EMPTY:500:EMAIL:10:MN:FR";
     
   setBusy(true);
@@ -224,7 +224,7 @@ export function vrZenCall(rid, playerIte, color, vrZenName, endLat,endLon,mode,d
           routeNameClean = cleanSpecial(routeName);
         }
 
-        createEmptyRoute(rid, routeNameClean, playerIte.info.name, color, routeName);
+        routeNameClean = createEmptyRoute(rid, routeNameClean, playerIte.info.name, color, routeName);
 
         for (var i = result.listDetailSimulation.length-1; i > 1 ; i--) {
           const ptvrZen = result.listDetailSimulation[i];
