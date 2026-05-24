@@ -244,7 +244,8 @@ export function openAutoRouter() {
     const userPrefs = getUserPrefs();
     if(!raceInfo || raceInfo?.length == 0 
     || !raceItes || !raceItes.ites || !raceItes.ites.length
-    || !connectedPlayerId)
+    || !connectedPlayerId
+    || !userPrefs.router.auto)
         return;
 
     if(userPrefs.router.sel == "zezo")
