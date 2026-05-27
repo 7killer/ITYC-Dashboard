@@ -2,7 +2,7 @@
 import { accountDetailsDataModel } from './ingesterModels/accountDetails.js';
 import { legListDataModel ,raceSchema} from './ingesterModels/getLegList.js';
 import { endLegPrepDataModel } from './ingesterModels/getEndLegPrep.js';
-import {processDBOperations,getData, deleteByRaceLegPartition, deleteByType} from '../../common/dbOpes.js';
+import {processDBOperations,getData,getAllData, deleteByRaceLegPartition, deleteByType} from '../../common/dbOpes.js';
 import {getBoatInfosRequestDataSchema,
         getBoatInfosResponseSchema,
         getBoatInfosBoatStateSchema,
@@ -23,6 +23,67 @@ import { ghostTrackRequestDataSchema, ghostTrackResponseSchema } from './ingeste
 
 
 import cfg from '@/config.json';
+
+const LEG_RANK_PARTITION_GENERAL = 0;
+const LEG_RANK_PAGE_SIZE = 100;
+
+async function buildLegRankUpdatesFromBoatInfo(bs) {
+  if (bs.rank == null) return null;
+
+  const raceId = bs._id.race_id;
+  const legNum = bs._id.leg_num;
+  const partition = LEG_RANK_PARTITION_GENERAL;
+  const pageNumber = Math.ceil(bs.rank / LEG_RANK_PAGE_SIZE);
+  if (!Number.isFinite(pageNumber) || pageNumber < 1) return null;
+
+  const info = await getData('legRank', [raceId, legNum, partition, 'info', 1]);
+  if (!info) return null;
+
+  const pages = await getAllData('legRank');
+  const dataPages = (Array.isArray(pages) ? pages : []).filter((page) =>
+    page?.raceId === raceId
+    && page?.legNum === legNum
+    && page?.partition === partition
+    && page?.type === 'data'
+  );
+  const existingPage = dataPages.find((page) => page.pageNumber === pageNumber);
+  const playerRank = {
+    userId: bs._id.user_id,
+    distance: bs.distance ?? 0,
+    time: bs.time ?? 0,
+    rank: bs.rank,
+    country: bs.personal?.country ?? "-",
+  };
+
+  const updates = dataPages
+    .filter((page) =>
+      page.pageNumber !== pageNumber
+      && Array.isArray(page.rank)
+      && page.rank.some((p) => p?.userId === playerRank.userId)
+    )
+    .map((page) => ({
+      ...page,
+      rank: page.rank.filter((p) => p?.userId !== playerRank.userId),
+    }));
+
+  const rank = [
+    ...(Array.isArray(existingPage?.rank)
+      ? existingPage.rank.filter((p) => p?.userId !== playerRank.userId)
+      : []),
+    playerRank
+  ].sort((a, b) => Number(a.rank ?? Number.POSITIVE_INFINITY) - Number(b.rank ?? Number.POSITIVE_INFINITY));
+
+  updates.push({
+    raceId,
+    legNum,
+    partition,
+    type: 'data',
+    pageNumber,
+    rank
+  });
+
+  return updates;
+}
 
 export async function ingestPolars(msgBody)
 {
@@ -283,8 +344,12 @@ export async function ingestBoatInfos(boatData)
         });
       } else
       {
+        const legRankUpdates = await buildLegRankUpdatesFromBoatInfo(bs);
         ope.push( {
           type : "putOrUpdate",
+          ...(legRankUpdates ? {
+            legRank: legRankUpdates
+          } : {}),
           legFleetInfos : [
             {
               id: bs._id.race_id+"_"+bs._id.leg_num+"_"+bs._id.user_id+"_"+bs.lastCalcDate,
@@ -330,6 +395,12 @@ export async function ingestBoatInfos(boatData)
               id: "playersUpdate",
               ts: Date.now(),
             },
+            ...(legRankUpdates
+              ? [{
+                  id: "legRankUpdate",
+                  ts: Date.now(),
+                }]
+              : []),
           ]
         });        
       }
@@ -618,15 +689,15 @@ export async function ingestLegRanks(request, response) {
     const now = Date.now();
     const rankMap = (p) => ({
       userId: p._id,
-      distance: p.distance,
-      time: p.time,
+      distance: p.distance ?? 0,
+      time: p.time ?? 0,
       rank: p.rank,
       country: p.country ? p.country : "-",
     });
 
     const rank = res.res.rank.map(rankMap);
     const me = res.res.me;
-    if (me && !rank.some((p) => p.userId === me._id)) {
+    if (me?.rank != null && !rank.some((p) => p.userId === me._id)) {
       rank.push(rankMap(me));
     }
 

@@ -9,6 +9,12 @@ const getLegRankPlayerSchema = Yup.object({
   rank: Yup.number().required(),
 });
 
+const getLegRankMeSchema = getLegRankPlayerSchema.shape({
+  distance: Yup.number().notRequired().nullable(),
+  time: Yup.number().notRequired().nullable(),
+  rank: Yup.number().notRequired().nullable(),
+}).default(undefined);
+
 const getLegRankPaginationSchema = Yup.object({
   nextPage: Yup.number().notRequired().nullable(),
   hasNextPage: Yup.boolean().required(),
@@ -36,7 +42,7 @@ export const getLegRankResponseSchema = Yup.object({
   rc: Yup.string().required(),
   res: Yup.object({
     rank: Yup.array(getLegRankPlayerSchema).required(),
-    me: getLegRankPlayerSchema.notRequired().nullable(),
+    me: getLegRankMeSchema.notRequired().nullable(),
     pagination: getLegRankPaginationSchema.required(),
     request_type: Yup.number().required(),
   }).required(),

@@ -2226,6 +2226,7 @@ thead.sticky th {
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
 }
 
 .race-ranking-table {
@@ -2233,6 +2234,8 @@ thead.sticky th {
     width: max-content;
     min-width: 0;
     width: auto!important;
+    height: auto;
+    align-self: flex-start;
 }
 
 .race-ranking-table thead th {
