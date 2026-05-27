@@ -379,7 +379,7 @@ export async function computeOwnIte(raceId, legNum, userId)
         if (metaDash.speedT) {
             metaDash.deltaD_T = metaDash.deltaD / metaDash.speedC * metaDash.speedT.speed;
         }
-        metaDash.previousItedate = previous.iteDate;
+        metaDash.previousIteDate = previous.iteDate;
         
         //fill info with previous ( only fleet infos messqge receive no boatinfo)
         if(!latest.rank && previous.rank) latest.rank = previous.rank;

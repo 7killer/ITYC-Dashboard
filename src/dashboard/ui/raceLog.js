@@ -211,9 +211,9 @@ function buildRaceLogLine(raceIte)
         + gentdRacelog("deltaD", "deltaDistance", speedTStyle, "Δd (nm)", deltaDist)
         + gentdRacelog("deltaT", "deltaTime", null, "Δt (s)", deltaTText)
         + gentdRacelog("position", "position", null, "Position", formatPosition(raceIte.pos.lat, raceIte.pos.lon))
-        + '<td class="sailPenalties" ' + getBG(iteDash?.tsEndOfSailChange,iteDash?.previousIteDate) + '>' + sailChange + '</td>'
-        + '<td class="gybe" ' + getBG(iteDash?.tsEndOfGybe,iteDash?.previousIteDate) + '>' + gybing + '</td>'
-        + '<td class="tack" ' + getBG(iteDash?.tsEndOfTack,iteDash?.previousIteDate) + '>' + tacking + '</td>'
+        + '<td class="sailPenalties" ' + getBG(raceIte?.tsEndOfSailChange,iteDash?.previousIteDate) + '>' + sailChange + '</td>'
+        + '<td class="gybe" ' + getBG(raceIte?.tsEndOfGybe,iteDash?.previousIteDate) + '>' + gybing + '</td>'
+        + '<td class="tack" ' + getBG(raceIte?.tsEndOfTack,iteDash?.previousIteDate) + '>' + tacking + '</td>'
         + '</tr>';
 
 
