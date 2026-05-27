@@ -261,17 +261,12 @@ export function deleteAllRoutes()
     
 }
 
-export function onMarkersChange() {
+export function onMarkersChange(displayMarkers) {
+
     const raceInfo = getRaceInfo();
     if(!mapState|| !mapState.map ||!raceInfo) return;
     const map = mapState.map;
     const rid = raceInfo.raceId+"-"+raceInfo.legNum;
-
-    const userPrefs = getUserPrefs();
-    const displayMarkers = userPrefs.map.showMarkers;
-
-    const markersToggle = document.getElementById('sel_showMarkersLmap');
-    if(markersToggle) markersToggle.checked=displayMarkers;
 
     if(mapState.route[rid])
     {
@@ -324,14 +319,9 @@ export function onSailsMarkersChange(displaySailsMarkers) {
     }
 }
 
-export function hideShowTracks() {
+export function hideShowTracks(displayTracks) {
     if(!mapState|| !mapState.map ) return;
     const map = mapState.map;
-
-    const userPrefs = getUserPrefs();
-    const displayTracks = userPrefs.map.showTracks;
-    const tracksToggle = document.getElementById('sel_showTracksLmap');
-    if(tracksToggle) tracksToggle.checked=displayTracks;
     if(mapState.fleetLayerTracks)
     {
         if(displayTracks)  

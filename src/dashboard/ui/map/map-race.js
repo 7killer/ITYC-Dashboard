@@ -321,6 +321,7 @@ function updateMapMe(connectedPlayerId,playerIte) {
         let prevPt = null;
         myTrack.forEach(({ lat, lon, ts,tag}) => {
             myTrackPts.push({lat,lon});
+            const pos2 = buildPt2(lat, lon);
             if(isFirst)
             {
                 const title =  "Me " 
@@ -330,7 +331,7 @@ function updateMapMe(connectedPlayerId,playerIte) {
                             + roundTo(Math.abs(gcDistance(myPos, {lat, lon}) / ((ts -  prevPt.ts) / 1000) * 3600), 2) 
                             + " kts<br>" + formatPosition(lat, lon) 
                             + (tag ? "<br>(Type: " + tag + ")" : "");
-                buildCircle({lat,lon}, mapState.meLayerMarkers,"#b86dff", 1.5 ,1, title);
+                buildCircle(pos2, mapState.meLayerMarkers,"#b86dff", 1.5 ,1, title);
                 mapState.refPoints.push({lat,lon});
             }
             isFirst = true;
