@@ -26,6 +26,31 @@ var actualAvalon06Color ="#005500";
 var actualVRZenColor ="#499300";
 var actualgpxColor ="#009349";
 
+function hasZezoRoute(raceInfo)
+{
+    return typeof raceInfo?.zezoUrl === "string" && raceInfo.zezoUrl.trim() !== "";
+}
+
+function updateRouteTypeOptionsLmap(raceInfo)
+{
+    const select = document.getElementById("sel_routeTypeLmap");
+    if(!select) return null;
+
+    const zezoOption = select.querySelector('option[value="rt_Zezo"]');
+    const zezoAvailable = hasZezoRoute(raceInfo);
+    if(zezoOption) {
+        zezoOption.hidden = !zezoAvailable;
+        zezoOption.disabled = !zezoAvailable;
+    }
+
+    if(!zezoAvailable && select.value === "rt_Zezo") {
+        const fallback = Array.from(select.options).find((option) => !option.disabled && !option.hidden);
+        if(fallback) select.value = fallback.value;
+    }
+
+    return select.value;
+}
+
 function ensureRoutePopupDismissHandlers()
 {
     if(routePopupDismissBound) return;
@@ -122,8 +147,9 @@ export function onPopupOpenLmap()
     document.getElementById("rt_nameSkipperLmap").style.display = "none";
     document.getElementById("rt_extraFormat2Lmap").style.display = "flex";
     document.getElementById("rt_extraFormat3Lmap").style.display = "flex";
-    document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
-    document.getElementById("route_colorLmap").value = actualZezoColor;
+    updateRouteTypeOptionsLmap(raceInfo);
+    if(hasZezoRoute(raceInfo)) document.getElementById("sel_routeTypeLmap").value = "rt_Zezo";
+    document.getElementById("route_colorLmap").value = hasZezoRoute(raceInfo) ? actualZezoColor : actualVRZenColor;
     loadRacingSkipperList("sel_rt_skipperLmap");
     onChangeRouteTypeLmap();
 }
@@ -150,7 +176,7 @@ export function onCleanAllRoute() {
 
 
 export function onChangeRouteTypeLmap() {
-    const routeType = document.getElementById("sel_routeTypeLmap").value;
+    const routeType = updateRouteTypeOptionsLmap(getRaceInfo());
     switch(routeType)
     {
         default :
