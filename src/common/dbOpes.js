@@ -517,6 +517,34 @@ export async function deleteByRaceLeg(storeName, raceId, legNum) {
         try { db?.close(); } catch {}
     }
 }
+export async function deleteByRaceLegScan(storeName, raceId, legNum) {
+    let db;
+    try {
+        db = await openDatabase();
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        let deletedCount = 0;
+
+        let cursor = await store.openCursor();
+        while (cursor) {
+            const record = cursor.value;
+            if (record?.raceId === raceId && record?.legNum === legNum) {
+                await cursor.delete();
+                deletedCount++;
+            }
+            cursor = await cursor.continue();
+        }
+
+        await tx.done;
+        return deletedCount;
+    } catch (error) {
+        if(cfg.debugDBErr) console.error(`Error scanning/deleting race/leg data from ${storeName}:`, error);
+        throw error;
+    } finally {
+        try { db?.close(); } catch {}
+    }
+}
+
 // Helper interne pour les écritures en bulk dans une transaction existante
 async function bulkSaveRecordInStore(store, storeName, record, operation) {
     const updateIfExists = (operation === "putOrUpdate");

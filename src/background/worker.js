@@ -13,6 +13,7 @@ import {
     getData,
     saveData,
     deleteByRaceLeg,
+    deleteByRaceLegScan,
     clearStore,
     resetDatabaseContent,
 } from '../common/dbOpes.js';
@@ -54,6 +55,9 @@ const PURGE_STORES = [
     'legPlayersOptions',
     'legPlayersOrder',
     'playersTracks',
+];
+const PURGE_SCAN_STORES = [
+    'legRank',
 ];
 let closedRacePurgePromise = null;
 
@@ -160,6 +164,9 @@ async function purgeClosedRaceData() {
                 for (const storeName of PURGE_STORES) {
                     deletedCount += await deleteByRaceLeg(storeName, leg.raceId, leg.legNum);
                 }
+                for (const storeName of PURGE_SCAN_STORES) {
+                    deletedCount += await deleteByRaceLegScan(storeName, leg.raceId, leg.legNum);
+                }
             }
 
             if (deletedCount > 0) {
@@ -171,6 +178,7 @@ async function purgeClosedRaceData() {
                 await saveData('internal', { id: 'legPlayersOptionsUpdate', ts }, null, { updateIfExists: true });
                 await saveData('internal', { id: 'legPlayersOrderUpdate', ts }, null, { updateIfExists: true });
                 await saveData('internal', { id: 'playersTracksUpdate', ts }, null, { updateIfExists: true });
+                await saveData('internal', { id: 'legRankUpdate', ts }, null, { updateIfExists: true });
             }
         } catch (error) {
             console.error('[bg] closed race purge failed', error);
