@@ -679,7 +679,7 @@ export     function addMapControl(map)
         redrawProjectionLine();
     },
     
-    getShowHiddenBouys: () => getUserPrefs().map?.invisibleBuoy || false,
+    getShowHiddenBouys: () => getUserPrefs().map?.invisibleBuoy === true,
     setShowHiddenBouys: async (state) => {
         const userPrefs = getUserPrefs(); 
         userPrefs.map.invisibleBuoy = state;
@@ -688,26 +688,26 @@ export     function addMapControl(map)
 
     },  
     
-    getShowSailsMarkers: () => getUserPrefs().map?.showSailsMarkers || false,
+    getShowSailsMarkers: () => getUserPrefs().map?.showSailsMarkers === true,
     setShowSailsMarkers: async (state) => {
         const userPrefs = getUserPrefs(); 
         userPrefs.map.showSailsMarkers = state;
         await saveUserPrefs(userPrefs);
         onSailsMarkersChange(state);
     },  
-    getShowMarkers: () => getUserPrefs().map?.showMarkers || false,
+    getShowMarkers: () => getUserPrefs().map?.showMarkers === true,
     setShowMarkers: async (state) => {
         const userPrefs = getUserPrefs(); 
         userPrefs.map.showMarkers = state;
         await saveUserPrefs(userPrefs);
-        onMarkersChange();
+        onMarkersChange(state);
     },
-    getShowTracks: () => getUserPrefs().map?.showTracks || false,
+    getShowTracks: () => getUserPrefs().map?.showTracks === true,
     setShowTracks: async (state) => {
         const userPrefs = getUserPrefs(); 
         userPrefs.map.showTracks = state;
         await saveUserPrefs(userPrefs);
-        hideShowTracks();
+        hideShowTracks(state);
     },
     });
 
@@ -1120,12 +1120,12 @@ export function addSettingsMenuControl(map, {
           <input class="ityc-settings-checkbox" data-role="show-hidden-bouys" type="checkbox">
         </div>
         <div class="ityc-settings-row">
-          <label class="ityc-settings-label" for="sel_showTracksLmap">Traces</label>
-          <input id="sel_showTracksLmap" class="ityc-settings-checkbox" data-role="show-tracks" type="checkbox">
+          <label class="ityc-settings-label">Traces</label>
+          <input class="ityc-settings-checkbox" data-role="show-tracks" type="checkbox">
         </div>
         <div class="ityc-settings-row">
-          <label class="ityc-settings-label" for="sel_showMarkersLmap">Marqueurs traces</label>
-          <input id="sel_showMarkersLmap" class="ityc-settings-checkbox" data-role="show-markers" type="checkbox">
+          <label class="ityc-settings-label">Marqueurs traces</label>
+          <input class="ityc-settings-checkbox" data-role="show-markers" type="checkbox">
         </div>
         <div class="ityc-settings-row">
           <label class="ityc-settings-label">Marqueurs voiles</label>
