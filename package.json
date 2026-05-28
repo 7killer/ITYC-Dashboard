@@ -5,6 +5,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ityc": "vite build --mode ityc",
+    "build:pve": "vite build --mode pve",
+    "build:dev": "vite build --mode dev",
+    "build:ityc:dev": "vite build --mode dev-ityc",
+    "build:pve:dev": "vite build --mode dev-pve",
     "preview": "vite preview"
   },
   "dependencies": {

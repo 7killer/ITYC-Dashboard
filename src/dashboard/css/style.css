@@ -1,7 +1,7 @@
 :root {
     --bg_body_color: #FFFFFF;
     --body_color: hsl(0, 0%, 0%);
-    --bg_image : url("../img/backGroundLight.png");
+    --bg_image : url("/img/backGroundLight.png");
     
     --th_color :    #ededed;
     --th_bg_color : #398AF5;
@@ -72,7 +72,7 @@ light
     --bg_body_color: #202124;
     
     --body_color: rgb(237, 239, 241);
-    --bg_image : url("../img/backGroundDark.png");
+    --bg_image : url("/img/backGroundDark.png");
     
     --th_color :    #a5a5a5;
     --th_bg_color : rgb(41,42,45);
@@ -3443,6 +3443,7 @@ light
   background: transparent;
   border: none;
   box-shadow: none;
+  z-index: 10000;
 }
 
 /* Bouton façon Leaflet tool */
@@ -3492,6 +3493,7 @@ light
   border: none;
   box-shadow: none;
   position: relative;
+  z-index: 10000;
 }
 
 /* bouton gear, même style que tes tools */
@@ -3518,6 +3520,7 @@ light
 /* panel */
 .ityc-settings-panel {
   position: absolute;
+  z-index: 10000;
   top: 0;
   right: 0; 
   min-width: 220px;
@@ -3824,7 +3827,7 @@ light
     left: 50%;
     transform: translateX(-50%);
     bottom: 6px;
-    z-index: 600; /* au-dessus du fond, sous les popups */
+    z-index: 800; /* au-dessus des infos curseur, sous les menus */
     pointer-events: none; /* pour ne pas bloquer la map hors du control */
   }
   .leaflet-bottom.leaflet-center .leaflet-control {
@@ -3927,6 +3930,7 @@ light
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+  z-index: 800;
 }
 
 .leaflet-bottom.leaflet-right .ityc-posplay {
@@ -3988,13 +3992,13 @@ light
 
 .ityc-wind-cursor-info {
   position: absolute;
-  z-index: 1000;
+  z-index: 700;
   min-width: 96px;
   padding: 8px 10px;
 /*  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 3px;
   background: rgba(34, 34, 34, 0.88);*/
-  color: var(--body_color);
+  color: #000000;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
@@ -4009,15 +4013,15 @@ light
 }
 
 .ityc-map-dark .ityc-wind-cursor-info {
-  color: var(--body_color);
+  color: rgb(237, 239, 241);
 }
 
 .ityc-map-satellite .ityc-wind-cursor-info {
-  color: var(--body_color);
+  color: #000000;
 }
 
 .ityc-map-arctic .ityc-wind-cursor-info {
-  color: var(--body_color);
+  color: #000000;
 }
 
 .ityc-pb-btn {
