@@ -3686,9 +3686,9 @@ var controller = function () {
         if(siteSel==1)
             return "http://inc.bureauvallee.free.fr/polaires/?";
         else if(siteSel==2)
-            return "https://cert.civis.net/polars/?";
+            return "https://vro.civis.net/polars/?";
         
-        return "http://toxcct.free.fr/polars/?";
+        return "https://vro.civis.net/polars/?";
         
     }
 
