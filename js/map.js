@@ -1212,8 +1212,8 @@ function updateMapCheckpoints(race) {
         var label_g = (g_passed ? "<div class='tagGatePassed'>PASSED</div>" : "") 
             + "Checkpoint " + cp.group + "." + cp.id +  ": <b>" + cp.name + "</b><br>";
         var label_g_more = "<br>Type: <b>" + cp_name[0].toUpperCase() + cp_name.slice(1) + "</b> | Engine: " + cp.engine;
-        var side_s =  (cp.side == "stbd") ? "Starboard" : "Port";
-        var side_e = (cp.side == "stbd") ? "Port" : "Starboard";
+        var side_s =  cp.rhumb?"any":((cp.side == "stbd") ? "Starboard" : "Port");
+        var side_e = cp.rhumb?"any":((cp.side == "stbd") ? "Port" : "Starboard");
         var label_s = label_g + Util.formatPosition(cp.start.lat, cp.start.lon) + label_g_more + " | Side: " + side_s;
         var label_e = label_g + Util.formatPosition(cp.end.lat, cp.end.lon) + label_g_more + " | Side: " + side_e;
         if (cp.display == "buoy") {
@@ -1249,6 +1249,16 @@ function updateMapCheckpoints(race) {
                     buildMarker(position_s, race.lMap.checkPointLayer, greenRRIconP, label_s,  8, op,0);
                     buildMarker(position_e, race.lMap.checkPointLayer, redRLIconP, label_e, 8, op, 0);
                 }
+            } else if(cp.rhumb) {
+                if(!g_passed) {
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRRIcon, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, yellowRRIcon, label_e, 8, op, 0);
+                } else
+                {
+                    buildMarker(position_s, race.lMap.checkPointLayer, yellowRRIconP, label_s,  8, op,0);
+                    buildMarker(position_e, race.lMap.checkPointLayer, yellowRRIconP, label_e, 8, op, 0);
+                }                
+                
             } else {
                 if(!g_passed) {
                     buildMarker(position_s, race.lMap.checkPointLayer, redRLIcon, label_s,  8, op,0);
