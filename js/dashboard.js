@@ -2218,7 +2218,7 @@ var controller = function () {
                 var hullFactor = boatPolars.hull.speedRatio;
 
                 // Explain storedInfo.speed from plain speed and speedup factors
-                explain(storedInfo, foilFactor, hullFactor, speedT);
+                explain(storedInfo, foilFactor, hullFactor, speedT, boatPolars.foil.speedRatio);
                 const actualGuestOptions = storedInfo.guessOptions?storedInfo.guessOptions:0;
                 guessPlayerOptions(storedInfo, foilFactor, hullFactor, speedT);
                 if(actualGuestOptions!=storedInfo.guessOptions) 
@@ -2526,14 +2526,14 @@ var controller = function () {
         }
     }
 
-    function explain(info, foilFactor, hullFactor, speedT) {
+    function explain(info, foilFactor, hullFactor, speedT,foilSpeedRatio) {
         function epsEqual(a, b) {
             return Math.abs(b - a) < 0.00001;
         }
 
         info.xfactor = info.speed / speedT;
         info.xplained = false;
-        var foils = ((foilFactor - 1) * 100) / 4 * 100;
+        var foils = ((foilFactor - 1) * 100) / (foilSpeedRatio - 1);
 
         if (epsEqual(info.xfactor, 1.0)) {
             // Speed agrees with "plain" speed.
