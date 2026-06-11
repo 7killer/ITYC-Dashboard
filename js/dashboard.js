@@ -823,7 +823,7 @@ var controller = function () {
                     var bestSpdSail = 0;
                     for (const sail of polars.sail) {
                         if(!isSailisInOptions(sail.id,options)) continue;
-                        var f = foilingFactor(options, tws, polars.twa[iA.index], polars.foil);
+                        var f = foilingFactor(options, tws, aTWA, polars.foil);
                         var h = options.includes("hull") ? polars.hull.speedRatio : 1.0;
                         var rspeed = bilinear(iA.fraction, iS.fraction,
                                               sail.speed[iA.index-1][iS.index - 1],
