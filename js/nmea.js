@@ -19,6 +19,10 @@ var settings = {
 
 var running = false;
 
+// Last seen VR gateGroupCounters (boatinfo messages don't all include it).
+// Memoized + reset on race change so every $IIVWR can carry the gate field once known.
+var lastGateCounters = null;
+
 var crcTable = makeCRCTable();
 
 var nmeaTimer;
@@ -27,6 +31,7 @@ var activeRace;
 function setActiveRace(rid)
 {
     activeRace = rid;
+    lastGateCounters = null; // forget the previous race's gate counters
     settings.nmeaRetry = 0;
     settings.nmeaInterval = NMEA_DELAY;
 }
@@ -226,6 +231,18 @@ function formatIIVWR (m) {
     s += "," + awside;
     s += "," + aws.toFixed(5) + ",N";
     s += ",,,,";
+    // Proprietary trailing field: last validated gate group (1-based; 0 = none).
+    // gateGroupCounters[i] is the counter for group i+1 (same indexing as the
+    // dash's gatecnt[group-1]); lastGate = highest group with a non-zero counter.
+    // Memoized at module scope (reset on race change) so EVERY VWR carries the field
+    // once known: a consumer reads a VWR *without* the field as "no longer provided",
+    // so an intermittent field would make it toggle. Ignored by standard VWR readers.
+    if (Array.isArray(m.gateGroupCounters)) lastGateCounters = m.gateGroupCounters;
+    if (Array.isArray(lastGateCounters)) {
+        var lastGate = 0;
+        for (var i = 0; i < lastGateCounters.length; i++) { if (lastGateCounters[i] > 0) lastGate = i + 1; }
+        s += "," + lastGate;
+    }
     return s;
 }
 
