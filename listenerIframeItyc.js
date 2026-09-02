@@ -1,3 +1,5 @@
+installKeepVrForegroundGuard();
+
 let drawTheme = "dark";
 let gameSize = -1;
 
@@ -15,6 +17,79 @@ readVal = window.localStorage.getItem('addOnGameSize');
 if(readVal) gameSize = readVal;
 
 let dashState = "notInstall";
+
+function installKeepVrForegroundGuard() {
+  const pauseEvents = new Set([
+    "visibilitychange",
+    "webkitvisibilitychange",
+    "mozvisibilitychange",
+    "msvisibilitychange",
+    "blur",
+    "pagehide",
+    "freeze",
+  ]);
+
+  const forceGetter = (target, property, value) => {
+    try {
+      Object.defineProperty(target, property, {
+        configurable: true,
+        get: () => value,
+      });
+    } catch {}
+  };
+
+  forceGetter(Document.prototype, "hidden", false);
+  forceGetter(Document.prototype, "webkitHidden", false);
+  forceGetter(Document.prototype, "mozHidden", false);
+  forceGetter(Document.prototype, "msHidden", false);
+  forceGetter(Document.prototype, "visibilityState", "visible");
+  forceGetter(Document.prototype, "webkitVisibilityState", "visible");
+  forceGetter(document, "hidden", false);
+  forceGetter(document, "webkitHidden", false);
+  forceGetter(document, "mozHidden", false);
+  forceGetter(document, "msHidden", false);
+  forceGetter(document, "visibilityState", "visible");
+  forceGetter(document, "webkitVisibilityState", "visible");
+
+  try {
+    Document.prototype.hasFocus = () => true;
+    document.hasFocus = () => true;
+  } catch {}
+
+  const blockPauseEvent = (event) => {
+    if (pauseEvents.has(event.type)) {
+      event.stopImmediatePropagation();
+    }
+  };
+
+  for (const eventName of pauseEvents) {
+    window.addEventListener(eventName, blockPauseEvent, true);
+    document.addEventListener(eventName, blockPauseEvent, true);
+  }
+
+  const blockEventHandlerProperty = (target, property) => {
+    try {
+      Object.defineProperty(target, property, {
+        configurable: true,
+        get: () => null,
+        set: () => {},
+      });
+    } catch {}
+  };
+
+  for (const property of [
+    "onvisibilitychange",
+    "onwebkitvisibilitychange",
+    "onmozvisibilitychange",
+    "onmsvisibilitychange",
+  ]) {
+    blockEventHandlerProperty(document, property);
+  }
+
+  for (const property of ["onblur", "onpagehide", "onfreeze"]) {
+    blockEventHandlerProperty(window, property);
+  }
+}
 
 window.addEventListener("load", function () {
   let idC = document.getElementById('itycDashId');
