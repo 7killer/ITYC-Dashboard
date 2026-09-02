@@ -403,57 +403,57 @@ function generateGPX(data) {
     return gpxContent;
 }
 
-export function exportRestrictedZones()
+export function exportRestrictedZones(race)
 {
-    function coordPrinter(lat,lon)
+    function coordPrinter(lon,lat)
     {
-        return "["+Util.roundTo(lat, 5)+" , "+ Util.roundTo(lon, 5)+"]";
+        return "["+Util.roundTo(lon, 5)+" , "+ Util.roundTo(lat, 5)+"]";
     }
 
-    let fileContent =
-'{\r\n\
-"type": "FeatureCollection",\r\n\
-"features": [\r\n';
+	function geometryField(zone)
+	{
+		let jsonString = '"geometry": {"type": "Polygon","coordinates": [[';
+		let firstPt = zone.vertices[0];
+		zone.vertices.forEach(zone => {
+		    jsonString += coordPrinter(zone.lon, zone.lat)+",";
+		});
+		jsonString += coordPrinter(firstPt.lon, firstPt.lat) + ']]}';
+		return jsonString;
+	}
+	
+	function propertiesField(zone)
+	{
+		let jsonString = '"properties": {"name": "'+ zone.name +'"}';
+		return jsonString;
+	}
 
-    var race = races.get(selRace.value);
+	function bboxField(zone)
+	{
+		let bbox = zone.bbox;
+		let jsonString = '"bbox": [' + bbox[1] +',' + bbox[0] +',' + bbox[3] +',' + bbox[2] +']';
+		return jsonString;
+	}
+
+    let jsonString ='{"type": "FeatureCollection", "features": [';
+
     if(race && race.legdata && race.legdata.restrictedZones && race.legdata.restrictedZones.length) {
-        let featureHeader =
-'    {\r\n\
- "type": "Feature",\r\n';
-        let featureSep =
-'     "properties": {},\r\n\
- "geometry": {\r\n\
-   "type": "Polygon",\r\n\
-   "coordinates": [\r\n\
-      [\r\n';
-        let featureEnd = 
-'          ]\r\n\
-    ]\r\n\
-  }\r\n\
-}';
         let firstZone = true;
         race.legdata.restrictedZones.forEach(restrictedZone => {
-            let bbox = restrictedZone.bbox;
             if(!firstZone)
-                fileContent += ",\r\n";
+                jsonString += ",";
             firstZone = false;
-            fileContent += featureHeader;
-            fileContent += '     "bbox": [' + bbox[0] +',' + bbox[1] +',' + bbox[2] +',' + bbox[3] +'],\r\n';
-            fileContent += featureSep;
-
-            let firstPt = restrictedZone.vertices[0];
-            restrictedZone.vertices.forEach(zone => {
-                fileContent += '           ' + coordPrinter(zone.lat,zone.lon)+",\r\n";
-            });
-            fileContent += '           ' + coordPrinter(firstPt.lat,firstPt.lon)+"\r\n";
-            fileContent += featureEnd ;
+            jsonString += '{'
+			jsonString += '"type": "Feature"' + ',';
+			jsonString += propertiesField(restrictedZone) + ',';
+			jsonString += bboxField(restrictedZone) + ',';
+			jsonString += geometryField(restrictedZone);
+			jsonString += '}';
         });
-        fileContent +=  
-'\r\n  ]\r\n\
-}';
-        let blobData = new Blob([fileContent], {type: "text/plain"});
+        jsonString += ']}';
+        let jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2);
+        let blobData = new Blob([jsonPretty], {type: "application/json"});
         let url = window.URL.createObjectURL(blobData);
-        let fileName = "restrictedZones_race_"+race.legdata._id.race_id+"_"+race.legdata._id.num;
+        let fileName = "restrictedZones_" + race.legdata.name;
         saveFile(fileName,url);
     }   
 }

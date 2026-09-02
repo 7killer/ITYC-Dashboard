@@ -823,7 +823,7 @@ var controller = function () {
                     var bestSpdSail = 0;
                     for (const sail of polars.sail) {
                         if(!isSailisInOptions(sail.id,options)) continue;
-                        var f = foilingFactor(options, tws, polars.twa[iA.index], polars.foil);
+                        var f = foilingFactor(options, tws, aTWA, polars.foil);
                         var h = options.includes("hull") ? polars.hull.speedRatio : 1.0;
                         var rspeed = bilinear(iA.fraction, iS.fraction,
                                               sail.speed[iA.index-1][iS.index - 1],
@@ -2218,7 +2218,7 @@ var controller = function () {
                 var hullFactor = boatPolars.hull.speedRatio;
 
                 // Explain storedInfo.speed from plain speed and speedup factors
-                explain(storedInfo, foilFactor, hullFactor, speedT);
+                explain(storedInfo, foilFactor, hullFactor, speedT, boatPolars.foil.speedRatio);
                 const actualGuestOptions = storedInfo.guessOptions?storedInfo.guessOptions:0;
                 guessPlayerOptions(storedInfo, foilFactor, hullFactor, speedT);
                 if(actualGuestOptions!=storedInfo.guessOptions) 
@@ -2526,14 +2526,14 @@ var controller = function () {
         }
     }
 
-    function explain(info, foilFactor, hullFactor, speedT) {
+    function explain(info, foilFactor, hullFactor, speedT,foilSpeedRatio) {
         function epsEqual(a, b) {
             return Math.abs(b - a) < 0.00001;
         }
 
         info.xfactor = info.speed / speedT;
         info.xplained = false;
-        var foils = ((foilFactor - 1) * 100) / 4 * 100;
+        var foils = ((foilFactor - 1) * 100) / (foilSpeedRatio - 1);
 
         if (epsEqual(info.xfactor, 1.0)) {
             // Speed agrees with "plain" speed.
@@ -2659,6 +2659,14 @@ var controller = function () {
     {
         exp.exportStamina(paramStamina);
     }
+
+    function exportRestrictedZones()
+    {
+        var race = races.get(selRace.value);
+        if (!race)  return;
+        exp.exportRestrictedZones(race);
+    }
+
     function exportPolar()
     {
         exp.exportPolar(polars)
@@ -3678,9 +3686,9 @@ var controller = function () {
         if(siteSel==1)
             return "http://inc.bureauvallee.free.fr/polaires/?";
         else if(siteSel==2)
-            return "https://cert.civis.net/polars/?";
+            return "https://vro.civis.net/polars/?";
         
-        return "http://toxcct.free.fr/polars/?";
+        return "https://vro.civis.net/polars/?";
         
     }
 
@@ -4531,7 +4539,7 @@ async function initializeMap(race) {
         await getOption("fullScreen_Game",false);
         await getOption("view_InvisibleDoors", false);
 
-        await getOption("sel_polarSite",1);
+        await getOptionN("sel_polarSite",1);
     
         await getOptionN("fullScreen_Size",80);
 
@@ -5904,6 +5912,7 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
+            document.getElementById("bt_exportRestrictedZones").innerHTML = "Zones interdites (.json)";
             document.getElementById("bt_exportPolar").innerHTML = "Polaires (.json)";
             document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
             document.getElementById("bt_exportFleet").innerHTML = "Flotte (.csv)";
@@ -6024,6 +6033,7 @@ async function initializeMap(race) {
             document.getElementById("t_racelog_factor").innerHTML = "Factor";
             document.getElementById("t_racelog_foils").innerHTML = "Foils";
             
+            document.getElementById("bt_exportRestrictedZones").innerHTML = "Restricted areas (.json)";
             document.getElementById("bt_exportPolar").innerHTML = "Polars (.json)";
             document.getElementById("bt_exportStamina").innerHTML = "Stamina (.json)";
             document.getElementById("bt_exportFleet").innerHTML = "Fleet data (.csv)";
@@ -6080,6 +6090,7 @@ async function initializeMap(race) {
         onMarkersChange:onMarkersChange,
         onSkipperSelectChange:onSkipperSelectChange,
         onTracksChange:onTracksChange,
+        exportRestrictedZones:exportRestrictedZones,
         exportPolar:exportPolar,
         exportStamina:exportStamina,
         exportFleet:exportFleet,
@@ -6129,6 +6140,7 @@ window.addEventListener("load", async function () {
     document.getElementById("uiFilterMode").addEventListener("change", controller.changeFilterUI);
     document.getElementById("local_time").addEventListener("change", controller.updateFleetFilter);
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
+    document.getElementById("bt_exportRestrictedZones").addEventListener("click", controller.exportRestrictedZones);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
     document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
