@@ -90,6 +90,17 @@ body {
   margin-right: auto;
 }
 
+#itycGameLoadingStatus {
+  padding: 6px 8px;
+  border: 1px solid var(--border_color);
+  border-top: 0;
+  background-color: var(--td_bg_color);
+  color: var(--td_color);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: left;
+}
+
 
 table {
   border: var(--th_border)!important;

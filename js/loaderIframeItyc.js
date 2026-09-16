@@ -8,8 +8,10 @@ function injectScript(fileName, onLoad) {
     (document.head || document.documentElement).appendChild(s);
 }
 
-injectScript('vr_game_grib_loading.js', function() {
-    injectScript('vr_keep_awake.js', function() {
-        injectScript('listenerIframeItyc.js');
+injectScript('vr_game_loading.js', function() {
+    injectScript('vr_game_grib_loading.js', function() {
+        injectScript('vr_keep_awake.js', function() {
+            injectScript('listenerIframeItyc.js');
+        });
     });
 });
