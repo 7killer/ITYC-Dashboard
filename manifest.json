@@ -58,7 +58,7 @@
   ],
   "manifest_version": 3,
   "web_accessible_resources": [{
-    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","vr_keep_awake.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png"],
+    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","vr_game_grib_loading.js","vr_keep_awake.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png"],
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
