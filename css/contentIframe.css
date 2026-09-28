@@ -449,6 +449,12 @@ td.position p {
 .zezoIcon {
     font-size:1.9em;
 }
+.sermarIcon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    vertical-align: middle;
+}
 
 .foilImg {
     padding: 0em;

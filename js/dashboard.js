@@ -720,9 +720,10 @@ var controller = function () {
             raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
             raceLine += '<td class="tdc"><div>';
             raceLine += '<span id="vrz:' + r.id + '">&#x262F;</span>';
-            raceLine += '</div><div>';
-            raceLine += (r.url ? ('<span class="zezoIcon" id="rt:' + r.id + '">&#x2388;</span>') : '&nbsp;');
-            raceLine += '</div></td>';
+            raceLine += '</div>';
+            if (r.url) raceLine += '<div><span class="zezoIcon" id="rt:' + r.id + '">&#x2388;</span></div>';
+            if (isSermarAvailable(r)) raceLine += '<div><span id="srm:' + r.id + '" title="Sermar"><img class="sermarIcon" src="' + chrome.runtime.getURL('./img/semar.png') + '" alt="Sermar"></span></div>';
+            raceLine += '</td>';
             raceLine += '<td class="tdc"><div>';
             raceLine += '<span id="pl:' + r.id + '">&#x26F5;</span>';
             raceLine += '</div><div>';
@@ -1067,6 +1068,7 @@ var controller = function () {
                 var returnVal = '<tr class="' + trstyle + '" id="rs:' + r.id + '">'
                     + (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
                     +  '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
+                    + (isSermarAvailable(r) ? '<td class="tdc"><span id="srm:' + r.id + '" title="Sermar"><img class="icon" src="./img/semar.png" alt="Sermar"></span></td>' : '<td>&nbsp;</td>')
                     + '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
                     + '<td class="tdc"><span id="wi:' + r.id + '"><img class="icon" src="./img/wind.svg"/></span></td>'
                     + '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'
@@ -1255,7 +1257,7 @@ var controller = function () {
             };
         }
         var raceStatusHeader = '<tr>'
-            + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
+            + '<th title="Call Router" colspan="3">' + "RT" + '</th>'
             + '<th title="Call Polars">' + "PL" + '</th>'
             + '<th title="Call WindInfo">' + "WI" + '</th>'
             + '<th title="Call ITYC">' + "ITYC" + '</th>'
@@ -1610,6 +1612,8 @@ var controller = function () {
                     var routerCell = '<td>&nbsp;</td>';
                     if(document.getElementById("sel_router").value=="zezo") {
                         if(race.url) routerCell = '<td class="tdc"><span id="rt:' + uid + '">&#x2388;</span></td>';
+                    } else if(document.getElementById("sel_router").value=="sermar") {
+                        if(isSermarAvailable(race)) routerCell = '<td class="tdc"><span id="srm:' + uid + '" title="Sermar"><img class="icon" src="./img/semar.png" alt="Sermar"></span></td>';
                     } else
                         routerCell = '<td class="tdc"><span id="vrz:' + uid + '">&#x262F;</span></td>';
 
@@ -3056,6 +3060,7 @@ var controller = function () {
         var call_ityc = false;
         var call_cp = false;
         var call_vrzen = false;
+        var call_sermar = false;
         var friend = false;
         var tabsel = false;
         var cbox = false;
@@ -3066,6 +3071,7 @@ var controller = function () {
         var re_wisp = new RegExp("^wi:(.+)"); // Weather-Info
         var re_ityc = new RegExp("^ityc:(.+)"); // ITYC
         var re_vrzen = new RegExp("^vrz:(.+)"); // Call-Vrzen
+        var re_sermar = new RegExp("^srm:(.+)"); // Call-Sermar
         var re_rsel = new RegExp("^rs:(.+)"); // Race-Selection
         var re_usel = new RegExp("^ui:(.+)"); // User-Selection
         var re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
@@ -3209,6 +3215,8 @@ var controller = function () {
                 call_cp = true;
             } else if (re_vrzen.exec(id)) {
                 call_vrzen = true;  
+            } else if (re_sermar.exec(id)) {
+                call_sermar = true;
             } else if (match = re_rsel.exec(id)) {
                 rmatch = match[1];
             } else if (match = re_usel.exec(id)) {
@@ -3264,6 +3272,7 @@ var controller = function () {
                 // Friend-Routing
                 if (call_rt) callRouter(selRace.value, rmatch, false,"zezo");
                 else if (call_vrzen) callRouter(selRace.value, rmatch, false,"vrzen");
+                else if (call_sermar) callRouter(selRace.value, rmatch, false,"sermar");
             } else if (cbox) {
                 // Skippers-Choice
                 if(ev_lbl == "sel_ExportFleet") {onFleetInCpyClipBoard();return;}
@@ -3274,6 +3283,7 @@ var controller = function () {
             else if (call_ityc) callITYC(rmatch);
             else if (call_cp) callCompass(selRace.value,currentUserId);
             else if (call_vrzen) callRouter(rmatch, currentUserId, false,"vrzen");
+            else if (call_sermar) callRouter(rmatch, currentUserId, false,"sermar");
     
             else
             {
@@ -3659,6 +3669,70 @@ var controller = function () {
         var urlBeta =  "http://zezo.org/"+ races.get(raceId).url+ (beta ? "b" : "")+"/chart.pl?";
         var url = prepareZezoUrl(raceId, pid, beta, auto);
         Util.openTab(url, urlBeta,(cbReuseTab.checked && pid == currentUserId));
+    }
+
+    var SERMAR_BASE_URL = "https://routeur.sermar.app/";
+    var SERMAR_CFG_OPTIONS = [
+        "heavy", "light", "reach", "heavy", "light", "foil", "hull", "winch",
+        "magicFurler", "comfortLoungePug", "vrtexJacket"
+    ];
+
+    // The future Sermar catalogue may set race.sermar.available to false.
+    // Until then, every locally known race is eligible.
+    function isSermarAvailable(race) {
+        return !race || !race.sermar || race.sermar.available !== false;
+    }
+
+    function getSermarCfg(options) {
+        var activeOptions = Array.isArray(options) ? options : null;
+        var cfg = 0;
+        SERMAR_CFG_OPTIONS.forEach(function(option, index) {
+            if (!activeOptions || activeOptions.includes(option)) cfg |= 1 << index;
+        });
+        return cfg.toString(36);
+    }
+
+    function roundSermarNumber(value, digits) {
+        var number = Number(value);
+        if (!Number.isFinite(number)) return null;
+        var factor = Math.pow(10, digits);
+        return Math.round(number * factor) / factor;
+    }
+
+    function prepareSermarUrl(raceId, pid) {
+        var race = races.get(raceId);
+        var fleet = raceFleetMap.get(raceId);
+        var uinfo = fleet && fleet.uinfo ? fleet.uinfo[pid] : null;
+        if (!uinfo && pid == currentUserId) uinfo = race && race.curr;
+        if (!uinfo) {
+            alert("Can't find record for user id " + pid);
+            return null;
+        }
+
+        var raceParts = String(raceId).split('.');
+        var params = new URLSearchParams({v: "1", r: raceParts[0] + "." + (raceParts[1] || "1")});
+
+        if (uinfo.state !== "waiting") {
+            var lat = roundSermarNumber(uinfo.pos && uinfo.pos.lat, 6);
+            var lon = roundSermarNumber(uinfo.pos && uinfo.pos.lon, 6);
+            var heading = roundSermarNumber(uinfo.heading, 0);
+            var sail = roundSermarNumber(uinfo.sail, 0);
+            if (lat !== null) params.set("lat", lat.toString());
+            if (lon !== null) params.set("lon", lon.toString());
+            if (heading !== null) params.set("h", (((heading % 360) + 360) % 360).toString());
+            if (sail !== null) params.set("s", sail.toString());
+        }
+
+        params.set("cfg", getSermarCfg(uinfo.options));
+        var stamina = roundSermarNumber(uinfo.stamina, 1);
+        if (stamina !== null) params.set("st", Math.min(130, stamina).toString());
+
+        return SERMAR_BASE_URL + "?" + params.toString();
+    }
+
+    function callRouterSermar(raceId, pid) {
+        var url = prepareSermarUrl(raceId, pid);
+        if (url) Util.openTab(url, SERMAR_BASE_URL, (cbReuseTab.checked && pid == currentUserId));
     }
 
     function callWindy(raceId, userId) {
@@ -4826,6 +4900,11 @@ async function initializeMap(race) {
                     alert("Unsupported race, no router support yet.");
                 else
                     callRouterZezo(raceId, userId, beta, auto);
+            } else if(rtType=="sermar") {
+                if (!isSermarAvailable(races.get(raceId)))
+                    alert("Unsupported race, no Sermar router support yet.");
+                else
+                    callRouterSermar(raceId, userId);
             } else 
                 callRouterVRZ(raceId,userId);
         }
@@ -5675,6 +5754,8 @@ async function initializeMap(race) {
             callRouter(selRace.value, currentUserId, false,"zezo");  
         } else if(msg.type=="openVrzen") {
             callRouter(selRace.value, currentUserId, false,"vrzen"); 
+        } else if(msg.type=="openSermar") {
+            callRouter(selRace.value, currentUserId, false,"sermar");
         } else if(msg.type=="openItyc") {
             callPolarAnalysis("ityc"); 
         } else if(msg.type=="openToxxct") {

@@ -5,6 +5,8 @@ let originGameWidth = 0;
 let originGameHeight = 0;
 let maxScreenWidth = 0;
 let maxScreenHeight = 0;
+let loadingStatusHeight = 0;
+let loadingStatusHeightChanged = false;
 var manifestVersion = "0.0.0";
 
 let fullScreenVR = false;
@@ -55,6 +57,10 @@ function callItyc() {
 function callRouterVrZen() { 
   var idC = document.getElementById('itycDashId');
   if(idC)  chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openVrzen" }); 
+}
+function callRouterSermar() {
+  var idC = document.getElementById('itycDashId');
+  if(idC) chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openSermar" });
 }
 
 
@@ -329,6 +335,8 @@ function manageGameInfos(msg) {
         if(div) div.addEventListener("click", callRouterZezo);
         div = document.getElementById('vrz:' + msg.rid);
         if(div) div.addEventListener("click", callRouterVrZen);
+        div = document.getElementById('srm:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterSermar);
         div = document.getElementById('pl:' + msg.rid);
         if(div) div.addEventListener("click", callRouterToxxct);
         div = document.getElementById('ityc:' + msg.rid);
@@ -363,6 +371,10 @@ window.onmessage = function(e) {
         manageFullScreen2();
     } else if (msg.order === "fullScreenVR") {
       fullScreenVR = msg.fullScreenVR;
+    } else if (msg.order === "loadingStatusHeight") {
+      loadingStatusHeight = Math.max(0, Number(msg.height) || 0);
+      loadingStatusHeightChanged = true;
+      manageFullScreen2();
     }
   }
   return true;
@@ -412,7 +424,7 @@ function manageFullScreen2() {
   if(idC) spacer = Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''));
   idC = document.getElementById("dashIntegRow");
   if(idC) dashRowH = Number(document.defaultView.getComputedStyle(idC).height.replace('px', ''));
-  let offsetDash = spacer*2 + fullScreenVRLogo + dashRowH + 10;
+  let offsetDash = spacer*2 + fullScreenVRLogo + dashRowH + loadingStatusHeight + 10;
 
   if(window.parent == window)
   {
@@ -432,7 +444,7 @@ function manageFullScreen2() {
     let adjustedSizeH = originGameHeight;
     const gameRatio = originGameWidth/originGameHeight;
     let vrLogo = document.getElementsByClassName('logo VR')[0];
-    if(document.defaultView.getComputedStyle(vrLogo).display == 'none')
+    if(vrLogo && document.defaultView.getComputedStyle(vrLogo).display == 'none')
     {// game is loaded
       if(fullScreenVR == true)
       {
@@ -462,6 +474,9 @@ function manageFullScreen2() {
         sendSize = true;
         dashState == "detected";
       }
+      else if(loadingStatusHeightChanged) {
+        sendSize = true;
+      }
     }  
         
     if(window.parent == window && (adjustedSizeH+offsetDash+10) > window.innerHeight)
@@ -473,15 +488,20 @@ function manageFullScreen2() {
     }
     if(sendSize) {
       idC = document.getElementById("gameCanvas"); 
-      idC.style.height = adjustedSizeH + "px";
-      idC.style.width = adjustedSizeW + "px";
+      if(idC) {
+        idC.style.height = adjustedSizeH + "px";
+        idC.style.width = adjustedSizeW + "px";
+      }
       idC = document.getElementById("dashIntegRow");
-      idC.setAttribute("data-theme", drawTheme); 
-      idC.style.maxWidth = adjustedSizeW+"px";
+      if(idC) {
+        idC.setAttribute("data-theme", drawTheme);
+        idC.style.maxWidth = adjustedSizeW+"px";
+      }
       if(window.parent != window) 
       { 
         let h = adjustedSizeH + offsetDash + spacer + fullScreenVRLogo;
         sendSize2Top(adjustedSizeW,h);
+        loadingStatusHeightChanged = false;
         //console.log("normalized iframe"+ adjustedSizeW +"X " + h);                                      
       }  else
       {

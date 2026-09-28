@@ -85,7 +85,7 @@ body {
   padding-top: 0px;
   font-size: small;
   z-index: 1;
-  
+
   margin-left: auto;
   margin-right: auto;
 }
@@ -431,4 +431,10 @@ td.position p {
 .textMini {
   font-size: 11px !important;
   line-height: 1.4;
+}
+.sermarIcon {
+  width: 1.5em;
+  height: 1.5em;
+  object-fit: contain;
+  vertical-align: middle;
 }

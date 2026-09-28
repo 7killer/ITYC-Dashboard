@@ -9,9 +9,25 @@
   const isGameFrame = /^(play\.offshore|beta)\.virtualregatta\.com$/.test(location.hostname);
   let latestText = '';
 
+  function sendStatusHeight(row, status) {
+    const iframe = row?.previousElementSibling?.matches('iframe')
+      ? row.previousElementSibling
+      : row?.parentElement?.querySelector('iframe.iframe-class')
+        || document.querySelector('iframe.iframe-class');
+    if (!iframe?.contentWindow) return;
+    const version = document.getElementById('itycDashId')?.getAttribute('ver') || '0.0.0';
+    const height = status ? Math.ceil(status.getBoundingClientRect().height) : 0;
+    iframe.contentWindow.postMessage({
+      port: `VR2Iframe${version}`,
+      order: 'loadingStatusHeight',
+      height,
+    }, '*');
+  }
+
   function render(text) {
     const existing = document.getElementById(statusId);
     if (!text) {
+      sendStatusHeight(existing?.parentElement, null);
       existing?.remove();
       return;
     }
@@ -23,6 +39,7 @@
     status.setAttribute('aria-live', 'polite');
     if (status.textContent !== text) status.textContent = text;
     if (status.parentElement !== row) row.appendChild(status);
+    requestAnimationFrame(() => sendStatusHeight(row, status));
   }
 
   function setRenderedText(text) {
