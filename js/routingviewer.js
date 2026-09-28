@@ -320,7 +320,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             twa = Util.roundTo(poi[6], 2)+ "Â°";
             twd = Util.roundTo(poi[8], 2)+ "Â°";
             sail = renameSailFromRoutes(poi[12]);
-            boost = Util.roundTo(Number(poi[11]) / 1.014 * 100, 2);
+            boost = Util.roundTo((Number(poi[11]) - 1) / 0.014 * 100, 2);
             stamina = Util.roundTo(poi[16], 2);
         } else
         { //default Mode Avalon
