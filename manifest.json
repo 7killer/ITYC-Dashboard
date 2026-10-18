@@ -2,7 +2,7 @@
     "name": "VR Dashboard I.T.Y.C.",
     "short_name": "VR Dashboard I.T.Y.C.",
     "description": "Monitor boat position & call virtual sailor weather router",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "browser_specific_settings": {
     "gecko": {
       "id": "VRDasboard@ityc.com"
@@ -22,6 +22,7 @@
   "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/",
   "https://gibs.earthdata.nasa.gov/wms/epsg3413/best/",
   "https://routage.vrzen.org/*",
+  "https://routeur.sermar.app/*",
   "http://zezo.org/*",
   "https://zezo.org/*",
   "http://localhost:8081/nmea/*",
@@ -63,7 +64,7 @@
   ],
   "manifest_version": 3,
   "web_accessible_resources": [{
-    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png"],
+    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","vr_game_loading.js","vr_game_grib_loading.js","vr_keep_awake.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png","img/semar.png"],
     "matches": ["<all_urls>"]
   }]
 }
