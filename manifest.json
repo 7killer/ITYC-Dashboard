@@ -5,7 +5,10 @@
     "version": "1.6.0",
     "browser_specific_settings": {
     "gecko": {
-      "id": "VRDasboard@ityc.com"
+      "id": "VRDasboard@ityc.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "permissions": [
