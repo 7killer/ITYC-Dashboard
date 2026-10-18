@@ -875,11 +875,15 @@ async function initialize(race,raceFleetMap)
             });
         
             var OSM_Layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                minZoom: 2, maxZoom: 40, maxNativeZoom: 40,
+                referrerPolicy: 'strict-origin-when-cross-origin',
+                attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
             });
 
             var OSM_DarkLayer = L.tileLayer.colorFilter('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                minZoom: 2, maxZoom: 40, maxNativeZoom: 40, attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+                minZoom: 2, maxZoom: 40, maxNativeZoom: 40,
+                referrerPolicy: 'strict-origin-when-cross-origin',
+                attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
                 filter: mapTileColorFilterDarkMode                
             });
             
