@@ -87,9 +87,7 @@ async function loadLocalFile(offset,fileName,styles) {
 
 var cachedTileList = [];
 
-async function initCachedTilesList()
-{
-    cachedTileList = [
+const bundledCachedTileList = [
         "dDalle_-102_-69_E4DD61F5C8A199570CD6356DD2F22D3E.KurunFile",
         "dDalle_-102_-72_59DC51BF9F90E5CADBA9493C782FD611.KurunFile",
         "dDalle_-102_-75_175FAD131A6F969524E474FCE6CD127C.KurunFile",
@@ -1884,26 +1882,38 @@ async function initCachedTilesList()
         "dDalle_9_6_0DD1E78D07A84A582943291244196C78.KurunFile",
         "dDalle_9_81_C039AF4F31ABD00D9B7D30D32C5A6662.KurunFile"
     ];
-/*    await chrome.runtime.getPackageDirectoryEntry(dir => {
-        dir.getDirectory('cachedTiles', {}, function(cachedTilesDir) {
-            new Promise(resolve => {
-                let dirReader = cachedTilesDir.createReader();
-            
-                let getEntries = () => {
-                    dirReader.readEntries((entries) => {
-                            if (entries.length) {
-                                for (var i = 0; i < entries.length; ++i) {
-                                    cachedTileList.push(entries[i].name);
-                                }
-                                getEntries();
-                            }
-                        }
-                    );
-                };
-                getEntries();
-            })
-        })
-    });*/
+
+async function initCachedTilesList()
+{
+    // Firefox exposes getPackageDirectoryEntry() through the browser namespace.
+    // Keep the packaged list as a safe fallback for older builds or API failures.
+    cachedTileList = bundledCachedTileList.slice();
+    const runtime = globalThis.browser?.runtime || globalThis.chrome?.runtime;
+    if (!runtime?.getPackageDirectoryEntry) return;
+
+    try {
+        const packageDirectory = await runtime.getPackageDirectoryEntry();
+        const cachedTilesDirectory = await new Promise((resolve, reject) => {
+            packageDirectory.getDirectory('cachedTiles', {}, resolve, reject);
+        });
+        const reader = cachedTilesDirectory.createReader();
+        const entries = [];
+        await new Promise((resolve, reject) => {
+            const readNext = () => reader.readEntries(batch => {
+                if (!batch || batch.length === 0) {
+                    resolve();
+                    return;
+                }
+                entries.push(...batch);
+                readNext();
+            }, reject);
+            readNext();
+        });
+        const names = entries.filter(entry => entry.isFile).map(entry => entry.name);
+        if (names.length) cachedTileList = names;
+    } catch (error) {
+        console.warn('ITYC: impossible de lire dynamiquement les tuiles embarquées.', error);
+    }
 }
 
 
