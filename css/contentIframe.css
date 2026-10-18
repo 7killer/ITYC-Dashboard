@@ -93,6 +93,28 @@
     z-index: 1;
 }
 
+#itycGameGribLoadingStatus {
+    padding: 6px 8px;
+    border: 1px solid var(--border_color);
+    border-top: 0;
+    background-color: var(--td_bg_color);
+    color: var(--td_color);
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: left;
+}
+
+#itycGameLoadingStatus {
+    padding: 6px 8px;
+    border: 1px solid var(--border_color);
+    border-top: 0;
+    background-color: var(--td_bg_color);
+    color: var(--td_color);
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: left;
+}
+
 
 table {
     border: var(--th_border)!important;
@@ -426,6 +448,12 @@ td.position p {
 }
 .zezoIcon {
     font-size:1.9em;
+}
+.sermarIcon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    vertical-align: middle;
 }
 
 .foilImg {

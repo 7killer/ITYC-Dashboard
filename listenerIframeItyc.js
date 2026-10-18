@@ -1,5 +1,3 @@
-installKeepVrForegroundGuard();
-
 let drawTheme = "dark";
 let gameSize = -1;
 
@@ -7,6 +5,8 @@ let originGameWidth = 0;
 let originGameHeight = 0;
 let maxScreenWidth = 0;
 let maxScreenHeight = 0;
+let loadingStatusHeight = 0;
+let loadingStatusHeightChanged = false;
 var manifestVersion = "0.0.0";
 
 let fullScreenVR = false;
@@ -17,81 +17,8 @@ readVal = window.localStorage.getItem('addOnGameSize');
 if(readVal) gameSize = readVal;
 
 let dashState = "notInstall";
-
 var responseTimer;
 
-function installKeepVrForegroundGuard() {
-  const pauseEvents = new Set([
-    "visibilitychange",
-    "webkitvisibilitychange",
-    "mozvisibilitychange",
-    "msvisibilitychange",
-    "blur",
-    "pagehide",
-    "freeze",
-  ]);
-
-  const forceGetter = (target, property, value) => {
-    try {
-      Object.defineProperty(target, property, {
-        configurable: true,
-        get: () => value,
-      });
-    } catch {}
-  };
-
-  forceGetter(Document.prototype, "hidden", false);
-  forceGetter(Document.prototype, "webkitHidden", false);
-  forceGetter(Document.prototype, "mozHidden", false);
-  forceGetter(Document.prototype, "msHidden", false);
-  forceGetter(Document.prototype, "visibilityState", "visible");
-  forceGetter(Document.prototype, "webkitVisibilityState", "visible");
-  forceGetter(document, "hidden", false);
-  forceGetter(document, "webkitHidden", false);
-  forceGetter(document, "mozHidden", false);
-  forceGetter(document, "msHidden", false);
-  forceGetter(document, "visibilityState", "visible");
-  forceGetter(document, "webkitVisibilityState", "visible");
-
-  try {
-    Document.prototype.hasFocus = () => true;
-    document.hasFocus = () => true;
-  } catch {}
-
-  const blockPauseEvent = (event) => {
-    if (pauseEvents.has(event.type)) {
-      event.stopImmediatePropagation();
-    }
-  };
-
-  for (const eventName of pauseEvents) {
-    window.addEventListener(eventName, blockPauseEvent, true);
-    document.addEventListener(eventName, blockPauseEvent, true);
-  }
-
-  const blockEventHandlerProperty = (target, property) => {
-    try {
-      Object.defineProperty(target, property, {
-        configurable: true,
-        get: () => null,
-        set: () => {},
-      });
-    } catch {}
-  };
-
-  for (const property of [
-    "onvisibilitychange",
-    "onwebkitvisibilitychange",
-    "onmozvisibilitychange",
-    "onmsvisibilitychange",
-  ]) {
-    blockEventHandlerProperty(document, property);
-  }
-
-  for (const property of ["onblur", "onpagehide", "onfreeze"]) {
-    blockEventHandlerProperty(window, property);
-  }
-}
 
 window.addEventListener("load", function () {
   let idC = document.getElementById('itycDashId');
@@ -99,39 +26,44 @@ window.addEventListener("load", function () {
 
   let spacer =  0;
   document.documentElement.setAttribute("data-theme", drawTheme);
-  idC =  document.getElementsByClassName('fullscreen VR')[0];
-  if(idC && window.parent != window) spacer = Number(idC.style.height.replace('px', ''));
-  idC = document.getElementsByClassName('footer')[0];;
-  if(idC) spacer += Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''));
+  idC = findFullscreenButton();
+  if(idC && window.parent != window) spacer = elementHeight(idC);
+  idC = findGameFooter();
+  if(idC) spacer += elementMarginTop(idC);
   let offsetOrigin = spacer + 5;
 
   originGameWidth = window.innerWidth;
   originGameHeight = window.innerHeight-offsetOrigin;
   sendAlive();
   dashState = "notInstall";
-  if(responseTimer) clearTimeout(responseTimer);
+  if (responseTimer) clearTimeout(responseTimer);
   responseTimer = setTimeout(popMsg, 100);
+
 
 });
 
 
 function callRouterZezo() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  window.notify({type:"openZezo" });            
+  if(idC) window.notify({type:"openZezo"});
 }
 
 function callRouterToxxct() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  window.notify({type:"openToxxct" });
+  if(idC) window.notify({type:"openToxxct"});
 }
 
 function callItyc() { 
   var idC = document.getElementById('itycDashId');
-  if(idC)  window.notify({type:"openItyc" });  
+  if(idC) window.notify({type:"openItyc"});
 }
 function callRouterVrZen() { 
-  var idC = document.getElementById('itycDashId'); 
-  if(idC)  window.notify({type:"openVrzen" });
+  var idC = document.getElementById('itycDashId');
+  if(idC) window.notify({type:"openVrzen"});
+}
+function callRouterSermar() {
+  var idC = document.getElementById('itycDashId');
+  if(idC) window.notify({type:"openSermar"});
 }
 
 
@@ -168,13 +100,12 @@ function callRouterVrZen() {
     const text = await response.text().catch(() => {});
 
     if (text) {
-      window.notify(
-      {
+      window.notify({
           url,
           req: JSON.stringify(body),
           resp: text,
           type: "data",
-        })//..then(manageAnswer);
+        });
     }
     
     return text ? responseProxy(response, text) : response
@@ -204,9 +135,8 @@ function callRouterVrZen() {
       url.startsWith("https://static.virtualregatta.com/winds/live/") &&
       url.endsWith("wnd")
     ) {
+      window.notify({ url: url, type: "wndCycle" });
       
-      window.notify( { url: url,type: "wndCycle" })//..then(manageAnswer);
-     
     }
 
     if (!checkUrl(url)) {
@@ -267,6 +197,99 @@ return body
 
 
 
+let toolbarOrderObserver;
+let toolbarSizeObserver;
+const toolbarGameGap = 10;
+
+function findFirst(selectors, root = document) {
+  for (const selector of selectors) {
+    const match = root?.querySelector?.(selector);
+    if (match) return match;
+  }
+  return null;
+}
+
+function findGameContainer() {
+  return document.getElementById('gameContainer')
+    || findFirst(['[data-game-container]', '[data-unity-container]', '.game-container', '.unity-container'])
+    || document.getElementsByClassName('gameDiv')[0]
+    || null;
+}
+
+function findGameCanvas(container = findGameContainer()) {
+  return document.getElementById('gameCanvas')
+    || findFirst(['canvas[data-unity]', 'canvas[data-game-canvas]', 'canvas'], container)
+    || null;
+}
+
+function findClosest(element, selectors) {
+  if (!element?.closest) return null;
+  for (const selector of selectors) {
+    const match = element.closest(selector);
+    if (match) return match;
+  }
+  return null;
+}
+
+function findGameWrapper(container = findGameContainer()) {
+  return findClosest(container, ['.webgl-content', '[data-game-root]', '.gameDiv']) || container;
+}
+
+function findGameFooter() {
+  return findFirst(['.gameDiv .footer', '.webgl-content .footer', '[data-game-footer]', 'footer', '.footer']);
+}
+
+function findFullscreenButton() {
+  return findFirst(['.fullscreen.VR', '[data-game-fullscreen]', '.fullscreen']);
+}
+
+function findLoadingLogo(container = findGameContainer()) {
+  return findFirst(['.logo.VR', '[data-game-loading-logo]', '.unity-logo', '.loading-logo'], container);
+}
+
+function numericCssValue(value) {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function elementHeight(element) {
+  if (!element) return 0;
+  const rectHeight = element.getBoundingClientRect?.().height;
+  if (Number.isFinite(rectHeight) && rectHeight > 0) return rectHeight;
+  return numericCssValue(document.defaultView?.getComputedStyle?.(element).height || element.style?.height);
+}
+
+function elementWidth(element) {
+  if (!element) return 0;
+  const rectWidth = element.getBoundingClientRect?.().width;
+  if (Number.isFinite(rectWidth) && rectWidth > 0) return rectWidth;
+  return numericCssValue(document.defaultView?.getComputedStyle?.(element).width || element.style?.width);
+}
+
+function elementMarginTop(element) {
+  return numericCssValue(document.defaultView?.getComputedStyle?.(element).marginTop);
+}
+
+function fitLoadingToolbar() {
+  const row = document.getElementById('dashIntegRow');
+  const container = findGameContainer();
+  const canvas = findGameCanvas(container);
+  if (!row || !container) return false;
+  row.hidden = !canvas;
+  if (!canvas) return false;
+  const wrapper = findGameWrapper(container);
+  const bottom = Math.min(window.innerHeight, container.getBoundingClientRect().bottom,
+    wrapper?.getBoundingClientRect().bottom ?? window.innerHeight);
+  if (!window.gameInstance) {
+    canvas.style.display = 'block';
+    const available = Math.floor(bottom - container.getBoundingClientRect().top
+      - row.getBoundingClientRect().height - toolbarGameGap);
+    if (available > 0 && canvas.style.height !== available + 'px') canvas.style.height = available + 'px';
+  }
+  return true;
+}
+window.addEventListener('resize', fitLoadingToolbar);
+
 function createContainer() {
     //search for existing div
     let ourDiv = document.getElementById('dashIntegRow');
@@ -281,15 +304,30 @@ function createContainer() {
       ourDiv.style.maxWidth="none";
     ourDiv.style.userSelect='none';
     ourDiv.style.zIndex="1";
+    ourDiv.style.marginTop = toolbarGameGap + 'px';
     let ourDiv2 = document.createElement( 'div' );
     ourDiv2.id = 'dashInteg';
   
     ourDiv.appendChild(ourDiv2);
     //append all elements
-    let gameDiv = document.getElementById('gameContainer');
-    if(!gameDiv) gameDiv = document.getElementsByClassName('gameDiv')[0];;
+    let gameDiv = findGameContainer();
     
-    if(gameDiv) gameDiv.appendChild(ourDiv);
+    if(gameDiv) {
+      gameDiv.appendChild(ourDiv);
+      toolbarOrderObserver?.disconnect();
+      toolbarOrderObserver = new MutationObserver(() => {
+        if (ourDiv.parentNode === gameDiv && gameDiv.lastElementChild !== ourDiv) {
+          gameDiv.appendChild(ourDiv);
+        }
+        fitLoadingToolbar();
+      });
+      toolbarOrderObserver.observe(gameDiv, { childList: true, subtree: true });
+      toolbarSizeObserver?.disconnect();
+      toolbarSizeObserver = new ResizeObserver(fitLoadingToolbar);
+      toolbarSizeObserver.observe(gameDiv);
+      toolbarSizeObserver.observe(ourDiv);
+      fitLoadingToolbar();
+    }
     return ourDiv2;
   
 }
@@ -330,27 +368,22 @@ function createContainer() {
 
 var comTimer ;
 var aliveTimeout = 1000;
-
 function sendAlive() {
     if(comTimer) clearTimeout(comTimer);
     var idC = document.getElementById('itycDashId');
     if(idC) {
-      window.notify({type:"alive"});//.then(manageAnswer);
+      window.notify({type:"alive"});
+      //console.log('VR alive send');
     }
     comTimer = setTimeout(sendAlive, aliveTimeout);
-
-
-    
 } 
 
 function popMsg() {
-  if(responseTimer) clearTimeout(responseTimer);
-  var msg = window.messageList.pop();
-  let lastId = msg?msg.rcvId:undefined;
-
-  while(msg)
-  {
-    if(msg.rcvId>lastId) lastId = msg.rcvId;
+  if (responseTimer) clearTimeout(responseTimer);
+  let msg = window.messageList && window.messageList.pop();
+  let lastId = msg ? msg.rcvId : undefined;
+  while (msg) {
+    if (msg.rcvId > lastId) lastId = msg.rcvId;
     manageAnswer(msg);
     msg = window.messageList.pop();
   }
@@ -396,7 +429,7 @@ function manageUI(msg)
 
 function fillDashContainer(content)
 {
-  let idC = document.getElementById("gameCanvas"); 
+  let idC = findGameCanvas() || findGameContainer();
   let ret = false;
   if(idC) {
     let ourDiv = document.getElementById('dashInteg');
@@ -404,6 +437,7 @@ function fillDashContainer(content)
         ourDiv = createContainer();
     }
     ourDiv.innerHTML = content;
+    fitLoadingToolbar();
     ret = true;
   }
   return ret;
@@ -418,6 +452,8 @@ function manageGameInfos(msg) {
         if(div) div.addEventListener("click", callRouterZezo);
         div = document.getElementById('vrz:' + msg.rid);
         if(div) div.addEventListener("click", callRouterVrZen);
+        div = document.getElementById('srm:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterSermar);
         div = document.getElementById('pl:' + msg.rid);
         if(div) div.addEventListener("click", callRouterToxxct);
         div = document.getElementById('ityc:' + msg.rid);
@@ -452,6 +488,10 @@ window.onmessage = function(e) {
         manageFullScreen2();
     } else if (msg.order === "fullScreenVR") {
       fullScreenVR = msg.fullScreenVR;
+    } else if (msg.order === "loadingStatusHeight") {
+      loadingStatusHeight = Math.max(0, Number(msg.height) || 0);
+      loadingStatusHeightChanged = true;
+      manageFullScreen2();
     }
   }
   return true;
@@ -489,39 +529,41 @@ function sendParameter2Top(theme,gameSize)
 
 function manageFullScreen2() {
   // iframe height
-  let ourDiv = document.getElementById('dashInteg');
+  const ourDiv = document.getElementById('dashInteg');
   if(!ourDiv) return;
   
   let spacer =  0;
   let fullScreenVRLogo =  0;
   let dashRowH =  0;
-  let idC =  document.getElementsByClassName('fullscreen VR')[0];
-  if(idC && window.parent != window) fullScreenVRLogo = Number(idC.style.height.replace('px', ''));
-  idc = document.getElementsByClassName('footer')[0];;
-  if(idC) spacer = Number(document.defaultView.getComputedStyle(idC).marginTop.replace('px', ''));
-  idC = document.getElementById("dashIntegRow");
-  if(idC) dashRowH = Number(document.defaultView.getComputedStyle(idC).height.replace('px', ''));
-  let offsetDash = spacer*2 + fullScreenVRLogo + dashRowH + 10;
+  const fullScreenButton = findFullscreenButton();
+  if(fullScreenButton && window.parent != window) fullScreenVRLogo = elementHeight(fullScreenButton);
+  const footer = findGameFooter();
+  if(footer) spacer = elementMarginTop(footer);
+  const toolbarRow = document.getElementById('dashIntegRow');
+  if(toolbarRow) dashRowH = elementHeight(toolbarRow);
+  let offsetDash = spacer*2 + fullScreenVRLogo + dashRowH + loadingStatusHeight + toolbarGameGap;
 
   if(window.parent == window)
   {
     maxScreenWidth = window.innerWidth;
     maxScreenHeight = window.innerHeight;
-    offsetDash = spacer/2+dashRowH+5;
-    let fullScreenBt = document.getElementsByClassName('footer')[0];
-    if(fullScreenBt) fullScreenBt.style.display = 'none';
+    offsetDash = spacer/2+dashRowH+toolbarGameGap;
+    if(footer) footer.style.display = 'none';
   }
   if(originGameWidth == 0 || originGameHeight == 0
     || maxScreenWidth == 0 || maxScreenHeight == 0)
    return;
 
   try {
+    const container = findGameContainer();
+    const canvas = findGameCanvas(container);
+    if (!container || !canvas || !toolbarRow) return;
     let sendSize = false;
     let adjustedSizeW = originGameWidth;
     let adjustedSizeH = originGameHeight;
-    const gameRatio = originGameWidth/originGameHeight;
-    let vrLogo = document.getElementsByClassName('logo VR')[0];
-    if(document.defaultView.getComputedStyle(vrLogo).display == 'none')
+    const vrLogo = findLoadingLogo(container);
+    const logoVisible = vrLogo && document.defaultView.getComputedStyle(vrLogo).display !== 'none';
+    if(window.gameInstance || !logoVisible)
     {// game is loaded
       if(fullScreenVR == true)
       {
@@ -543,13 +585,15 @@ function manageFullScreen2() {
     } else
     {
       if(dashState == "detectedNotDrawn") {
-        idC = document.getElementById("gameCanvas"); 
-        let tempGameW = Math.ceil(Number(document.defaultView.getComputedStyle(idC).width.replace('px', '')));
-        let tempGameH = Math.ceil(Number(document.defaultView.getComputedStyle(idC).height.replace('px', '')));
+        let tempGameW = Math.ceil(elementWidth(canvas));
+        let tempGameH = Math.ceil(elementHeight(canvas));
         adjustedSizeW = tempGameW;
         adjustedSizeH = tempGameH+offsetDash;
         sendSize = true;
-        dashState == "detected";
+        dashState = "detected";
+      }
+      else if(loadingStatusHeightChanged) {
+        sendSize = true;
       }
     }  
         
@@ -558,28 +602,24 @@ function manageFullScreen2() {
       adjustedSizeH = Math.ceil(window.innerHeight -  offsetDash-spacer-10);
       adjustedSizeW = window.innerWidth;
       sendSize = true;
-      idC = document.getElementsByClassName('webgl-content')[0];
     }
     if(sendSize) {
-      idC = document.getElementById("gameCanvas"); 
-      idC.style.height = adjustedSizeH + "px";
-      idC.style.width = adjustedSizeW + "px";
-      idC = document.getElementById("dashIntegRow");
-      idC.setAttribute("data-theme", drawTheme); 
-      idC.style.maxWidth = adjustedSizeW+"px";
+      canvas.style.height = adjustedSizeH + "px";
+      canvas.style.width = adjustedSizeW + "px";
+      toolbarRow.setAttribute("data-theme", drawTheme);
+      toolbarRow.style.maxWidth = adjustedSizeW+"px";
       if(window.parent != window) 
       { 
         let h = adjustedSizeH + offsetDash + spacer + fullScreenVRLogo;
         sendSize2Top(adjustedSizeW,h);
+        loadingStatusHeightChanged = false;
         //console.log("normalized iframe"+ adjustedSizeW +"X " + h);                                      
       }  else
       {
-        idC = document.getElementById("dashIntegRow");
-        idC.style.setProperty('max-width', window.innerWidth+"px", 'important');
-        idC = document.getElementById("gameContainer"); 
-        idC.style.setProperty('height','auto', 'important');
-        idC = document.getElementsByClassName('webgl-content')[0];
-        idC.style.setProperty('height','auto', 'important');
+        toolbarRow.style.setProperty('max-width', window.innerWidth+"px", 'important');
+        container.style.setProperty('height','auto', 'important');
+        const wrapper = findGameWrapper(container);
+        if(wrapper) wrapper.style.setProperty('height','auto', 'important');
         
       }
     }

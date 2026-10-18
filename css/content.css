@@ -70,10 +70,12 @@
 body {
     background-color: var(--bg_body_color) !important;
 }
+
 #hero {
     background-color: var(--bg_body_color) !important;
     background-image : none !important;
 }
+
 #gameContainer {
   text-align: center!important;
 }
@@ -83,9 +85,20 @@ body {
   padding-top: 0px;
   font-size: small;
   z-index: 1;
-  
+
   margin-left: auto;
   margin-right: auto;
+}
+
+#itycGameLoadingStatus {
+  padding: 6px 8px;
+  border: 1px solid var(--border_color);
+  border-top: 0;
+  background-color: var(--td_bg_color);
+  color: var(--td_color);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: left;
 }
 
 
@@ -418,4 +431,10 @@ td.position p {
 .textMini {
   font-size: 11px !important;
   line-height: 1.4;
+}
+.sermarIcon {
+  width: 1.5em;
+  height: 1.5em;
+  object-fit: contain;
+  vertical-align: middle;
 }
