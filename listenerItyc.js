@@ -55,9 +55,10 @@ function manageGoInFullScreen()
 
 function foundVRIframe() {
   const iframeO = Array.from(document.getElementsByClassName('iframe-class'));
-  return targetIframe = iframeO.find(iframe => 
-    iframe.getAttribute('src') === "https://play.offshore.virtualregatta.com/"
-  );
+  return iframeO.find(iframe => {
+    const src = iframe.getAttribute('src') || '';
+    return src.startsWith("https://play.offshore.virtualregatta.com/");
+  });
    
 }
 

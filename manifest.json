@@ -23,6 +23,7 @@
   "https://gibs.earthdata.nasa.gov/wms/epsg3413/best/",
   "https://routage.vrzen.org/*",
   "http://zezo.org/*",
+  "https://zezo.org/*",
   "http://localhost:8081/nmea/*",
   "http://localhost:8082/nmea/*",
   "http://localhost:8083/nmea/*",
