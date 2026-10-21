@@ -264,6 +264,24 @@ td.tdc {
     padding-bottom: 0px;
 }
 
+td.router-stack {
+    padding-left: 2px;
+    padding-right: 2px;
+    vertical-align: middle;
+}
+
+td.router-stack > div {
+    align-items: center;
+    display: flex;
+    height: 1em;
+    justify-content: center;
+    line-height: 1em;
+}
+
+td.router-stack > div + div {
+    margin-top: 4px;
+}
+
 #th_lu, #th_name, #th_rank, #th_dtf, #th_dtu, #th_state, #th_hdg, #th_twa, #th_tws, #th_twd, #th_speed, #th_vmg, #th_sail, #th_options, #th_racetime, #th_stamina {
     cursor: pointer;
 }

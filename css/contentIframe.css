@@ -455,6 +455,27 @@ td.position p {
     object-fit: contain;
     vertical-align: middle;
 }
+.nayaIcon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    vertical-align: middle;
+}
+td.embedded-router-stack {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+    vertical-align: middle;
+}
+td.embedded-router-stack > div {
+    align-items: center;
+    display: flex;
+    height: 1.5em;
+    justify-content: center;
+    line-height: 1.5em;
+}
+td.embedded-router-stack > div + div {
+    margin-top: 2px;
+}
 
 .foilImg {
     padding: 0em;

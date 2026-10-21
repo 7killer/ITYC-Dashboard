@@ -30,7 +30,9 @@ var actualAvalon06Color ="#005500";
 var actualAvalon12Color ="#5500AA";
 var actualAvalon18Color ="#AA0055";
 var actualVRZenColor ="#499300";
+var actualZephirColor ="#0077B6";
 var actualSermarColor ="#8B4513";
+var actualNayaColor ="#7C3AED";
 var actualgpxColor ="#009349";
 
 String.prototype.cleanSpecial = function() {
@@ -236,10 +238,12 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
     //Mode 0 Avalon
     //Mode 1 VRZen
     //Mode 2 Sermar
+    //Mode 4 Naya
+    //Mode 5 Zephir (VRZen CSV)
     var poi = new Array();
     var i = 0;
-    fileTxt = fileTxt.replace('\r','');
-    var lineAvl = fileTxt.split('\n');
+    fileTxt = fileTxt.replace(/\r/g,'');
+    var lineAvl = fileTxt.split('\n').filter(function(line) { return line.trim() !== ""; });
     if(lineAvl.length<= 1) //empty file or file not exits 
     {
         return "" ;//File not available
@@ -254,7 +258,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
     var sermarPreviousMonth = 0;
 
     var totalLines = lineAvl.length-2;
-    if (mode == 1 || mode == 2) totalLines = lineAvl.length-1;
+    if (mode == 1 || mode == 2 || mode == 4 || mode == 5) totalLines = lineAvl.length-1;
     while (i < totalLines) {
         i = i + 1;
         if (i > totalLines) i = totalLines;
@@ -262,7 +266,7 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
 
         var isoDate, hdg, tws, twa, twd, sail, stw, lat, lon, splitDate, heure, date, stamina, boost;
 
-        if(mode == 1)
+        if(mode == 1 || mode == 5)
         {//VRZen
             lat = Number(poi[3]);
             lon = Number(poi[4]);
@@ -295,8 +299,37 @@ function importExternalRouter(race,fileTxt,routerName,skipperName,color,mode) {
             twd = Util.roundTo(poi[11], 2)+ "°"; 
             stamina = Util.roundTo(poi[24], 2);
             boost = Util.roundTo(poi[16], 2);
+        } else if(mode == 4)
+        {// Naya
+            // Header: DateHeure(UTC);DateHeure(locale);Latitude;Longitude;
+            // Programmation;HDG;TWA;TWS(nds);TWD;SOG(nds);Stamina;Voile;Manoeuvre
+            lat = Number(poi[2]);
+            lon = Number(poi[3]);
+            hdg = poi[5] ? poi[5] + "\u00B0" : "";
+            tws = Util.roundTo(poi[7], 2) + " kts";
+            stw = Util.roundTo(poi[9], 2) + " kts";
+            isoDate = poi[0].replace(" ", "T") + "Z";
+            twa = Util.roundTo(poi[6], 2) + "\u00B0";
+            twd = Util.roundTo(poi[8], 2) + "\u00B0";
+            sail = renameSailFromRoutes(poi[11]);
+            stamina = Util.roundTo(poi[10], 2);
+            boost = "";
+            if (poi[4] === "ARRIVEE") {
+                tws = "";
+                stw = "";
+                twa = "";
+                twd = "";
+            }
         } else if(mode == 2)
         {// Sermar
+            // SERMAR_GFS-V 2010 inserts DMS coordinates, foil data and VMG.
+            // Normalize its columns to the positions used by the importer below.
+            poi = [
+                poi[0], poi[1], poi[2], poi[3], poi[4], poi[7], poi[8],
+                poi[9], poi[10], poi[11], poi[12], poi[14], poi[15], poi[17],
+                poi[18], poi[19], poi[20], poi[21], poi[22]
+            ];
+
             // Header: itération;temps_ecoule;date;lat;lon;cap_deg;twa_deg;
             // bord;twd_deg;tws_kn;vitesse_kn;...;voile;...;energie_pct;...
             lat = Number(poi[3]);
@@ -598,12 +631,32 @@ function onChangeRouteTypeLmap() {
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
             break;
+        case "rt_Zephir":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
+            document.getElementById("route_colorLmap").value = actualZephirColor;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_popupLmap").style.height = "6em";
+            break;
         case "rt_Sermar":
             document.getElementById("sel_rt_skipperLmap").style.display = "none";
             document.getElementById("rt_nameSkipperLmap").style.display = "block";
             document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
             document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
             document.getElementById("route_colorLmap").value = actualSermarColor;
+            document.getElementById("rt_extraFormat2Lmap").style.display = "none";
+            document.getElementById("rt_extraFormat3Lmap").style.display = "none";
+            document.getElementById("rt_popupLmap").style.height = "6em";
+            break;
+        case "rt_Naya":
+            document.getElementById("sel_rt_skipperLmap").style.display = "none";
+            document.getElementById("rt_nameSkipperLmap").style.display = "block";
+            document.getElementById("rt_nameSkipperLmap").value =  document.getElementById("lb_boatname").textContent;
+            document.getElementById("rt_nameSkipperLmap").setAttribute("placeholder", "Add custom name...");
+            document.getElementById("route_colorLmap").value = actualNayaColor;
             document.getElementById("rt_extraFormat2Lmap").style.display = "none";
             document.getElementById("rt_extraFormat3Lmap").style.display = "none";
             document.getElementById("rt_popupLmap").style.height = "6em";
@@ -634,10 +687,18 @@ async function loadExternalFile(race,type) {
         tf = '.csv';
         routeType = "VR Zen ";
         routeFormat = 1;
+    } else if(type == "rt_Zephir") {
+        tf = '.csv';
+        routeType = "Z\u00e9phir ";
+        routeFormat = 5;
     } else if(type == "rt_Sermar") {
         tf = '.csv';
         routeType = "Sermar ";
         routeFormat = 2;
+    } else if(type == "rt_Naya") {
+        tf = '.csv';
+        routeType = "Naya ";
+        routeFormat = 4;
     } else if(type == "rt_gpx") {
         tf = '.gpx';
         routeType = "Gpx ";
@@ -664,7 +725,7 @@ async function loadExternalFile(race,type) {
       [fileHandle] = await window.showOpenFilePicker(pickerOpts);
       const fileH = await fileHandle.getFile();
       const fileData = await fileH.text();
-      if(type == "rt_Avalon" || type == "rt_VRZen" || type == "rt_Sermar") {
+      if(type == "rt_Avalon" || type == "rt_VRZen" || type == "rt_Zephir" || type == "rt_Sermar" || type == "rt_Naya") {
         return importExternalRouter(
             race,
             fileData,
@@ -789,8 +850,14 @@ async function onAddRouteLmap(race) {
         case "rt_VRZen" :
             routeName = await loadExternalFile(race,"rt_VRZen");
             break;
+        case "rt_Zephir" :
+            routeName = await loadExternalFile(race,"rt_Zephir");
+            break;
         case "rt_Sermar" :
             routeName = await loadExternalFile(race,"rt_Sermar");
+            break;
+        case "rt_Naya" :
+            routeName = await loadExternalFile(race,"rt_Naya");
             break;
         case "rt_gpx" :
             routeName = await loadExternalFile(race,"rt_gpx");   
@@ -1057,7 +1124,9 @@ function help(){
         "- Zezo : importer automatiquement la route suggérée par Zezo en cliquant sur 'Import'.\n" +
         "- Avalon : depuis votre logiciel Avalon, exportez votre route au format CSV et importez le fichier.\n" +
         "- VRZen : depuis le site du routeur VRZen, exportez votre route au format CSV et importez le fichier.\n" +
+        "- Z\u00e9phir : exportez votre route au format CSV et importez le fichier.\n" +
         "- Sermar : depuis Sermar, exportez votre route au format CSV et importez le fichier.\n" +
+        "- Naya : depuis Naya, exportez votre route au format CSV et importez le fichier.\n" +
         "- Autre : importez un fichier au format GPX après avoir sélectionné son emplacement.\n\n" +
         "Copier les coordonnées pointées par la souris :\n" +
         "- Appuyez en même temps sur les touches de votre clavier : CTRL + B (ou Cmd + B sur Mac). Les coordonnées seront copiées dans le Presse-papier. Pour les réutiliser, il faudra réaliser l'action \"Coller\" (CTRL + V).\n\n" +
