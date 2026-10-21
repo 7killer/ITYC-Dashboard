@@ -472,7 +472,7 @@ var controller = function () {
         
 
         var raceStatusHeader = '<tr>'
-        + '<th title="Call Router">' + "RT" + '</th>'
+        + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
         + '<th title="Call Polars">' + "PL" + '</th>'
         + '<th>' + "Time" + '</th>'
         + '<th title="True Wind Direction">' + "TWD" + '</th>'
@@ -507,16 +507,16 @@ var controller = function () {
 
         if(!currentUserId ) {
             if(lang ==  "fr") {
-                raceLine ="<tr><td colspan='17'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com/offshore-game/'>Relancer</a>)</td></tr>";
+                raceLine ="<tr><td colspan='18'>❌ Joueur non détecté (<a href='https://www.virtualregatta.com/offshore-game/'>Relancer</a>)</td></tr>";
             } else {
-                raceLine ="<tr><td colspan='17'>❌ Player not detected (<a href='https://www.virtualregatta.com/en/offshore-game/'>Reload</a>)</td></tr>";    
+                raceLine ="<tr><td colspan='18'>❌ Player not detected (<a href='https://www.virtualregatta.com/en/offshore-game/'>Reload</a>)</td></tr>";
             }
         } else if(r == undefined || r.curr == undefined ||((welcomePage))) {
             if(lang ==  "fr") {
-                raceLine ='<tr><td colspan="17">❌ Aucune course chargée (Joueur détecté: '+ currentUserName +')</td></tr>';
+                raceLine ='<tr><td colspan="18">❌ Aucune course chargée (Joueur détecté: '+ currentUserName +')</td></tr>';
             } else
             {
-                raceLine ='<tr><td colspan="17">❌ No race loaded (Player detected: '+ currentUserName +')</td></tr>';            
+                raceLine ='<tr><td colspan="18">❌ No race loaded (Player detected: '+ currentUserName +')</td></tr>';
             }
         } else  {
             let p=  raceFleetMap.get(r.id).uinfo[currentUserId];
@@ -718,12 +718,10 @@ var controller = function () {
             var timeLine = '<div>'+Util.formatTimeNotif(r.curr.lastCalcDate)+'</div><div id="dashIntegTime" class="textMini">'+'</div>';
 
             raceLine = '<tr id="rs:' + r.id + '" style="background-color:' + agroundBG + ';">';
-            raceLine += '<td class="tdc"><div>';
-            raceLine += '<span id="vrz:' + r.id + '">&#x262F;</span>';
-            raceLine += '</div>';
-            if (r.url) raceLine += '<div><span class="zezoIcon" id="rt:' + r.id + '">&#x2388;</span></div>';
-            if (isSermarAvailable(r)) raceLine += '<div><span id="srm:' + r.id + '" title="Sermar"><img class="sermarIcon" src="' + chrome.runtime.getURL('./img/semar.png') + '" alt="Sermar"></span></div>';
-            raceLine += '</td>';
+            var zezoRouter = r.url ? '<span class="zezoIcon" id="rt:' + r.id + '">&#x2388;</span>' : '&nbsp;';
+            var sermarRouter = isSermarAvailable(r) ? '<span id="srm:' + r.id + '" title="Sermar"><img class="sermarIcon" src="' + chrome.runtime.getURL('./img/semar.png') + '" alt="Sermar"></span>' : '&nbsp;';
+            raceLine += '<td class="tdc embedded-router-stack"><div>' + zezoRouter + '</div><div>' + sermarRouter + '</div></td>';
+            raceLine += '<td class="tdc embedded-router-stack"><div><span id="vrz:' + r.id + '">&#x262F;</span></div><div><span id="nya:' + r.id + '" title="Naya"><img class="nayaIcon" src="' + chrome.runtime.getURL('./img/naya-router-icon.png') + '" alt="Naya"></span></div></td>';
             raceLine += '<td class="tdc"><div>';
             raceLine += '<span id="pl:' + r.id + '">&#x26F5;</span>';
             raceLine += '</div><div>';
@@ -1065,10 +1063,14 @@ var controller = function () {
                     else  itycLedColor = "Red";
                 }
 
+                var zezoRouter = r.url ? '<span id="rt:' + r.id + '">&#x2388;</span>' : '&nbsp;';
+                var sermarRouter = isSermarAvailable(r) ? '<span id="srm:' + r.id + '" title="Sermar"><img class="icon" src="./img/semar.png" alt="Sermar"></span>' : '&nbsp;';
+                var nayaRouter = '<span id="nya:' + r.id + '" title="Naya"><img class="icon" src="./img/naya-router-icon.png" alt="Naya"></span>';
+                var routerCells = '<td class="tdc router-stack"><div>' + zezoRouter + '</div><div><span id="vrz:' + r.id + '">&#x262F;</span></div></td>'
+                    + '<td class="tdc router-stack"><div>' + sermarRouter + '</div><div>' + nayaRouter + '</div></td>';
+
                 var returnVal = '<tr class="' + trstyle + '" id="rs:' + r.id + '">'
-                    + (r.url ? ('<td class="tdc"><span id="rt:' + r.id + '">&#x2388;</span></td>') : '<td>&nbsp;</td>')
-                    +  '<td class="tdc"><span id="vrz:' + r.id + '">&#x262F;</span></td>'
-                    + (isSermarAvailable(r) ? '<td class="tdc"><span id="srm:' + r.id + '" title="Sermar"><img class="icon" src="./img/semar.png" alt="Sermar"></span></td>' : '<td>&nbsp;</td>')
+                    + routerCells
                     + '<td class="tdc"><span id="pl:' + r.id + '">&#x26F5;</span></td>'
                     + '<td class="tdc"><span id="wi:' + r.id + '"><img class="icon" src="./img/wind.svg"/></span></td>'
                     + '<td class="tdc"><span id="ityc:' + r.id + '">&#x2620;</span></td>'
@@ -1257,7 +1259,7 @@ var controller = function () {
             };
         }
         var raceStatusHeader = '<tr>'
-            + '<th title="Call Router" colspan="3">' + "RT" + '</th>'
+            + '<th title="Call Router" colspan="2">' + "RT" + '</th>'
             + '<th title="Call Polars">' + "PL" + '</th>'
             + '<th title="Call WindInfo">' + "WI" + '</th>'
             + '<th title="Call ITYC">' + "ITYC" + '</th>'
@@ -1614,6 +1616,8 @@ var controller = function () {
                         if(race.url) routerCell = '<td class="tdc"><span id="rt:' + uid + '">&#x2388;</span></td>';
                     } else if(document.getElementById("sel_router").value=="sermar") {
                         if(isSermarAvailable(race)) routerCell = '<td class="tdc"><span id="srm:' + uid + '" title="Sermar"><img class="icon" src="./img/semar.png" alt="Sermar"></span></td>';
+                    } else if(document.getElementById("sel_router").value=="naya") {
+                        routerCell = '<td class="tdc"><span id="nya:' + uid + '" title="Naya"><img class="icon" src="./img/naya-router-icon.png" alt="Naya"></span></td>';
                     } else
                         routerCell = '<td class="tdc"><span id="vrz:' + uid + '">&#x262F;</span></td>';
 
@@ -3061,6 +3065,7 @@ var controller = function () {
         var call_cp = false;
         var call_vrzen = false;
         var call_sermar = false;
+        var call_naya = false;
         var friend = false;
         var tabsel = false;
         var cbox = false;
@@ -3072,6 +3077,7 @@ var controller = function () {
         var re_ityc = new RegExp("^ityc:(.+)"); // ITYC
         var re_vrzen = new RegExp("^vrz:(.+)"); // Call-Vrzen
         var re_sermar = new RegExp("^srm:(.+)"); // Call-Sermar
+        var re_naya = new RegExp("^nya:(.+)"); // Call-Naya
         var re_rsel = new RegExp("^rs:(.+)"); // Race-Selection
         var re_usel = new RegExp("^ui:(.+)"); // User-Selection
         var re_tsel = new RegExp("^ts:(.+)"); // Tab-Selection
@@ -3217,6 +3223,8 @@ var controller = function () {
                 call_vrzen = true;  
             } else if (re_sermar.exec(id)) {
                 call_sermar = true;
+            } else if (re_naya.exec(id)) {
+                call_naya = true;
             } else if (match = re_rsel.exec(id)) {
                 rmatch = match[1];
             } else if (match = re_usel.exec(id)) {
@@ -3273,6 +3281,7 @@ var controller = function () {
                 if (call_rt) callRouter(selRace.value, rmatch, false,"zezo");
                 else if (call_vrzen) callRouter(selRace.value, rmatch, false,"vrzen");
                 else if (call_sermar) callRouter(selRace.value, rmatch, false,"sermar");
+                else if (call_naya) callRouter(selRace.value, rmatch, false,"naya");
             } else if (cbox) {
                 // Skippers-Choice
                 if(ev_lbl == "sel_ExportFleet") {onFleetInCpyClipBoard();return;}
@@ -3284,6 +3293,7 @@ var controller = function () {
             else if (call_cp) callCompass(selRace.value,currentUserId);
             else if (call_vrzen) callRouter(rmatch, currentUserId, false,"vrzen");
             else if (call_sermar) callRouter(rmatch, currentUserId, false,"sermar");
+            else if (call_naya) callRouter(rmatch, currentUserId, false,"naya");
     
             else
             {
@@ -3733,6 +3743,67 @@ var controller = function () {
     function callRouterSermar(raceId, pid) {
         var url = prepareSermarUrl(raceId, pid);
         if (url) Util.openTab(url, SERMAR_BASE_URL, (cbReuseTab.checked && pid == currentUserId));
+    }
+
+    var NAYA_BASE_URL = "https://naya-routing.fr/";
+    var NAYA_OPTIONS = [
+        "foil", "light", "reach", "heavy", "hull", "winch",
+        "magicFurler", "comfortLoungePug", "vrtexJacket"
+    ];
+
+    function roundNayaNumber(value, digits) {
+        var number = Number(value);
+        if (!Number.isFinite(number)) return null;
+        var factor = Math.pow(10, digits);
+        return Math.round(number * factor) / factor;
+    }
+
+    function getNayaOptions(uinfo) {
+        var options = uinfo && uinfo.options;
+        if (uinfo && uinfo.fullOptions || options === "Full Pack" || options === "All Options") return "full";
+        if (!Array.isArray(options)) return "";
+        if (NAYA_OPTIONS.every(function(option) { return options.includes(option); })) return "full";
+        return NAYA_OPTIONS.filter(function(option) { return options.includes(option); }).join(",");
+    }
+
+    function prepareNayaUrl(raceId, pid) {
+        var race = races.get(raceId);
+        var fleet = raceFleetMap.get(raceId);
+        var uinfo = fleet && fleet.uinfo ? fleet.uinfo[pid] : null;
+        if (!uinfo && pid == currentUserId) uinfo = race && race.curr;
+        if (!uinfo) {
+            alert("Can't find record for user id " + pid);
+            return null;
+        }
+
+        var lat = roundNayaNumber(uinfo.pos && uinfo.pos.lat, 6);
+        var lon = roundNayaNumber(uinfo.pos && uinfo.pos.lon, 6);
+        if (lat === null || lon === null) {
+            alert("Position unavailable for Naya routing.");
+            return null;
+        }
+
+        var twa = roundNayaNumber(uinfo.twa, 2);
+        if (twa === null) twa = roundNayaNumber(uinfo.heading, 0);
+        var sail = Math.abs(Math.trunc(Number(uinfo.sail))) % 10;
+        var stamina = roundNayaNumber(uinfo.stamina, 1);
+        // The internal VR identifier is raceId.legId; Naya expects raceId_legId.
+        var course = String(raceId).replace(/\./g, "_");
+        var params = new URLSearchParams({
+            course: course,
+            lat: lat.toString(),
+            lon: lon.toString(),
+            twa: twa === null ? "" : twa.toString(),
+            voile: sail >= 1 && sail <= 7 ? sail.toString() : "",
+            options: getNayaOptions(uinfo),
+            stamina: stamina === null ? "" : Math.min(100, Math.max(0, stamina)).toString()
+        });
+        return NAYA_BASE_URL + "?" + params.toString();
+    }
+
+    function callRouterNaya(raceId, pid) {
+        var url = prepareNayaUrl(raceId, pid);
+        if (url) Util.openTab(url, NAYA_BASE_URL, (cbReuseTab.checked && pid == currentUserId));
     }
 
     function callWindy(raceId, userId) {
@@ -4905,6 +4976,8 @@ async function initializeMap(race) {
                     alert("Unsupported race, no Sermar router support yet.");
                 else
                     callRouterSermar(raceId, userId);
+            } else if(rtType=="naya") {
+                callRouterNaya(raceId, userId);
             } else 
                 callRouterVRZ(raceId,userId);
         }
@@ -5756,6 +5829,8 @@ async function initializeMap(race) {
             callRouter(selRace.value, currentUserId, false,"vrzen"); 
         } else if(msg.type=="openSermar") {
             callRouter(selRace.value, currentUserId, false,"sermar");
+        } else if(msg.type=="openNaya") {
+            callRouter(selRace.value, currentUserId, false,"naya");
         } else if(msg.type=="openItyc") {
             callPolarAnalysis("ityc"); 
         } else if(msg.type=="openToxxct") {

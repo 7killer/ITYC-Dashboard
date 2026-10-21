@@ -438,3 +438,9 @@ td.position p {
   object-fit: contain;
   vertical-align: middle;
 }
+.nayaIcon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    vertical-align: middle;
+}

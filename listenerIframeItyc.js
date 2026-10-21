@@ -62,6 +62,10 @@ function callRouterSermar() {
   var idC = document.getElementById('itycDashId');
   if(idC) chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openSermar" });
 }
+function callRouterNaya() {
+  var idC = document.getElementById('itycDashId');
+  if(idC) chrome.runtime.sendMessage(idC.getAttribute('extId'), {type:"openNaya" });
+}
 
 
 (() => {
@@ -446,6 +450,8 @@ function manageGameInfos(msg) {
         if(div) div.addEventListener("click", callRouterVrZen);
         div = document.getElementById('srm:' + msg.rid);
         if(div) div.addEventListener("click", callRouterSermar);
+        div = document.getElementById('nya:' + msg.rid);
+        if(div) div.addEventListener("click", callRouterNaya);
         div = document.getElementById('pl:' + msg.rid);
         if(div) div.addEventListener("click", callRouterToxxct);
         div = document.getElementById('ityc:' + msg.rid);
