@@ -3701,6 +3701,19 @@ var controller = function () {
         });
         return cfg.toString(36);
     }
+    function getDoradoUrl()
+    {
+        var r = races.get(selRace.value);
+        if (r === undefined) return; 
+
+        if(!currentUserId )  return;
+        let doradoUrl = "https://vr.ityc.fr/dorado.php?id=";
+        doradoUrl += currentUserId;
+        doradoUrl += "&rid="
+        doradoUrl += r.id.replace('.', '_');
+        navigator.clipboard.writeText(doradoUrl);
+    }
+
 
     function roundSermarNumber(value, digits) {
         var number = Number(value);
@@ -6243,6 +6256,7 @@ async function initializeMap(race) {
         exportPolar:exportPolar,
         exportStamina:exportStamina,
         exportFleet:exportFleet,
+        getDoradoUrl:getDoradoUrl,
         exportOwnBoatTrack:exportOwnBoatTrack,
         exportGraphData:exportGraphData,
         graphCleanData:graphCleanData,
@@ -6291,10 +6305,10 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
     document.getElementById("bt_exportRestrictedZones").addEventListener("click", controller.exportRestrictedZones);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
+    document.getElementById("doradoUrl").addEventListener("click", controller.getDoradoUrl);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
     document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
     document.getElementById("bt_exportOwnBoatTrack").addEventListener("click", controller.exportOwnBoatTrack);
-    
     
     document.getElementById("bt_cleanGraph").addEventListener("click", controller.graphCleanData);
     document.getElementById("bt_exportGraphData").addEventListener("click", controller.exportGraphData);

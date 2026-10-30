@@ -488,7 +488,6 @@ td>p {
    margin:0px; 
 }
 
-
 fieldset {
     display: inline-flex;
     margin-inline-start: 0px;
@@ -601,6 +600,16 @@ fieldset {
 /*    padding-top: 0.2em; */
 
 }
+
+#doradoUrl { 
+    float: left;
+    margin-left:1em;
+    cursor: pointer;
+    padding-top: 0.8em;
+    padding-bottom: 0.4em;
+}
+
+
 #headSpacer {
     display: flex;
     padding-bottom: 0.7em;
@@ -1251,7 +1260,10 @@ a:active {
 #raceStatusTable tr th {
     cursor: help;
 }
-
+#raceStatusTable>tbody>tr
+{
+    height: 4em;
+}
 table#raceidTable2>tbody>tr>td {
     text-align: center;
 }
