@@ -183,6 +183,10 @@
                         <input type="checkbox" id="sel_ExportFleet" name="checkbox1" class="content hidden" checked>
                         <label for="sel_ExportFleet" id="lbl_ExportFleet" title="Export SailRanks - CSV in clipboard">SailRanks</label>
                     </li>
+                    <li class="tab" id="exportTracksTab" style="display: none;">
+                        <input type="button" id="exportTracks" class="content hidden">
+                        <label for="exportTracks" id="lbl_exportTracks" title="Exporter la trace d'un skipper (.csv)">Traces</label>
+                    </li>
                 </ul>
             </fieldset>
             <div align="inline" style="position:relative;"></div>
@@ -292,6 +296,23 @@
                 </tbody>
             </table>
             <button id="bt_rt_addLmap">Import</button>
+        </div>
+        <div id="track_popupLmap" role="dialog" aria-labelledby="t_trackTitle" style="display: none;">
+            <div id="track_popupHeaderLmap">
+                <h3 id="t_trackTitle">Export des traces</h3>
+                <img id="track_close_popupLmap" src="./img/close.png" alt="Fermer">
+            </div>
+            <table class="noBorderElt">
+                <tbody>
+                    <tr>
+                        <td class="noBorderElt rt_left_col"><label for="sel_track_skipperLmap">Skipper</label></td>
+                        <td class="select-editable noBorderElt">
+                            <select id="sel_track_skipperLmap" name="track_skipper"></select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="bt_exportSkipperTrack">Exporter (.csv)</button>
         </div>
     </div>
     <div id="tab-content4" class="content hidden">

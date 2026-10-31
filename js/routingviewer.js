@@ -469,7 +469,7 @@ function initializeWebInterface(mkState)
     
 }
 
-function loadRacingSkipperList(elt)
+function loadRacingSkipperList(elt, skipperInfos = fleetInfos)
 {
     var selectobject = document.getElementById(elt);
     var options = selectobject.getElementsByTagName('OPTION');
@@ -484,8 +484,8 @@ function loadRacingSkipperList(elt)
 
     var fln = new Array();
 
-    Object.keys(fleetInfos).forEach(function (key) {
-        if (fleetInfos[key].state != "Arrived") {
+    Object.keys(skipperInfos).forEach(function (key) {
+        if (skipperInfos[key].state != "Arrived") {
             fln.push(key);
         }
     });
@@ -504,13 +504,13 @@ function loadRacingSkipperList(elt)
     }
     fln.sort(function (uidA, uidB) {
         // Check if we have values at all
-        if (fleetInfos[uidA] == undefined && fleetInfos[uidB] == undefined) return 0;
-        if (fleetInfos[uidB] == undefined) return -1;
-        if (fleetInfos[uidA] == undefined) return 1;
+        if (skipperInfos[uidA] == undefined && skipperInfos[uidB] == undefined) return 0;
+        if (skipperInfos[uidB] == undefined) return -1;
+        if (skipperInfos[uidA] == undefined) return 1;
 
         // Fetch value of sort field and convert to number.
-        var entryA = fleetInfos[uidA].displayName;
-        var entryB = fleetInfos[uidB].displayName;
+        var entryA = skipperInfos[uidA].displayName;
+        var entryB = skipperInfos[uidB].displayName;
 
         // Prefer defined values over undefined values
         if (entryA == undefined && entryB == undefined) return 0;
@@ -534,14 +534,14 @@ function loadRacingSkipperList(elt)
 
    
     Object.keys(fln).forEach(function (key) {
-        if (isDisplayEnabled(fleetInfos[fln[key]], fln[key])) {
+        if (isDisplayEnabled(skipperInfos[fln[key]], fln[key])) {
             var option = document.createElement("option");
 
             let optionK = "";
-            if(!fleetInfos[fln[key]].options || fleetInfos[fln[key]].options=="?")
+            if(!skipperInfos[fln[key]].options || skipperInfos[fln[key]].options=="?")
                 optionK = " (*)";
 
-            option.text = fleetInfos[fln[key]].displayName+optionK;
+            option.text = skipperInfos[fln[key]].displayName+optionK;
             option.value = fln[key];
             if(fln[key]==optionsSelect) optionsSelectStillExist = true;
 
@@ -549,7 +549,7 @@ function loadRacingSkipperList(elt)
         }
     });
     if(optionsSelectStillExist) selectobject.value = optionsSelect;
-    onSkipperSelectedChange("Lmap");
+    if (elt == "sel_rt_skipperLmap") onSkipperSelectedChange("Lmap");
 }
 
 
@@ -1141,6 +1141,6 @@ export {
     initialize,routeInfosmodel,createEmptyRoute,addNewPoints,getRoute,routeExists,
     myRoute,updateRouteListHTML,onRouteListClick,buildMarkerTitle,displayMapTrace,onCleanRoute,onMarkersChange,onAddRouteLmap,
     initializeWebInterface,updateFleet,updateRaces,set_displayFilter,set_currentId,
-    darkenColor,onSkipperSelectedChange
+    darkenColor,onSkipperSelectedChange,loadRacingSkipperList,onPopupCloseLmap
 
 };

@@ -1303,6 +1303,9 @@ var controller = function () {
     }
 
     function updateFleetHTML(rf) {
+        if (document.getElementById("track_popupLmap").style.display != "none") {
+            loadTraceExportSkippers();
+        }
         function friendListHeader() {
             function recordRaceColumns () {
                 var race = races.get(selRace.value);
@@ -2684,6 +2687,46 @@ var controller = function () {
         exp.exportOwnBoatTrack(ownBoatTrack)
     }
 
+    function loadTraceExportSkippers()
+    {
+        const fleet = raceFleetMap.get(selRace.value);
+        const skipperInfos = {};
+        if (fleet) {
+            Object.keys(fleet.uinfo).forEach(uid => {
+                skipperInfos[uid] = {...fleet.uinfo[uid], options: DM.getRaceOptionsPlayer(selRace.value, uid)};
+            });
+        }
+        rt.loadRacingSkipperList("sel_track_skipperLmap", skipperInfos);
+        document.getElementById("bt_exportSkipperTrack").disabled =
+            document.getElementById("sel_track_skipperLmap").options.length == 0;
+    }
+
+    function openTraceExport()
+    {
+        if (!races.get(selRace.value)) return;
+        rt.onPopupCloseLmap();
+        loadTraceExportSkippers();
+        document.getElementById("track_popupLmap").style.display = "block";
+    }
+
+    function closeTraceExport()
+    {
+        document.getElementById("track_popupLmap").style.display = "none";
+    }
+
+    function exportSkipperTrack()
+    {
+        const race = races.get(selRace.value);
+        const fleet = raceFleetMap.get(selRace.value);
+        const uid = document.getElementById("sel_track_skipperLmap").value;
+        const skipper = fleet && fleet.uinfo[uid];
+        if (!exp.exportSkipperTrack(race, skipper)) {
+            alert(lang == "fr" ? "Aucune trace disponible pour ce skipper." : "No track available for this skipper.");
+            return;
+        }
+        closeTraceExport();
+    }
+
     function exportGraphData()
     {
         var race = races.get(selRace.value);
@@ -2983,6 +3026,7 @@ var controller = function () {
         } else{
             selRace.value = raceId;
         }
+        closeTraceExport();
         var race = races.get(raceId);
         if(currentRaceId==0) //first Race Selection
         {
@@ -3320,6 +3364,8 @@ var controller = function () {
     function display_selbox(state) {
         document.getElementById("sel_skippers").style.visibility = state;
         document.getElementById("sel_export").style.visibility = state;
+        document.getElementById("exportTracksTab").style.display = originClick == 3 ? "block" : "none";
+        if (state == "hidden") closeTraceExport();
     }
 
 
@@ -4508,6 +4554,9 @@ async function initializeMap(race) {
         lMap.set_displayFilter(value);
         lMap.updateMapFleet(races.get(selRace.value),raceFleetMap);
         rt.set_displayFilter(value);
+        if (document.getElementById("track_popupLmap").style.display != "none") {
+            loadTraceExportSkippers();
+        }
 
         //save user filter ( we have  to do it here due to label format)
         await saveLocal('cb_sel_friends',cbFriends.checked===true);
@@ -4848,6 +4897,7 @@ async function initializeMap(race) {
         {
             document.documentElement.setAttribute("data-theme", "dark");
             document.getElementById("rt_close_popupLmap").src = "./img/closedark.png";
+            document.getElementById("track_close_popupLmap").src = "./img/closedark.png";
             document.getElementsByClassName("popupCloseBt").src = "./img/closedark.png";
             
 
@@ -4855,6 +4905,7 @@ async function initializeMap(race) {
         {
             document.documentElement.setAttribute("data-theme", "light");
             document.getElementById("rt_close_popupLmap").src = "./img/close.png";
+            document.getElementById("track_close_popupLmap").src = "./img/close.png";
             document.getElementsByClassName("popupCloseBt").src = "./img/close.png";
         }
         drawTheme = document.documentElement.getAttribute("data-theme");
@@ -5997,6 +6048,11 @@ async function initializeMap(race) {
             document.getElementById("lbl_rt_openLmap").innerHTML = "Ajouter";	
             document.getElementById("lbl_rt_cleanLmap").innerHTML = "Effacer";
             document.getElementById("t_rtTitle").innerHTML = "Import Routage";
+            document.getElementById("lbl_exportTracks").innerHTML = "Traces";
+            document.getElementById("lbl_exportTracks").title = "Exporter la trace d'un skipper (.csv)";
+            document.getElementById("t_trackTitle").innerHTML = "Export des traces";
+            document.getElementById("bt_exportSkipperTrack").innerHTML = "Exporter (.csv)";
+            document.getElementById("track_close_popupLmap").alt = "Fermer";
             document.getElementById("bt_rt_addLmap").innerHTML = "Import";
             document.getElementById("t_opt_sails").innerHTML = "Voiles";
             document.getElementById("t_opt_hull").innerHTML = "Polish";
@@ -6118,6 +6174,11 @@ async function initializeMap(race) {
             document.getElementById("lbl_rt_openLmap").innerHTML = "Add";	
             document.getElementById("lbl_rt_cleanLmap").innerHTML = "Clean";
             document.getElementById("t_rtTitle").innerHTML = "Routes Import";
+            document.getElementById("lbl_exportTracks").innerHTML = "Traces";
+            document.getElementById("lbl_exportTracks").title = "Export a skipper's track (.csv)";
+            document.getElementById("t_trackTitle").innerHTML = "Track export";
+            document.getElementById("bt_exportSkipperTrack").innerHTML = "Export (.csv)";
+            document.getElementById("track_close_popupLmap").alt = "Close";
             document.getElementById("bt_rt_addLmap").innerHTML = "Import";
             document.getElementById("t_opt_sails").innerHTML = "Sails";
             document.getElementById("t_opt_hull").innerHTML = "Hull";
@@ -6258,6 +6319,9 @@ async function initializeMap(race) {
         exportFleet:exportFleet,
         getDoradoUrl:getDoradoUrl,
         exportOwnBoatTrack:exportOwnBoatTrack,
+        openTraceExport:openTraceExport,
+        closeTraceExport:closeTraceExport,
+        exportSkipperTrack:exportSkipperTrack,
         exportGraphData:exportGraphData,
         graphCleanData:graphCleanData,
 
@@ -6305,10 +6369,14 @@ window.addEventListener("load", async function () {
     document.getElementById("bt_clear").addEventListener("click", controller.clearLog);
     document.getElementById("bt_exportRestrictedZones").addEventListener("click", controller.exportRestrictedZones);
     document.getElementById("bt_exportPolar").addEventListener("click", controller.exportPolar);
-    document.getElementById("doradoUrl").addEventListener("click", controller.getDoradoUrl);
+ //   document.getElementById("doradoUrl").addEventListener("click", controller.getDoradoUrl);
     document.getElementById("bt_exportStamina").addEventListener("click", controller.exportStamina);
     document.getElementById("bt_exportFleet").addEventListener("click", controller.exportFleet);
     document.getElementById("bt_exportOwnBoatTrack").addEventListener("click", controller.exportOwnBoatTrack);
+    document.getElementById("exportTracks").addEventListener("click", controller.openTraceExport);
+    document.getElementById("track_close_popupLmap").addEventListener("click", controller.closeTraceExport);
+    document.getElementById("bt_exportSkipperTrack").addEventListener("click", controller.exportSkipperTrack);
+    document.getElementById("lbl_rt_openLmap").addEventListener("click", controller.closeTraceExport);
     
     document.getElementById("bt_cleanGraph").addEventListener("click", controller.graphCleanData);
     document.getElementById("bt_exportGraphData").addEventListener("click", controller.exportGraphData);

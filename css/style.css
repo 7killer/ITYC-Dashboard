@@ -601,6 +601,11 @@ fieldset {
 
 }
 
+#sel_export > .tab2 {
+    display: flex;
+    white-space: nowrap;
+}
+
 #doradoUrl { 
     float: left;
     margin-left:1em;
@@ -1170,7 +1175,7 @@ input[type="color"]::-webkit-color-swatch {
     padding: 0;
     height: 1.4em;
 }
-#rt_popupLmap{
+#rt_popupLmap, #track_popupLmap{
     margin-top: 5%;
     margin-left: 30%;
     z-index: 999;
@@ -1185,9 +1190,15 @@ input[type="color"]::-webkit-color-swatch {
     background-image: var(--popup_bg_img);
     position: absolute;
 }
-#bt_rt_addLmap{
+#track_popupLmap {
+    height: auto;
+}
+#bt_rt_addLmap, #bt_exportSkipperTrack{
     float:left;
     margin-left: 6px;
+}
+#bt_exportSkipperTrack {
+    float: none;
 }
 
 .popupCloseBt{
@@ -1197,17 +1208,17 @@ input[type="color"]::-webkit-color-swatch {
     /*padding-left : 50%;*/
 }
 
-#t_rtTitle {
+#t_rtTitle, #t_trackTitle {
     display:contents;
 
 }
-#rt_close_popup, #rt_close_popupLmap{
+#rt_close_popup, #rt_close_popupLmap, #track_close_popupLmap{
     width : 5%;
     height: 5%;
     cursor: pointer;
 
 }
-#rt_popupHeader, #rt_popupHeaderLmap{
+#rt_popupHeader, #rt_popupHeaderLmap, #track_popupHeaderLmap{
     display :flex;
     justify-content: space-between;
     align-items: center;

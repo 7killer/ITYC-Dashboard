@@ -382,6 +382,46 @@ export function exportOwnBoatTrack(track)
     saveFile('boatTrack.gpx', url);
 }
 
+export function exportSkipperTrack(race, skipper)
+{
+    if (!race || !skipper || !Array.isArray(skipper.track) || skipper.track.length === 0) return false;
+
+    function csvCell(value) {
+        const cell = String(value ?? "");
+        return /[;"\r\n]/.test(cell) ? '"' + cell.replace(/"/g, '""') + '"' : cell;
+    }
+
+    function splitDateTime(date) {
+        const iso = date.toISOString();
+        return [iso.slice(0, 10), iso.slice(11, 19)];
+    }
+
+    const raceData = DM.getRaceInfos(race.id);
+    const raceName = race.legdata?.name || raceData?.legName || race.legName || raceData?.name || race.name || race.id;
+    const skipperName = skipper.displayName || skipper.name || "";
+    const exportedAt = new Date();
+    const rows = [
+        [skipperName, ""],
+        [raceName],
+        [race.id],
+        splitDateTime(exportedAt),
+        [],
+        ["Time stamp", "Date", "Heure", "lat", "lon"]
+    ];
+
+    skipper.track.forEach(point => {
+        rows.push([point.ts, ...splitDateTime(new Date(point.ts)), point.lat, point.lon]);
+    });
+
+    const content = rows.map(row => row.map(csvCell).join(";")).join("\r\n") + "\r\n";
+    const blobData = new Blob(["\uFEFF", content], {type: "text/csv;charset=utf-8"});
+    const url = window.URL.createObjectURL(blobData);
+    const fileName = ("Trace_" + skipperName + "_" + race.id + "_" + exportedAt.toISOString())
+        .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_") + ".csv";
+    saveFile(fileName, url);
+    return true;
+}
+
 function generateGPX(data) {
     let gpxContent = `<?xml version="1.0" encoding="UTF-8" ?><gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="ITYC"><metadata><link href="https://ityc.fr/"><text>ITYC</text></link><time>${new Date().toISOString()}</time></metadata>`;
     data.forEach(point => {
