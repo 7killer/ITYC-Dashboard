@@ -586,7 +586,7 @@ fieldset {
     background: #555555;
 }
 
-.tab2>.tab>[id^="sel_"]:checked + label {
+.tab2>.tab>[id^="sel_"]:checked + label, #lbl_exportTracks {
     top: 0;
     background: #555555;
     color: #F5F5F5;
