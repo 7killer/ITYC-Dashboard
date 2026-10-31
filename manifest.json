@@ -2,7 +2,7 @@
     "name": "VR Dashboard I.T.Y.C.",
     "short_name": "VR Dashboard I.T.Y.C.",
     "description": "Monitor boat position & call virtual sailor weather router",
-    "version": "1.6.1",
+    "version": "1.6.1.2",
     "browser_specific_settings": {
     "gecko": {
       "id": "VRDasboard@ityc.com",
@@ -16,7 +16,9 @@
     "storage",
     "activeTab",
     "scripting",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "webRequest",
+    "webRequestBlocking"
 	],
 	"host_permissions" : [
 	"*://*.virtualregatta.com/*",
@@ -37,7 +39,7 @@
 
   
   "background": {
-      "scripts": ["./js/background.js"]
+      "scripts": ["./js/osmTileHeaders.js", "./js/background.js"]
   },
   "action": {
       "default_icon": {"128": "icon_grey.png"},

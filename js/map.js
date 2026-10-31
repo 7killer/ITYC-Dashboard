@@ -874,14 +874,14 @@ async function initialize(race,raceFleetMap)
                     'AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             });
         
-            var OSM_Layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                minZoom: 2, maxZoom: 40, maxNativeZoom: 40,
+            var OSM_Layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                minZoom: 2, maxZoom: 40, maxNativeZoom: 19,
                 referrerPolicy: 'strict-origin-when-cross-origin',
                 attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
             });
 
-            var OSM_DarkLayer = L.tileLayer.colorFilter('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                minZoom: 2, maxZoom: 40, maxNativeZoom: 40,
+            var OSM_DarkLayer = L.tileLayer.colorFilter('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                minZoom: 2, maxZoom: 40, maxNativeZoom: 19,
                 referrerPolicy: 'strict-origin-when-cross-origin',
                 attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
                 filter: mapTileColorFilterDarkMode                

@@ -1251,7 +1251,10 @@ a:active {
 #raceStatusTable tr th {
     cursor: help;
 }
-
+#raceStatusTable>tbody>tr
+{
+    height: 4em;
+}
 table#raceidTable2>tbody>tr>td {
     text-align: center;
 }

@@ -3274,7 +3274,7 @@ var controller = function () {
                 } else if (rmatch == 8) {
    //                 updateUserConfigHTML();
                 }  else if (rmatch == 9) {
-                    document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;
+                    document.getElementById('ityc_frame').src = getITYCFullExtra(getITYCFull("https://ityc.fr/v2/polarDash.html" + getITYCBoat(selRace.value),selRace.value),selRace.value)  ;
                 } 
             } else if (friend) {
                 // Friend-Routing
@@ -3876,7 +3876,7 @@ var controller = function () {
     }
 
     function getITYCBase() {
-        return "https://ityc.fr/autoSail.html";
+        return "https://ityc.fr/v2/autoSail.html";
     }
     
     function getITYCBoat(raceId) {
