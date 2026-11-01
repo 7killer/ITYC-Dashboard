@@ -6,25 +6,17 @@
   "permissions": [
     "tabs",
     "storage",
-    "activeTab",
-    "scripting",
     "declarativeContent",
     "unlimitedStorage"
 	],
 	"host_permissions" : [
-	"*://*.virtualregatta.com/*",
-	"*://*.ityc.fr/*",
-  "*://*.openstreetmap.org/*",
-  "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/",
-  "https://gibs.earthdata.nasa.gov/wms/epsg3413/best/",
-  "https://routage.vrzen.org/*",
-  "https://routeur.sermar.app/*",
-  "https://naya-routing.fr/*",
+  "https://vr.ityc.fr/*",
   "http://zezo.org/*",
   "http://localhost:8081/nmea/*",
   "http://localhost:8082/nmea/*",
   "http://localhost:8083/nmea/*",
-  "http://localhost:8084/nmea/*"
+  "http://localhost:8084/nmea/*",
+  "*://*.openstreetmap.org/*"
   ],
 
   
@@ -60,8 +52,8 @@
   ],
   "manifest_version": 3,
   "web_accessible_resources": [{
-    "resources": ["listenerItyc.js","./js/addResume2.js","listenerIframeItyc.js","vr_game_loading.js","vr_game_grib_loading.js","vr_keep_awake.js","./js/loaderItyc.js","./js/loaderIframeItyc.js","img/foil.png","img/semar.png","img/naya-router-icon.png"],
-    "matches": ["<all_urls>"]
+    "resources": ["listenerItyc.js","listenerIframeItyc.js","vr_game_loading.js","vr_game_grib_loading.js","vr_keep_awake.js","img/foil.png","img/semar.png","img/naya-router-icon.png"],
+    "matches": ["https://www.virtualregatta.com/*","https://beta.virtualregatta.com/*","https://play.offshore.virtualregatta.com/*"]
   }],
   "externally_connectable": {
     "ids": ["*"],
